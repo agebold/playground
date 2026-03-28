@@ -119,7 +119,7 @@
     /* Trainer circle photo on top */
     .tp-trainer-img {
       position: relative;
-      z-index: 2;
+      z-index: 1;
       width: 96px; height: 96px;
       border-radius: 50%;
       object-fit: cover;
@@ -145,7 +145,7 @@
       display: flex;
       align-items: flex-start;
       gap: 16px;
-      padding: 4px 0;
+      padding: 8px 0;
       position: relative;
     }
     /* Vertical connector line between steps */
@@ -153,8 +153,8 @@
       content: '';
       position: absolute;
       left: 20px;
-      top: 44px;
-      bottom: -4px;
+      top: 48px;
+      bottom: -8px;
       width: 0;
       border-left: 2px dashed #d4d4d4;
     }
@@ -170,10 +170,14 @@
       background: #16a34a;
       color: #fff;
     }
+    @keyframes tp-pulse {
+      0%, 100% { box-shadow: 0 0 6px 2px rgba(82,0,212,.3); }
+      50%       { box-shadow: 0 0 10px 4px rgba(82,0,212,.12); }
+    }
     .tp-step-dot.next {
       background: #fff;
       border: 2px solid #5200d4;
-      box-shadow: 0 0 0 4px rgba(82,0,212,.12), 0 0 6px 0 #7c3aed;
+      animation: tp-pulse 2s ease-in-out infinite;
     }
     .tp-step-dot.next::after {
       content: '';
@@ -298,10 +302,30 @@
     /* ── Trainer button (wraps avatar) ── */
     .tp-trainer-btn {
       background: none; border: none; padding: 0; cursor: pointer;
-      position: relative; z-index: 2; border-radius: 50%;
-      display: block;
+      position: relative; border-radius: 50%;
+      display: block; width: 96px; height: 96px;
     }
-    .tp-trainer-btn:hover .tp-trainer-img { box-shadow: 0 8px 24px rgba(82, 0, 212, 0.5); }
+    .tp-trainer-overlay {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      z-index: 2;
+    }
+    .tp-trainer-overlay span {
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+      font-family: var(--font);
+      text-align: center;
+      line-height: 1.3;
+    }
+    .tp-trainer-btn:hover .tp-trainer-overlay { opacity: 1; }
 
     /* ── Trainer modal ── */
     .tp-modal-overlay {
@@ -363,6 +387,7 @@
     @media (min-width: 768px) {
       .tp-hero { padding: 48px 24px 24px; }
       .tp-blob-wrap { width: 108px; height: 108px; margin-bottom: 16px; }
+      .tp-trainer-btn { width: 88px; height: 88px; }
       .tp-trainer-img { width: 88px; height: 88px; }
       .tp-greeting { font-size: 32px; }
       .tp-intro { font-size: 18px; max-width: 520px; }
@@ -430,6 +455,7 @@
     </div>
     <button class="tp-trainer-btn" onclick="openTrainerModal()" aria-label="About your trainer">
       <img class="tp-trainer-img" src="assets/images/trainer-photo.jpg" alt="Your Bold coach" />
+      <div class="tp-trainer-overlay"><span>Bold trainer</span></div>
     </button>
   </div>
   <p class="tp-date" id="today-date">Today</p>
@@ -649,8 +675,7 @@
     cDx += (tDx - cDx) * 0.05;
     cDy += (tDy - cDy) * 0.05;
     const angle   = Math.atan2(cDy, cDx) * 180 / Math.PI;
-    const stretch = 1 + Math.hypot(cDx, cDy) / 120; // stretch factor along cursor axis
-    // Rotate to cursor direction, stretch along that axis only, rotate back
+    const stretch = 1 + Math.hypot(cDx, cDy) / 120;
     blobMover.style.transform =
       `rotate(${angle}deg) scale(${stretch.toFixed(3)}, 1) rotate(${-angle}deg)`;
     requestAnimationFrame(tick);

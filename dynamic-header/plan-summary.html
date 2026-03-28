@@ -74,10 +74,14 @@
     }
     .ps-step-dot.done { background: #16a34a; }
     .ps-step-dot.done svg { display: block; }
+    @keyframes ps-pulse {
+      0%, 100% { box-shadow: 0 0 6px 2px rgba(82,0,212,.3); }
+      50%       { box-shadow: 0 0 10px 4px rgba(82,0,212,.12); }
+    }
     .ps-step-dot.now {
       border: 2px solid #5200d4;
-      box-shadow: 0 0 0 3px rgba(124,58,237,.18), 0 0 5px 0 #7c3aed;
       background: #fff;
+      animation: ps-pulse 2s ease-in-out infinite;
     }
     .ps-step-dot.now::after { content: ''; width: 8px; height: 8px; border-radius: 50%; background: #5200d4; }
     .ps-step-dot.future { border: 2px solid #d4d4d4; background: #fff; }
