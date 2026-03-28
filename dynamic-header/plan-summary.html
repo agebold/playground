@@ -85,7 +85,7 @@
     .ps-step-info { flex: 1; min-width: 0; }
     .ps-step-label { font-size: 14px; font-weight: 400; color: #171717; line-height: 1.57; }
     .ps-step-title { font-size: 16px; font-weight: 600; color: #171717; line-height: 1.5; }
-    .ps-step-title.now { color: #5200d4; }
+    .ps-step-title.now { color: #171717; }
     .ps-step-desc { font-size: 18px; font-weight: 400; color: rgba(0,0,0,.8); line-height: 1.4; margin-top: 2px; }
     .ps-desc-text {
       display: -webkit-box;
@@ -127,6 +127,15 @@
     .ps-class-trainer { font-size: 13px; font-weight: 400; color: #737373; margin-top: 3px; }
 
     /* ── Desktop ── */
+    @media (min-width: 768px) {
+      .ps-desc-text {
+        display: block;
+        -webkit-line-clamp: unset;
+        overflow: visible;
+      }
+      .ps-read-more { display: none !important; }
+    }
+
     @media (min-width: 768px) {
       .ps-breadcrumb { padding: 8px 144px; }
       .ps-page { max-width: 1100px; margin: 0 auto; padding: 24px 40px 80px; width: 100%; }
@@ -373,15 +382,7 @@
     const desc = document.getElementById(descId);
     const btn  = document.getElementById(btnId);
 
-    // Measure full (unclamped) height by cloning without the clamp style
-    const clone = desc.cloneNode(true);
-    clone.style.cssText = 'position:absolute;visibility:hidden;overflow:visible;display:block;-webkit-line-clamp:unset;width:' + desc.offsetWidth + 'px';
-    desc.parentNode.appendChild(clone);
-    const fullHeight    = clone.scrollHeight;
-    const clampedHeight = desc.clientHeight;
-    clone.remove();
-
-    if (fullHeight > clampedHeight + 2) {
+    if (desc.scrollHeight > desc.clientHeight + 2) {
       btn.hidden = false;
       btn.addEventListener('click', () => {
         const expanded = desc.classList.toggle('expanded');
@@ -390,9 +391,12 @@
     }
   }
 
-  initReadMore('past-desc', 'past-rm');
-  initReadMore('now-desc',  'now-rm');
-  initReadMore('next-desc', 'next-rm');
+  // Defer until after layout so measurements are accurate
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    initReadMore('past-desc', 'past-rm');
+    initReadMore('now-desc',  'now-rm');
+    initReadMore('next-desc', 'next-rm');
+  }));
 </script>
 
 </body>
