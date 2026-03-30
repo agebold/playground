@@ -101,6 +101,13 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity .35s ease, transform .35s ease;
+    }
+    .ld-check-row.visible {
+      opacity: 1;
+      transform: translateY(0);
     }
     .ld-check-row svg { flex-shrink: 0; }
     .ld-check-row span {
@@ -194,6 +201,12 @@
       </svg>
       <span>${text}</span>
     </div>`).join('');
+
+  // Reveal checkmarks one at a time
+  const rows = container.querySelectorAll('.ld-check-row');
+  rows.forEach((row, i) => {
+    setTimeout(() => row.classList.add('visible'), 400 + i * 600);
+  });
 
   // Fire AI calls in background, store results, then redirect
   (async () => {
