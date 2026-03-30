@@ -217,17 +217,16 @@ STRICT RULES — follow exactly:
 1. GOAL: 8–12 words. Combine clinical + functional goal. No filler. Hard cap: 70 characters.
 2. DURATION: "X to Y min [${posInBullet2 ? posLabel + ' ' : ''}sessions, building gradually" — 8–12 words. Position appears here ONLY if seat-only (safety reason).
 3. FOCUS: 12–18 words. Therapeutic approach + intensity + modalities.${posInBullet3 ? ' Include position label here (NOT in bullet 2).' : ' Do NOT repeat position here — already in bullet 2.'} Hard cap: 110 characters.
-4. ACCOMMODATIONS: 12–18 words. Hard cap: 110 characters.
-   - If there is a specific constraint (accommodation note, pain area, fall history, pelvic/brain symptoms): address it directly and concisely.
-   - If there is NO constraint and position is already clear: write one sentence about how the plan adapts to their feedback week over week.
-   - NEVER use generic filler like "modifications available" or "move at your own pace" unless a real safety reason exists.
-   - Must add something new — do NOT restate goal, duration, or modality from bullets 1–3.
+4. ACCOMMODATIONS (optional): 12–18 words. Hard cap: 110 characters.
+   - ONLY include if there is a real, specific constraint: accommodation note, pain area, fall history, pelvic/brain symptoms, or seat-only position needing a safety note.
+   - If none of the above apply, OMIT this line entirely — do not write it at all.
+   - NEVER use generic filler. Must add something new not already in bullets 1–3.
 
-Format — output only these 4 lines, no markdown, no labels other than the prefixes:
+Format — output only these lines, no markdown:
 GOAL: ...
 DURATION: ...
 FOCUS: ...
-ACCOMMODATIONS: ...`;
+ACCOMMODATIONS: ... (omit this line if no real constraint exists)`;
 }
 
 async function generatePlanBullets() {

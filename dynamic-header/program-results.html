@@ -213,7 +213,7 @@
         <img class="icon" src="assets/icons/checkmark.svg" alt="✓" />
         <p><strong>Focus:</strong> <span id="plan-focus">Gentle balance and stability training through standing exercises</span></p>
       </div>
-      <div class="results-bullet">
+      <div class="results-bullet" id="bullet-accommodations">
         <img class="icon" src="assets/icons/checkmark.svg" alt="✓" />
         <p><strong>Accommodations:</strong> <span id="plan-movements">No equipment needed. All exercises include seated modifications.</span></p>
       </div>
@@ -362,7 +362,6 @@
   if (accommodation) {
     accom = rewriteAccommodation(accommodation, prim);
   } else if (seatOnly) {
-    // Safety nuance: no standing required
     accom = 'No standing or floor work — all exercises done seated';
   } else if (prim === 'pain') {
     accom = 'Exercises stop before strain; you control pace and range';
@@ -370,25 +369,31 @@
     accom = 'Exercises are subtle and safe to do privately anywhere';
   } else if (prim === 'brain') {
     accom = 'Cognitive load increases gradually — no overwhelm at the start';
-  } else if (intensity === 'challenging') {
-    accom = 'Progressive overload built in — expect to feel it by week two';
-  } else if (intensity === 'gentle') {
-    accom = 'Intensity ramps slowly — your comfort always leads the way';
-  } else {
-    accom = 'Plan adapts weekly based on how your body responds';
   }
+  // No generic filler for intensity or default — hide bullet instead
 
-  document.getElementById('plan-movements').textContent = cap(accom, 95);
+  if (accom) {
+    document.getElementById('plan-movements').textContent = cap(accom, 95);
+  } else {
+    document.getElementById('bullet-accommodations').style.display = 'none';
+  }
 
   // ── Apply pre-computed AI results from loading screen ──
   const savedBullets = JSON.parse(localStorage.getItem('boldAIBullets') || 'null');
   const savedMsg     = JSON.parse(localStorage.getItem('boldAIMessage') || 'null');
 
-  if (savedBullets?.goal)           document.getElementById('plan-goal').textContent      = savedBullets.goal;
-  if (savedBullets?.duration)       document.getElementById('plan-duration').textContent  = savedBullets.duration;
-  if (savedBullets?.focus)          document.getElementById('plan-focus').textContent     = savedBullets.focus;
-  if (savedBullets?.accommodations) document.getElementById('plan-movements').textContent = savedBullets.accommodations;
-  if (savedMsg?.greeting)           document.querySelector('.results-subtitle').textContent = savedMsg.greeting;
+  if (savedBullets?.goal)     document.getElementById('plan-goal').textContent     = savedBullets.goal;
+  if (savedBullets?.duration) document.getElementById('plan-duration').textContent = savedBullets.duration;
+  if (savedBullets?.focus)    document.getElementById('plan-focus').textContent    = savedBullets.focus;
+
+  if (savedBullets?.accommodations) {
+    document.getElementById('plan-movements').textContent = savedBullets.accommodations;
+  } else if (savedBullets) {
+    // AI explicitly omitted accommodations — hide the bullet
+    document.getElementById('bullet-accommodations').style.display = 'none';
+  }
+
+  if (savedMsg?.greeting) document.querySelector('.results-subtitle').textContent = savedMsg.greeting;
 
   // Clear so a re-visit regenerates via loading screen
   localStorage.removeItem('boldAIBullets');
