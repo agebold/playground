@@ -86,7 +86,7 @@ function getBoldContext() {
 }
 
 function buildPrompt(ctx) {
-  return `You are a supportive health coach writing personalized messages for adults 65+ on Age Bold, a fitness and wellness platform.
+  return `You are a supportive Bold trainer writing personalized messages for adults 65+ on Bold, a fitness and wellness platform.
 
 Tone: warm but not patronizing, specific not generic, forward-looking, never evaluative.
 Rules:
@@ -200,7 +200,7 @@ function buildPlanBulletsPrompt() {
   const fallContext  = fallHistory && fallHistory !== 'no' ? `Fall history: ${fallHistory}. Fear: ${fallFear || 'not specified'}.` : '';
   const hasConstraint = accommodation || painArea.length || (fallHistory && fallHistory !== 'no') || prim === 'pelvic' || prim === 'brain' || seatOnly;
 
-  return `Generate exactly 4 plan summary bullets for an adult 65+ on a fitness platform.
+  return `Generate exactly 4 plan summary bullets for an adult 65+ on Bold, a fitness platform.
 
 MEMBER:
 - Goal: ${clinicalGoals[prim] || clinicalGoals.balance} — so they can ${functionalGoals[prim] || functionalGoals.balance}
