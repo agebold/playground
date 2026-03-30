@@ -16,7 +16,6 @@
       background: #f0f3fd;
       color: #171717;
       -webkit-font-smoothing: antialiased;
-      min-width: 1280px;
     }
     img { display: block; }
     a { text-decoration: none; color: inherit; }
@@ -44,7 +43,7 @@
     .nav-wrap {
       position: fixed; top: 21px; left: 50%;
       transform: translateX(-50%);
-      width: 1360px; z-index: 100;
+      width: calc(100% - 48px); max-width: 1360px; z-index: 100;
     }
     .nav-bar {
       background: #f0f3fd;
@@ -114,7 +113,7 @@
       pointer-events: none;
     }
     .hero-content {
-      position: absolute; left: 112px; top: 205px; width: 568px;
+      position: absolute; left: clamp(48px, 7.8vw, 112px); top: 205px; width: clamp(320px, 40vw, 568px);
     }
     .hero-title {
       font-size: 55px; font-weight: 700; color: #fafafa;
@@ -127,7 +126,7 @@
       max-width: 503px; margin-bottom: 48px;
     }
     .hero-bottom {
-      position: absolute; left: 112px; bottom: 60px;
+      position: absolute; left: clamp(48px, 7.8vw, 112px); bottom: 60px;
     }
     .hero-available {
       font-size: 20px; font-weight: 700; color: #fafafa;
@@ -153,7 +152,7 @@
       padding: 80px 0;
     }
     .mod-healthy-inner {
-      max-width: 1440px; margin: 0 auto; padding: 0 112px;
+      max-width: 1440px; margin: 0 auto; padding: 0 clamp(48px, 7.8vw, 112px);
       display: flex; align-items: center; gap: 127px;
     }
     .mod-photo-frame {
@@ -182,7 +181,7 @@
       padding: 0 0 80px;
     }
     .resources-inner {
-      max-width: 1440px; margin: 0 auto; padding: 0 112px;
+      max-width: 1440px; margin: 0 auto; padding: 0 clamp(48px, 7.8vw, 112px);
     }
     .resources-header {
       max-width: 802px; margin: 0 auto 48px; text-align: center;
@@ -228,7 +227,7 @@
       padding: 80px 0 60px;
     }
     .testi-header {
-      max-width: 1440px; margin: 0 auto; padding: 0 112px 48px;
+      max-width: 1440px; margin: 0 auto; padding: 0 clamp(48px, 7.8vw, 112px) 48px;
       display: flex; align-items: center; justify-content: space-between;
     }
     .testi-heading {
@@ -243,7 +242,7 @@
     }
     .testi-nav-btn:hover { background: rgba(0,0,0,0.08); }
     .testi-track-wrap {
-      overflow: hidden; padding: 0 112px;
+      overflow: hidden; padding: 0 clamp(48px, 7.8vw, 112px);
     }
     .testi-track {
       display: flex; gap: 24px;
@@ -279,7 +278,7 @@
       padding: 80px 0;
     }
     .evidence-inner {
-      max-width: 1440px; margin: 0 auto; padding: 0 112px;
+      max-width: 1440px; margin: 0 auto; padding: 0 clamp(48px, 7.8vw, 112px);
     }
     .evidence-header {
       max-width: 802px; margin: 0 auto 48px; text-align: center;
@@ -336,7 +335,7 @@
       padding: 80px 0;
     }
     .bring-inner {
-      max-width: 1440px; margin: 0 auto; padding: 0 112px;
+      max-width: 1440px; margin: 0 auto; padding: 0 clamp(48px, 7.8vw, 112px);
       display: flex; align-items: center; gap: 127px;
     }
     .bring-photo {
@@ -382,7 +381,7 @@
       padding: 80px 0 60px;
     }
     .footer-inner {
-      max-width: 1440px; margin: 0 auto; padding: 0 112px;
+      max-width: 1440px; margin: 0 auto; padding: 0 clamp(48px, 7.8vw, 112px);
     }
     .footer-top {
       display: flex; gap: 80px; margin-bottom: 80px; align-items: flex-start;
