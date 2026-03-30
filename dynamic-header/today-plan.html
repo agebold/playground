@@ -476,7 +476,7 @@
     </button>
   </div>
   <p class="tp-date" id="today-date">Today</p>
-  <h1 class="tp-greeting">Good <span id="time-of-day">morning</span>, <span id="user-name">there</span></h1>
+  <h1 class="tp-greeting">Good <span id="time-of-day">morning</span></h1>
   <p class="tp-intro" id="coach-intro">I'm Amanda, your Bold coach. Your first class is just 9 minutes. Finish feeling good — not wiped out!</p>
   <a href="plan-summary.html" class="tp-summary-hero">
     <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="2" y="7" width="2.5" height="5" rx="0.5" fill="#525252"/><rect x="5.75" y="4" width="2.5" height="8" rx="0.5" fill="#525252"/><rect x="9.5" y="2" width="2.5" height="10" rx="0.5" fill="#525252"/></svg>
@@ -594,9 +594,8 @@
   const accommodation = localStorage.getItem('boldAccommodations') || '';
   const prim          = focus[0] || 'balance';
 
-  // Name + initials
+  // Nav initials
   if (name) {
-    document.getElementById('user-name').textContent = name;
     document.getElementById('nav-initials').textContent = name.slice(0, 2).toUpperCase();
   }
 
