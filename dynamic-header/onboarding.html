@@ -577,7 +577,7 @@
     brain:         'Enhance my brain health and memory',
   };
 
-  let stepId = '1';
+  let stepId = '0';
   const answers = { q0:'', q1:[], q1focus:null, q1a:[], q1b:'5', q1c:null, q1d:null, q2:null, q3:null, q4:null, q5:[], q6:'' };
 
   // Define the navigation sequence dynamically
@@ -606,8 +606,8 @@
     const pct = Math.round(idx / seq.length * 100);
     document.getElementById('pct-label').textContent = pct + '% Completed';
     const back = document.getElementById('back-btn');
-    back.style.visibility = stepId === '1' ? 'hidden' : 'visible';
-    back.classList.toggle('hidden-mobile', stepId === '1');
+    back.style.visibility = stepId === '0' ? 'hidden' : 'visible';
+    back.classList.toggle('hidden-mobile', stepId === '0');
   }
 
   const PAIN_AREA_LABELS = {
