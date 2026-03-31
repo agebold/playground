@@ -61,59 +61,21 @@
     /* Animated blob container behind trainer photo */
     .tp-blob-wrap {
       position: relative;
-      width: 120px;
-      height: 120px;
+      width: 220px;
+      height: 220px;
       display: flex;
       align-items: center;
       justify-content: center;
       margin-bottom: 8px;
       overflow: visible;
     }
-    /* The animated blob */
-    .tp-blob {
+    /* Canvas blob — sits behind the trainer button */
+    #blobCanvas {
       position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       pointer-events: none;
-      inset: -120px;
-      background: conic-gradient(
-        from 0deg,
-        #80e8ff 0%,
-        #3366ff 25%,
-        #5200d4 50%,
-        #80e8ff 75%,
-        #3366ff 100%
-      );
-      border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
-      animation: blob-morph 7s ease-in-out infinite, blob-spin 12s linear infinite;
-      filter: blur(22px);
-      opacity: 0.12;
-    }
-    /* Second blob offset for depth */
-    .tp-blob-2 {
-      position: absolute;
-      pointer-events: none;
-      inset: -80px;
-      background: radial-gradient(ellipse at 30% 30%, #80e8ff 0%, #3366ff 40%, #5200d4 100%);
-      border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
-      animation: blob-morph 9s ease-in-out infinite reverse, blob-spin 16s linear infinite reverse;
-      filter: blur(18px);
-      opacity: 0.08;
-    }
-    @keyframes blob-morph {
-      0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
-      20%       { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
-      40%       { border-radius: 50% 40% 60% 30% / 30% 70% 40% 60%; }
-      60%       { border-radius: 40% 70% 30% 60% / 70% 30% 60% 40%; }
-      80%       { border-radius: 70% 30% 50% 50% / 40% 60% 50% 60%; }
-    }
-    @keyframes blob-spin {
-      from { transform: rotate(0deg) scale(1.15); }
-      to   { transform: rotate(360deg) scale(1.15); }
-    }
-    /* Blob mover wrapper — cursor-follow applied here */
-    .tp-blob-mover {
-      position: absolute;
-      inset: 0;
-      will-change: transform;
+      z-index: 0;
     }
 
     /* Trainer circle photo on top */
@@ -402,7 +364,7 @@
     ═══════════════════════════════════════ */
     @media (min-width: 768px) {
       .tp-hero { padding: 48px 24px 24px; }
-      .tp-blob-wrap { width: 108px; height: 108px; margin-bottom: 16px; }
+      .tp-blob-wrap { width: 200px; height: 200px; margin-bottom: 16px; }
       .tp-trainer-btn { width: 88px; height: 88px; }
       .tp-trainer-img { width: 88px; height: 88px; }
       .tp-greeting { font-size: 32px; }
@@ -465,10 +427,7 @@
 <!-- Hero -->
 <div class="tp-hero">
   <div class="tp-blob-wrap">
-    <div class="tp-blob-mover" id="blob-mover">
-      <div class="tp-blob"></div>
-      <div class="tp-blob-2"></div>
-    </div>
+    <canvas id="blobCanvas"></canvas>
     <button class="tp-trainer-btn" onclick="openTrainerModal()" aria-label="About your trainer">
       <img class="tp-trainer-img" src="assets/images/trainer-photo.jpg" alt="Your Bold trainer" />
       <div class="tp-trainer-overlay"><span>Bold trainer</span></div>
@@ -701,34 +660,7 @@
     if (e.key === 'Escape') closeTrainerModal();
   });
 
-  // ── Blob directional stretch toward cursor ──────────
-  const blobMover = document.getElementById('blob-mover');
-  const blobWrap  = blobMover.closest('.tp-blob-wrap');
-  let tDx = 0, tDy = 0, cDx = 0, cDy = 0;
-
-  document.addEventListener('mousemove', e => {
-    const rect = blobWrap.getBoundingClientRect();
-    const ox = rect.left + rect.width  / 2;
-    const oy = rect.top  + rect.height / 2;
-    const dx = e.clientX - ox;
-    const dy = e.clientY - oy;
-    const dist = Math.hypot(dx, dy);
-    // Max 80px reach in cursor direction
-    const reach = Math.min(dist / 400, 1) * 80;
-    tDx = dist > 0 ? (dx / dist) * reach : 0;
-    tDy = dist > 0 ? (dy / dist) * reach : 0;
-  });
-
-  (function tick() {
-    cDx += (tDx - cDx) * 0.05;
-    cDy += (tDy - cDy) * 0.05;
-    const angle   = Math.atan2(cDy, cDx) * 180 / Math.PI;
-    const stretch = 1 + Math.hypot(cDx, cDy) / 120;
-    blobMover.style.transform =
-      `rotate(${angle}deg) scale(${stretch.toFixed(3)}, 1) rotate(${-angle}deg)`;
-    requestAnimationFrame(tick);
-  })();
 </script>
-
+<script src="assets/js/blob-animation.js"></script>
 </body>
 </html>
