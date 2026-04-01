@@ -209,6 +209,10 @@
   });
 
   // Fire AI calls in background, store results, then redirect
+  // Hard timeout: always redirect after 12s even if AI is slow/stuck
+  const redirectNow = () => { window.location.href = 'program-results.html'; };
+  const safetyTimer = setTimeout(redirectNow, 12000);
+
   (async () => {
     try {
       const [bullets, ctx] = await Promise.all([
@@ -222,7 +226,8 @@
     } catch (e) {
       console.warn('Bold AI loading:', e);
     }
-    window.location.href = 'program-results.html';
+    clearTimeout(safetyTimer);
+    redirectNow();
   })();
 </script>
 

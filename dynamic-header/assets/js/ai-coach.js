@@ -116,15 +116,19 @@ No labels, no quotes.`;
 }
 
 async function generateCoachMessage(ctx) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 8000);
   const response = await fetch(WORKER_URL, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
+    signal: controller.signal,
     body: JSON.stringify({
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 120,
       messages: [{ role: 'user', content: buildPrompt(ctx) }],
     }),
   });
+  clearTimeout(timer);
 
   if (!response.ok) throw new Error(`API error ${response.status}`);
   const data = await response.json();
@@ -230,15 +234,19 @@ ACCOMMODATIONS: ... (omit this line if no real constraint exists)`;
 }
 
 async function generatePlanBullets() {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 8000);
   const response = await fetch(WORKER_URL, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
+    signal: controller.signal,
     body: JSON.stringify({
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 300,
       messages: [{ role: 'user', content: buildPlanBulletsPrompt() }],
     }),
   });
+  clearTimeout(timer);
 
   if (!response.ok) throw new Error(`API error ${response.status}`);
   const data = await response.json();
