@@ -407,6 +407,108 @@
         min-height: 320px;
       }
     }
+
+    /* ══════════════════════════════════════
+       CHANGE CLASS BOTTOM SHEET
+    ══════════════════════════════════════ */
+    .cc-overlay {
+      display: none;
+      position: fixed; inset: 0; z-index: 300;
+      background: rgba(16, 24, 40, 0.5);
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .cc-overlay.open { display: flex; }
+    .cc-sheet {
+      background: #fff;
+      border-radius: 20px 20px 0 0;
+      width: 100%; max-width: 540px;
+      padding: 0 0 env(safe-area-inset-bottom, 0);
+      box-shadow: 0 -4px 32px rgba(16,24,40,0.12);
+      animation: cc-slide-up 0.28s cubic-bezier(.32,.72,0,1);
+    }
+    @keyframes cc-slide-up {
+      from { transform: translateY(100%); opacity: 0; }
+      to   { transform: translateY(0);   opacity: 1; }
+    }
+    .cc-handle {
+      width: 36px; height: 4px;
+      background: #d4d4d4; border-radius: 99px;
+      margin: 12px auto 0;
+    }
+    .cc-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 20px 12px;
+    }
+    .cc-title {
+      font-size: 18px; font-weight: 600; color: #140d26; letter-spacing: -0.2px;
+    }
+    .cc-close {
+      width: 32px; height: 32px;
+      display: flex; align-items: center; justify-content: center;
+      background: #f5f5f5; border: none; border-radius: 8px;
+      cursor: pointer; flex-shrink: 0;
+    }
+    .cc-close:hover { background: #e5e5e5; }
+
+    /* Options list */
+    .cc-options {
+      display: flex; flex-direction: column; gap: 8px;
+      padding: 0 16px 20px;
+    }
+    .cc-option {
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 16px;
+      background: #fafafa; border: 2px solid #e5e5e5; border-radius: 14px;
+      cursor: pointer; text-align: left; width: 100%;
+      font-family: var(--font); transition: border-color .15s, background .15s;
+    }
+    .cc-option:hover { background: #f5f0ff; border-color: #c4b5fd; }
+    .cc-option.selected { background: #f5f0ff; border-color: #5200d4; }
+    .cc-option-icon { font-size: 22px; flex-shrink: 0; line-height: 1; }
+    .cc-option-text { font-size: 16px; font-weight: 500; color: #140d26; line-height: 1.3; }
+
+    /* Result state */
+    .cc-result {
+      display: none;
+      flex-direction: column; gap: 0;
+      padding: 0 16px 20px;
+    }
+    .cc-result.show { display: flex; }
+    .cc-result-label {
+      font-size: 13px; font-weight: 600; color: #5200d4;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      margin-bottom: 10px;
+    }
+    .cc-result-card {
+      display: flex; gap: 12px; align-items: flex-start;
+      background: #fafafa; border: 1.5px solid #e5e5e5; border-radius: 14px;
+      padding: 14px;
+    }
+    .cc-result-thumb {
+      width: 72px; height: 56px; border-radius: 8px; object-fit: cover; flex-shrink: 0;
+    }
+    .cc-result-info { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 0; }
+    .cc-result-tag {
+      font-size: 12px; font-weight: 600; color: #5200d4;
+    }
+    .cc-result-name {
+      font-size: 15px; font-weight: 600; color: #140d26; line-height: 1.3;
+    }
+    .cc-result-trainer { font-size: 13px; color: #737373; }
+    .cc-confirm {
+      width: 100%; height: 48px; margin-top: 14px;
+      background: #5200d4; color: #fff; border: none; border-radius: 12px;
+      font-size: 16px; font-weight: 600; cursor: pointer; font-family: var(--font);
+      transition: background .15s;
+    }
+    .cc-confirm:hover { background: #3f00a8; }
+    .cc-back-link {
+      display: block; text-align: center; margin-top: 10px;
+      font-size: 14px; font-weight: 600; color: #5200d4; cursor: pointer;
+      background: none; border: none; font-family: var(--font); width: 100%;
+    }
+    .cc-back-link:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
@@ -511,7 +613,7 @@
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 3.5L16 10L5 16.5V3.5Z" fill="white"/></svg>
             Start class
           </button>
-          <button class="tp-change">
+          <button class="tp-change" onclick="openChangeClass()">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M17.5 10A7.5 7.5 0 1 1 10 2.5c2.42 0 4.58 1.14 6 2.93" stroke="#525252" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 1.5v4h-4" stroke="#525252" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
             Not feeling this today? <span>Change class</span>
           </button>
@@ -522,6 +624,59 @@
   </div>
 
 </div><!-- end tp-main-layout -->
+
+<!-- Change class bottom sheet -->
+<div class="cc-overlay" id="cc-modal" onclick="handleCCOverlayClick(event)">
+  <div class="cc-sheet" role="dialog" aria-modal="true" aria-label="Change class">
+    <div class="cc-handle"></div>
+    <div class="cc-header">
+      <span class="cc-title" id="cc-title">Let's find a better fit for today.</span>
+      <button class="cc-close" onclick="closeChangeClass()" aria-label="Close">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M12 4L4 12M4 4l8 8" stroke="#404040" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+
+    <!-- Options -->
+    <div class="cc-options" id="cc-options">
+      <button class="cc-option" data-mood="easier" onclick="selectMood(this)">
+        <span class="cc-option-icon">🟢</span>
+        <span class="cc-option-text">I want something easier today</span>
+      </button>
+      <button class="cc-option" data-mood="challenge" onclick="selectMood(this)">
+        <span class="cc-option-icon">🔵</span>
+        <span class="cc-option-text">I want more of a challenge</span>
+      </button>
+      <button class="cc-option" data-mood="short" onclick="selectMood(this)">
+        <span class="cc-option-icon">⏱️</span>
+        <span class="cc-option-text">I'm short on time</span>
+      </button>
+      <button class="cc-option" data-mood="seated" onclick="selectMood(this)">
+        <span class="cc-option-icon">🪑</span>
+        <span class="cc-option-text">I'd prefer seated today</span>
+      </button>
+      <button class="cc-option" data-mood="different" onclick="selectMood(this)">
+        <span class="cc-option-icon">🔄</span>
+        <span class="cc-option-text">Just show me something different</span>
+      </button>
+    </div>
+
+    <!-- Result state (shown after selection) -->
+    <div class="cc-result" id="cc-result">
+      <p class="cc-result-label">Here's your new class</p>
+      <div class="cc-result-card">
+        <img class="cc-result-thumb" src="assets/images/class-thumbnail.jpg" alt="" />
+        <div class="cc-result-info">
+          <span class="cc-result-tag" id="cc-result-tag">Move class</span>
+          <p class="cc-result-name" id="cc-result-name">Loading…</p>
+          <p class="cc-result-trainer">Amanda</p>
+        </div>
+      </div>
+      <button class="cc-confirm" onclick="confirmClassSwap()">Start this class</button>
+      <button class="cc-back-link" onclick="resetChangeClass()">← See other options</button>
+    </div>
+
+  </div>
+</div>
 
 <!-- Trainer modal -->
 <div class="tp-modal-overlay" id="trainer-modal" onclick="handleOverlayClick(event)">
@@ -644,6 +799,76 @@
     requestAnimationFrame(() => requestAnimationFrame(checkWhyClamped));
   })();
 
+  // ── Change class bottom sheet ───────────────────────
+  const CC_CLASSES = {
+    easier: {
+      tag: 'Move class',
+      name: `${durMin > 10 ? durMin - 10 : 5} min Gentle Strength: Chair-Assisted`,
+    },
+    challenge: {
+      tag: 'Move class',
+      name: `${durMin + 10} min Strength: Advanced Balance & Power`,
+    },
+    short: {
+      tag: 'Move class',
+      name: `5 min Express ${prim === 'balance' ? 'Balance' : prim === 'pain' ? 'Gentle Flow' : 'Full Body'}`,
+    },
+    seated: {
+      tag: 'Chair class',
+      name: `${durMin} min Seated Strength & Stability`,
+    },
+    different: {
+      tag: 'Move class',
+      name: `${durMin} min ${prim === 'balance' ? 'Balance: Standing Stability' : prim === 'pain' ? 'Gentle Mobility Flow' : 'Cardio Strength Mix'}`,
+    },
+  };
+
+  function openChangeClass() {
+    resetChangeClass();
+    document.getElementById('cc-modal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeChangeClass() {
+    document.getElementById('cc-modal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  function handleCCOverlayClick(e) {
+    if (e.target === e.currentTarget) closeChangeClass();
+  }
+  function selectMood(btn) {
+    // Highlight selection briefly, then show result
+    document.querySelectorAll('.cc-option').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    const mood = btn.dataset.mood;
+    const cls = CC_CLASSES[mood] || CC_CLASSES.different;
+
+    setTimeout(() => {
+      document.getElementById('cc-options').style.display = 'none';
+      document.getElementById('cc-result-tag').textContent = cls.tag;
+      document.getElementById('cc-result-name').textContent = cls.name;
+      document.getElementById('cc-result').classList.add('show');
+      document.getElementById('cc-title').textContent = 'Here's what we found.';
+    }, 200);
+  }
+  function resetChangeClass() {
+    document.getElementById('cc-options').style.display = '';
+    document.querySelectorAll('.cc-option').forEach(b => b.classList.remove('selected'));
+    document.getElementById('cc-result').classList.remove('show');
+    document.getElementById('cc-title').textContent = 'Let\u2019s find a better fit for today.';
+  }
+  function confirmClassSwap() {
+    // Update the class card with the new selection and close
+    const newName = document.getElementById('cc-result-name').textContent;
+    const newTag  = document.getElementById('cc-result-tag').textContent;
+    document.getElementById('class-title').textContent = newName;
+    document.querySelector('.tp-tag').textContent = newTag + ' ⓘ';
+    closeChangeClass();
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { closeChangeClass(); closeTrainerModal(); }
+  });
+
   // ── Trainer modal ───────────────────────────────────
   function openTrainerModal() {
     document.getElementById('trainer-modal').classList.add('open');
@@ -656,9 +881,6 @@
   function handleOverlayClick(e) {
     if (e.target === e.currentTarget) closeTrainerModal();
   }
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') closeTrainerModal();
-  });
 
 </script>
 <script src="assets/js/blob-animation.js"></script>
