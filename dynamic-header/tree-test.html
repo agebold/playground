@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tree Test – Bold</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f5f5f5;
+      min-height: 100vh;
+      color: #171717;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Nav ── */
+    .nav {
+      background: #fff;
+      box-shadow: 0 1px 3px rgba(16,24,40,0.1), 0 1px 2px rgba(16,24,40,0.06);
+      height: 64px;
+      display: flex;
+      align-items: center;
+      padding: 0 32px;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      gap: 16px;
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+    .nav-logo-lines { width: 28px; height: 28px; flex-shrink: 0; }
+    .nav-logo-text  { width: 60px; height: 17px; flex-shrink: 0; }
+    .nav-back {
+      margin-left: 20px;
+      font-size: 13px;
+      color: #525252;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 10px;
+      border-radius: 8px;
+      transition: background 0.15s;
+    }
+    .nav-back:hover { background: #f5f5f5; }
+    .nav-title {
+      margin-left: auto;
+      font-size: 13px;
+      font-weight: 500;
+      color: #737373;
+    }
+
+    /* ── Layout ── */
+    .page {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 32px 24px 64px;
+    }
+
+    /* ── Buttons ── */
+    button { font-family: 'Inter', sans-serif; }
+    .btn-primary {
+      background: #1B6B5A;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-primary:hover { background: #155549; }
+    .btn-secondary {
+      background: transparent;
+      border: 0.5px solid #d4d4d4;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-size: 13px;
+      cursor: pointer;
+      color: #525252;
+      transition: background 0.15s;
+    }
+    .btn-secondary:hover { background: #f5f5f5; }
+
+    /* ── Info box ── */
+    .info-box {
+      background: #f5f5f5;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 24px;
+      font-size: 13px;
+      color: #525252;
+      line-height: 1.6;
+    }
+
+    /* ── Member type picker ── */
+    .member-type-btn {
+      background: #E6F1FB;
+      color: #185FA5;
+      border: 1px solid #B5D4F4;
+      border-radius: 10px;
+      padding: 14px 24px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      flex: 1;
+      min-width: 180px;
+      text-align: left;
+      transition: background 0.15s;
+    }
+    .member-type-btn:hover { background: #d6e8f8; }
+    .member-type-btn.care {
+      background: #E1F5EE;
+      color: #0F6E56;
+      border-color: #9FE1CB;
+    }
+    .member-type-btn.care:hover { background: #cdeee3; }
+    .member-type-sub {
+      font-size: 11px;
+      font-weight: 400;
+      margin-top: 4px;
+      opacity: 0.8;
+    }
+
+    /* ── Task dots ── */
+    .task-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+
+    /* ── Scenario card ── */
+    .scenario-card {
+      background: #E6F1FB;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      border: 1px solid #B5D4F4;
+    }
+
+    /* ── Tree node ── */
+    .tree-node {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      margin-bottom: 3px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.12s, border-color 0.12s;
+      border: 1px solid transparent;
+      user-select: none;
+    }
+    .tree-node:hover { background: #f5f5f5; }
+    .tree-node.selected-correct {
+      background: #E1F5EE !important;
+      border-color: #1B6B5A !important;
+      color: #0F6E56 !important;
+    }
+    .tree-node.selected-wrong {
+      background: #FAECE7 !important;
+      border-color: #C4553D !important;
+      color: #993C1D !important;
+    }
+    .tree-node.selected-pending {
+      background: #E6F1FB !important;
+      border-color: #185FA5 !important;
+      color: #185FA5 !important;
+    }
+    .tree-chevron {
+      font-size: 10px;
+      color: #737373;
+      width: 14px;
+      text-align: center;
+      display: inline-block;
+      transition: transform 0.15s;
+      flex-shrink: 0;
+    }
+    .tree-chevron.expanded { transform: rotate(90deg); }
+    .tree-spacer { width: 14px; display: inline-block; flex-shrink: 0; }
+    .tree-label { flex: 1; }
+    .tree-badge {
+      margin-left: auto;
+      font-size: 11px;
+      flex-shrink: 0;
+    }
+
+    /* ── Results ── */
+    .result-item {
+      background: #ffffff;
+      border: 0.5px solid #e5e5e5;
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 8px;
+    }
+    .result-item.correct { border-left: 3px solid #1B6B5A; }
+    .result-item.wrong   { border-left: 3px solid #C4553D; }
+
+    /* ── Score pill ── */
+    .score-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #E1F5EE;
+      color: #0F6E56;
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      margin-bottom: 16px;
+    }
+    .score-pill.low {
+      background: #FAECE7;
+      color: #993C1D;
+    }
+    .score-pill.mid {
+      background: #FEF9EC;
+      color: #92610A;
+    }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo" aria-label="Bold home">
+    <svg class="nav-logo-lines" preserveAspectRatio="none" viewBox="0 0 40.217 39.9999" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M29.0721 31.0908L0.566108 39.98C0.284775 40.0677 0 39.8543 0 39.5557V33.0326C0 32.8376 0.125271 32.6655 0.309064 32.6083L28.8151 23.7191C29.0964 23.6314 29.3812 23.8448 29.3812 24.1434V30.6665C29.3812 30.8615 29.2557 31.0336 29.0721 31.0908Z" fill="#5200D4"/>
+      <path d="M34.494 19.2412L5.98798 28.1304C5.70665 28.2181 5.42188 28.0047 5.42188 27.706V21.183C5.42188 20.988 5.54715 20.8159 5.73094 20.7587L34.237 11.8695C34.5183 11.7818 34.8031 11.9952 34.8031 12.2938V18.8169C34.8031 19.0119 34.6778 19.184 34.494 19.2412Z" fill="#3366FF"/>
+      <path d="M39.9081 7.39158L11.402 16.2808C11.1207 16.3685 10.8359 16.155 10.8359 15.8564V9.33341C10.8359 9.13841 10.9612 8.96631 11.145 8.90907L39.6508 0.0198815C39.9322 -0.0678191 40.217 0.145612 40.217 0.44422V6.96724C40.217 7.16205 40.0917 7.33434 39.9081 7.39158Z" fill="#80E8FF"/>
+    </svg>
+    <svg class="nav-logo-text" preserveAspectRatio="none" viewBox="0 0 84.3618 23.4118" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M34.7168 0C28.3793 0 22.2915 5.19529 21.1572 11.722C20.0284 18.2163 24.3104 23.4118 30.6479 23.4118C36.9854 23.4118 43.0734 18.2161 44.202 11.722C45.3363 5.19529 41.0544 0 34.7168 0ZM31.3928 19.1253C27.392 19.1253 24.8201 15.8783 25.5424 11.722C26.2705 7.53332 29.9713 4.28627 33.9721 4.28627C37.9729 4.28627 40.5449 7.53332 39.8169 11.722C39.0944 15.8781 35.3937 19.1253 31.3928 19.1253Z" fill="#140D26"/>
+      <path d="M13.9477 10.8127C15.6931 10.1633 17.2199 8.37731 17.6318 6.00706C18.1679 2.92222 16.4224 0.259766 11.9734 0.259766H4.35564H1.89919C1.55781 0.259766 1.29197 0.652284 1.44344 0.932848L3.19455 4.17641L0.00942494 22.5023C-0.0414483 22.7947 0.116909 22.9895 0.405127 22.9895H8.02292C13.6239 22.9895 16.6756 20.7167 17.4205 16.4302C17.934 13.4756 16.2089 11.4298 13.9477 10.8127ZM7.57749 4.18864H10.8739C12.6346 4.18864 13.706 4.83805 13.4069 6.55888C13.0907 8.37731 11.7921 9.22172 9.99913 9.22172H6.7027L7.57749 4.18864ZM8.83344 19.0607H4.99271L6.06506 12.891H9.9058C12.242 12.891 13.4755 13.8976 13.12 15.9434C12.7474 18.0863 11.1696 19.0607 8.83344 19.0607Z" fill="#140D26"/>
+      <path d="M59.3676 19.0607H52.1015L55.2845 0.74697C55.3354 0.454764 55.1776 0.259766 54.8894 0.259766L51.2567 1.45537C50.9201 1.5582 50.743 1.65036 50.6922 1.94257L47.1188 22.5025C47.0679 22.7949 47.2263 22.9897 47.5141 22.9897H58.685C58.9726 22.9897 59.1987 22.7951 59.2496 22.5025L59.7631 19.5477C59.8136 19.2553 59.6552 19.0607 59.3676 19.0607Z" fill="#140D26"/>
+      <path d="M74.3796 0.259766H68.0738H65.6174C65.276 0.259766 65.0102 0.652284 65.1616 0.932848L66.9131 4.17719L63.7282 22.5023C63.6773 22.7947 63.8351 22.9895 64.1233 22.9895H70.4291C78.1108 22.9895 83.0501 17.9565 84.1506 11.6249C85.251 5.29285 82.0613 0.259766 74.3796 0.259766ZM71.1121 19.0607H68.7115L71.2963 4.18883H73.6969C78.5614 4.18883 80.5143 6.94907 79.7016 11.6249C78.889 16.3008 75.9764 19.0607 71.1121 19.0607Z" fill="#140D26"/>
+    </svg>
+  </a>
+  <a href="today-plan.html" class="nav-back">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M8.75 2.625L4.375 7L8.75 11.375" stroke="#525252" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Back to today
+  </a>
+  <span class="nav-title">Tree test exercise</span>
+</nav>
+
+<div class="page">
+  <div id="app"></div>
+</div>
+
+<script>
+// ── Data ───────────────────────────────────────────────────────────
+const FITNESS_TREE = {
+  label: "Bold App",
+  children: [
+    { label: "Today", children: [
+      { label: "Today's exercise class" },
+      { label: "Educational content" },
+      { label: "Weekly check-in" },
+      { label: "Log a meal" },
+      { label: "Why today's class was chosen" },
+    ]},
+    { label: "Discover", children: [
+      { label: "Browse all classes (with filters)" },
+      { label: "Live classes this week" },
+      { label: "Articles and audio" },
+      { label: "Search" },
+    ]},
+    { label: "My Journey", children: [
+      { label: "Current focus area" },
+      { label: "My progress" },
+      { label: "Past and upcoming focus areas" },
+      { label: "Saved classes" },
+      { label: "Class history" },
+      { label: "Days active this month" },
+    ]},
+    { label: "Profile", children: [
+      { label: "Account info" },
+      { label: "Healthcare coverage" },
+      { label: "Exercise preferences" },
+      { label: "Notification settings" },
+      { label: "Connected health data" },
+      { label: "Privacy and data" },
+      { label: "Help and support" },
+      { label: "Log out" },
+    ]},
+  ]
+};
+
+const CARE_TREE = {
+  label: "Bold App",
+  children: [
+    { label: "Today", children: [
+      { label: "Today's exercise class" },
+      { label: "Upcoming appointment" },
+      { label: "Educational content" },
+      { label: "Weekly check-in" },
+      { label: "Log a meal" },
+      { label: "Why today's class was chosen" },
+    ]},
+    { label: "Discover", children: [
+      { label: "Browse all classes (with filters)" },
+      { label: "Live classes this week" },
+      { label: "Articles and audio" },
+      { label: "Search" },
+    ]},
+    { label: "Bold Care", children: [
+      { label: "Next appointment (join)" },
+      { label: "My provider and care team", children: [
+        { label: "Message provider" },
+        { label: "Schedule appointment" },
+      ]},
+      { label: "Care plan and goals" },
+      { label: "Exercise progress" },
+      { label: "Past and upcoming focus areas" },
+      { label: "Available care services" },
+      { label: "Saved classes" },
+      { label: "Past appointments" },
+      { label: "Days active this month" },
+    ]},
+    { label: "Profile", children: [
+      { label: "Account info" },
+      { label: "Healthcare coverage" },
+      { label: "Exercise preferences" },
+      { label: "Notification settings" },
+      { label: "Connected health data" },
+      { label: "Privacy and data" },
+      { label: "Help and support" },
+      { label: "Log out" },
+    ]},
+  ]
+};
+
+const FITNESS_TASKS = [
+  { id: 1, text: "You want to start today's recommended exercise class.", answer: ["Today", "Today's exercise class"], acceptAlt: [] },
+  { id: 2, text: "You want to find a seated yoga class to try.", answer: ["Discover", "Browse all classes (with filters)"], acceptAlt: [["Discover", "Search"]] },
+  { id: 3, text: "You completed a class last week that you really liked and saved. You want to find it.", answer: ["My Journey", "Saved classes"], acceptAlt: [] },
+  { id: 4, text: "You want to see how your balance has improved since you started.", answer: ["My Journey", "My progress"], acceptAlt: [] },
+  { id: 5, text: "You want to change your preferences so Bold recommends easier classes.", answer: ["Profile", "Exercise preferences"], acceptAlt: [] },
+  { id: 6, text: "You want to turn off the weekly check-in reminders.", answer: ["Profile", "Notification settings"], acceptAlt: [] },
+  { id: 7, text: "You want to see what focus area you're working on and what's coming next.", answer: ["My Journey", "Current focus area"], acceptAlt: [["My Journey", "Past and upcoming focus areas"]] },
+  { id: 8, text: "You want to check whether your insurance fully covers Bold.", answer: ["Profile", "Healthcare coverage"], acceptAlt: [] },
+];
+
+const CARE_TASKS = [
+  { id: 1, text: "You want to message your doctor about increased knee pain.", answer: ["Bold Care", "My provider and care team", "Message provider"], acceptAlt: [] },
+  { id: 2, text: "You have a telehealth appointment in 30 minutes and need to join.", answer: ["Bold Care", "Next appointment (join)"], acceptAlt: [["Today", "Upcoming appointment"]] },
+  { id: 3, text: "You want to see what care services Bold offers beyond your current plan.", answer: ["Bold Care", "Available care services"], acceptAlt: [] },
+  { id: 4, text: "You want to schedule a new telehealth appointment.", answer: ["Bold Care", "My provider and care team", "Schedule appointment"], acceptAlt: [] },
+  { id: 5, text: "You want to start today's exercise class.", answer: ["Today", "Today's exercise class"], acceptAlt: [] },
+  { id: 6, text: "You want to see how your exercise progress connects to your care plan.", answer: ["Bold Care", "Exercise progress"], acceptAlt: [["Bold Care", "Care plan and goals"]] },
+  { id: 7, text: "You want to find a class you saved to do again.", answer: ["Bold Care", "Saved classes"], acceptAlt: [] },
+  { id: 8, text: "You want to connect your Apple Watch data.", answer: ["Profile", "Connected health data"], acceptAlt: [] },
+];
+
+// ── Application state ──────────────────────────────────────────────
+const state = {
+  phase: 'intro',          // 'intro' | 'test' | 'summary'
+  memberType: null,        // 'fitness' | 'care'
+  taskIndex: 0,
+  selectedPath: null,      // array of strings e.g. ["Bold App", "Today", "Today's exercise class"]
+  taskComplete: false,
+  results: [],
+  expanded: {},            // keyed by path string (joined with " > "), value: boolean
+};
+
+// ── Helpers ────────────────────────────────────────────────────────
+function getTree() {
+  return state.memberType === 'fitness' ? FITNESS_TREE : CARE_TREE;
+}
+function getTasks() {
+  return state.memberType === 'fitness' ? FITNESS_TASKS : CARE_TASKS;
+}
+function getCurrentTask() {
+  return getTasks()[state.taskIndex];
+}
+function pathKey(pathArr) {
+  return pathArr.join(' > ');
+}
+function checkCorrect(path) {
+  const task = getCurrentTask();
+  const pathStr = path.slice(1).join(' > ');
+  const correctStr = task.answer.join(' > ');
+  const altCorrect = task.acceptAlt.some(alt => alt.join(' > ') === pathStr);
+  return pathStr === correctStr || altCorrect;
+}
+
+// ── Render ─────────────────────────────────────────────────────────
+function render() {
+  const app = document.getElementById('app');
+  if (state.phase === 'intro') {
+    app.innerHTML = renderIntro();
+  } else if (state.phase === 'summary') {
+    app.innerHTML = renderSummary();
+  } else {
+    app.innerHTML = renderTest();
+  }
+  attachEvents();
+}
+
+function renderIntro() {
+  return `
+    <div style="max-width:640px;margin:0 auto;padding-top:8px;">
+      <div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#1B6B5A;font-weight:500;margin-bottom:8px;">
+        Age Bold — Tree test exercise
+      </div>
+      <h2 style="font-size:22px;font-weight:500;color:#171717;margin-bottom:12px;">
+        Navigation tree test
+      </h2>
+      <p style="font-size:14px;color:#525252;line-height:1.6;margin-bottom:20px;">
+        This test checks whether people can find things in Bold's proposed navigation structure.
+        You'll see a series of tasks. For each one, navigate the tree to find where you'd go to complete that task.
+      </p>
+      <div class="info-box">
+        <strong style="color:#171717;">How it works:</strong><br>
+        1. Choose a member type to test<br>
+        2. Read each task scenario<br>
+        3. Click through the tree to find where you'd go<br>
+        4. See whether your choice matches the expected answer<br>
+        5. Review your results at the end
+      </div>
+      <div style="font-size:13px;font-weight:500;color:#171717;margin-bottom:10px;">
+        Which member type do you want to test?
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="member-type-btn" id="btn-fitness">
+          Fitness only
+          <div class="member-type-sub">Today · Discover · My Journey · Profile</div>
+        </button>
+        <button class="member-type-btn care" id="btn-care">
+          Fitness + Care
+          <div class="member-type-sub">Today · Discover · Bold Care · Profile</div>
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+function renderSummary() {
+  const results = state.results;
+  const correct = results.filter(r => r.correct).length;
+  const pct = Math.round((correct / results.length) * 100);
+  const scoreClass = pct >= 80 ? '' : pct >= 70 ? 'mid' : 'low';
+  const memberLabel = state.memberType === 'fitness' ? 'Fitness only' : 'Fitness + Care';
+
+  const resultItems = results.map((r, i) => `
+    <div class="result-item ${r.correct ? 'correct' : 'wrong'}">
+      <div style="font-size:13px;font-weight:500;color:#171717;margin-bottom:6px;">
+        Task ${i + 1}: ${escHtml(r.task)}
+      </div>
+      <div style="font-size:12px;color:${r.correct ? '#0F6E56' : '#993C1D'};margin-bottom:${r.correct ? 0 : 2}px;">
+        Your path: ${escHtml(r.selected.join(' → '))}
+      </div>
+      ${!r.correct ? `<div style="font-size:12px;color:#737373;">Expected: ${escHtml(r.expected.join(' → '))}</div>` : ''}
+    </div>
+  `).join('');
+
+  return `
+    <div style="max-width:640px;margin:0 auto;padding-top:8px;">
+      <div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#1B6B5A;font-weight:500;margin-bottom:8px;">
+        Tree test results — ${escHtml(memberLabel)}
+      </div>
+      <h2 style="font-size:20px;font-weight:500;color:#171717;margin-bottom:8px;">
+        ${correct} of ${results.length} tasks correct (${pct}%)
+      </h2>
+      <div class="score-pill ${scoreClass}">
+        ${pct >= 80 ? '✓ Above 80% target' : pct >= 70 ? '↗ Near target (70–79%)' : '↓ Below 70% — review labels'}
+      </div>
+      <p style="font-size:13px;color:#525252;margin-bottom:20px;">
+        Target: 80%+ success rate across participants. Below 70% indicates a labeling or placement problem.
+      </p>
+      ${resultItems}
+      <div style="display:flex;gap:10px;margin-top:20px;">
+        <button class="btn-secondary" id="btn-reset">Test again</button>
+      </div>
+    </div>
+  `;
+}
+
+function renderTest() {
+  const tasks = getTasks();
+  const tree = getTree();
+  const currentTask = getCurrentTask();
+  const memberLabel = state.memberType === 'fitness' ? 'Fitness only' : 'Fitness + Care';
+
+  const isCorrectPath = state.selectedPath ? checkCorrect(state.selectedPath) : false;
+
+  // Progress dots
+  const dots = tasks.map((_, i) => {
+    let bg;
+    if (i < state.taskIndex) {
+      bg = state.results[i] && state.results[i].correct ? '#1B6B5A' : '#C4553D';
+    } else if (i === state.taskIndex) {
+      bg = '#185FA5';
+    } else {
+      bg = '#e5e5e5';
+    }
+    return `<div class="task-dot" style="background:${bg};"></div>`;
+  }).join('');
+
+  const treeHtml = tree.children.map(node =>
+    renderTreeNode(node, 0, [tree.label], isCorrectPath)
+  ).join('');
+
+  const feedbackHtml = state.taskComplete ? `
+    <div style="margin-top:12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+      <div style="font-size:13px;color:${isCorrectPath ? '#0F6E56' : '#993C1D'};">
+        ${isCorrectPath
+          ? 'That matches the expected location.'
+          : `Expected: ${escHtml(currentTask.answer.join(' → '))}`}
+      </div>
+      <button class="btn-primary" id="btn-next">
+        ${state.taskIndex < tasks.length - 1 ? 'Next task →' : 'See results'}
+      </button>
+    </div>
+  ` : '';
+
+  return `
+    <div style="padding-top:4px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+        <div>
+          <div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#1B6B5A;font-weight:500;">
+            Tree test — ${escHtml(memberLabel)}
+          </div>
+          <div style="font-size:12px;color:#737373;margin-top:2px;">
+            Task ${state.taskIndex + 1} of ${tasks.length}
+          </div>
+        </div>
+        <div style="display:flex;gap:4px;align-items:center;">${dots}</div>
+      </div>
+
+      <div class="scenario-card">
+        <div style="font-size:11px;font-weight:500;color:#185FA5;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">
+          Scenario
+        </div>
+        <div style="font-size:15px;color:#042C53;line-height:1.5;font-weight:500;">
+          ${escHtml(currentTask.text)}
+        </div>
+        <div style="font-size:12px;color:#185FA5;margin-top:6px;opacity:0.7;">
+          Click through the tree below to find where you'd go.
+        </div>
+      </div>
+
+      <div style="background:#ffffff;border:0.5px solid #e5e5e5;border-radius:12px;padding:12px;">
+        ${treeHtml}
+      </div>
+
+      ${feedbackHtml}
+    </div>
+  `;
+}
+
+function renderTreeNode(node, depth, parentPath, isCorrectPath) {
+  const currentPath = [...parentPath, node.label];
+  const key = pathKey(currentPath);
+  const hasChildren = node.children && node.children.length > 0;
+  const isExpanded = !!state.expanded[key];
+
+  // Selection state
+  const selKey = state.selectedPath ? pathKey(state.selectedPath) : null;
+  const isSelected = selKey === key;
+
+  let nodeClass = 'tree-node';
+  if (isSelected) {
+    if (state.taskComplete && isCorrectPath) nodeClass += ' selected-correct';
+    else if (state.taskComplete && !isCorrectPath) nodeClass += ' selected-wrong';
+    else nodeClass += ' selected-pending';
+  }
+
+  const chevron = hasChildren
+    ? `<span class="tree-chevron${isExpanded ? ' expanded' : ''}">▶</span>`
+    : `<span class="tree-spacer"></span>`;
+
+  let badge = '';
+  if (isSelected && state.taskComplete) {
+    if (isCorrectPath) badge = `<span class="tree-badge" style="color:#0F6E56;">Correct</span>`;
+    else badge = `<span class="tree-badge" style="color:#993C1D;">Not the expected answer</span>`;
+  }
+
+  const fontSize = depth === 0 ? '14px' : '13px';
+  const fontWeight = depth === 0 ? '500' : '400';
+  const marginLeft = depth > 0 ? `${depth * 20}px` : '0';
+
+  const childrenHtml = (hasChildren && isExpanded)
+    ? node.children.map(child => renderTreeNode(child, depth + 1, currentPath, isCorrectPath)).join('')
+    : '';
+
+  return `
+    <div style="margin-left:${marginLeft};">
+      <div
+        class="${nodeClass}"
+        style="font-size:${fontSize};font-weight:${fontWeight};"
+        data-path="${escAttr(key)}"
+        data-has-children="${hasChildren}"
+      >
+        ${chevron}
+        <span class="tree-label">${escHtml(node.label)}</span>
+        ${badge}
+      </div>
+      ${childrenHtml}
+    </div>
+  `;
+}
+
+// ── Events ─────────────────────────────────────────────────────────
+function attachEvents() {
+  // Intro
+  const btnFitness = document.getElementById('btn-fitness');
+  if (btnFitness) btnFitness.addEventListener('click', () => {
+    state.memberType = 'fitness';
+    state.phase = 'test';
+    state.taskIndex = 0;
+    state.selectedPath = null;
+    state.taskComplete = false;
+    state.results = [];
+    state.expanded = {};
+    render();
+  });
+
+  const btnCare = document.getElementById('btn-care');
+  if (btnCare) btnCare.addEventListener('click', () => {
+    state.memberType = 'care';
+    state.phase = 'test';
+    state.taskIndex = 0;
+    state.selectedPath = null;
+    state.taskComplete = false;
+    state.results = [];
+    state.expanded = {};
+    render();
+  });
+
+  // Summary
+  const btnReset = document.getElementById('btn-reset');
+  if (btnReset) btnReset.addEventListener('click', () => {
+    state.phase = 'intro';
+    state.memberType = null;
+    state.taskIndex = 0;
+    state.selectedPath = null;
+    state.taskComplete = false;
+    state.results = [];
+    state.expanded = {};
+    render();
+  });
+
+  // Next task / see results
+  const btnNext = document.getElementById('btn-next');
+  if (btnNext) btnNext.addEventListener('click', () => {
+    const tasks = getTasks();
+    if (state.taskIndex < tasks.length - 1) {
+      state.taskIndex++;
+      state.selectedPath = null;
+      state.taskComplete = false;
+      state.expanded = {};
+      render();
+    } else {
+      state.phase = 'summary';
+      render();
+    }
+  });
+
+  // Tree node clicks
+  document.querySelectorAll('.tree-node[data-path]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const key = el.dataset.path;
+      const hasChildren = el.dataset.hasChildren === 'true';
+      const pathArr = key.split(' > ');
+
+      if (hasChildren) {
+        // Toggle expand
+        state.expanded[key] = !state.expanded[key];
+        render();
+      } else {
+        // Leaf node — record answer (only if task not yet complete)
+        if (!state.taskComplete) {
+          state.selectedPath = pathArr;
+          state.taskComplete = true;
+          const correct = checkCorrect(pathArr);
+          const task = getCurrentTask();
+          state.results.push({
+            task: task.text,
+            selected: pathArr.slice(1),
+            expected: task.answer,
+            correct,
+            direct: true,
+          });
+          render();
+        }
+      }
+    });
+  });
+}
+
+// ── Utilities ──────────────────────────────────────────────────────
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+function escAttr(str) {
+  return String(str).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+// ── Boot ───────────────────────────────────────────────────────────
+render();
+</script>
+</body>
+</html>
