@@ -69,7 +69,7 @@
 
     /* ── Layout ── */
     .page {
-      max-width: 860px;
+      max-width: 1280px;
       margin: 0 auto;
       padding: 32px 24px 64px;
     }
@@ -161,12 +161,12 @@
       background: #E1F5EE;
       border: 0.5px solid #9FE1CB;
       border-radius: 8px;
-      padding: 6px 10px;
+      padding: 7px 10px;
       font-size: 12px;
       color: #0F6E56;
       cursor: grab;
       user-select: none;
-      max-width: 240px;
+      width: 100%;
       line-height: 1.4;
       display: flex;
       align-items: flex-start;
@@ -242,11 +242,52 @@
     .group-delete-btn:hover { background: #e5e5e5; color: #171717; }
 
     .group-body {
-      padding: 10px;
+      padding: 8px;
       display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
+      flex-direction: column;
+      gap: 5px;
       min-height: 44px;
+    }
+    .groups-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 12px;
+      align-items: start;
+    }
+    .group-drag-handle {
+      cursor: grab;
+      color: #d4d4d4;
+      font-size: 15px;
+      line-height: 1;
+      padding: 0 6px 0 0;
+      flex-shrink: 0;
+      user-select: none;
+      display: flex;
+      align-items: center;
+    }
+    .group-drag-handle:hover { color: #737373; }
+    .group-drag-handle:active { cursor: grabbing; }
+    .group-collapse-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #737373;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      font-size: 10px;
+      transition: background 0.1s;
+      flex-shrink: 0;
+    }
+    .group-collapse-btn:hover { background: #e5e5e5; color: #171717; }
+    .group-drop.group-dragging { opacity: 0.45; }
+    .group-drop.is-group-drag-over {
+      border-color: #185FA5;
+      box-shadow: 0 0 0 2px rgba(24,95,165,0.2);
     }
     .group-empty-hint {
       font-size: 12px;
@@ -414,12 +455,13 @@ const state = {
   editingGroupId: null,
 };
 
-// Module-level drag variable (no re-render on dragover)
+// Module-level drag variables (no re-render on dragover)
 let dragCardId = null;
+let dragGroupId = null;
 
 // ── State helpers ──────────────────────────────────────────────────
 function addGroup() {
-  const newGroup = { id: Date.now(), name: 'Untitled group', cards: [] };
+  const newGroup = { id: Date.now(), name: 'Untitled group', cards: [], collapsed: false };
   state.groups.push(newGroup);
   state.editingGroupId = newGroup.id;
   render();
@@ -472,6 +514,21 @@ function moveCardBack(cardId) {
   }
   if (card) state.cards.push(card);
   render();
+}
+
+function toggleGroupCollapse(gid) {
+  const g = state.groups.find(g => g.id === gid);
+  if (g) g.collapsed = !g.collapsed;
+  render();
+}
+
+function reorderGroup(fromId, toId) {
+  if (fromId === toId) return;
+  const fromIdx = state.groups.findIndex(g => g.id === fromId);
+  const toIdx   = state.groups.findIndex(g => g.id === toId);
+  if (fromIdx === -1 || toIdx === -1) return;
+  const [group] = state.groups.splice(fromIdx, 1);
+  state.groups.splice(toIdx, 0, group);
 }
 
 function removeGroup(gid) {
@@ -582,7 +639,9 @@ function renderSort() {
   ` : '';
 
   const groupsHtml = state.groups.map(group => {
-    const isEditing = state.editingGroupId === group.id;
+    const isEditing  = state.editingGroupId === group.id;
+    const isCollapsed = group.collapsed;
+
     const headerContent = isEditing
       ? `<input class="group-name-input" type="text" value="${escAttr(group.name)}" data-group-id="${group.id}" />`
       : `<div class="group-name-display" data-edit-group="${group.id}">${escHtml(group.name)}</div>`;
@@ -596,18 +655,22 @@ function renderSort() {
           </div>
         `).join('');
 
+    const chevron = isCollapsed
+      ? `<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 2l4 3-4 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+      : `<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 3.5l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
     return `
       <div class="group-drop" data-group-id="${group.id}">
-        <div class="group-header">
+        <div class="group-header" draggable="true" data-drag-group="${group.id}">
+          <span class="group-drag-handle" title="Drag to reorder">⠿</span>
           ${headerContent}
           <div class="group-meta">
             <span class="group-count">${group.cards.length} card${group.cards.length !== 1 ? 's' : ''}</span>
+            <button class="group-collapse-btn" data-toggle-group="${group.id}" title="${isCollapsed ? 'Expand' : 'Collapse'}">${chevron}</button>
             <button class="group-delete-btn" data-delete-group="${group.id}" title="Remove group">✕</button>
           </div>
         </div>
-        <div class="group-body" data-group-id="${group.id}">
-          ${cardsHtml}
-        </div>
+        ${!isCollapsed ? `<div class="group-body" data-group-id="${group.id}">${cardsHtml}</div>` : ''}
       </div>
     `;
   }).join('');
@@ -632,7 +695,7 @@ function renderSort() {
         <div class="progress-bar-fill" style="width:${pct}%;"></div>
       </div>
       ${unsortedHtml}
-      <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="groups-grid">
         ${groupsHtml}
       </div>
       ${emptyState}
@@ -667,13 +730,36 @@ function attachEvents() {
   document.querySelectorAll('[data-card-id][draggable]').forEach(el => {
     el.addEventListener('dragstart', (e) => {
       dragCardId = parseInt(el.dataset.cardId, 10);
+      dragGroupId = null;
       el.classList.add('is-dragging');
       e.dataTransfer.effectAllowed = 'move';
+      e.stopPropagation(); // don't trigger group header dragstart
     });
     el.addEventListener('dragend', () => {
-      // Clean up any remaining drag-over highlights
       document.querySelectorAll('.group-drop.drag-over').forEach(d => d.classList.remove('drag-over'));
       dragCardId = null;
+      render();
+    });
+  });
+
+  // Group header drag (reorder groups)
+  document.querySelectorAll('[data-drag-group]').forEach(el => {
+    const groupId = parseInt(el.dataset.dragGroup, 10);
+    el.addEventListener('dragstart', (e) => {
+      if (e.target.closest('button') || e.target.closest('input')) { e.preventDefault(); return; }
+      dragGroupId = groupId;
+      dragCardId = null;
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', 'group');
+      setTimeout(() => {
+        const groupEl = el.closest('.group-drop');
+        if (groupEl) groupEl.classList.add('group-dragging');
+      }, 0);
+    });
+    el.addEventListener('dragend', () => {
+      document.querySelectorAll('.group-drop.group-dragging').forEach(d => d.classList.remove('group-dragging'));
+      document.querySelectorAll('.group-drop.is-group-drag-over').forEach(d => d.classList.remove('is-group-drag-over'));
+      dragGroupId = null;
       render();
     });
   });
@@ -685,28 +771,43 @@ function attachEvents() {
     el.addEventListener('dragover', (e) => {
       e.preventDefault();
       e.dataTransfer.dropEffect = 'move';
-      // Direct DOM manipulation — no re-render
-      document.querySelectorAll('.group-drop.drag-over').forEach(d => {
-        if (d !== el) d.classList.remove('drag-over');
-      });
-      el.classList.add('drag-over');
+      if (dragGroupId !== null && dragGroupId !== groupId) {
+        document.querySelectorAll('.group-drop.is-group-drag-over').forEach(d => { if (d !== el) d.classList.remove('is-group-drag-over'); });
+        el.classList.add('is-group-drag-over');
+      } else if (dragCardId !== null) {
+        document.querySelectorAll('.group-drop.drag-over').forEach(d => { if (d !== el) d.classList.remove('drag-over'); });
+        el.classList.add('drag-over');
+      }
     });
 
     el.addEventListener('dragleave', (e) => {
-      // Only remove if leaving the group container entirely
       if (!el.contains(e.relatedTarget)) {
         el.classList.remove('drag-over');
+        el.classList.remove('is-group-drag-over');
       }
     });
 
     el.addEventListener('drop', (e) => {
       e.preventDefault();
       el.classList.remove('drag-over');
-      if (dragCardId !== null) {
+      el.classList.remove('is-group-drag-over');
+      if (dragGroupId !== null && dragGroupId !== groupId) {
+        reorderGroup(dragGroupId, groupId);
+        dragGroupId = null;
+        render();
+      } else if (dragCardId !== null) {
         moveCardToGroup(dragCardId, groupId);
         dragCardId = null;
         render();
       }
+    });
+  });
+
+  // Collapse toggle
+  document.querySelectorAll('[data-toggle-group]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleGroupCollapse(parseInt(el.dataset.toggleGroup, 10));
     });
   });
 
