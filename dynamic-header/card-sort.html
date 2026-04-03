@@ -454,6 +454,7 @@ const state = {
   groups: [],
   editingGroupId: null,
   addingCard: false,
+  editingCardId: null,
 };
 
 // Module-level drag variables (no re-render on dragover)
@@ -522,6 +523,29 @@ function addCustomCard(text) {
   if (!trimmed) return;
   state.cards.push({ id: Date.now(), text: trimmed, custom: true });
   state.addingCard = false;
+  render();
+}
+
+function deleteCustomCard(cardId) {
+  // Remove from unsorted pile or any group
+  state.cards = state.cards.filter(c => c.id !== cardId);
+  for (const g of state.groups) g.cards = g.cards.filter(c => c.id !== cardId);
+  render();
+}
+
+function saveCardEdit(cardId, text) {
+  const trimmed = text.trim();
+  if (!trimmed) return;
+  // Update wherever the card lives
+  const inPile = state.cards.find(c => c.id === cardId);
+  if (inPile) { inPile.text = trimmed; }
+  else {
+    for (const g of state.groups) {
+      const c = g.cards.find(c => c.id === cardId);
+      if (c) { c.text = trimmed; break; }
+    }
+  }
+  state.editingCardId = null;
   render();
 }
 
@@ -653,11 +677,27 @@ function renderSort() {
         Unsorted cards (${state.cards.length})
       </div>
       <div style="display:flex;flex-wrap:wrap;gap:6px;">
-        ${state.cards.map(card => `
-          <div class="card-unsorted" draggable="true" data-card-id="${card.id}">
-            ${escHtml(card.text)}
-          </div>
-        `).join('')}
+        ${state.cards.map(card => {
+          if (card.custom && state.editingCardId === card.id) {
+            return `
+              <div style="display:flex;gap:5px;align-items:center;width:100%;max-width:360px;">
+                <input class="edit-card-input" type="text" value="${escAttr(card.text)}" data-card-id="${card.id}"
+                  style="flex:1;border:1.5px solid #1B6B5A;border-radius:8px;padding:6px 10px;font-size:12px;font-family:'Inter',sans-serif;outline:none;color:#171717;background:#fff;" />
+                <button class="btn-sm-green" data-save-card-edit="${card.id}" style="padding:6px 10px;font-size:11px;">Save</button>
+                <button class="btn-secondary" data-cancel-card-edit="${card.id}" style="padding:6px 10px;font-size:11px;">Cancel</button>
+              </div>`;
+          }
+          const actions = card.custom ? `
+            <div style="display:flex;gap:3px;margin-left:4px;flex-shrink:0;">
+              <button data-edit-card="${card.id}" title="Edit" style="background:none;border:none;cursor:pointer;padding:1px 3px;font-size:10px;color:#737373;border-radius:3px;line-height:1;" onmouseover="this.style.background='#e5e5e5'" onmouseout="this.style.background='none'">✎</button>
+              <button data-delete-card="${card.id}" title="Delete" style="background:none;border:none;cursor:pointer;padding:1px 3px;font-size:10px;color:#737373;border-radius:3px;line-height:1;" onmouseover="this.style.background='#fee2e2';this.style.color='#dc2626'" onmouseout="this.style.background='none';this.style.color='#737373'">✕</button>
+            </div>` : '';
+          return `
+            <div class="card-unsorted" draggable="${card.custom && state.editingCardId === card.id ? 'false' : 'true'}" data-card-id="${card.id}" style="display:flex;align-items:flex-start;gap:2px;max-width:${card.custom ? '280px' : '240px'};">
+              <span style="flex:1;">${escHtml(card.text)}</span>
+              ${actions}
+            </div>`;
+        }).join('')}
       </div>
       ${addCardForm}
     </div>
@@ -673,12 +713,26 @@ function renderSort() {
 
     const cardsHtml = group.cards.length === 0
       ? `<span class="group-empty-hint">Drag cards here</span>`
-      : group.cards.map(card => `
-          <div class="card-sorted" draggable="true" data-card-id="${card.id}">
-            <span style="flex:1;">${escHtml(card.text)}</span>
-            <button class="card-remove-btn" data-remove-card="${card.id}" title="Remove from group">✕</button>
-          </div>
-        `).join('');
+      : group.cards.map(card => {
+          if (card.custom && state.editingCardId === card.id) {
+            return `
+              <div style="display:flex;gap:5px;align-items:center;">
+                <input class="edit-card-input" type="text" value="${escAttr(card.text)}" data-card-id="${card.id}"
+                  style="flex:1;border:1.5px solid #1B6B5A;border-radius:8px;padding:5px 8px;font-size:12px;font-family:'Inter',sans-serif;outline:none;color:#171717;background:#fff;" />
+                <button class="btn-sm-green" data-save-card-edit="${card.id}" style="padding:5px 8px;font-size:11px;">Save</button>
+                <button class="btn-secondary" data-cancel-card-edit="${card.id}" style="padding:5px 8px;font-size:11px;">✕</button>
+              </div>`;
+          }
+          const extraActions = card.custom ? `
+            <button data-edit-card="${card.id}" title="Edit" style="background:none;border:none;cursor:pointer;padding:1px 3px;font-size:10px;color:#0F6E56;opacity:0.6;border-radius:3px;line-height:1;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'">✎</button>
+            <button data-delete-card="${card.id}" title="Delete" style="background:none;border:none;cursor:pointer;padding:1px 3px;font-size:10px;color:#dc2626;opacity:0.5;border-radius:3px;line-height:1;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.5'">✕</button>` : `
+            <button class="card-remove-btn" data-remove-card="${card.id}" title="Remove from group">✕</button>`;
+          return `
+            <div class="card-sorted" draggable="true" data-card-id="${card.id}">
+              <span style="flex:1;">${escHtml(card.text)}</span>
+              ${extraActions}
+            </div>`;
+        }).join('');
 
     const chevron = isCollapsed
       ? `<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 2l4 3-4 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`
@@ -742,6 +796,7 @@ function attachEvents() {
     state.groups = [];
     state.editingGroupId = null;
     state.addingCard = false;
+    state.editingCardId = null;
     render();
   });
 
@@ -888,6 +943,52 @@ function attachEvents() {
     el.addEventListener('click', (e) => {
       e.stopPropagation();
       moveCardBack(parseInt(el.dataset.removeCard, 10));
+    });
+  });
+
+  // Edit custom card
+  document.querySelectorAll('[data-edit-card]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      state.editingCardId = parseInt(el.dataset.editCard, 10);
+      render();
+    });
+  });
+
+  // Delete custom card
+  document.querySelectorAll('[data-delete-card]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      deleteCustomCard(parseInt(el.dataset.deleteCard, 10));
+    });
+  });
+
+  // Save card edit
+  document.querySelectorAll('[data-save-card-edit]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const id = parseInt(el.dataset.saveCardEdit, 10);
+      const input = document.querySelector(`.edit-card-input[data-card-id="${id}"]`);
+      if (input) saveCardEdit(id, input.value);
+    });
+  });
+
+  // Cancel card edit
+  document.querySelectorAll('[data-cancel-card-edit]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      state.editingCardId = null;
+      render();
+    });
+  });
+
+  // Edit card input keyboard
+  document.querySelectorAll('.edit-card-input').forEach(el => {
+    const id = parseInt(el.dataset.cardId, 10);
+    el.focus();
+    el.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') saveCardEdit(id, el.value);
+      if (e.key === 'Escape') { state.editingCardId = null; render(); }
     });
   });
 
