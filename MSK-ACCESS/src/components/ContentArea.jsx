@@ -4,6 +4,8 @@ import { PhoneFrame, SafariBrowserChrome } from './content/shared.jsx'
 import FacebookAd from './content/FacebookAd.jsx'
 import LandingPage from './content/LandingPage.jsx'
 import CheckEligibility from './content/CheckEligibility.jsx'
+import EligibilityVerdict from './content/EligibilityVerdict.jsx'
+import OnboardingOutline from './content/OnboardingOutline.jsx'
 import RedFlagPrimer from './content/RedFlagPrimer.jsx'
 import RedFlagScreening from './content/RedFlagScreening.jsx'
 import PainRegions from './content/PainRegions.jsx'
@@ -32,6 +34,8 @@ const contentMap = {
   'facebook-ad': FacebookAd,
   'landing-page': LandingPage,
   'check-eligibility': CheckEligibility,
+  'eligibility-verdict': EligibilityVerdict,
+  'onboarding-outline': OnboardingOutline,
   'red-flag-primer': RedFlagPrimer,
   'red-flag-screening': RedFlagScreening,
   'pain-regions': PainRegions,
@@ -67,7 +71,7 @@ export default function ContentArea({ step, onNext }) {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      padding: 32,
+      padding: '48px 32px',
       background: '#f0eff4',
       overflow: 'auto',
       minHeight: 0,
@@ -86,9 +90,11 @@ export default function ContentArea({ step, onNext }) {
               {Component ? <Component onNext={onNext} /> : <div style={{ padding: 40, color: '#999' }}>No content</div>}
             </SafariBrowserChrome>
           ) : (
-            <PhoneFrame>
-              {Component ? <Component onNext={onNext} /> : <div style={{ padding: 40, color: '#999' }}>No content</div>}
-            </PhoneFrame>
+            <div style={{ transform: 'scale(0.82)', transformOrigin: 'center center' }}>
+              <PhoneFrame>
+                {Component ? <Component onNext={onNext} /> : <div style={{ padding: 40, color: '#999' }}>No content</div>}
+              </PhoneFrame>
+            </div>
           )}
         </motion.div>
       </AnimatePresence>

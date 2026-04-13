@@ -1,68 +1,56 @@
-import { C, AppTopBar, ScreenWrapper, PurpleButton } from './shared.jsx'
+import { C, OnboardingHeader, OnboardingScreen, PurpleButton } from './shared.jsx'
 
 export default function KoosPrimer({ onNext }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: C.white }}>
-      <AppTopBar title="KOOS JR" />
+      <OnboardingHeader showBack={false} />
+      <OnboardingScreen cta={<PurpleButton onClick={onNext}>Continue</PurpleButton>}>
+        <h2 style={{ fontSize: 22, fontWeight: 800, color: C.text, marginBottom: 10, lineHeight: 1.3 }}>
+          Knee Injury and Osteoarthritis Outcome Score (KOOS JR)
+        </h2>
 
-      <ScreenWrapper
-        bottomSlot={<PurpleButton onClick={onNext}>Start questionnaire →</PurpleButton>}
-      >
-        <div style={{ padding: '28px 20px' }}>
-          {/* Icon */}
-          <div style={{
-            width: 72, height: 72, borderRadius: 20,
-            background: C.purpleLight,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 34, marginBottom: 24,
-          }}>
-            📊
-          </div>
+        <p style={{ fontSize: 14, color: C.textSec, lineHeight: 1.6, marginBottom: 20 }}>
+          This short questionnaire helps us understand how your knee affects your daily life. Your answers create a baseline score we'll track over time.
+        </p>
 
-          <h2 style={{ fontSize: 24, fontWeight: 800, color: C.text, marginBottom: 12, lineHeight: 1.2, letterSpacing: -0.3 }}>
-            Knee & joint health check
-          </h2>
-
-          <p style={{ fontSize: 15, color: C.textSec, lineHeight: 1.6, marginBottom: 24 }}>
-            The <strong>KOOS JR</strong> (Knee Injury and Osteoarthritis Outcome Score) is a validated questionnaire used to measure how knee problems affect your daily life.
-          </p>
-
-          <div style={{
-            background: C.bg, borderRadius: 14, padding: 16,
-            border: `1px solid ${C.border}`, marginBottom: 24,
-          }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              {[
-                { icon: '📝', label: '7 questions', desc: 'About everyday activities' },
-                { icon: '⏱️', label: '~3 minutes', desc: 'Quick to complete' },
-                { icon: '📈', label: 'Tracks your progress', desc: 'We\'ll resurvey at 4 & 8 weeks' },
-              ].map((item, i) => (
-                <div key={i} style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-                  <div style={{
-                    width: 40, height: 40, borderRadius: 10,
-                    background: C.purpleLight, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: 18, flexShrink: 0,
-                  }}>{item.icon}</div>
-                  <div>
-                    <div style={{ fontSize: 14, fontWeight: 600, color: C.text }}>{item.label}</div>
-                    <div style={{ fontSize: 13, color: C.textSec }}>{item.desc}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div style={{
-            background: C.purpleLight, borderRadius: 12, padding: 16,
-            display: 'flex', gap: 10, alignItems: 'flex-start',
-          }}>
-            <span style={{ fontSize: 18, flexShrink: 0 }}>💡</span>
-            <p style={{ fontSize: 13, color: C.purple, lineHeight: 1.5 }}>
-              Think about the <strong>past week</strong> when answering these questions. Answer based on how your knee has been feeling recently.
-            </p>
+        <div style={{ background: C.bg, borderRadius: 12, padding: '14px 16px', marginBottom: 16 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            {[
+              { icon: '📝', text: '7 quick questions' },
+              { icon: '⏱', text: 'Takes about 3 minutes' },
+              { icon: '📈', text: 'We\'ll resurvey you in 3 months to measure improvement' },
+            ].map((item, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <span style={{ fontSize: 18, flexShrink: 0 }}>{item.icon}</span>
+                <span style={{ fontSize: 14, color: C.text, lineHeight: 1.4 }}>{item.text}</span>
+              </div>
+            ))}
           </div>
         </div>
-      </ScreenWrapper>
+
+        {/* Amanda tip */}
+        <div style={{
+          background: '#f8f4ff', borderRadius: 12, padding: '12px 14px',
+          display: 'flex', gap: 10,
+        }}>
+          <div style={{
+            width: 28, height: 28, borderRadius: '50%',
+            background: `linear-gradient(135deg, #a78bfa, #7c3aed)`,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            flexShrink: 0,
+          }}>
+            <span style={{ fontSize: 12 }}>👩</span>
+          </div>
+          <div>
+            <div style={{ fontSize: 13, fontWeight: 600, color: C.text, marginBottom: 3 }}>
+              A tip from Amanda
+            </div>
+            <div style={{ fontSize: 13, color: C.textSec, lineHeight: 1.5 }}>
+              Think about the <strong>past week</strong> when answering. Be honest — there are no right or wrong answers.
+            </div>
+          </div>
+        </div>
+      </OnboardingScreen>
     </div>
   )
 }

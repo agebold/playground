@@ -1,85 +1,75 @@
-import { C, BoldNavBar, PurpleButton } from './shared.jsx'
+import { C, AppHeader, AppNavBar, SafariBottomBar, YellowButton } from './shared.jsx'
 
 export default function PostClassBadge({ onNext }) {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: C.white }}>
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '32px 20px' }}>
-        {/* Confetti-like decorative elements */}
-        <div style={{ position: 'relative', marginBottom: 28 }}>
-          {['🎉', '⭐', '✨', '🎊'].map((emoji, i) => {
-            const angles = [330, 30, 150, 210]
-            const r = 70
-            const rad = (angles[i] * Math.PI) / 180
-            return (
-              <div key={i} style={{
-                position: 'absolute',
-                left: 60 + r * Math.cos(rad) - 10,
-                top: 60 + r * Math.sin(rad) - 10,
-                fontSize: 20,
-              }}>{emoji}</div>
-            )
-          })}
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: C.bg }}>
+      <AppHeader streak={0} />
 
-          {/* Badge circle */}
+      <div style={{ flex: 1, overflowY: 'auto', background: C.bg }}>
+        {/* Completed class row */}
+        <div style={{
+          background: C.white, padding: '12px 16px',
+          display: 'flex', alignItems: 'center', gap: 12,
+          borderBottom: `1px solid ${C.border}`,
+        }}>
           <div style={{
-            width: 120, height: 120, borderRadius: '50%',
-            background: `linear-gradient(135deg, ${C.yellow} 0%, #f97316 100%)`,
-            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-            boxShadow: `0 12px 40px rgba(245,165,0,0.4)`,
-            position: 'relative',
-            border: '6px solid white',
+            width: 60, height: 44, borderRadius: 8, overflow: 'hidden',
+            background: 'linear-gradient(135deg, #1a1a2e, #0f3460)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            flexShrink: 0,
           }}>
-            <span style={{ fontSize: 44 }}>🏅</span>
-          </div>
-        </div>
-
-        <h2 style={{ fontSize: 28, fontWeight: 800, color: C.text, textAlign: 'center', marginBottom: 8, letterSpacing: -0.5 }}>
-          Class complete!
-        </h2>
-        <p style={{ fontSize: 16, color: C.textSec, textAlign: 'center', marginBottom: 6 }}>
-          You earned the
-        </p>
-        <div style={{
-          fontSize: 20, fontWeight: 800, color: C.purple, textAlign: 'center', marginBottom: 24,
-          background: C.purpleLight, padding: '8px 20px', borderRadius: 20,
-        }}>
-          "First Step" Badge 🥇
-        </div>
-
-        {/* Stats */}
-        <div style={{
-          width: '100%', background: C.bg, borderRadius: 16, border: `1px solid ${C.border}`,
-          padding: '16px 20px', marginBottom: 24,
-        }}>
-          <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-            {[
-              { label: 'Duration', value: '20 min' },
-              { label: 'Exercises', value: '5' },
-              { label: 'Streak', value: '1 day 🔥' },
-            ].map((stat, i) => (
-              <div key={i} style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: 20, fontWeight: 800, color: C.text }}>{stat.value}</div>
-                <div style={{ fontSize: 12, color: C.textSec, marginTop: 2 }}>{stat.label}</div>
+            <div style={{ position: 'relative' }}>
+              <div style={{
+                width: 18, height: 18, borderRadius: '50%',
+                background: C.purple,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                  <path d="M1 4l2.5 2.5L9 1" stroke="white" strokeWidth="1.3" strokeLinecap="round"/>
+                </svg>
               </div>
-            ))}
+            </div>
+          </div>
+          <div>
+            <div style={{ fontSize: 14, fontWeight: 600, color: C.text }}>19 min Strength: Upper Body Basics</div>
+            <div style={{ fontSize: 13, color: C.textSec }}>Chris Litten</div>
           </div>
         </div>
 
-        <div style={{
-          background: '#f0fff4', border: '1px solid #a7f3d0',
-          borderRadius: 12, padding: '14px 16px', marginBottom: 24, width: '100%',
-        }}>
-          <p style={{ fontSize: 14, color: '#065f46', textAlign: 'center', lineHeight: 1.5 }}>
-            <strong>Great start, Jane!</strong> You're 1 of 3 classes done this week. Keep it up!
-          </p>
-        </div>
+        {/* Badge + copy */}
+        <div style={{ padding: '32px 16px', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+          {/* Badge */}
+          <div style={{
+            width: 140, height: 140,
+            borderRadius: '50%',
+            background: '#e8edff',
+            border: '4px solid #5b7be3',
+            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+            marginBottom: 16,
+            boxShadow: '0 4px 20px rgba(91,123,227,0.3)',
+          }}>
+            {/* Laurels + text */}
+            <div style={{ fontSize: 11, fontWeight: 700, color: '#3b5bbf', letterSpacing: '0.1em', marginBottom: 2 }}>🏆</div>
+            <div style={{ fontSize: 22, fontWeight: 900, color: '#1e3a8a', letterSpacing: 1 }}>1st</div>
+            <div style={{ fontSize: 28 }}>🤜🤛</div>
+            <div style={{ fontSize: 12, fontWeight: 700, color: '#3b5bbf', letterSpacing: '0.1em' }}>CLASS</div>
+          </div>
 
-        <PurpleButton onClick={onNext}>
-          Set my weekly goal →
-        </PurpleButton>
+          <div style={{ fontSize: 13, color: C.textSec, marginBottom: 12 }}>July 17, 2025</div>
+
+          <h2 style={{ fontSize: 22, fontWeight: 800, color: C.text, marginBottom: 10, lineHeight: 1.3, maxWidth: 300 }}>
+            You took your first Bold class and began a Streak!
+          </h2>
+
+          <p style={{ fontSize: 14, color: C.textSec, lineHeight: 1.6, maxWidth: 300, marginBottom: 32 }}>
+            Take a class each week to build a Streak, miss a week and your Streak resets.
+          </p>
+
+          <YellowButton onClick={onNext}>Continue</YellowButton>
+        </div>
       </div>
 
-      <BoldNavBar activeTab="home" />
+      <SafariBottomBar />
     </div>
   )
 }

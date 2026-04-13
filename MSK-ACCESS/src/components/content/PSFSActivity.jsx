@@ -1,130 +1,115 @@
 import { useState } from 'react'
-import { C, BoldLogo, PurpleButton, ScreenWrapper, OnboardingProgress } from './shared.jsx'
+import { C, OnboardingHeader, OnboardingScreen, PurpleButton, QuestionHeader } from './shared.jsx'
 
 const activities = [
-  { id: 'stairs', label: 'Climbing stairs', icon: '🪜' },
-  { id: 'walking', label: 'Walking', icon: '🚶' },
-  { id: 'standing', label: 'Standing for long periods', icon: '🧍' },
-  { id: 'shopping', label: 'Shopping or errands', icon: '🛒' },
-  { id: 'bending', label: 'Bending or squatting', icon: '🏋️' },
-  { id: 'sleeping', label: 'Getting in/out of bed', icon: '🛏️' },
-  { id: 'car', label: 'Getting in/out of a car', icon: '🚗' },
-  { id: 'dressing', label: 'Putting on shoes or socks', icon: '👟' },
+  { id: 'walking', label: 'Walking' },
+  { id: 'stairs', label: 'Climbing stairs' },
+  { id: 'floor', label: 'Getting up and down from the floor' },
+  { id: 'seat', label: 'Getting up and down from a seat (e.g. car, chair, couch)' },
+  { id: 'housework', label: 'Housework' },
+  { id: 'exercise', label: 'Exercise' },
+  { id: 'care', label: 'Providing care for family members' },
 ]
 
 export default function PSFSActivity({ onNext }) {
-  const [selected, setSelected] = useState(new Set())
-  const [scores, setScores] = useState({})
+  const [step, setStep] = useState('select') // 'select' | 'rate'
+  const [selected, setSelected] = useState(null)
+  const [rating, setRating] = useState(null)
 
-  const toggle = (id) => {
-    setSelected(prev => {
-      const next = new Set(prev)
-      if (next.has(id)) {
-        next.delete(id)
-        setScores(s => { const n = { ...s }; delete n[id]; return n })
-      } else {
-        if (next.size < 3) next.add(id)
-      }
-      return next
-    })
+  if (step === 'rate') {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+        <OnboardingHeader showBack={() => setStep('select')} progress={8} totalSteps={10} />
+        <OnboardingScreen cta={<PurpleButton onClick={onNext} disabled={rating === null}>Continue</PurpleButton>}>
+          <QuestionHeader questionNum="#" question="How would you rate your current ability to perform this activity?" />
+
+          {/* Selected activity card */}
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: 12,
+            padding: '12px 14px',
+            background: C.white, border: `1.5px solid ${C.border}`,
+            borderRadius: 12, marginBottom: 20,
+          }}>
+            <div style={{
+              width: 56, height: 40, background: C.bg, borderRadius: 8,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: 20, flexShrink: 0,
+            }}>🚶</div>
+            <span style={{ fontSize: 15, fontWeight: 500, color: C.text }}>
+              {activities.find(a => a.id === selected)?.label}
+            </span>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
+            <span style={{ fontSize: 13, color: C.textSec }}>0 = no pain</span>
+            <span style={{ fontSize: 18 }}>😊</span>
+          </div>
+
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 12 }}>
+            {[0,1,2,3,4,5].map(n => (
+              <div key={n} onClick={() => setRating(n)} style={{
+                width: 52, height: 52, borderRadius: 12, cursor: 'pointer',
+                background: rating === n ? C.purple : C.white,
+                border: `1.5px solid ${rating === n ? C.purple : C.border}`,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: 18, fontWeight: 600,
+                color: rating === n ? C.white : C.text,
+              }}>{n}</div>
+            ))}
+          </div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 12 }}>
+            {[6,7,8,9,10].map(n => (
+              <div key={n} onClick={() => setRating(n)} style={{
+                width: 52, height: 52, borderRadius: 12, cursor: 'pointer',
+                background: rating === n ? C.purple : C.white,
+                border: `1.5px solid ${rating === n ? C.purple : C.border}`,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: 18, fontWeight: 600,
+                color: rating === n ? C.white : C.text,
+              }}>{n}</div>
+            ))}
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 8 }}>
+            <span style={{ fontSize: 13, color: C.textSec }}>10 = worst pain</span>
+            <span style={{ fontSize: 18 }}>😢</span>
+          </div>
+        </OnboardingScreen>
+      </div>
+    )
   }
-
-  const setScore = (id, score) => {
-    setScores(prev => ({ ...prev, [id]: score }))
-  }
-
-  const allScored = selected.size >= 1 && [...selected].every(id => scores[id] !== undefined)
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: C.white }}>
-      <div style={{ padding: '16px 20px', display: 'flex', alignItems: 'center', borderBottom: `1px solid ${C.border}` }}>
-        <BoldLogo size={28} />
-      </div>
-
-      <OnboardingProgress current={8} total={10} />
-
-      <ScreenWrapper
-        bottomSlot={
-          <PurpleButton onClick={onNext} disabled={!allScored}>
-            Continue
-          </PurpleButton>
-        }
-      >
-        <div style={{ padding: '24px 20px' }}>
-          <h2 style={{ fontSize: 22, fontWeight: 700, color: C.text, marginBottom: 8, lineHeight: 1.3 }}>
-            Which activities are most important to you?
-          </h2>
-          <p style={{ fontSize: 14, color: C.textSec, marginBottom: 6, lineHeight: 1.5 }}>
-            Pick up to 3 activities that your pain affects most. Then rate your current difficulty.
-          </p>
-          <div style={{ fontSize: 12, color: C.textTert, marginBottom: 20 }}>PSFS — Patient-Specific Functional Scale</div>
-
-          {activities.map(activity => {
-            const isSelected = selected.has(activity.id)
-            return (
-              <div key={activity.id} style={{ marginBottom: 10 }}>
-                <div
-                  onClick={() => toggle(activity.id)}
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: 12,
-                    padding: '12px 16px',
-                    background: isSelected ? C.purpleLight : C.white,
-                    border: `2px solid ${isSelected ? C.purple : C.border}`,
-                    borderRadius: isSelected && scores[activity.id] !== undefined ? '12px 12px 0 0' : 12,
-                    cursor: selected.size >= 3 && !isSelected ? 'default' : 'pointer',
-                    opacity: selected.size >= 3 && !isSelected ? 0.4 : 1,
-                  }}>
-                  <span style={{ fontSize: 20 }}>{activity.icon}</span>
-                  <span style={{ flex: 1, fontSize: 15, fontWeight: 500, color: C.text }}>{activity.label}</span>
-                  <div style={{
-                    width: 22, height: 22, borderRadius: 6, flexShrink: 0,
-                    border: `2px solid ${isSelected ? C.purple : C.border}`,
-                    background: isSelected ? C.purple : 'transparent',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  }}>
-                    {isSelected && (
-                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                        <path d="M2 6l3 3 5-5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                      </svg>
-                    )}
-                  </div>
-                </div>
-
-                {isSelected && (
-                  <div style={{
-                    padding: '12px 16px',
-                    background: '#f5f0ff',
-                    border: `2px solid ${C.purple}`,
-                    borderTop: 'none',
-                    borderRadius: '0 0 12px 12px',
-                  }}>
-                    <div style={{ fontSize: 12, color: C.purple, fontWeight: 600, marginBottom: 8 }}>
-                      How difficult is this activity? (0 = no difficulty, 10 = unable to perform)
-                    </div>
-                    <div style={{ display: 'flex', gap: 4 }}>
-                      {Array.from({ length: 11 }, (_, i) => (
-                        <div
-                          key={i}
-                          onClick={(e) => { e.stopPropagation(); setScore(activity.id, i) }}
-                          style={{
-                            flex: 1, padding: '6px 0', textAlign: 'center',
-                            background: scores[activity.id] === i ? C.purple : C.white,
-                            color: scores[activity.id] === i ? 'white' : C.text,
-                            borderRadius: 6, cursor: 'pointer',
-                            fontSize: 12, fontWeight: 600,
-                            border: `1px solid ${scores[activity.id] === i ? C.purple : C.border}`,
-                          }}>
-                          {i}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            )
-          })}
-        </div>
-      </ScreenWrapper>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      <OnboardingHeader showBack progress={8} totalSteps={10} />
+      <OnboardingScreen cta={<PurpleButton onClick={() => selected && setStep('rate')} disabled={!selected}>Continue</PurpleButton>}>
+        <QuestionHeader
+          questionNum="#"
+          question={<>Please select the activity you find the most difficult or cannot do because of your <strong>neck & upper back pain</strong>.</>}
+        />
+        {activities.map(a => (
+          <div
+            key={a.id}
+            onClick={() => setSelected(a.id)}
+            style={{
+              display: 'flex', alignItems: 'center', gap: 12,
+              padding: '10px 14px',
+              background: selected === a.id ? C.purpleLight : C.white,
+              border: `1.5px solid ${selected === a.id ? C.purple : C.border}`,
+              borderRadius: 12, cursor: 'pointer', marginBottom: 8,
+            }}>
+            <div style={{
+              width: 56, height: 44, background: C.bg, borderRadius: 8,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              flexShrink: 0, overflow: 'hidden',
+            }}>
+              <span style={{ fontSize: 22 }}>
+                {['🚶','🪜','🧎','🪑','🧹','🏃','👴'][activities.indexOf(a)]}
+              </span>
+            </div>
+            <span style={{ fontSize: 15, color: C.text, lineHeight: 1.4 }}>{a.label}</span>
+          </div>
+        ))}
+      </OnboardingScreen>
     </div>
   )
 }

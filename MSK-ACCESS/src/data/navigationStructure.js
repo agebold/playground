@@ -12,12 +12,14 @@ export const navigationStructure = [
     items: [
       { id: 'landing-page', label: 'Landing page', viewType: 'desktop', canToggle: true },
       { id: 'check-eligibility', label: 'Check eligibility', viewType: 'mobile', canToggle: false },
+      { id: 'eligibility-verdict', label: 'Eligibility verdict', viewType: 'mobile', canToggle: false },
     ]
   },
   {
     id: 'onboarding',
     category: 'Onboarding',
     items: [
+      { id: 'onboarding-outline', label: 'Program overview', viewType: 'mobile', canToggle: false },
       { id: 'red-flag-primer', label: 'Safety screening intro', viewType: 'mobile', canToggle: false },
       { id: 'red-flag-screening', label: 'Red flag screening', viewType: 'mobile', canToggle: false },
       { id: 'pain-regions', label: 'Pain regions', viewType: 'mobile', canToggle: false },

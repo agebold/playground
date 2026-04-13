@@ -1,128 +1,102 @@
-import { C, AppTopBar, ScreenWrapper, BoldNavBar, PurpleButton, Tag } from './shared.jsx'
+import { C, AppHeader, SafariBottomBar, PurpleButton } from './shared.jsx'
 
 export default function ClassDetails({ onNext }) {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: C.bg }}>
-      <AppTopBar title="Class details" />
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: C.white }}>
+      <AppHeader showUseApp streak={0} onUseApp={onNext} />
 
-      <ScreenWrapper
-        bottomSlot={
-          <PurpleButton onClick={onNext}>Start class →</PurpleButton>
-        }
-      >
-        {/* Class hero */}
+      <div style={{ flex: 1, overflowY: 'auto' }}>
+        {/* Breadcrumb */}
+        <div style={{ padding: '10px 16px', display: 'flex', alignItems: 'center', gap: 6, borderBottom: `1px solid ${C.border}` }}>
+          <span style={{ fontSize: 13, color: C.purple }}>Home</span>
+          <span style={{ fontSize: 13, color: C.textTert }}>›</span>
+          <span style={{ fontSize: 13, color: C.textSec }}>19 min Strength: Upper Body Basics</span>
+        </div>
+
+        {/* Video thumbnail */}
         <div style={{
-          background: `linear-gradient(160deg, ${C.purple} 0%, #4c1d95 100%)`,
-          padding: '28px 20px',
-          color: 'white',
+          height: 200, background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
           position: 'relative',
         }}>
-          <div style={{ fontSize: 48, marginBottom: 12, textAlign: 'center' }}>🦵</div>
-          <h2 style={{ fontSize: 22, fontWeight: 800, textAlign: 'center', marginBottom: 6, letterSpacing: -0.3 }}>
-            Knee Strength Foundations
-          </h2>
-          <p style={{ fontSize: 13, opacity: 0.8, textAlign: 'center', marginBottom: 16 }}>
-            with Dr. Maria Chen, PT
-          </p>
-          <div style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap' }}>
-            {[
-              { icon: '⏱️', label: '20 min' },
-              { icon: '📊', label: 'Beginner' },
-              { icon: '🦵', label: 'Knee focus' },
-            ].map((stat, i) => (
-              <div key={i} style={{
-                background: 'rgba(255,255,255,0.18)',
-                borderRadius: 20, padding: '5px 14px',
-                fontSize: 12, fontWeight: 600,
-                display: 'flex', alignItems: 'center', gap: 5,
-              }}>
-                <span>{stat.icon}</span>
-                <span>{stat.label}</span>
-              </div>
-            ))}
+          <div style={{
+            width: 56, height: 56, borderRadius: '50%',
+            background: 'rgba(255,255,255,0.2)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            <svg width="22" height="24" viewBox="0 0 22 24" fill="none">
+              <path d="M2 2l18 10L2 22V2Z" fill="white"/>
+            </svg>
+          </div>
+          <div style={{ position: 'absolute', top: 12, right: 12 }}>
+            <button style={{
+              background: 'rgba(255,255,255,0.9)', border: 'none', borderRadius: 8,
+              padding: '4px 10px', display: 'flex', alignItems: 'center', gap: 4, cursor: 'pointer',
+              fontFamily: 'Inter, sans-serif',
+            }}>
+              <svg width="12" height="14" viewBox="0 0 12 14" fill="none">
+                <path d="M2 2h8v10l-4-3-4 3V2z" stroke={C.text} strokeWidth="1.2"/>
+              </svg>
+              <span style={{ fontSize: 12, fontWeight: 500 }}>Start class</span>
+            </button>
           </div>
         </div>
 
-        <div style={{ padding: '20px' }}>
-          {/* About */}
-          <div style={{ marginBottom: 24 }}>
-            <div style={{ fontSize: 13, fontWeight: 700, color: C.textTert, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 10 }}>
-              About this class
-            </div>
-            <p style={{ fontSize: 14, color: C.textSec, lineHeight: 1.6 }}>
-              This beginner-friendly class focuses on building the muscles that support your knee joints. Each exercise is low-impact and can be modified based on your comfort level. You'll finish feeling stronger and more stable.
-            </p>
+        <div style={{ padding: '16px 16px 8px' }}>
+          <h2 style={{ fontSize: 20, fontWeight: 800, color: C.text, marginBottom: 8, lineHeight: 1.2 }}>
+            19 min Strength: Upper Body Basics
+          </h2>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
+            <div style={{
+              width: 20, height: 20, borderRadius: '50%', background: '#a78bfa',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11,
+            }}>👤</div>
+            <span style={{ fontSize: 14, color: C.textSec }}>Chris Litten</span>
+            <span style={{ color: C.border }}>·</span>
+            <span style={{ fontSize: 14, color: C.purple, fontWeight: 500 }}>Save class</span>
           </div>
 
-          {/* What you'll need */}
-          <div style={{ marginBottom: 24 }}>
-            <div style={{ fontSize: 13, fontWeight: 700, color: C.textTert, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 10 }}>
-              What you'll need
-            </div>
-            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-              {['A chair for support', 'Comfortable clothes', 'Non-slip surface'].map((item, i) => (
-                <div key={i} style={{
-                  background: C.white, border: `1px solid ${C.border}`,
-                  borderRadius: 20, padding: '6px 14px',
-                  fontSize: 13, color: C.textSec,
-                }}>
-                  {item}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Exercises preview */}
-          <div style={{ marginBottom: 24 }}>
-            <div style={{ fontSize: 13, fontWeight: 700, color: C.textTert, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 10 }}>
-              Exercises ({5} total)
-            </div>
-            {[
-              { name: 'Seated leg extensions', sets: '2 × 12 reps', icon: '🦵' },
-              { name: 'Standing calf raises', sets: '2 × 15 reps', icon: '🦶' },
-              { name: 'Mini squats', sets: '2 × 10 reps', icon: '🏋️' },
-              { name: 'Hamstring curls', sets: '2 × 12 reps', icon: '💪' },
-              { name: 'Quad stretch', sets: '30 sec hold × 2', icon: '🤸' },
-            ].map((ex, i) => (
-              <div key={i} style={{
-                display: 'flex', alignItems: 'center', gap: 12,
-                padding: '12px 0', borderBottom: i < 4 ? `1px solid ${C.border}` : 'none',
-              }}>
-                <div style={{
-                  width: 36, height: 36, borderRadius: 10,
-                  background: C.purpleLight,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 16, flexShrink: 0,
-                }}>{ex.icon}</div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 14, fontWeight: 500, color: C.text }}>{ex.name}</div>
-                  <div style={{ fontSize: 12, color: C.textSec }}>{ex.sets}</div>
-                </div>
-                <span style={{ fontSize: 12, color: C.textTert }}>{i + 1}/{5}</span>
-              </div>
-            ))}
-          </div>
-
-          {/* Instructor */}
+          {/* Why this class */}
           <div style={{
-            background: C.white, border: `1px solid ${C.border}`,
-            borderRadius: 14, padding: 16,
-            display: 'flex', gap: 12, alignItems: 'center',
+            background: '#eef0ff', borderRadius: 12, padding: '12px 14px', marginBottom: 16,
+            display: 'flex', gap: 10,
           }}>
             <div style={{
-              width: 48, height: 48, borderRadius: '50%',
-              background: `linear-gradient(135deg, ${C.purple}, #7c3aed)`,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              color: 'white', fontSize: 18, fontWeight: 700, flexShrink: 0,
-            }}>MC</div>
+              width: 26, height: 26, borderRadius: '50%', background: '#a78bfa',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, flexShrink: 0,
+            }}>
+              <span style={{ color: 'white' }}>👩</span>
+            </div>
             <div>
-              <div style={{ fontSize: 14, fontWeight: 600, color: C.text }}>Dr. Maria Chen, PT</div>
-              <div style={{ fontSize: 12, color: C.textSec }}>Physical Therapist · 12 years experience</div>
-              <div style={{ fontSize: 12, color: C.textSec }}>Specializes in knee & hip rehabilitation</div>
+              <div style={{ fontSize: 13, fontWeight: 600, color: C.text, marginBottom: 4 }}>
+                From trainer Amanda
+              </div>
+              <div style={{ fontSize: 13, fontWeight: 600, color: C.text, marginBottom: 4 }}>Why this class</div>
+              <ul style={{ margin: 0, paddingLeft: 16, display: 'flex', flexDirection: 'column', gap: 4 }}>
+                <li style={{ fontSize: 13, color: C.textSec, lineHeight: 1.5 }}>Chris specializes in strength and conditioning for joint health.</li>
+                <li style={{ fontSize: 13, color: C.textSec, lineHeight: 1.5 }}>Exercises performed while seated for a safe and effective workout.</li>
+              </ul>
             </div>
           </div>
+
+          {/* Change class */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 16 }}>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M2 7a5 5 0 1 0 10 0A5 5 0 0 0 2 7z" stroke={C.textSec} strokeWidth="1.2"/>
+              <path d="M9 7H5M7 5l2 2-2 2" stroke={C.textSec} strokeWidth="1.2" strokeLinecap="round"/>
+            </svg>
+            <span style={{ fontSize: 13, color: C.textSec }}>
+              Not feeling this today?{' '}
+              <span style={{ color: C.purple, fontWeight: 500 }}>Change class</span>
+            </span>
+          </div>
         </div>
-      </ScreenWrapper>
+      </div>
+
+      <div style={{ flexShrink: 0, padding: '12px 16px 8px', borderTop: `1px solid ${C.border}` }}>
+        <PurpleButton onClick={onNext}>Start class</PurpleButton>
+      </div>
+      <SafariBottomBar />
     </div>
   )
 }

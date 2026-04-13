@@ -1,94 +1,90 @@
 import { useState } from 'react'
-import { C, BoldLogo, PurpleButton, RadioCard } from './shared.jsx'
+import { C, PurpleButton, SafariBottomBar } from './shared.jsx'
 
 export default function CheckEligibility({ onNext }) {
-  const [step, setStep] = useState(0)
-  const [answers, setAnswers] = useState({})
+  const [form, setForm] = useState({ email: '', firstName: '', lastName: '', dob: '' })
 
-  const questions = [
-    {
-      q: 'Which health plan are you enrolled in?',
-      key: 'plan',
-      options: [
-        { id: 'aetna', label: 'Aetna' },
-        { id: 'bcbs', label: 'Blue Cross Blue Shield' },
-        { id: 'cigna', label: 'Cigna' },
-        { id: 'united', label: 'UnitedHealthcare' },
-        { id: 'humana', label: 'Humana' },
-        { id: 'other', label: 'Other / Not sure' },
-      ]
-    },
-    {
-      q: 'Do you have a diagnosis of a musculoskeletal (MSK) condition?',
-      key: 'msk',
-      sublabel: 'This includes arthritis, joint pain, or a related condition affecting your knees, hips, or back.',
-      options: [
-        { id: 'yes', label: 'Yes, I have a diagnosis' },
-        { id: 'symptoms', label: "I have symptoms but no formal diagnosis" },
-        { id: 'no', label: "I'm not sure" },
-      ]
-    },
-    {
-      q: 'Which area of your body causes you the most pain?',
-      key: 'area',
-      options: [
-        { id: 'knee', label: 'Knee', icon: '🦵' },
-        { id: 'hip', label: 'Hip', icon: '🦴' },
-        { id: 'back', label: 'Lower back', icon: '🔙' },
-        { id: 'shoulder', label: 'Shoulder', icon: '💪' },
-        { id: 'multiple', label: 'Multiple areas', icon: '⚡' },
-      ]
-    },
-  ]
+  const set = (k, v) => setForm(f => ({ ...f, [k]: v }))
+  const valid = form.email.includes('@') && form.firstName && form.lastName && form.dob.length === 10
 
-  const current = questions[step]
-
-  const handleSelect = (key, id) => {
-    setAnswers(prev => ({ ...prev, [key]: id }))
-    setTimeout(() => {
-      if (step < questions.length - 1) {
-        setStep(s => s + 1)
-      } else {
-        onNext()
-      }
-    }, 280)
+  const inputStyle = {
+    width: '100%', padding: '13px 14px',
+    border: `1.5px solid ${C.border}`, borderRadius: 10,
+    fontSize: 16, fontFamily: 'Inter, sans-serif', color: C.text,
+    background: C.bg, outline: 'none', boxSizing: 'border-box',
   }
 
+  const Field = ({ label, k, type = 'text', placeholder = '' }) => (
+    <div style={{ marginBottom: 14 }}>
+      <label style={{ display: 'block', fontSize: 14, fontWeight: 600, color: C.text, marginBottom: 6 }}>{label}</label>
+      <input
+        type={type}
+        placeholder={placeholder}
+        value={form[k]}
+        onChange={e => set(k, e.target.value)}
+        style={inputStyle}
+      />
+    </div>
+  )
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: C.white }}>
-      {/* Header */}
-      <div style={{ padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 12, borderBottom: `1px solid ${C.border}` }}>
-        <BoldLogo size={28} />
-        <span style={{ fontSize: 14, fontWeight: 600, color: C.text }}>MSK ACCESS</span>
-      </div>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      {/* Gray backdrop */}
+      <div style={{ flex: 1, background: '#3c3c4380', display: 'flex', alignItems: 'flex-start', overflow: 'hidden' }}>
+        {/* Sheet */}
+        <div style={{
+          background: C.white, borderRadius: '16px 16px 0 0',
+          padding: '20px 16px', width: '100%', marginTop: 20,
+          flex: 1, overflowY: 'auto',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+            <h2 style={{ fontSize: 22, fontWeight: 800, color: C.text, margin: 0 }}>Check my eligibility</h2>
+            <div style={{
+              width: 30, height: 30, borderRadius: '50%',
+              background: C.bg, display: 'flex', alignItems: 'center', justifyContent: 'center',
+              cursor: 'pointer', fontSize: 16, color: C.textSec,
+            }}>×</div>
+          </div>
+          <p style={{ fontSize: 14, color: C.textSec, marginBottom: 20, lineHeight: 1.5 }}>
+            Enter your information below to check if you're eligible for Bold through the CMS ACCESS program.
+          </p>
 
-      {/* Progress */}
-      <div style={{ padding: '12px 20px 0' }}>
-        <div style={{ display: 'flex', gap: 4 }}>
-          {questions.map((_, i) => (
-            <div key={i} style={{ flex: 1, height: 3, borderRadius: 2, background: i <= step ? C.purple : C.border }} />
-          ))}
+          <Field label="Email" k="email" type="email" />
+          <Field label="First name" k="firstName" />
+          <Field label="Last name" k="lastName" />
+          <div style={{ marginBottom: 20 }}>
+            <label style={{ display: 'block', fontSize: 14, fontWeight: 600, color: C.text, marginBottom: 6 }}>Date of birth</label>
+            <input
+              type="text"
+              placeholder="MM/DD/YYYY"
+              value={form.dob}
+              onChange={e => set('dob', e.target.value)}
+              style={{ ...inputStyle, color: form.dob ? C.text : C.textTert }}
+            />
+          </div>
+
+          <PurpleButton onClick={onNext}>Check eligibility</PurpleButton>
+
+          <p style={{ fontSize: 12, color: C.textSec, textAlign: 'center', marginTop: 12, lineHeight: 1.5 }}>
+            By signing up, you agree to Bold's{' '}
+            <span style={{ textDecoration: 'underline', cursor: 'pointer' }}>Terms of service</span>{' '}
+            and{' '}
+            <span style={{ textDecoration: 'underline', cursor: 'pointer' }}>Privacy policy</span>.
+          </p>
+
+          <div style={{ borderTop: `1px solid ${C.border}`, marginTop: 16, paddingTop: 16, textAlign: 'center' }}>
+            <p style={{ fontSize: 13, color: C.textSec }}>
+              Need help?{' '}
+              <span style={{ color: C.purple, fontWeight: 600 }}>Call us (833) 701-1545</span>
+            </p>
+            <p style={{ fontSize: 13, color: C.textSec, marginTop: 4 }}>
+              Already on Bold?{' '}
+              <span style={{ color: C.purple, fontWeight: 600, cursor: 'pointer' }}>Sign in</span>
+            </p>
+          </div>
         </div>
-        <div style={{ fontSize: 12, color: C.textTert, marginTop: 6 }}>{step + 1} of {questions.length}</div>
       </div>
-
-      {/* Content */}
-      <div style={{ flex: 1, padding: '24px 20px', overflowY: 'auto' }}>
-        <h2 style={{ fontSize: 20, fontWeight: 700, color: C.text, marginBottom: 6, lineHeight: 1.3 }}>{current.q}</h2>
-        {current.sublabel && (
-          <p style={{ fontSize: 14, color: C.textSec, marginBottom: 20, lineHeight: 1.5 }}>{current.sublabel}</p>
-        )}
-        {!current.sublabel && <div style={{ marginBottom: 20 }} />}
-        {current.options.map(opt => (
-          <RadioCard
-            key={opt.id}
-            label={opt.label}
-            icon={opt.icon}
-            selected={answers[current.key] === opt.id}
-            onSelect={() => handleSelect(current.key, opt.id)}
-          />
-        ))}
-      </div>
+      <SafariBottomBar />
     </div>
   )
 }

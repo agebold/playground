@@ -1,106 +1,74 @@
-import { C, BoldLogo, PurpleButton, ScreenWrapper, BoldNavBar } from './shared.jsx'
+import { C, BoldLogo, PurpleButton, SafariBottomBar } from './shared.jsx'
 
-const classes = [
-  { id: 1, title: 'Knee Strength Foundations', duration: '20 min', level: 'Beginner', instructor: 'Dr. Maria Chen', emoji: '🦵', tag: 'Strength' },
-  { id: 2, title: 'Low-Impact Mobility Flow', duration: '18 min', level: 'Beginner', instructor: 'James Park, PT', emoji: '🌊', tag: 'Mobility' },
-  { id: 3, title: 'Chair Yoga for Joints', duration: '22 min', level: 'All levels', instructor: 'Sara Williams', emoji: '🧘', tag: 'Flexibility' },
+const bullets = [
+  { icon: '✓', bold: 'Goal:', text: 'Reduce lower back pain' },
+  { icon: '✓', bold: 'First focus:', text: 'Build core stability and hip mobility through low-intensity seated exercises' },
+  { icon: '✓', bold: 'Movements:', text: 'exercises strengthen surrounding muscles to support your lower back. All seated work, no floor movements required.' },
 ]
 
 export default function PlanResults({ onNext }) {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: C.bg }}>
-      <div style={{ padding: '16px 20px', display: 'flex', alignItems: 'center', borderBottom: `1px solid ${C.border}`, background: C.white }}>
-        <BoldLogo size={28} />
-        <span style={{ fontSize: 14, fontWeight: 600, color: C.text, marginLeft: 10 }}>Your plan is ready!</span>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: C.white }}>
+      {/* Top bar */}
+      <div style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '12px 16px', borderBottom: `1px solid ${C.border}`, flexShrink: 0,
+      }}>
+        <BoldLogo height={26} />
+        <span style={{ fontSize: 14, fontWeight: 600, color: C.purple }}>Your results</span>
       </div>
 
-      <ScreenWrapper
-        bottomSlot={
-          <PurpleButton onClick={onNext}>Start Day 1 →</PurpleButton>
-        }
-      >
-        {/* Hero */}
+      <div style={{ flex: 1, overflowY: 'auto' }}>
+        {/* Photo collage */}
         <div style={{
-          background: `linear-gradient(135deg, ${C.purple} 0%, #7c3aed 100%)`,
-          padding: '28px 20px',
-          color: 'white',
+          height: 180, background: '#2d2d2d',
+          display: 'grid', gridTemplateColumns: '1fr 1fr 1fr',
+          gap: 2, padding: 2,
         }}>
-          <div style={{ fontSize: 13, opacity: 0.8, marginBottom: 6 }}>Personalized for you</div>
-          <h2 style={{ fontSize: 26, fontWeight: 800, marginBottom: 8, letterSpacing: -0.5 }}>Your MSK ACCESS Plan</h2>
-          <p style={{ fontSize: 14, opacity: 0.85, lineHeight: 1.5, marginBottom: 20 }}>
-            Based on your knee pain, preferences, and goals, here's your personalized 3x/week program.
-          </p>
-
-          <div style={{ display: 'flex', gap: 12 }}>
-            {[
-              { label: '3 classes/week', icon: '📅' },
-              { label: '~20 min each', icon: '⏱️' },
-              { label: 'Knee focus', icon: '🦵' },
-            ].map((stat, i) => (
-              <div key={i} style={{
-                flex: 1, background: 'rgba(255,255,255,0.15)', borderRadius: 10,
-                padding: '10px 8px', textAlign: 'center',
-              }}>
-                <div style={{ fontSize: 18, marginBottom: 4 }}>{stat.icon}</div>
-                <div style={{ fontSize: 11, fontWeight: 600, opacity: 0.9 }}>{stat.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div style={{ padding: '20px' }}>
-          <div style={{ fontSize: 13, fontWeight: 700, color: C.textTert, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 14 }}>
-            Your weekly classes
-          </div>
-
-          {classes.map((cls, i) => (
-            <div key={cls.id} style={{
-              background: C.white, borderRadius: 14,
-              border: `1px solid ${C.border}`,
-              padding: '16px',
-              marginBottom: 10,
-              display: 'flex', gap: 14, alignItems: 'center',
+          {[
+            '#4a5568', '#2d3748', '#1a202c',
+            '#2d3748', '#374151', '#4b5563',
+          ].map((bg, i) => (
+            <div key={i} style={{
+              background: bg, display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: 20,
             }}>
-              <div style={{
-                width: 52, height: 52, borderRadius: 14,
-                background: `linear-gradient(135deg, ${C.purple}20, ${C.purple}40)`,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 24, flexShrink: 0,
-              }}>
-                {cls.emoji}
-              </div>
-              <div style={{ flex: 1 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 3 }}>
-                  <span style={{ fontSize: 15, fontWeight: 600, color: C.text }}>{cls.title}</span>
-                </div>
-                <div style={{ fontSize: 13, color: C.textSec }}>{cls.instructor}</div>
-                <div style={{ display: 'flex', gap: 8, marginTop: 6 }}>
-                  <span style={{
-                    fontSize: 11, fontWeight: 600, padding: '2px 8px',
-                    background: C.purpleLight, color: C.purple, borderRadius: 20,
-                  }}>{cls.tag}</span>
-                  <span style={{ fontSize: 11, color: C.textTert }}>{cls.duration} · {cls.level}</span>
-                </div>
-              </div>
-              <div style={{ fontSize: 11, fontWeight: 700, color: C.textTert }}>#{i + 1}</div>
+              {['🧑‍💼','👩','👴','👵','🧍','👨'][i]}
             </div>
           ))}
-
-          <div style={{
-            background: '#f0fff8', border: '1px solid #a7f3d0',
-            borderRadius: 12, padding: 16, marginTop: 8,
-            display: 'flex', gap: 10, alignItems: 'flex-start',
-          }}>
-            <span style={{ fontSize: 20 }}>🎯</span>
-            <div>
-              <div style={{ fontSize: 14, fontWeight: 600, color: '#065f46', marginBottom: 4 }}>Your goal</div>
-              <div style={{ fontSize: 13, color: '#065f46', lineHeight: 1.5 }}>
-                85% of members with knee pain report less discomfort after 4 weeks. Let's get you there.
-              </div>
-            </div>
-          </div>
         </div>
-      </ScreenWrapper>
+
+        <div style={{ padding: '20px 16px' }}>
+          <h2 style={{ fontSize: 24, fontWeight: 800, color: C.text, marginBottom: 8, lineHeight: 1.2, letterSpacing: -0.3 }}>
+            Your plan is ready, Carol
+          </h2>
+          <p style={{ fontSize: 14, color: C.textSec, marginBottom: 20, lineHeight: 1.5 }}>
+            Simple clear daily actions that adapt to your feedback.
+          </p>
+
+          {bullets.map((b, i) => (
+            <div key={i} style={{ display: 'flex', gap: 10, marginBottom: 14, alignItems: 'flex-start' }}>
+              <div style={{
+                width: 22, height: 22, borderRadius: '50%', background: C.purple,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                flexShrink: 0, marginTop: 1,
+              }}>
+                <svg width="11" height="9" viewBox="0 0 11 9" fill="none">
+                  <path d="M1 4l3 3.5L10 1" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <p style={{ fontSize: 14, color: C.text, lineHeight: 1.5, margin: 0 }}>
+                <strong>{b.bold}</strong> {b.text}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div style={{ flexShrink: 0, padding: '12px 16px 8px', borderTop: `1px solid ${C.border}` }}>
+        <PurpleButton onClick={onNext}>See today's plan</PurpleButton>
+      </div>
+      <SafariBottomBar />
     </div>
   )
 }
