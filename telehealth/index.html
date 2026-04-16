@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Telehealth Call — Bold</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --purple:        #5200d4;
+      --purple-hover:  #3f00a8;
+      --purple-glass:  rgba(82, 0, 212, 0.65);
+      --purple-bdr:    rgba(160, 120, 255, 0.35);
+      --dark:          #140d26;
+      --muted:         #9CA3AF;
+      --border:        #e5e5e5;
+      --green:         #16a34a;
+      --red:           #DC2626;
+      --red-hover:     #b91c1c;
+      --font:          'Inter', system-ui, -apple-system, sans-serif;
+
+      /* Call screen surfaces */
+      --screen-bg:     #0b0b14;
+      --glass-bg:      rgba(255, 255, 255, 0.10);
+      --glass-bdr:     rgba(255, 255, 255, 0.12);
+      --glass-active:  rgba(255, 255, 255, 0.18);
+      --controls-bg:   rgba(10, 9, 20, 0.93);
+    }
+
+    body {
+      background: #c9cdd4;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 40px 20px 60px;
+      font-family: var(--font);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ══════════════════════════════════════════
+       PHONE FRAME  — matches care-plan.html
+    ══════════════════════════════════════════ */
+    .phone-frame {
+      width: 393px;
+      flex-shrink: 0;
+      background: #1a1a1a;
+      border-radius: 55px;
+      padding: 12px;
+      position: relative;
+      box-shadow:
+        0 50px 100px rgba(0,0,0,0.45),
+        0 20px 40px rgba(0,0,0,0.3),
+        inset 0 0 0 1px rgba(255,255,255,0.18),
+        inset 0 1px 0 rgba(255,255,255,0.25);
+    }
+
+    /* Left: mute + volume buttons */
+    .phone-frame::before {
+      content: '';
+      position: absolute;
+      left: -3px; top: 120px;
+      width: 3px; height: 34px;
+      background: #2a2a2a;
+      border-radius: 3px 0 0 3px;
+      box-shadow: 0 46px 0 #2a2a2a, 0 90px 0 #2a2a2a;
+    }
+    /* Right: power button */
+    .phone-frame::after {
+      content: '';
+      position: absolute;
+      right: -3px; top: 160px;
+      width: 3px; height: 70px;
+      background: #2a2a2a;
+      border-radius: 0 3px 3px 0;
+    }
+
+    /* ══ Screen ══ */
+    .phone-screen {
+      border-radius: 47px;
+      overflow: hidden;
+      height: 852px;
+      position: relative;
+      background: var(--screen-bg);
+    }
+
+    /* ══ Dynamic Island ══ */
+    .dynamic-island {
+      position: absolute;
+      top: 12px; left: 50%;
+      transform: translateX(-50%);
+      width: 126px; height: 37px;
+      background: #000;
+      border-radius: 20px;
+      z-index: 60;
+    }
+
+    /* ══ Status Bar ══ */
+    .status-bar {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 59px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding: 0 28px 10px;
+      z-index: 50;
+    }
+    .status-time {
+      font-size: 15px; font-weight: 600;
+      color: #fff; letter-spacing: -0.3px;
+    }
+    .status-icons { display: flex; align-items: center; gap: 6px; }
+
+    /* ══════════════════════════════════════════
+       DOCTOR VIDEO AREA (full-screen bg)
+    ══════════════════════════════════════════ */
+    .video-bg {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(175deg, #0f0c1e 0%, #11101f 40%, #0c0e1c 100%);
+    }
+
+    /* ── Doctor Photo Placeholder ── */
+    .doctor-placeholder {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -58%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      z-index: 5;
+    }
+    .placeholder-frame {
+      width: 180px; height: 200px;
+      border-radius: 20px;
+      border: 1.5px dashed rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.03);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .placeholder-frame-label {
+      font-size: 12px; font-weight: 500;
+      color: rgba(255,255,255,0.22);
+      letter-spacing: 0.3px;
+    }
+
+    /* ══════════════════════════════════════════
+       TOP OVERLAY BADGES
+    ══════════════════════════════════════════ */
+    .badge-row {
+      position: absolute;
+      top: 66px; left: 16px; right: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 20;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(0,0,0,0.48);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 20px;
+      padding: 5px 10px;
+    }
+    .badge-text {
+      font-size: 11px; font-weight: 600;
+      color: rgba(255,255,255,0.82);
+      letter-spacing: 0.3px;
+    }
+
+    /* Signal bars */
+    .signal-bars { display: flex; align-items: flex-end; gap: 2px; }
+    .signal-bar { width: 3px; border-radius: 1.5px; background: #22c55e; }
+    .signal-bar:nth-child(1) { height: 4px; }
+    .signal-bar:nth-child(2) { height: 7px; }
+    .signal-bar:nth-child(3) { height: 10px; }
+    .signal-bar:nth-child(4) { height: 13px; }
+
+    /* Pulsing rec dot */
+    .rec-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: #ef4444;
+      animation: blink 1.8s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0.2; } }
+
+    /* ══════════════════════════════════════════
+       SESSION LABEL + TIMER  (centered, top)
+    ══════════════════════════════════════════ */
+    .session-header {
+      position: absolute;
+      top: 110px; left: 0; right: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      z-index: 20;
+    }
+    .session-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--purple-glass);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--purple-bdr);
+      border-radius: 20px;
+      padding: 6px 14px;
+    }
+    .session-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #c4b5fd;
+      animation: blink 2s ease-in-out infinite;
+    }
+    .session-label {
+      font-size: 11px; font-weight: 700;
+      color: #ede9fe;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .call-timer {
+      font-size: 14px; font-weight: 500;
+      color: rgba(255,255,255,0.45);
+      letter-spacing: 2px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ══════════════════════════════════════════
+       BOTTOM INFO ROW  (above controls)
+    ══════════════════════════════════════════ */
+    .bottom-info {
+      position: absolute;
+      left: 16px; right: 16px;
+      bottom: 168px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      z-index: 20;
+    }
+    .doctor-meta { display: flex; flex-direction: column; gap: 3px; }
+    .doctor-name {
+      font-size: 20px; font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.4px; line-height: 1.2;
+      text-shadow: 0 2px 16px rgba(0,0,0,0.6);
+    }
+    .doctor-specialty {
+      font-size: 13px; font-weight: 400;
+      color: rgba(255,255,255,0.52);
+    }
+
+    /* ── Patient PiP ── */
+    .pip {
+      width: 88px; height: 116px;
+      border-radius: 14px;
+      border: 1.5px dashed rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.04);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      flex-shrink: 0;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.45);
+    }
+    .pip-label {
+      font-size: 10px; font-weight: 500;
+      color: rgba(255,255,255,0.28);
+      letter-spacing: 0.3px;
+    }
+
+    /* ══════════════════════════════════════════
+       CALL CONTROLS
+    ══════════════════════════════════════════ */
+    .call-controls {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 160px;
+      background: var(--controls-bg);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-top: 1px solid rgba(255,255,255,0.07);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 24px 34px;
+      z-index: 30;
+    }
+    .controls-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    /* ── Individual control ── */
+    .ctrl {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .ctrl-icon {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-bdr);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.15s;
+      flex-shrink: 0;
+    }
+    .ctrl-icon:hover { background: var(--glass-active); }
+    .ctrl-icon.is-active {
+      background: var(--glass-active);
+      border-color: rgba(255,255,255,0.22);
+    }
+    .ctrl-label {
+      font-size: 11px; font-weight: 500;
+      color: rgba(255,255,255,0.55);
+      letter-spacing: 0.1px;
+      white-space: nowrap;
+    }
+
+    /* End Call — red, 64px */
+    .ctrl-icon.end-call {
+      width: 64px; height: 64px;
+      background: var(--red);
+      border-color: transparent;
+      box-shadow: 0 4px 18px rgba(220, 38, 38, 0.50);
+    }
+    .ctrl-icon.end-call:hover { background: var(--red-hover); }
+    .ctrl-label.end-label { color: rgba(255,255,255,0.72); font-weight: 600; }
+
+    /* Chat — purple tint */
+    .ctrl-icon.chat {
+      background: rgba(82, 0, 212, 0.45);
+      border-color: rgba(99, 51, 232, 0.38);
+    }
+    .ctrl-icon.chat:hover { background: rgba(82, 0, 212, 0.62); }
+
+    /* ══ Home Indicator ══ */
+    .home-indicator {
+      position: absolute;
+      bottom: 8px; left: 50%;
+      transform: translateX(-50%);
+      width: 134px; height: 5px;
+      background: rgba(255,255,255,0.25);
+      border-radius: 3px;
+      z-index: 60;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="phone-frame">
+    <div class="phone-screen">
+
+      <!-- Dynamic Island -->
+      <div class="dynamic-island"></div>
+
+      <!-- Status Bar -->
+      <div class="status-bar">
+        <span class="status-time">9:41</span>
+        <div class="status-icons">
+          <!-- Cellular -->
+          <svg width="17" height="12" viewBox="0 0 17 12" fill="white" xmlns="http://www.w3.org/2000/svg">
+            <rect x="0" y="8" width="3" height="4" rx="1"/>
+            <rect x="4.5" y="5.5" width="3" height="6.5" rx="1"/>
+            <rect x="9" y="3" width="3" height="9" rx="1"/>
+            <rect x="13.5" y="0" width="3" height="12" rx="1"/>
+          </svg>
+          <!-- Wi-Fi -->
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="8" cy="10.5" r="1.5" fill="white"/>
+            <path d="M4.6 7.5a4.8 4.8 0 016.8 0" stroke="white" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+            <path d="M1.3 4.3a9.4 9.4 0 0113.4 0" stroke="white" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          </svg>
+          <!-- Battery -->
+          <svg width="25" height="12" viewBox="0 0 25 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="0.5" y="1" width="20" height="10" rx="2.5" stroke="white" stroke-width="1" opacity="0.4"/>
+            <rect x="21.5" y="4" width="2.5" height="4" rx="1" fill="white" opacity="0.4"/>
+            <rect x="2" y="2.5" width="15" height="7" rx="1.5" fill="white"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Doctor Video Background -->
+      <div class="video-bg"></div>
+
+      <!-- Doctor Photo Placeholder (background image goes here) -->
+      <div class="doctor-placeholder">
+        <div class="placeholder-frame">
+          <!-- Camera icon -->
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M23 7l-7 5 7 5V7z" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" stroke-linejoin="round" fill="none"/>
+            <rect x="1" y="5" width="15" height="14" rx="2" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" fill="none"/>
+          </svg>
+          <span class="placeholder-frame-label">Doctor's photo</span>
+        </div>
+      </div>
+
+      <!-- Top Badges: connection + live -->
+      <div class="badge-row">
+        <div class="badge">
+          <div class="signal-bars">
+            <div class="signal-bar"></div>
+            <div class="signal-bar"></div>
+            <div class="signal-bar"></div>
+            <div class="signal-bar"></div>
+          </div>
+          <span class="badge-text">HD</span>
+        </div>
+        <div class="badge">
+          <div class="rec-dot"></div>
+          <span class="badge-text">LIVE</span>
+        </div>
+      </div>
+
+      <!-- Session Label + Timer -->
+      <div class="session-header">
+        <div class="session-pill">
+          <div class="session-dot"></div>
+          <span class="session-label">Telehealth Session</span>
+        </div>
+        <div class="call-timer">12:47</div>
+      </div>
+
+      <!-- Bottom Info: Doctor name + Patient PiP -->
+      <div class="bottom-info">
+        <div class="doctor-meta">
+          <div class="doctor-name">Dr. Sarah Chen</div>
+          <div class="doctor-specialty">Internal Medicine · PrevMed</div>
+        </div>
+
+        <!-- Patient self-view placeholder -->
+        <div class="pip">
+          <!-- Person icon -->
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="8" r="4" stroke="rgba(255,255,255,0.28)" stroke-width="1.5"/>
+            <path d="M5 20c0-3.866 3.134-7 7-7s7 3.134 7 7" stroke="rgba(255,255,255,0.28)" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <span class="pip-label">Your photo</span>
+        </div>
+      </div>
+
+      <!-- ══ Call Controls ══ -->
+      <div class="call-controls">
+        <div class="controls-row">
+
+          <!-- Mute -->
+          <div class="ctrl">
+            <div class="ctrl-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2a3 3 0 013 3v7a3 3 0 01-6 0V5a3 3 0 013-3z" fill="white"/>
+                <path d="M19 10v2a7 7 0 01-14 0v-2" stroke="white" stroke-width="2" stroke-linecap="round" fill="none"/>
+                <line x1="12" y1="19" x2="12" y2="22" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                <line x1="9" y1="22" x2="15" y2="22" stroke="white" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <span class="ctrl-label">Mute</span>
+          </div>
+
+          <!-- Camera -->
+          <div class="ctrl">
+            <div class="ctrl-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M23 7l-7 5 7 5V7z" fill="white"/>
+                <rect x="1" y="5" width="15" height="14" rx="2" fill="white"/>
+              </svg>
+            </div>
+            <span class="ctrl-label">Camera</span>
+          </div>
+
+          <!-- End Call (center, red, larger) -->
+          <div class="ctrl">
+            <div class="ctrl-icon end-call">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="white"
+                   style="transform: rotate(135deg);"
+                   xmlns="http://www.w3.org/2000/svg">
+                <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.57l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+              </svg>
+            </div>
+            <span class="ctrl-label end-label">End Call</span>
+          </div>
+
+          <!-- Speaker (active) -->
+          <div class="ctrl">
+            <div class="ctrl-icon is-active">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="white"/>
+                <path d="M15.54 8.46a5 5 0 010 7.07" stroke="white" stroke-width="2" stroke-linecap="round" fill="none"/>
+                <path d="M19.07 4.93a10 10 0 010 14.14" stroke="white" stroke-width="2" stroke-linecap="round" fill="none"/>
+              </svg>
+            </div>
+            <span class="ctrl-label">Speaker</span>
+          </div>
+
+          <!-- Chat -->
+          <div class="ctrl">
+            <div class="ctrl-icon chat">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"
+                      stroke="white" stroke-width="2"
+                      stroke-linecap="round" stroke-linejoin="round"/>
+                <line x1="9" y1="10" x2="15" y2="10" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+                <line x1="9" y1="14" x2="13" y2="14" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <span class="ctrl-label">Chat</span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Home Indicator -->
+      <div class="home-indicator"></div>
+
+    </div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mary's Program – Bold</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --purple:      #5200d4;
+      --purple-bg:   #f5f0ff;
+      --purple-pale: #faf5ff;
+      --purple-bdr:  #e0d8ff;
+      --dark:        #140d26;
+      --body:        #171717;
+      --secondary:   #737373;
+      --muted:       #9CA3AF;
+      --border:      #e5e5e5;
+      --bg:          #fafafa;
+      --card:        #ffffff;
+      --green:       #16a34a;
+      --green-dark:  #15803d;
+      --green-bg:    #f0fdf4;
+      --green-bdr:   #bbf7d0;
+      --teal:        #14b8a6;
+      --teal-dark:   #0d9488;
+      --teal-bg:     #f0fdfa;
+      --teal-bdr:    #99f6e4;
+      --yellow:      #FFCC1A;
+      --font:        'Inter', system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background: #d1d5db;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      font-family: var(--font);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── iPhone 16 Frame ── */
+    .phone-frame {
+      width: 393px;
+      flex-shrink: 0;
+      background: #1a1a1a;
+      border-radius: 55px;
+      padding: 12px;
+      box-shadow:
+        0 50px 100px rgba(0,0,0,0.4),
+        0 20px 40px rgba(0,0,0,0.3),
+        inset 0 0 0 1px rgba(255,255,255,0.18),
+        inset 0 1px 0 rgba(255,255,255,0.25);
+      position: relative;
+    }
+    .phone-frame::before {
+      content: '';
+      position: absolute;
+      left: -3px; top: 120px;
+      width: 3px; height: 34px;
+      background: #2a2a2a;
+      border-radius: 3px 0 0 3px;
+      box-shadow: 0 46px 0 #2a2a2a, 0 90px 0 #2a2a2a;
+    }
+    .phone-frame::after {
+      content: '';
+      position: absolute;
+      right: -3px; top: 160px;
+      width: 3px; height: 70px;
+      background: #2a2a2a;
+      border-radius: 0 3px 3px 0;
+    }
+
+    .phone-screen {
+      border-radius: 47px;
+      overflow: hidden;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      height: 852px;
+      position: relative;
+    }
+
+    /* ── Status Bar ── */
+    .status-bar {
+      height: 59px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding: 0 28px 10px;
+      background: #fff;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .dynamic-island {
+      position: absolute;
+      top: 12px; left: 50%; transform: translateX(-50%);
+      width: 126px; height: 37px;
+      background: #000;
+      border-radius: 20px;
+    }
+    .status-time { font-size: 15px; font-weight: 600; color: var(--dark); letter-spacing: -0.3px; }
+    .status-icons { display: flex; align-items: center; gap: 6px; }
+
+    /* ── Bold Post-Auth Nav (mobile) ── */
+    .tp-nav {
+      background: #fff;
+      box-shadow: 0px 1px 3px rgba(16,24,40,0.1), 0px 1px 2px rgba(16,24,40,0.06);
+      height: 60px;
+      display: flex; align-items: center;
+      padding: 0 16px;
+      flex-shrink: 0;
+    }
+    .tp-nav-logo {
+      position: relative; width: 34px; height: 34px;
+      flex-shrink: 0; display: block; overflow: hidden;
+    }
+    .tp-nav-logo .logo-lines { position: absolute; top: 0; left: 0; right: 0; bottom: 0; }
+    .tp-nav-logo .logo-lines img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: contain; }
+    .tp-nav-right { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+    .tp-nav-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      border: 1px solid #e5e5e5; border-radius: 360px;
+      background: #fff; box-shadow: 0 1px 2px rgba(16,24,40,0.05);
+      padding: 0 12px; height: 40px;
+      font-size: 14px; font-weight: 600; color: #140d26;
+      cursor: pointer; font-family: var(--font); transition: background .15s; position: relative;
+    }
+    .tp-nav-btn:hover { background: #f9f9f9; }
+    .tp-nav-btn-streak {
+      background: linear-gradient(246.6deg, #c99434 22.7%, #e5ca56 56%, #e6d168 91.6%);
+      border-color: #d5c874; padding: 0 12px; gap: 4px; color: #fff;
+    }
+    .tp-streak-count { display: flex; align-items: center; gap: 3px; font-size: 13px; font-weight: 700; }
+    .tp-nav-useapp {
+      display: inline-flex; align-items: center; justify-content: center;
+      background: #ffcc1a; border: none; border-radius: 360px;
+      height: 40px; padding: 0 14px;
+      font-size: 14px; font-weight: 600; color: #000;
+      cursor: pointer; font-family: var(--font); white-space: nowrap;
+    }
+    .tp-avatar {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: #5200d4; color: #fff;
+      font-size: 11px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+
+    /* ── Scrollable Body ── */
+    .phone-body { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; background: var(--bg); }
+    .phone-body::-webkit-scrollbar { display: none; }
+
+    /* ── Section Label ── */
+    .section-label {
+      font-size: 12px; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.07em;
+      padding: 20px 20px 10px;
+    }
+
+    /* ── Badge ── */
+    .badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      border-radius: 9999px; padding: 4px 10px;
+      font-size: 13px; font-weight: 700;
+    }
+    .badge-green  { background: var(--green-bg);  color: var(--green-dark); border: 1px solid var(--green-bdr); }
+    .badge-teal   { background: var(--teal-bg);   color: var(--teal-dark);  border: 1px solid var(--teal-bdr); }
+    .badge-purple { background: var(--purple-bg); color: var(--purple);     border: 1px solid var(--purple-bdr); }
+
+    /* ═══════════════════════════════
+       PROGRAM HERO
+    ═══════════════════════════════ */
+    .program-hero {
+      background: linear-gradient(140deg, #f5f0ff 0%, #faf5ff 100%);
+      border: 1px solid #e0d8ff;
+      border-radius: 20px;
+      margin: 16px 16px 10px;
+      padding: 20px 20px 18px;
+    }
+    .prog-eyebrow {
+      font-size: 12px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--purple); margin-bottom: 8px;
+    }
+    .prog-title {
+      font-size: 26px; font-weight: 800;
+      color: var(--dark); letter-spacing: -0.6px;
+      line-height: 1.15; margin-bottom: 6px;
+    }
+    .prog-subtitle {
+      font-size: 15px; color: var(--secondary);
+      line-height: 1.5; margin-bottom: 16px;
+    }
+    .prog-week-row {
+      display: flex; align-items: center;
+      justify-content: space-between;
+    }
+    .prog-dots { display: flex; gap: 5px; align-items: center; }
+    .prog-dot {
+      width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0;
+    }
+    .prog-dot-done  { background: var(--purple); }
+    .prog-dot-empty { background: #d8cef7; }
+    .prog-week-label {
+      font-size: 14px; font-weight: 600; color: var(--purple);
+    }
+
+    /* ═══════════════════════════════
+       HOLISTIC STRIP
+    ═══════════════════════════════ */
+    .hol-strip {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      margin: 0 16px 10px;
+      padding: 16px 16px 14px;
+    }
+    .hol-cols {
+      display: flex; gap: 0;
+    }
+    .hol-col {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; text-align: center;
+      padding: 0 6px; gap: 5px;
+    }
+    .hol-col + .hol-col { border-left: 1px solid #f0f0f0; }
+    .hol-icon-box {
+      width: 36px; height: 36px; border-radius: 9px;
+      background: #f5f5f5;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 4px;
+    }
+    .hol-label { font-size: 14px; font-weight: 700; color: var(--dark); line-height: 1.2; }
+    .hol-tagline {
+      border-top: 1px solid #f3f3f3;
+      padding-top: 12px; margin-top: 14px;
+      font-size: 14px; color: var(--secondary);
+      text-align: center; line-height: 1.55;
+    }
+
+    /* ═══════════════════════════════
+       DR. DESAI BANNER
+    ═══════════════════════════════ */
+    .dr-banner {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      margin: 0 16px 10px;
+      padding: 16px 18px;
+    }
+    .dr-banner-header {
+      display: flex; align-items: center;
+      gap: 12px; margin-bottom: 12px;
+    }
+    .doctor-avatar {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--purple-bg); border: 2px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; overflow: hidden;
+    }
+    .doctor-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .doctor-initials { font-size: 15px; font-weight: 800; color: var(--purple); letter-spacing: -0.5px; }
+    .doctor-info { flex: 1; }
+    .doctor-name { font-size: 15px; font-weight: 700; color: var(--dark); line-height: 1.2; }
+    .doctor-role { font-size: 14px; color: var(--secondary); margin-top: 1px; }
+    .dr-msg-wrap { position: relative; }
+    .doctor-msg {
+      font-size: 15px; color: var(--body); line-height: 1.65;
+      border-left: 3px solid var(--purple); padding-left: 12px;
+    }
+    .doctor-msg-collapsible { overflow: hidden; max-height: 3.3em; transition: max-height 0.35s ease; }
+    .doctor-msg-collapsible.expanded { max-height: 200px; }
+    .dr-msg-fade {
+      position: absolute; bottom: 0; left: 12px; right: 0; height: 28px;
+      background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1));
+      pointer-events: none; transition: opacity 0.2s;
+    }
+    .dr-msg-fade.hidden { opacity: 0; }
+    .dr-read-more {
+      background: none; border: none; cursor: pointer;
+      font-family: var(--font); font-size: 14px; font-weight: 700;
+      color: var(--purple); padding: 8px 0 0 14px; display: block;
+    }
+
+    /* ═══════════════════════════════
+       PILLAR CARDS
+    ═══════════════════════════════ */
+    .pillar-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      margin: 0 16px 10px;
+      overflow: hidden;
+    }
+    .pillar-card-med {
+      border-left: 3px solid var(--teal);
+    }
+    .pillar-top {
+      display: flex; align-items: flex-start;
+      gap: 14px; padding: 18px 20px 16px;
+    }
+    .pillar-icon-box {
+      width: 46px; height: 46px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 1px;
+    }
+    .pillar-text { flex: 1; min-width: 0; }
+    .pillar-title {
+      font-size: 17px; font-weight: 700;
+      color: var(--dark); line-height: 1.25; margin-bottom: 5px;
+    }
+    .pillar-desc {
+      font-size: 15px; font-weight: 400;
+      color: var(--secondary); line-height: 1.5;
+    }
+    .pillar-footer {
+      border-top: 1px solid #f3f3f3;
+      padding: 12px 20px;
+      display: flex; align-items: center;
+      justify-content: space-between; gap: 10px;
+      min-height: 48px;
+    }
+    .pillar-footer-text {
+      font-size: 14px; color: var(--secondary);
+      display: flex; align-items: center; gap: 8px; flex: 1;
+    }
+    .pillar-footer-text strong { color: var(--dark); font-weight: 600; }
+    .pillar-arrow {
+      color: var(--muted); flex-shrink: 0;
+      display: flex; align-items: center;
+    }
+
+    /* ── Medication card specifics ── */
+    .med-divider { height: 1px; background: #f3f3f3; }
+    .med-dose-area { padding: 18px 20px 14px; }
+    .med-dose-row {
+      display: flex; align-items: flex-end;
+      justify-content: space-between; margin-bottom: 14px;
+    }
+    .med-name {
+      font-size: 22px; font-weight: 800;
+      color: var(--dark); letter-spacing: -0.4px; line-height: 1.1;
+    }
+    .med-name-sup { font-size: 13px; font-weight: 600; vertical-align: super; }
+    .med-name-sub { font-size: 14px; color: var(--secondary); margin-top: 4px; }
+    .med-dose-right { text-align: right; }
+    .med-dose-value {
+      font-size: 28px; font-weight: 800;
+      color: var(--teal); letter-spacing: -0.6px; line-height: 1;
+    }
+    .med-dose-unit { font-size: 14px; color: var(--secondary); margin-top: 3px; }
+    .med-phase-label {
+      font-size: 14px; color: var(--secondary);
+      margin-bottom: 14px; line-height: 1.4;
+    }
+    .med-ramp-wrap { padding-top: 22px; position: relative; }
+    .tit-ramp { display: flex; align-items: center; }
+    .tit-block {
+      width: 52px; height: 40px; border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; position: relative;
+    }
+    .tit-block-now    { background: var(--teal); }
+    .tit-block-future { background: #efefef; }
+    .tit-chip-now {
+      position: absolute; top: -20px; left: 50%; transform: translateX(-50%);
+      background: var(--teal-bg); border: 1px solid var(--teal-bdr);
+      border-radius: 9999px; padding: 1px 8px;
+      font-size: 11px; font-weight: 700; color: var(--teal-dark);
+      white-space: nowrap;
+    }
+    .tit-line  { flex: 1; height: 3px; background: var(--teal); }
+    .tit-dash  { flex: 1; height: 3px; background: repeating-linear-gradient(90deg, #d4d4d4 0 5px, transparent 5px 9px); }
+    .tit-dose-labels {
+      display: flex; align-items: flex-start; margin-top: 7px;
+    }
+    .tit-dose-label {
+      width: 52px; text-align: center; font-size: 11px;
+      font-weight: 700; color: var(--muted); flex-shrink: 0;
+    }
+    .tit-dose-label.now { color: var(--teal-dark); }
+    .tit-dose-gap { flex: 1; }
+    .med-next-strip {
+      border-top: 1px solid #f3f3f3;
+      padding: 14px 20px;
+      display: flex; align-items: center;
+      justify-content: space-between; min-height: 52px;
+    }
+    .med-next-label { font-size: 12px; color: var(--muted); margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+    .med-next-text { font-size: 15px; font-weight: 600; color: var(--dark); }
+    .med-log-btn {
+      background: var(--teal); color: #fff;
+      border: none; border-radius: 9999px;
+      padding: 10px 18px; font-size: 14px; font-weight: 700;
+      font-family: var(--font); cursor: pointer;
+      box-shadow: 0 2px 8px rgba(20,184,166,0.25); white-space: nowrap;
+    }
+
+    /* ── Tab Bar ── */
+    .tab-bar {
+      flex-shrink: 0; height: 82px;
+      background: rgba(255,255,255,0.97);
+      border-top: 1px solid var(--border);
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      padding: 10px 0 22px;
+    }
+    .tab-item {
+      display: flex; flex-direction: column; align-items: center; gap: 3px;
+      background: none; border: none; cursor: pointer;
+      font-family: var(--font); color: var(--secondary); padding: 0;
+    }
+    .tab-item svg { width: 22px; height: 22px; }
+    .tab-label { font-size: 10px; font-weight: 500; color: var(--secondary); }
+    .tab-item.active { color: var(--purple); }
+    .tab-item.active .tab-label { color: var(--purple); font-weight: 700; }
+
+    /* ── Body Composition Card ── */
+    .bc-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; margin: 0 16px 10px; overflow: hidden;
+    }
+    .bc-header {
+      display: flex; align-items: center;
+      justify-content: space-between; padding: 14px 16px 12px;
+    }
+    .bc-title { font-size: 15px; font-weight: 700; color: var(--dark); }
+    .bc-subtitle { font-size: 13px; color: var(--secondary); margin-top: 1px; }
+    .bc-stats {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 8px; padding: 0 16px 12px;
+    }
+    .bc-stat {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 12px; padding: 11px 12px;
+    }
+    .bc-stat-label {
+      font-size: 12px; font-weight: 600; color: var(--secondary);
+      display: flex; align-items: center; gap: 5px; margin-bottom: 5px;
+    }
+    .bc-stat-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .bc-stat-value { font-size: 22px; font-weight: 800; color: var(--dark); letter-spacing: -0.5px; line-height: 1; }
+    .bc-stat-change { font-size: 12px; font-weight: 600; margin-top: 3px; }
+    .bc-stat-change.down-good { color: var(--green); }
+    .bc-stat-change.stable    { color: var(--secondary); }
+    .bc-legend {
+      display: flex; align-items: center; gap: 14px;
+      padding: 0 16px 8px;
+    }
+    .bc-legend-item { display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; color: var(--secondary); }
+    .bc-legend-line { width: 18px; height: 2.5px; border-radius: 9999px; }
+    .bc-chart-wrap { padding: 0 12px 6px; }
+    .bc-chart-wrap svg { width: 100%; display: block; overflow: visible; }
+    .bc-footnote { font-size: 12px; color: var(--muted); padding: 6px 16px 14px; }
+
+    /* ── Patient Mini Profile ── */
+    .patient-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; margin: 16px 16px 10px;
+      padding: 18px 20px;
+      display: flex; align-items: center; gap: 16px;
+    }
+    .pt-avatar {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: var(--purple); color: #fff;
+      font-size: 20px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; letter-spacing: -0.5px;
+    }
+    .pt-info { flex: 1; min-width: 0; }
+    .pt-name { font-size: 20px; font-weight: 700; color: var(--dark); line-height: 1.2; margin-bottom: 3px; }
+    .pt-meta { font-size: 14px; color: var(--secondary); }
+    .pt-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 9px; }
+    .pt-tag {
+      display: inline-flex; align-items: center;
+      border-radius: 9999px; padding: 4px 11px;
+      font-size: 12px; font-weight: 600;
+    }
+    .pt-tag-program { background: var(--purple-bg); color: var(--purple); border: 1px solid var(--purple-bdr); }
+    .pt-tag-neutral  { background: #f5f5f5; color: var(--secondary); border: 1px solid var(--border); }
+
+    /* ── Clinical Outcome Stats ── */
+    .stats-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; margin: 0 16px 10px; padding: 16px 20px 6px;
+    }
+    .stats-title {
+      font-size: 12px; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 2px;
+    }
+    .stat-item { display: flex; align-items: center; gap: 12px; padding: 11px 0; }
+    .stat-item + .stat-item { border-top: 1px solid #f5f5f5; }
+    .stat-name { font-size: 14px; font-weight: 600; color: var(--dark); width: 72px; flex-shrink: 0; }
+    .stat-spark { flex: 1; height: 28px; display: block; overflow: visible; }
+    .stat-trend { font-size: 13px; font-weight: 600; width: 94px; flex-shrink: 0; text-align: right; line-height: 1.3; }
+    .stat-trend-green { color: var(--green); }
+
+    /* ── Activity Module ── */
+    .activity-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; margin: 0 16px 10px; padding: 16px 18px 14px;
+    }
+    .activity-header {
+      display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;
+    }
+    .activity-title { font-size: 17px; font-weight: 700; color: var(--dark); }
+    .activity-view-more { font-size: 14px; font-weight: 600; color: var(--secondary); }
+    .activity-days {
+      display: flex; justify-content: space-between; margin-bottom: 16px;
+    }
+    .act-day { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .act-circle {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: #f0f0f0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .act-circle-fire {
+      background: #ff6a00;
+      font-size: 17px; line-height: 1;
+    }
+    .act-day-label { font-size: 12px; font-weight: 600; color: var(--secondary); }
+    .activity-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .act-stat {
+      border-radius: 12px; padding: 10px 10px;
+      display: flex; align-items: flex-start; gap: 7px;
+    }
+    .act-stat-fire   { background: #fff3ea; }
+    .act-stat-cal    { background: #fefce8; }
+    .act-stat-teal   { background: #f0fdfa; }
+    .act-stat-icon { font-size: 18px; line-height: 1; flex-shrink: 0; padding-top: 1px; }
+    .act-stat-body {}
+    .act-stat-value { font-size: 16px; font-weight: 800; color: var(--dark); letter-spacing: -0.3px; line-height: 1.1; }
+    .act-stat-label { font-size: 11px; font-weight: 500; color: var(--secondary); margin-top: 2px; line-height: 1.3; }
+
+    /* ── Mobile native view ── */
+    @media (max-width: 430px) {
+      .phone-frame { border-radius: 0; padding: 0; box-shadow: none; width: 100%; }
+      .phone-frame::before, .phone-frame::after { display: none; }
+      .phone-screen { border-radius: 0; height: 100vh; }
+      body { padding: 0; background: var(--bg); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="phone-frame">
+  <div class="phone-screen">
+
+    <!-- ── Status Bar ── -->
+    <div class="status-bar">
+      <div class="dynamic-island"></div>
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <svg width="17" height="12" viewBox="0 0 17 12" fill="none">
+          <rect x="0" y="8.5" width="3" height="3.5" rx="0.6" fill="#140d26"/>
+          <rect x="4.5" y="5.5" width="3" height="6.5" rx="0.6" fill="#140d26"/>
+          <rect x="9" y="2.5" width="3" height="9.5" rx="0.6" fill="#140d26"/>
+          <rect x="13.5" y="0" width="3" height="12" rx="0.6" fill="#140d26"/>
+        </svg>
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+          <path d="M1 3.8a9.5 9.5 0 0114 0" stroke="#140d26" stroke-width="1.4" stroke-linecap="round"/>
+          <path d="M3.2 6.4a5.8 5.8 0 019.6 0" stroke="#140d26" stroke-width="1.4" stroke-linecap="round"/>
+          <path d="M5.5 9a2.8 2.8 0 015 0" stroke="#140d26" stroke-width="1.4" stroke-linecap="round"/>
+          <circle cx="8" cy="11.2" r="1" fill="#140d26"/>
+        </svg>
+        <svg width="25" height="12" viewBox="0 0 25 12" fill="none">
+          <rect x="0.5" y="1" width="21" height="10" rx="2.5" stroke="#140d26" stroke-width="1"/>
+          <rect x="22" y="4" width="2.5" height="4" rx="1" fill="#140d26"/>
+          <rect x="2" y="2.5" width="17" height="7" rx="1.5" fill="#140d26"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- ── Bold Post-Auth Nav ── -->
+    <nav class="tp-nav">
+      <a href="#" class="tp-nav-logo" aria-label="Bold home">
+        <div class="logo-lines">
+          <img src="../dynamic-header/assets/logos/nav-logo-lines.svg" alt="" />
+        </div>
+      </a>
+      <div class="tp-nav-right">
+        <button class="tp-nav-useapp">Use app</button>
+        <button class="tp-nav-btn tp-nav-btn-streak" aria-label="Bold Streak">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M10 17.5c-3.31 0-6-2.57-6-5.75 0-3 3-6 4-8 .25 2.5 2 3.5 2 5.5a2.5 2.5 0 0 0 2.75-2.5C14 9 15 10 15 11.75c0 3.18-2.69 5.75-5 5.75Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+          </svg>
+          <span class="tp-streak-count">24</span>
+        </button>
+        <button class="tp-nav-btn" aria-label="Account menu">
+          <span class="tp-avatar">M</span>
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M5 7.5l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </nav>
+
+    <!-- ── Scrollable Body ── -->
+    <div class="phone-body">
+
+      <!-- ══ Patient Mini Profile ══ -->
+      <div class="patient-card">
+        <div class="pt-avatar">M</div>
+        <div class="pt-info">
+          <p class="pt-name">Mary</p>
+          <p class="pt-meta">Age 72 · California</p>
+          <div class="pt-tags">
+            <span class="pt-tag pt-tag-program">Weight management</span>
+            <span class="pt-tag pt-tag-neutral">Week 2 of 12</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ Clinical Outcome Stats ══ -->
+      <div class="stats-card">
+        <p class="stats-title">Outcome trends</p>
+        <div class="stat-item">
+          <span class="stat-name">Pain score</span>
+          <svg class="stat-spark" viewBox="0 0 80 28" fill="none">
+            <path d="M 2,21 C 14,20 24,18 36,15 C 50,12 63,9 78,6" stroke="#16a34a" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="78" cy="6" r="3" fill="#16a34a"/>
+          </svg>
+          <span class="stat-trend stat-trend-green">↓ Reducing</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-name">Activity</span>
+          <svg class="stat-spark" viewBox="0 0 80 28" fill="none">
+            <path d="M 2,23 C 14,20 28,14 44,10 C 58,7 68,7 78,7" stroke="#16a34a" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="78" cy="7" r="3" fill="#16a34a"/>
+          </svg>
+          <span class="stat-trend stat-trend-green">↑ Stabilizing</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-name">Balance</span>
+          <svg class="stat-spark" viewBox="0 0 80 28" fill="none">
+            <path d="M 2,24 C 18,22 36,18 54,13 C 66,10 72,8 78,8" stroke="#16a34a" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="78" cy="8" r="3" fill="#16a34a"/>
+          </svg>
+          <span class="stat-trend stat-trend-green">↑ Improving</span>
+        </div>
+      </div>
+
+      <!-- ══ Activity ══ -->
+      <div class="activity-card">
+        <div class="activity-header">
+          <span class="activity-title">Activity</span>
+          <span class="activity-view-more">View more</span>
+        </div>
+        <div class="activity-days">
+          <!-- S M T filled with fire, W T F S empty -->
+          <div class="act-day">
+            <div class="act-circle act-circle-fire">🔥</div>
+            <span class="act-day-label">S</span>
+          </div>
+          <div class="act-day">
+            <div class="act-circle act-circle-fire">🔥</div>
+            <span class="act-day-label">M</span>
+          </div>
+          <div class="act-day">
+            <div class="act-circle act-circle-fire">🔥</div>
+            <span class="act-day-label">T</span>
+          </div>
+          <div class="act-day">
+            <div class="act-circle"></div>
+            <span class="act-day-label">W</span>
+          </div>
+          <div class="act-day">
+            <div class="act-circle"></div>
+            <span class="act-day-label">T</span>
+          </div>
+          <div class="act-day">
+            <div class="act-circle"></div>
+            <span class="act-day-label">F</span>
+          </div>
+          <div class="act-day">
+            <div class="act-circle"></div>
+            <span class="act-day-label">S</span>
+          </div>
+        </div>
+        <div class="activity-stats">
+          <div class="act-stat act-stat-fire">
+            <span class="act-stat-icon">🔥</span>
+            <div class="act-stat-body">
+              <p class="act-stat-value">3</p>
+              <p class="act-stat-label">Week streak</p>
+            </div>
+          </div>
+          <div class="act-stat act-stat-cal">
+            <span class="act-stat-icon">📅</span>
+            <div class="act-stat-body">
+              <p class="act-stat-value">3</p>
+              <p class="act-stat-label">Days this month</p>
+            </div>
+          </div>
+          <div class="act-stat act-stat-teal">
+            <span class="act-stat-icon">📈</span>
+            <div class="act-stat-body">
+              <p class="act-stat-value">3</p>
+              <p class="act-stat-label">Total classes</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ Dr. Desai Banner ══ -->
+      <div class="dr-banner">
+        <div class="dr-banner-header">
+          <div class="doctor-avatar">
+            <img src="../dynamic-header/assets/images/coach-avatar.jpg" alt="Dr. Desai"
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <span class="doctor-initials" style="display:none;">DS</span>
+          </div>
+          <div class="doctor-info">
+            <p class="doctor-name">Dr. Priya Desai, MD</p>
+            <p class="doctor-role">Your Bold physician</p>
+          </div>
+        </div>
+        <div class="dr-msg-wrap">
+          <p class="doctor-msg doctor-msg-collapsible" id="drMsg">
+            Mary — I designed this program specifically around you. Wegovy will help your body respond, but what protects you long-term is the strength work and nutrition we've built around it. Trust the full plan — all three parts matter equally.
+          </p>
+          <div class="dr-msg-fade" id="drMsgFade"></div>
+        </div>
+        <button class="dr-read-more" id="drReadMore" onclick="toggleDrMsg()">Read more</button>
+      </div>
+
+      <!-- ══ Your Program ══ -->
+      <p class="section-label">Your program</p>
+
+      <!-- ── Pillar 1: Exercise ── -->
+      <div class="pillar-card">
+        <div class="pillar-top">
+          <div class="pillar-icon-box" style="background:#f0fdf4;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6.5 6.5h11M6 12h12M8.5 17.5h7"/>
+              <circle cx="4.5" cy="6.5" r="1.5" fill="#16a34a" stroke="none"/>
+              <circle cx="19.5" cy="6.5" r="1.5" fill="#16a34a" stroke="none"/>
+              <circle cx="3" cy="12" r="1.5" fill="#16a34a" stroke="none"/>
+              <circle cx="21" cy="12" r="1.5" fill="#16a34a" stroke="none"/>
+            </svg>
+          </div>
+          <div class="pillar-text">
+            <p class="pillar-title">My exercise plan</p>
+            <p class="pillar-desc">Focused on building muscle and maintaining strength</p>
+          </div>
+        </div>
+        <div class="pillar-footer">
+          <div class="pillar-footer-text">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="#16a34a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0">
+              <circle cx="10" cy="10" r="8"/>
+              <path d="M7 10l2 2 4-4"/>
+            </svg>
+            <strong>2 of 3</strong> sessions this week
+          </div>
+          <div class="pillar-arrow">
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#d4d4d4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M7.5 5l5 5-5 5"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Pillar 2: Nutrition ── -->
+      <div class="pillar-card">
+        <div class="pillar-top">
+          <div class="pillar-icon-box" style="background:#faf5ff;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5200d4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2"/>
+              <path d="M7 2v20M21 15V2a5 5 0 00-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/>
+            </svg>
+          </div>
+          <div class="pillar-text">
+            <p class="pillar-title">My nutrition plan</p>
+            <p class="pillar-desc">Focused on ample protein and dense nutrients</p>
+          </div>
+        </div>
+        <div class="pillar-footer">
+          <div class="pillar-footer-text">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="#5200d4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0">
+              <path d="M10 2v16M2 10h16"/>
+            </svg>
+            <strong>68g</strong> protein today · Goal 80g
+          </div>
+          <div class="pillar-arrow">
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#d4d4d4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M7.5 5l5 5-5 5"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Pillar 3: Medication (hero card) ── -->
+      <div class="pillar-card pillar-card-med">
+        <div class="pillar-top" style="padding-bottom:14px;">
+          <div class="pillar-icon-box" style="background:#f0fdfa;">
+            <svg width="18" height="22" viewBox="0 0 18 22" fill="none">
+              <rect x="5.5" y="0.5" width="7" height="4" rx="2" stroke="#14b8a6" stroke-width="1.7"/>
+              <rect x="7" y="4.5" width="4" height="2.5" rx="1" stroke="#14b8a6" stroke-width="1.5"/>
+              <rect x="3" y="7" width="12" height="14" rx="3" stroke="#14b8a6" stroke-width="1.7"/>
+              <line x1="3" y1="14.5" x2="15" y2="14.5" stroke="#14b8a6" stroke-width="1" opacity="0.5"/>
+            </svg>
+          </div>
+          <div class="pillar-text">
+            <p class="pillar-title">My medication plan</p>
+          </div>
+        </div>
+
+        <div class="med-divider"></div>
+
+        <div class="med-dose-area">
+          <!-- Dose display -->
+          <div class="med-dose-row">
+            <div>
+              <p class="med-name">Wegovy<span class="med-name-sup">®</span></p>
+              <p class="med-name-sub">Weekly injection</p>
+            </div>
+            <div class="med-dose-right">
+              <p class="med-dose-value">0.25 mg</p>
+              <p class="med-dose-unit">per dose</p>
+            </div>
+          </div>
+
+          <!-- Phase label -->
+          <p class="med-phase-label">Phase 1 of 4 · First 4 weeks · Starting dose</p>
+
+          <!-- 4-step titration ramp -->
+          <div class="med-ramp-wrap">
+            <div class="tit-ramp">
+              <!-- Step 1: NOW (teal) -->
+              <div class="tit-block tit-block-now">
+                <div class="tit-chip-now">Now</div>
+                <svg width="16" height="16" viewBox="0 0 18 18" fill="none">
+                  <path d="M4 9l3.5 3.5 6.5-7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="tit-dash"></div>
+              <!-- Step 2: future -->
+              <div class="tit-block tit-block-future">
+                <svg width="14" height="14" viewBox="0 0 18 18" fill="none">
+                  <path d="M9 4v10M4 9h10" stroke="#b0b0b0" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="tit-dash"></div>
+              <!-- Step 3: future -->
+              <div class="tit-block tit-block-future">
+                <svg width="14" height="14" viewBox="0 0 18 18" fill="none">
+                  <path d="M9 4v10M4 9h10" stroke="#b0b0b0" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="tit-dash"></div>
+              <!-- Step 4: future -->
+              <div class="tit-block tit-block-future">
+                <svg width="14" height="14" viewBox="0 0 18 18" fill="none">
+                  <path d="M9 4v10M4 9h10" stroke="#b0b0b0" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </div>
+            </div>
+            <div class="tit-dose-labels">
+              <span class="tit-dose-label now">0.25 mg</span>
+              <span class="tit-dose-gap"></span>
+              <span class="tit-dose-label">0.5 mg</span>
+              <span class="tit-dose-gap"></span>
+              <span class="tit-dose-label">1 mg</span>
+              <span class="tit-dose-gap"></span>
+              <span class="tit-dose-label">2 mg</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Next dose footer -->
+        <div class="med-next-strip">
+          <div>
+            <p class="med-next-label">Next dose</p>
+            <p class="med-next-text">Saturday, April 12</p>
+          </div>
+          <button class="med-log-btn">Log dose</button>
+        </div>
+      </div>
+
+      <!-- ── Pillar 4: Learning ── -->
+      <div class="pillar-card">
+        <div class="pillar-top">
+          <div class="pillar-icon-box" style="background:#faf5ff;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5200d4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5A2.5 2.5 0 016.5 17H20"/>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/>
+              <path d="M8 7h8M8 11h6"/>
+            </svg>
+          </div>
+          <div class="pillar-text">
+            <p class="pillar-title">My learning</p>
+            <p class="pillar-desc">Resources for managing your diabetes and sarcopenia</p>
+          </div>
+        </div>
+        <div class="pillar-footer">
+          <div class="pillar-footer-text">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="#5200d4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0">
+              <path d="M4 19.5A2.5 2.5 0 016.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/>
+            </svg>
+            <strong>4 of 6</strong> lessons complete
+          </div>
+          <div class="pillar-arrow">
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#d4d4d4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M7.5 5l5 5-5 5"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ Body Composition ══ -->
+      <p class="section-label">Body composition</p>
+
+      <div class="bc-card">
+        <div class="bc-header">
+          <div>
+            <p class="bc-title">Fat vs. muscle over time</p>
+            <p class="bc-subtitle">12 weeks · GLP-1 + strength training</p>
+          </div>
+          <!-- green badge: fat losing, muscle holding -->
+          <span style="display:inline-flex;align-items:center;gap:4px;background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;border-radius:9999px;padding:4px 10px;font-size:12px;font-weight:700;">
+            <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M6 10V2M2 6l4-4 4 4" stroke="#15803d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            On track
+          </span>
+        </div>
+
+        <!-- Stat chips -->
+        <div class="bc-stats">
+          <!-- Body fat -->
+          <div class="bc-stat">
+            <p class="bc-stat-label">
+              <span class="bc-stat-dot" style="background:#5200d4;"></span>
+              Body fat
+            </p>
+            <p class="bc-stat-value">34.8<span style="font-size:14px;font-weight:500;color:#737373;">%</span></p>
+            <p class="bc-stat-change down-good">↓ 5.4% since start</p>
+          </div>
+          <!-- Muscle -->
+          <div class="bc-stat">
+            <p class="bc-stat-label">
+              <span class="bc-stat-dot" style="background:#16a34a;"></span>
+              Muscle
+            </p>
+            <p class="bc-stat-value">97.6<span style="font-size:14px;font-weight:500;color:#737373;"> lbs</span></p>
+            <p class="bc-stat-change stable">↓ 0.4 lbs · nearly stable</p>
+          </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="bc-legend">
+          <div class="bc-legend-item">
+            <div class="bc-legend-line" style="background:#5200d4;"></div>
+            Body fat %
+          </div>
+          <div class="bc-legend-item">
+            <div class="bc-legend-line" style="background:#16a34a; border: 1px dashed #16a34a; height:0; border-top-width:2.5px;"></div>
+            Muscle mass
+          </div>
+        </div>
+
+        <!-- Dual-line chart
+             viewBox 0 0 300 110
+             X: W1=36, W2=72, W3=108, W4=144, W5=180, W6=216, W7=252, W8=288
+
+             Body fat %: [38.2, 37.8, 37.1, 36.6, 36.0, 35.5, 35.2, 34.8]
+             Y range 33–40 → pixel 90–10 (80px)
+             y = 90 − ((val−33)/7)×80
+             38.2 → 90−(5.2/7×80)=90−59.4=30.6
+             37.8 → 90−(4.8/7×80)=90−54.9=35.1
+             37.1 → 90−(4.1/7×80)=90−46.9=43.1
+             36.6 → 90−(3.6/7×80)=90−41.1=48.9
+             36.0 → 90−(3.0/7×80)=90−34.3=55.7
+             35.5 → 90−(2.5/7×80)=90−28.6=61.4
+             35.2 → 90−(2.2/7×80)=90−25.1=64.9
+             34.8 → 90−(1.8/7×80)=90−20.6=69.4
+
+             Muscle lbs: [98.0, 97.9, 97.8, 97.8, 97.6, 97.5, 97.5, 97.4]
+             Y range 96–99 → pixel 90–10 (80px)
+             y = 90 − ((val−96)/3)×80
+             98.0 → 90−(2.0/3×80)=90−53.3=36.7
+             97.9 → 90−(1.9/3×80)=90−50.7=39.3
+             97.8 → 90−(1.8/3×80)=90−48.0=42.0
+             97.8 → 42.0
+             97.6 → 90−(1.6/3×80)=90−42.7=47.3
+             97.5 → 90−(1.5/3×80)=90−40.0=50.0
+             97.5 → 50.0
+             97.4 → 90−(1.4/3×80)=90−37.3=52.7
+        -->
+        <div class="bc-chart-wrap">
+          <svg viewBox="0 0 300 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!--
+              Fat: [40.2,39.5,38.6,37.8,37.0,36.2,35.5,34.8]
+              Y range 33–41 (8pt), pixel 90–10 (80px): y = 90−((v−33)/8)×80
+              40.2→18  39.5→25  38.6→34  37.8→42  37.0→50  36.2→58  35.5→65  34.8→72
+
+              Muscle: [98.0,98.0,97.9,97.9,97.8,97.8,97.7,97.6]
+              Y range 96–99 (3pt), pixel 90–10 (80px): y = 90−((v−96)/3)×80
+              98.0→36.7  98.0→36.7  97.9→39.3  97.9→39.3  97.8→42.0  97.8→42.0  97.7→44.7  97.6→47.3
+            -->
+            <!-- Y-axis labels -->
+            <text x="30" y="13"  font-size="8" fill="#a3a3a3" text-anchor="end" font-family="Inter,sans-serif">41%</text>
+            <text x="30" y="54"  font-size="8" fill="#a3a3a3" text-anchor="end" font-family="Inter,sans-serif">37%</text>
+            <text x="30" y="93"  font-size="8" fill="#a3a3a3" text-anchor="end" font-family="Inter,sans-serif">33%</text>
+            <!-- Grid lines -->
+            <line x1="33" y1="10" x2="292" y2="10" stroke="#f0f0f0" stroke-width="1"/>
+            <line x1="33" y1="50" x2="292" y2="50" stroke="#f0f0f0" stroke-width="1"/>
+            <line x1="33" y1="90" x2="292" y2="90" stroke="#f0f0f0" stroke-width="1"/>
+
+            <!-- Body fat area fill (purple) -->
+            <path d="M 36 18 C 54 18,54 25,72 25 C 90 25,90 34,108 34 C 126 34,126 42,144 42 C 162 42,162 50,180 50 C 198 50,198 58,216 58 C 234 58,234 65,252 65 C 270 65,270 72,288 72 L 288 90 L 36 90 Z" fill="#f5f0ff" opacity="0.55"/>
+            <!-- Body fat line (purple, solid) -->
+            <path d="M 36 18 C 54 18,54 25,72 25 C 90 25,90 34,108 34 C 126 34,126 42,144 42 C 162 42,162 50,180 50 C 198 50,198 58,216 58 C 234 58,234 65,252 65 C 270 65,270 72,288 72"
+                  stroke="#5200d4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- Body fat dots W1–W7 -->
+            <circle cx="36"  cy="18" r="3.5" fill="white" stroke="#5200d4" stroke-width="2"/>
+            <circle cx="72"  cy="25" r="3.5" fill="white" stroke="#5200d4" stroke-width="2"/>
+            <circle cx="108" cy="34" r="3.5" fill="white" stroke="#5200d4" stroke-width="2"/>
+            <circle cx="144" cy="42" r="3.5" fill="white" stroke="#5200d4" stroke-width="2"/>
+            <circle cx="180" cy="50" r="3.5" fill="white" stroke="#5200d4" stroke-width="2"/>
+            <circle cx="216" cy="58" r="3.5" fill="white" stroke="#5200d4" stroke-width="2"/>
+            <circle cx="252" cy="65" r="3.5" fill="white" stroke="#5200d4" stroke-width="2"/>
+            <!-- Body fat current dot W8 (ring) -->
+            <circle cx="288" cy="72"  r="8"   fill="rgba(82,0,212,0.10)"/>
+            <circle cx="288" cy="72"  r="4.5" fill="white" stroke="#5200d4" stroke-width="2.5"/>
+
+            <!-- Muscle line (green, dashed) — nearly flat -->
+            <path d="M 36 36.7 C 54 36.7,54 36.7,72 36.7 C 90 36.7,90 39.3,108 39.3 C 126 39.3,126 39.3,144 39.3 C 162 39.3,162 42.0,180 42.0 C 198 42.0,198 42.0,216 42.0 C 234 42.0,234 44.7,252 44.7 C 270 44.7,270 47.3,288 47.3"
+                  stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="5 3"/>
+            <!-- Muscle dots W1–W7 -->
+            <circle cx="36"  cy="36.7" r="3" fill="white" stroke="#16a34a" stroke-width="1.8"/>
+            <circle cx="72"  cy="36.7" r="3" fill="white" stroke="#16a34a" stroke-width="1.8"/>
+            <circle cx="108" cy="39.3" r="3" fill="white" stroke="#16a34a" stroke-width="1.8"/>
+            <circle cx="144" cy="39.3" r="3" fill="white" stroke="#16a34a" stroke-width="1.8"/>
+            <circle cx="180" cy="42.0" r="3" fill="white" stroke="#16a34a" stroke-width="1.8"/>
+            <circle cx="216" cy="42.0" r="3" fill="white" stroke="#16a34a" stroke-width="1.8"/>
+            <circle cx="252" cy="44.7" r="3" fill="white" stroke="#16a34a" stroke-width="1.8"/>
+            <!-- Muscle current dot W8 (ring) -->
+            <circle cx="288" cy="47.3" r="7"   fill="rgba(22,163,74,0.10)"/>
+            <circle cx="288" cy="47.3" r="3.5" fill="white" stroke="#16a34a" stroke-width="2"/>
+
+            <!-- X labels -->
+            <text x="36"  y="106" font-size="8" fill="#a3a3a3" text-anchor="middle" font-family="Inter,sans-serif">W1</text>
+            <text x="72"  y="106" font-size="8" fill="#a3a3a3" text-anchor="middle" font-family="Inter,sans-serif">W2</text>
+            <text x="108" y="106" font-size="8" fill="#a3a3a3" text-anchor="middle" font-family="Inter,sans-serif">W3</text>
+            <text x="144" y="106" font-size="8" fill="#a3a3a3" text-anchor="middle" font-family="Inter,sans-serif">W4</text>
+            <text x="180" y="106" font-size="8" fill="#a3a3a3" text-anchor="middle" font-family="Inter,sans-serif">W5</text>
+            <text x="216" y="106" font-size="8" fill="#a3a3a3" text-anchor="middle" font-family="Inter,sans-serif">W6</text>
+            <text x="252" y="106" font-size="8" fill="#a3a3a3" text-anchor="middle" font-family="Inter,sans-serif">W7</text>
+            <text x="288" y="106" font-size="8" fill="#5200d4" text-anchor="middle" font-family="Inter,sans-serif" font-weight="700">Now</text>
+          </svg>
+        </div>
+        <p class="bc-footnote">Body fat (purple) declining steadily · Muscle (green) holding</p>
+      </div>
+
+      <div style="height:24px;"></div>
+    </div><!-- /phone-body -->
+
+    <!-- ── Tab Bar ── -->
+    <div class="tab-bar">
+      <!-- Today -->
+      <button class="tab-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 12L12 3l9 9"/><path d="M9 21V12h6v9"/><path d="M5 10v11h14V10"/>
+        </svg>
+        <span class="tab-label">Today</span>
+      </button>
+      <!-- Care -->
+      <button class="tab-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+        </svg>
+        <span class="tab-label">Care</span>
+      </button>
+      <!-- Explore -->
+      <button class="tab-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <span class="tab-label">Explore</span>
+      </button>
+      <!-- Progress — active -->
+      <button class="tab-item active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="20" x2="18" y2="10"/>
+          <line x1="12" y1="20" x2="12" y2="4"/>
+          <line x1="6"  y1="20" x2="6"  y2="14"/>
+        </svg>
+        <span class="tab-label">Progress</span>
+      </button>
+    </div>
+
+  </div><!-- /phone-screen -->
+</div><!-- /phone-frame -->
+
+<script>
+  function toggleDrMsg() {
+    const msg   = document.getElementById('drMsg');
+    const fade  = document.getElementById('drMsgFade');
+    const btn   = document.getElementById('drReadMore');
+    const isExp = msg.classList.toggle('expanded');
+    fade.classList.toggle('hidden', isExp);
+    btn.textContent = isExp ? 'Read less' : 'Read more';
+  }
+</script>
+</body>
+</html>

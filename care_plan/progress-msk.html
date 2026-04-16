@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mary's Progress – Bold</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --purple:     #5200d4;
+      --purple-bg:  #f5f0ff;
+      --dark:       #140d26;
+      --secondary:  #737373;
+      --border:     #e5e5e5;
+      --bg:         #fafafa;
+      --card:       #ffffff;
+      --green:      #16a34a;
+      --green-dark: #15803d;
+      --teal:       #14b8a6;
+      --font:       'Inter', system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background: #c9cdd4;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 40px 20px;
+      font-family: var(--font);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── iPhone 16 Frame ── */
+    .phone-frame {
+      width: 393px;
+      flex-shrink: 0;
+      background: #1a1a1a;
+      border-radius: 55px;
+      padding: 12px;
+      box-shadow:
+        0 50px 100px rgba(0,0,0,0.45),
+        0 20px 40px rgba(0,0,0,0.3),
+        inset 0 0 0 1px rgba(255,255,255,0.18),
+        inset 0 1px 0 rgba(255,255,255,0.25);
+    }
+    .phone-frame::before {
+      content: '';
+      position: absolute;
+      left: -3px; top: 120px;
+      width: 3px; height: 34px;
+      background: #2a2a2a; border-radius: 3px 0 0 3px;
+      box-shadow: 0 46px 0 #2a2a2a, 0 90px 0 #2a2a2a;
+    }
+    .phone-frame::after {
+      content: '';
+      position: absolute;
+      right: -3px; top: 160px;
+      width: 3px; height: 70px;
+      background: #2a2a2a; border-radius: 0 3px 3px 0;
+    }
+
+    .phone-screen {
+      border-radius: 47px;
+      overflow: hidden;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      height: 852px;
+      position: relative;
+    }
+
+    /* ── Status Bar ── */
+    .status-bar {
+      height: 59px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding: 0 28px 10px;
+      background: var(--bg);
+      flex-shrink: 0;
+      position: relative;
+    }
+    .dynamic-island {
+      position: absolute;
+      top: 12px; left: 50%; transform: translateX(-50%);
+      width: 126px; height: 37px;
+      background: #000; border-radius: 20px;
+    }
+    .status-time { font-size: 15px; font-weight: 600; color: var(--dark); letter-spacing: -0.3px; }
+    .status-icons { display: flex; align-items: center; gap: 6px; }
+
+    /* ── Scrollable Body ── */
+    .phone-body { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    .phone-body::-webkit-scrollbar { display: none; }
+
+    /* ── Page Header ── */
+    .page-header { padding: 16px 20px 12px; }
+    .page-title { font-size: 22px; font-weight: 800; color: var(--dark); letter-spacing: -0.5px; line-height: 1.2; }
+
+    /* ── Stat Row ── */
+    .stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 0 16px 14px; }
+    .stat-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 14px; padding: 12px 8px 10px;
+      text-align: center;
+    }
+    .stat-icon {
+      width: 32px; height: 32px; border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 7px;
+    }
+    .stat-value { font-size: 18px; font-weight: 800; color: var(--dark); line-height: 1.1; }
+    .stat-value.green { color: var(--green); }
+    .stat-label { font-size: 12px; color: var(--secondary); font-weight: 500; margin-top: 2px; line-height: 1.3; }
+
+    /* ── Cards ── */
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; margin: 0 16px 12px; overflow: hidden; }
+    .card-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 16px 6px; }
+    .card-title { font-size: 16px; font-weight: 700; color: var(--dark); }
+
+    .badge { display: inline-flex; align-items: center; gap: 3px; border-radius: 9999px; padding: 4px 10px; font-size: 13px; font-weight: 700; }
+    .badge-green { background: #f0fdf4; color: var(--green-dark); border: 1px solid #bbf7d0; }
+    .badge-blue  { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+
+    /* ── Current Value ── */
+    .current-value { display: flex; align-items: baseline; gap: 5px; padding: 4px 16px 8px; }
+    .current-big { font-size: 32px; font-weight: 800; color: var(--dark); letter-spacing: -1px; line-height: 1; }
+    .current-denom { font-size: 16px; color: var(--secondary); font-weight: 500; }
+    .current-week { margin-left: auto; font-size: 14px; color: var(--secondary); font-weight: 500; }
+
+    /* ── Chart ── */
+    .chart-wrap { padding: 0 12px 10px; }
+    .chart-wrap svg { width: 100%; display: block; overflow: visible; }
+    .chart-footnote { font-size: 14px; color: var(--secondary); padding: 0 16px 16px; }
+
+    /* ── Trainer Card ── */
+    .trainer-inner { padding: 16px; }
+    .trainer-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .trainer-avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: var(--purple-bg); border: 2px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; flex-shrink: 0; overflow: hidden;
+    }
+    .trainer-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .trainer-name { font-size: 15px; font-weight: 700; color: var(--dark); }
+    .trainer-role { font-size: 13px; color: var(--secondary); }
+    .trainer-msg {
+      font-size: 15px; color: #262626; line-height: 1.65;
+      border-left: 3px solid var(--purple); padding-left: 12px;
+    }
+
+    /* ── Key Wins ── */
+    .wins-inner { padding: 0 16px; }
+    .wins-title { font-size: 16px; font-weight: 700; color: var(--dark); padding: 16px 0 10px; }
+    .win-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-top: 1px solid #f3f3f3; }
+    .win-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .win-text { flex: 1; }
+    .win-headline { font-size: 15px; font-weight: 700; color: var(--dark); line-height: 1.3; }
+    .win-body { font-size: 14px; color: var(--secondary); margin-top: 3px; line-height: 1.45; }
+    .wins-spacer { height: 6px; }
+
+    /* ── CTA ── */
+    .cta-wrap { padding: 4px 16px 20px; }
+    .cta-btn {
+      width: 100%; height: 52px;
+      background: var(--teal); color: #fff;
+      border: none; border-radius: 9999px;
+      font-size: 16px; font-weight: 700;
+      font-family: var(--font); cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      gap: 8px; box-shadow: 0 4px 16px rgba(20,184,166,0.28);
+      letter-spacing: -0.1px;
+    }
+
+    /* ── Tab Bar ── */
+    .tab-bar {
+      flex-shrink: 0; height: 82px;
+      background: rgba(255,255,255,0.97);
+      border-top: 1px solid var(--border);
+      display: grid; grid-template-columns: repeat(4,1fr);
+      padding: 10px 0 22px;
+    }
+    .tab-item {
+      display: flex; flex-direction: column; align-items: center; gap: 3px;
+      background: none; border: none; cursor: pointer; font-family: var(--font);
+      color: var(--secondary);
+    }
+    .tab-item svg { width: 22px; height: 22px; }
+    .tab-label { font-size: 11px; font-weight: 500; }
+    .tab-item.active { color: var(--purple); }
+    .tab-item.active .tab-label { font-weight: 700; }
+
+    @media (max-width: 430px) {
+      .phone-frame { border-radius: 0; padding: 0; box-shadow: none; width: 100%; }
+      .phone-frame::before, .phone-frame::after { display: none; }
+      .phone-screen { border-radius: 0; height: 100vh; }
+      body { padding: 0; background: var(--bg); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="phone-frame" style="position:relative">
+  <div class="phone-screen">
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <div class="dynamic-island"></div>
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <svg width="17" height="12" viewBox="0 0 17 12" fill="none">
+          <rect x="0" y="8.5" width="3" height="3.5" rx="0.6" fill="#140d26"/>
+          <rect x="4.5" y="5.5" width="3" height="6.5" rx="0.6" fill="#140d26"/>
+          <rect x="9" y="2.5" width="3" height="9.5" rx="0.6" fill="#140d26"/>
+          <rect x="13.5" y="0" width="3" height="12" rx="0.6" fill="#140d26"/>
+        </svg>
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+          <path d="M1 3.8a9.5 9.5 0 0114 0" stroke="#140d26" stroke-width="1.4" stroke-linecap="round"/>
+          <path d="M3.2 6.4a5.8 5.8 0 019.6 0" stroke="#140d26" stroke-width="1.4" stroke-linecap="round"/>
+          <path d="M5.5 9a2.8 2.8 0 015 0" stroke="#140d26" stroke-width="1.4" stroke-linecap="round"/>
+          <circle cx="8" cy="11.2" r="1" fill="#140d26"/>
+        </svg>
+        <svg width="25" height="12" viewBox="0 0 25 12" fill="none">
+          <rect x="0.5" y="1" width="21" height="10" rx="2.5" stroke="#140d26" stroke-width="1"/>
+          <rect x="22" y="4" width="2.5" height="4" rx="1" fill="#140d26"/>
+          <rect x="2" y="2.5" width="17" height="7" rx="1.5" fill="#140d26"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Scrollable Content -->
+    <div class="phone-body">
+
+      <!-- Header -->
+      <div class="page-header">
+        <h1 class="page-title">Mary's progress with Bold</h1>
+      </div>
+
+      <!-- Stat Row with Icons -->
+      <div class="stat-row">
+        <!-- Weeks streak -->
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#f5f0ff">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5200d4" stroke-width="2" stroke-linecap="round">
+              <rect x="3" y="4" width="18" height="18" rx="2.5"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+              <line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+            </svg>
+          </div>
+          <p class="stat-value">8</p>
+          <p class="stat-label">weeks strong</p>
+        </div>
+        <!-- Adherence / streak -->
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#fff7ed">
+            <!-- Flame icon -->
+            <svg width="14" height="16" viewBox="0 0 14 18" fill="none">
+              <path d="M7 1C5 5 2.5 7.5 2.5 11a4.5 4.5 0 009 0c0-1.8-.8-3.2-1.8-4.2-.2 1-.9 1.8-1.7 2 .7-2.2-.5-5.5-1-7.8z" fill="#ea580c"/>
+              <ellipse cx="7" cy="13.5" rx="2" ry="1.5" fill="#fb923c" opacity="0.6"/>
+            </svg>
+          </div>
+          <p class="stat-value">87%</p>
+          <p class="stat-label">sessions done</p>
+        </div>
+        <!-- Pain relief -->
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#f0fdf4">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/>
+              <polyline points="17 18 23 18 23 12"/>
+            </svg>
+          </div>
+          <p class="stat-value green">↓ 40%</p>
+          <p class="stat-label">less pain</p>
+        </div>
+      </div>
+
+      <!-- Pain Score Card -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Pain score</span>
+          <span class="badge badge-green">
+            <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M6 10V2M2 6l4-4 4 4" stroke="#15803d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            40% better
+          </span>
+        </div>
+        <div class="current-value">
+          <span class="current-big">4.5</span>
+          <span class="current-denom">out of 10</span>
+          <span class="current-week">Week 8</span>
+        </div>
+        <div class="chart-wrap">
+          <svg viewBox="0 0 300 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Y labels -->
+            <text x="30" y="13"  font-size="10" fill="#a3a3a3" text-anchor="end" font-family="Inter,sans-serif" font-weight="600">10</text>
+            <text x="30" y="57"  font-size="10" fill="#a3a3a3" text-anchor="end" font-family="Inter,sans-serif" font-weight="600">5</text>
+            <text x="30" y="101" font-size="10" fill="#a3a3a3" text-anchor="end" font-family="Inter,sans-serif" font-weight="600">0</text>
+            <!-- Grid lines -->
+            <line x1="33" y1="10"  x2="292" y2="10"  stroke="#f0f0f0" stroke-width="1"/>
+            <line x1="33" y1="54"  x2="292" y2="54"  stroke="#f0f0f0" stroke-width="1"/>
+            <line x1="33" y1="98"  x2="292" y2="98"  stroke="#f0f0f0" stroke-width="1"/>
+            <!-- Start reference line at y=32 (NRS 7.5) -->
+            <line x1="33" y1="32" x2="292" y2="32" stroke="#d97706" stroke-width="1" stroke-dasharray="4 3" opacity="0.55"/>
+            <text x="37" y="29" font-size="9" fill="#d97706" font-family="Inter,sans-serif" font-weight="700" opacity="0.85">Start 7.5</text>
+            <!-- Smooth line: [7.5,6.5,6.2,5.8,5.5,5.0,4.8,4.5] → y=[32,40.8,43.4,47,49.6,54,55.8,58.4] -->
+            <path d="M 36 32 C 48 32,60 40.8,72 40.8 C 84 40.8,96 43.4,108 43.4 C 120 43.4,132 47,144 47 C 156 47,168 49.6,180 49.6 C 192 49.6,204 54,216 54 C 228 54,240 55.8,252 55.8 C 264 55.8,276 58.4,288 58.4"
+                  stroke="#5200d4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- Dots W1–W7 -->
+            <circle cx="36"  cy="32.0" r="4" fill="white" stroke="#5200d4" stroke-width="2"/>
+            <circle cx="72"  cy="40.8" r="4" fill="white" stroke="#5200d4" stroke-width="2"/>
+            <circle cx="108" cy="43.4" r="4" fill="white" stroke="#5200d4" stroke-width="2"/>
+            <circle cx="144" cy="47.0" r="4" fill="white" stroke="#5200d4" stroke-width="2"/>
+            <circle cx="180" cy="49.6" r="4" fill="white" stroke="#5200d4" stroke-width="2"/>
+            <circle cx="216" cy="54.0" r="4" fill="white" stroke="#5200d4" stroke-width="2"/>
+            <circle cx="252" cy="55.8" r="4" fill="white" stroke="#5200d4" stroke-width="2"/>
+            <!-- Current W8 ring -->
+            <circle cx="288" cy="58.4" r="9" fill="rgba(82,0,212,0.10)"/>
+            <circle cx="288" cy="58.4" r="5" fill="white" stroke="#5200d4" stroke-width="2.5"/>
+            <!-- X labels -->
+            <text x="36"  y="116" font-size="10" fill="#a3a3a3" text-anchor="middle" font-family="Inter,sans-serif">W1</text>
+            <text x="72"  y="116" font-size="10" fill="#a3a3a3" text-anchor="middle" font-family="Inter,sans-serif">W2</text>
+            <text x="108" y="116" font-size="10" fill="#a3a3a3" text-anchor="middle" font-family="Inter,sans-serif">W3</text>
+            <text x="144" y="116" font-size="10" fill="#a3a3a3" text-anchor="middle" font-family="Inter,sans-serif">W4</text>
+            <text x="180" y="116" font-size="10" fill="#a3a3a3" text-anchor="middle" font-family="Inter,sans-serif">W5</text>
+            <text x="216" y="116" font-size="10" fill="#a3a3a3" text-anchor="middle" font-family="Inter,sans-serif">W6</text>
+            <text x="252" y="116" font-size="10" fill="#a3a3a3" text-anchor="middle" font-family="Inter,sans-serif">W7</text>
+            <text x="288" y="116" font-size="10" fill="#5200d4" text-anchor="middle" font-family="Inter,sans-serif" font-weight="700">W8</text>
+          </svg>
+        </div>
+        <p class="chart-footnote">Pain score 0–10 &nbsp;·&nbsp; lower is better</p>
+      </div>
+
+      <!-- Activity Card -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Weekly workouts</span>
+          <span class="badge badge-blue">
+            <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M6 10V2M2 6l4-4 4 4" stroke="#1d4ed8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Trending up
+          </span>
+        </div>
+        <div class="current-value">
+          <span class="current-big">4</span>
+          <span class="current-denom">workouts this week</span>
+        </div>
+        <div class="chart-wrap">
+          <svg viewBox="0 0 300 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Y labels -->
+            <text x="30" y="13"  font-size="10" fill="#a3a3a3" text-anchor="end" font-family="Inter,sans-serif" font-weight="600">6</text>
+            <text x="30" y="47"  font-size="10" fill="#a3a3a3" text-anchor="end" font-family="Inter,sans-serif" font-weight="600">3</text>
+            <text x="30" y="81"  font-size="10" fill="#a3a3a3" text-anchor="end" font-family="Inter,sans-serif" font-weight="600">0</text>
+            <!-- Grid lines -->
+            <line x1="33" y1="10" x2="292" y2="10" stroke="#f0f0f0" stroke-width="1"/>
+            <line x1="33" y1="44" x2="292" y2="44" stroke="#f0f0f0" stroke-width="1"/>
+            <line x1="33" y1="78" x2="292" y2="78" stroke="#f0f0f0" stroke-width="1"/>
+            <!-- Area fill — sessions [1,3,2,4,3,5,3,4] → y=[66.7,44,55.3,32.7,44,21.3,44,32.7] -->
+            <path d="M 36 66.7 C 48 66.7,60 44,72 44 C 84 44,96 55.3,108 55.3 C 120 55.3,132 32.7,144 32.7 C 156 32.7,168 44,180 44 C 192 44,204 21.3,216 21.3 C 228 21.3,240 44,252 44 C 264 44,276 32.7,288 32.7 L 288 78 L 36 78 Z"
+                  fill="#f5f0ff" opacity="0.75"/>
+            <!-- Line -->
+            <path d="M 36 66.7 C 48 66.7,60 44,72 44 C 84 44,96 55.3,108 55.3 C 120 55.3,132 32.7,144 32.7 C 156 32.7,168 44,180 44 C 192 44,204 21.3,216 21.3 C 228 21.3,240 44,252 44 C 264 44,276 32.7,288 32.7"
+                  stroke="#5200d4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- Dots -->
+            <circle cx="36"  cy="66.7" r="4" fill="white" stroke="#5200d4" stroke-width="2"/>
+            <circle cx="72"  cy="44.0" r="4" fill="white" stroke="#5200d4" stroke-width="2"/>
+            <circle cx="108" cy="55.3" r="4" fill="white" stroke="#5200d4" stroke-width="2"/>
+            <circle cx="144" cy="32.7" r="4" fill="white" stroke="#5200d4" stroke-width="2"/>
+            <circle cx="180" cy="44.0" r="4" fill="white" stroke="#5200d4" stroke-width="2"/>
+            <circle cx="216" cy="21.3" r="4" fill="white" stroke="#5200d4" stroke-width="2"/>
+            <circle cx="252" cy="44.0" r="4" fill="white" stroke="#5200d4" stroke-width="2"/>
+            <!-- Current W8 ring -->
+            <circle cx="288" cy="32.7" r="9"  fill="rgba(82,0,212,0.10)"/>
+            <circle cx="288" cy="32.7" r="5"  fill="white" stroke="#5200d4" stroke-width="2.5"/>
+            <!-- X labels -->
+            <text x="36"  y="96" font-size="10" fill="#a3a3a3" text-anchor="middle" font-family="Inter,sans-serif">W1</text>
+            <text x="72"  y="96" font-size="10" fill="#a3a3a3" text-anchor="middle" font-family="Inter,sans-serif">W2</text>
+            <text x="108" y="96" font-size="10" fill="#a3a3a3" text-anchor="middle" font-family="Inter,sans-serif">W3</text>
+            <text x="144" y="96" font-size="10" fill="#a3a3a3" text-anchor="middle" font-family="Inter,sans-serif">W4</text>
+            <text x="180" y="96" font-size="10" fill="#a3a3a3" text-anchor="middle" font-family="Inter,sans-serif">W5</text>
+            <text x="216" y="96" font-size="10" fill="#a3a3a3" text-anchor="middle" font-family="Inter,sans-serif">W6</text>
+            <text x="252" y="96" font-size="10" fill="#a3a3a3" text-anchor="middle" font-family="Inter,sans-serif">W7</text>
+            <text x="288" y="96" font-size="10" fill="#5200d4" text-anchor="middle" font-family="Inter,sans-serif" font-weight="700">W8</text>
+          </svg>
+        </div>
+        <p class="chart-footnote">25 workouts done &nbsp;·&nbsp; about 3 per week</p>
+      </div>
+
+      <!-- Trainer Message -->
+      <div class="card">
+        <div class="trainer-inner">
+          <div class="trainer-header">
+            <div class="trainer-avatar">
+              <img src="../dynamic-header/assets/images/trainer-photo.jpg" alt="Amanda"
+                   onerror="this.style.display='none';this.parentElement.textContent='👋'"/>
+            </div>
+            <div>
+              <p class="trainer-name">Amanda</p>
+              <p class="trainer-role">Your Bold trainer</p>
+            </div>
+          </div>
+          <p class="trainer-msg">Mary, your pain is down because you showed up — consistently. Doing 3 to 4 workouts every week for 8 weeks builds exactly the joint strength your body needs to feel this better. That's not luck, that's your effort. Keep going.</p>
+        </div>
+      </div>
+
+      <!-- Key Wins -->
+      <div class="card">
+        <div class="wins-inner">
+          <p class="wins-title">What you've achieved</p>
+          <div class="win-item">
+            <div class="win-icon" style="background:#f0fdf4">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="win-text">
+              <p class="win-headline">25 workouts completed</p>
+              <p class="win-body">You showed up 87% of the time — better than most people in this program</p>
+            </div>
+          </div>
+          <div class="win-item">
+            <div class="win-icon" style="background:#f5f0ff">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" stroke="#5200d4" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                <polyline points="17 6 23 6 23 12" stroke="#5200d4" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="win-text">
+              <p class="win-headline">Pain dropped 3 points</p>
+              <p class="win-body">From 7.5 to 4.5 out of 10 — a real, meaningful improvement</p>
+            </div>
+          </div>
+          <div class="win-item">
+            <div class="win-icon" style="background:#fff7ed">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <path d="M22 11.08V12a10 10 0 11-5.93-9.14" stroke="#ea580c" stroke-width="2" stroke-linecap="round"/>
+                <polyline points="22 4 12 14.01 9 11.01" stroke="#ea580c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="win-text">
+              <p class="win-headline">No surgery or X-rays needed</p>
+              <p class="win-body">Exercise is working — you're on track to finish week 12</p>
+            </div>
+          </div>
+          <div class="wins-spacer"></div>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div class="cta-wrap">
+        <button class="cta-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+          </svg>
+          Share with your doctor
+        </button>
+      </div>
+
+    </div><!-- end .phone-body -->
+
+    <!-- Tab Bar -->
+    <div class="tab-bar">
+      <button class="tab-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span class="tab-label">Today</span>
+      </button>
+      <button class="tab-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+        <span class="tab-label">Care</span>
+      </button>
+      <button class="tab-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <span class="tab-label">Explore</span>
+      </button>
+      <button class="tab-item active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        <span class="tab-label">Progress</span>
+      </button>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

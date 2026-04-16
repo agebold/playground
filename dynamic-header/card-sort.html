@@ -72,7 +72,7 @@
     .page {
       max-width: 1280px;
       margin: 0 auto;
-      padding: 24px 28px 80px;
+      padding: 32px 24px 64px;
     }
 
     /* ── Buttons ── */
@@ -81,24 +81,22 @@
       background: #1B6B5A;
       color: #fff;
       border: none;
-      border-radius: 10px;
-      padding: 14px 36px;
-      font-size: 17px;
-      font-weight: 600;
+      border-radius: 8px;
+      padding: 12px 28px;
+      font-size: 14px;
+      font-weight: 500;
       cursor: pointer;
-      min-height: 52px;
       transition: background 0.15s;
     }
     .btn-primary:hover { background: #155549; }
     .btn-secondary {
       background: transparent;
-      border: 1px solid #d4d4d4;
-      border-radius: 10px;
-      padding: 12px 24px;
-      font-size: 15px;
+      border: 0.5px solid #d4d4d4;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-size: 13px;
       cursor: pointer;
-      color: #404040;
-      min-height: 48px;
+      color: #525252;
       transition: background 0.15s;
     }
     .btn-secondary:hover { background: #f5f5f5; }
@@ -106,25 +104,23 @@
       background: #1B6B5A;
       color: #fff;
       border: none;
-      border-radius: 10px;
-      padding: 10px 22px;
-      font-size: 15px;
-      font-weight: 600;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 12px;
+      font-weight: 500;
       cursor: pointer;
-      min-height: 44px;
       transition: background 0.15s;
     }
     .btn-sm-green:hover { background: #155549; }
     .btn-sm-purple {
       background: #EEEDFE;
-      color: #3F37A8;
+      color: #534AB7;
       border: none;
-      border-radius: 10px;
-      padding: 10px 22px;
-      font-size: 15px;
-      font-weight: 600;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 12px;
+      font-weight: 500;
       cursor: pointer;
-      min-height: 44px;
       transition: background 0.15s;
     }
     .btn-sm-purple:hover { background: #e0dffe; }
@@ -146,18 +142,17 @@
     /* ── Card ── */
     .card-unsorted {
       background: #ffffff;
-      border: 1px solid #e5e5e5;
-      border-radius: 10px;
-      padding: 12px 16px;
-      font-size: 15px;
+      border: 0.5px solid #e5e5e5;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 12px;
       color: #171717;
       cursor: grab;
       user-select: none;
-      max-width: 280px;
-      line-height: 1.5;
+      max-width: 240px;
+      line-height: 1.4;
       transition: border-color 0.1s, box-shadow 0.1s, opacity 0.1s;
     }
-    .card-unsorted:hover { border-color: #a3a3a3; box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
     .card-unsorted:active { cursor: grabbing; }
     .card-unsorted.is-dragging {
       opacity: 0.5;
@@ -165,18 +160,18 @@
     }
     .card-sorted {
       background: #E1F5EE;
-      border: 1px solid #9FE1CB;
-      border-radius: 10px;
-      padding: 10px 14px;
-      font-size: 15px;
-      color: #0A5A46;
+      border: 0.5px solid #9FE1CB;
+      border-radius: 8px;
+      padding: 7px 10px;
+      font-size: 12px;
+      color: #0F6E56;
       cursor: grab;
       user-select: none;
       width: 100%;
-      line-height: 1.5;
+      line-height: 1.4;
       display: flex;
       align-items: flex-start;
-      gap: 8px;
+      gap: 6px;
       transition: opacity 0.1s;
     }
     .card-sorted:active { cursor: grabbing; }
@@ -185,97 +180,87 @@
       background: none;
       border: none;
       cursor: pointer;
-      font-size: 14px;
+      font-size: 10px;
       opacity: 0.5;
-      padding: 2px 4px;
-      color: #0A5A46;
+      padding: 0;
+      color: #0F6E56;
       flex-shrink: 0;
-      margin-top: 1px;
-      min-width: 28px;
-      min-height: 28px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 4px;
+      margin-top: 2px;
     }
-    .card-remove-btn:hover { opacity: 1; background: rgba(0,0,0,0.06); }
+    .card-remove-btn:hover { opacity: 1; }
 
     /* ── Group header ── */
     .group-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 12px 16px;
-      border-bottom: 1px solid #e5e5e5;
+      padding: 10px 14px;
+      border-bottom: 0.5px solid #e5e5e5;
       background: #f5f5f5;
     }
     .group-name-display {
-      font-size: 16px;
-      font-weight: 600;
+      font-size: 14px;
+      font-weight: 500;
       color: #171717;
       cursor: text;
       flex: 1;
-      line-height: 1.4;
-      padding: 4px 0;
     }
     .group-name-input {
       border: none;
       background: transparent;
-      font-size: 16px;
-      font-weight: 600;
+      font-size: 14px;
+      font-weight: 500;
       color: #171717;
       outline: none;
       width: 100%;
       font-family: 'Inter', sans-serif;
-      padding: 4px 0;
     }
-    .group-name-input::placeholder { color: #a3a3a3; font-weight: 400; }
     .group-meta {
       display: flex;
-      gap: 6px;
+      gap: 8px;
       align-items: center;
     }
     .group-count {
-      font-size: 13px;
-      color: #525252;
+      font-size: 11px;
+      color: #737373;
     }
     .group-delete-btn {
       background: none;
       border: none;
       color: #737373;
       cursor: pointer;
-      font-size: 16px;
+      font-size: 14px;
       padding: 0;
       line-height: 1;
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 36px;
-      height: 36px;
-      border-radius: 6px;
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
       transition: background 0.1s, color 0.1s;
     }
     .group-delete-btn:hover { background: #e5e5e5; color: #171717; }
 
     .group-body {
-      padding: 10px;
+      padding: 8px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      min-height: 52px;
+      gap: 5px;
+      min-height: 44px;
     }
     .groups-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 12px;
       align-items: start;
     }
     .group-drag-handle {
       cursor: grab;
       color: #d4d4d4;
-      font-size: 18px;
+      font-size: 15px;
       line-height: 1;
-      padding: 0 8px 0 0;
+      padding: 0 6px 0 0;
       flex-shrink: 0;
       user-select: none;
       display: flex;
@@ -287,15 +272,15 @@
       background: none;
       border: none;
       cursor: pointer;
-      color: #525252;
+      color: #737373;
       padding: 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 36px;
-      height: 36px;
-      border-radius: 6px;
-      font-size: 12px;
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      font-size: 10px;
       transition: background 0.1s;
       flex-shrink: 0;
     }
@@ -306,9 +291,9 @@
       box-shadow: 0 0 0 2px rgba(24,95,165,0.2);
     }
     .group-empty-hint {
-      font-size: 14px;
+      font-size: 12px;
       color: #737373;
-      padding: 10px 8px;
+      padding: 8px;
       font-style: italic;
       pointer-events: none;
     }
@@ -317,41 +302,43 @@
     .info-box {
       background: #f5f5f5;
       border-radius: 12px;
-      padding: 20px 24px;
-      margin-bottom: 28px;
-      font-size: 16px;
-      color: #404040;
-      line-height: 1.8;
+      padding: 16px;
+      margin-bottom: 24px;
+      font-size: 13px;
+      color: #525252;
+      line-height: 1.6;
     }
 
     /* ── Results ── */
     .result-group {
       margin-bottom: 20px;
       background: #ffffff;
-      border: 1px solid #e5e5e5;
+      border: 0.5px solid #e5e5e5;
       border-radius: 12px;
       overflow: hidden;
     }
     .result-group-header {
-      padding: 12px 18px;
-      font-weight: 600;
-      font-size: 16px;
+      background: #1B6B5A;
+      padding: 10px 16px;
+      color: #fff;
+      font-weight: 500;
+      font-size: 14px;
     }
     .result-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 12px 18px;
-      border-bottom: 1px solid #e5e5e5;
-      font-size: 15px;
+      padding: 10px 16px;
+      border-bottom: 0.5px solid #e5e5e5;
+      font-size: 13px;
     }
     .result-row:last-child { border-bottom: none; }
     .result-hypothesis {
-      font-size: 13px;
-      color: #737373;
-      margin-left: 16px;
+      font-size: 11px;
+      color: #888;
+      margin-left: 12px;
       text-align: right;
-      min-width: 140px;
+      min-width: 120px;
       flex-shrink: 0;
     }
 
@@ -362,171 +349,33 @@
     /* ── Export button ── */
     .btn-export {
       display: inline-flex; align-items: center; gap: 6px;
-      background: #fff; border: 1px solid #e5e5e5; border-radius: 10px;
-      padding: 10px 16px; font-size: 14px; font-weight: 500; color: #404040;
-      cursor: pointer; min-height: 44px; transition: background 0.15s;
+      background: #fff; border: 1px solid #e5e5e5; border-radius: 8px;
+      padding: 8px 14px; font-size: 12px; font-weight: 500; color: #525252;
+      cursor: pointer; transition: background 0.15s;
     }
     .btn-export:hover { background: #f5f5f5; }
 
     /* ── Empty state ── */
     .empty-state {
       text-align: center;
-      padding: 48px 40px;
-      color: #525252;
-      font-size: 16px;
-      line-height: 1.6;
+      padding: 40px;
+      color: #737373;
+      font-size: 13px;
     }
 
     /* ── Progress bar ── */
     .progress-bar-wrap {
       background: #e5e5e5;
-      border-radius: 6px;
-      height: 8px;
-      margin-bottom: 0;
+      border-radius: 4px;
+      height: 4px;
+      margin-bottom: 16px;
       overflow: hidden;
     }
     .progress-bar-fill {
       height: 100%;
       background: #1B6B5A;
-      border-radius: 6px;
+      border-radius: 4px;
       transition: width 0.3s;
-    }
-
-    /* ── Sticky sort header ── */
-    .sort-sticky-header {
-      position: sticky;
-      top: 64px;
-      z-index: 10;
-      background: #f5f5f5;
-      padding: 16px 0 14px;
-      margin-bottom: 20px;
-      border-bottom: 1px solid #e5e5e5;
-    }
-
-    /* ── Touch drag ghost ── */
-    .touch-drag-ghost {
-      position: fixed;
-      pointer-events: none;
-      z-index: 9999;
-      opacity: 0.9;
-      box-shadow: 0 10px 32px rgba(0,0,0,0.2);
-      transform: scale(1.04) rotate(1.5deg);
-      border-radius: 10px;
-      transition: transform 0.08s;
-    }
-
-    /* ── Mobile sort: card list + bottom sheet ── */
-    .m-progress { position: sticky; top: 56px; z-index: 9; background: #f5f5f5; padding: 12px 0 10px; border-bottom: 1px solid #e5e7eb; }
-    .m-progress-label { font-size: 13px; color: #525252; font-weight: 500; margin-bottom: 6px; display: flex; justify-content: space-between; }
-    .m-progress-bar { height: 6px; background: #e5e7eb; border-radius: 6px; overflow: hidden; }
-    .m-progress-fill { height: 100%; background: #1B6B5A; border-radius: 6px; transition: width 0.3s; }
-    .m-card-list { display: flex; flex-direction: column; gap: 10px; padding: 16px 0 100px; }
-    .m-card-item {
-      background: #fff; border: 2px solid #e5e7eb; border-radius: 14px;
-      padding: 18px 16px; font-size: 16px; font-weight: 500; color: #171717;
-      cursor: pointer; transition: border-color 0.15s, box-shadow 0.15s;
-      min-height: 64px; display: flex; align-items: center;
-      justify-content: space-between; gap: 12px; line-height: 1.4;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .m-card-item:active { background: #f9fafb; }
-    .m-card-item.selected { border-color: #1B6B5A; box-shadow: 0 0 0 3px rgba(27,107,90,0.2); background: #f0faf7; }
-    .m-card-badge { font-size: 12px; font-weight: 500; border-radius: 20px; padding: 3px 10px; white-space: nowrap; flex-shrink: 0; }
-    .m-view-toggle { background: none; border: none; font-size: 13px; color: #1B6B5A; font-weight: 600; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; padding: 0; min-height: 0; }
-    .m-groups-overview { display: flex; flex-direction: column; gap: 14px; padding: 16px 0 100px; }
-    .m-group-section { background: #fff; border-radius: 14px; border: 1.5px solid #e5e7eb; overflow: hidden; }
-    .m-group-section-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; font-size: 15px; font-weight: 600; color: #171717; border-bottom: 1px solid #f0f0f0; }
-    .m-group-section-count { font-size: 13px; color: #737373; font-weight: 400; }
-    .m-group-card-row { padding: 10px 16px; font-size: 14px; color: #525252; border-bottom: 1px solid #f5f5f5; }
-    .m-group-card-row:last-child { border-bottom: none; }
-    .m-group-empty { padding: 14px 16px; font-size: 14px; color: #a3a3a3; font-style: italic; }
-    .m-overlay { position: fixed; inset: 0; z-index: 40; background: rgba(0,0,0,0.4); opacity: 0; pointer-events: none; transition: opacity 0.25s; }
-    .m-overlay.open { opacity: 1; pointer-events: all; }
-    .m-sheet {
-      position: fixed; bottom: 0; left: 0; right: 0; z-index: 50;
-      background: #fff; border-radius: 20px 20px 0 0;
-      padding: 12px 20px 36px;
-      transform: translateY(100%);
-      transition: transform 0.3s cubic-bezier(0.32,0.72,0,1);
-      max-height: 75vh; overflow-y: auto;
-    }
-    .m-sheet.open { transform: translateY(0); }
-    .m-sheet-handle { width: 40px; height: 4px; background: #d4d4d4; border-radius: 4px; margin: 0 auto 16px; }
-    .m-sheet-card-label { font-size: 15px; color: #525252; margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid #f0f0f0; font-style: italic; line-height: 1.4; }
-    .m-sheet-section-label { font-size: 14px; font-weight: 600; color: #171717; margin-bottom: 10px; }
-    .m-group-btn { width: 100%; background: #fff; border: 1.5px solid #e5e7eb; border-radius: 12px; padding: 14px 18px; font-size: 16px; font-weight: 500; color: #171717; text-align: left; cursor: pointer; min-height: 52px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; transition: background 0.1s, border-color 0.1s; }
-    .m-group-btn:hover, .m-group-btn:active { background: #f0faf7; border-color: #1B6B5A; }
-    .m-group-count { font-size: 13px; color: #737373; }
-    .m-new-group-btn { width: 100%; background: transparent; border: 1.5px dashed #a3a3a3; border-radius: 12px; padding: 14px 18px; font-size: 16px; font-weight: 500; color: #525252; text-align: left; cursor: pointer; min-height: 52px; display: flex; align-items: center; gap: 10px; margin-bottom: 8px; transition: background 0.1s; }
-    .m-new-group-btn:hover { background: #f5f5f5; }
-    .m-unsort-btn { width: 100%; background: none; border: none; font-size: 14px; color: #737373; cursor: pointer; padding: 12px 0; text-decoration: underline; text-underline-offset: 3px; min-height: 44px; }
-    .m-create-input { width: 100%; border: 2px solid #1B6B5A; border-radius: 12px; padding: 14px 16px; font-size: 16px; font-family: 'Inter', sans-serif; outline: none; color: #171717; min-height: 52px; margin-bottom: 10px; box-sizing: border-box; }
-    .m-create-input::placeholder { color: #a3a3a3; }
-    .m-back-btn { background: none; border: none; font-size: 15px; color: #525252; cursor: pointer; padding: 10px 0; text-decoration: underline; text-underline-offset: 3px; min-height: 44px; display: block; margin-top: 4px; }
-    .m-all-sorted { background: #f0faf7; border: 2px solid #1B6B5A; border-radius: 14px; padding: 18px 16px; text-align: center; margin-bottom: 16px; }
-    .m-all-sorted-title { font-size: 17px; font-weight: 700; color: #1B6B5A; margin-bottom: 6px; }
-    .m-all-sorted-sub { font-size: 14px; color: #525252; margin-bottom: 14px; }
-
-    /* ── Desktop layout (card grid + sticky panel) ── */
-    .sort-layout { display: block; }
-    .sort-panel-desktop { display: none; }
-
-    @media (min-width: 640px) {
-      .m-progress { top: 64px; }
-      .sort-layout { display: grid; grid-template-columns: 1fr 300px; gap: 24px; align-items: start; padding-top: 16px; }
-      .sort-cards-col { min-width: 0; }
-      .m-card-list { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding-bottom: 60px; }
-      .sort-panel-desktop { display: block; }
-      .sort-panel-inner {
-        position: sticky; top: 120px;
-        background: #fff; border-radius: 16px;
-        border: 1.5px solid #e5e7eb;
-        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-        padding: 20px; overflow-y: auto;
-        max-height: calc(100vh - 140px);
-      }
-      .sort-panel-empty { text-align: center; padding: 32px 16px; color: #737373; font-size: 14px; line-height: 1.6; }
-      .sort-panel-empty-icon { font-size: 28px; margin-bottom: 10px; }
-      .m-sheet { display: none !important; }
-      .m-overlay { display: none !important; }
-      .m-sheet-card-label { font-size: 14px; }
-      .m-back-btn { font-size: 14px; }
-    }
-
-    /* ── Mobile responsive ── */
-    @media (max-width: 640px) {
-      .nav {
-        padding: 0 16px;
-        height: 56px;
-        gap: 10px;
-      }
-      .nav-back { margin-left: 4px; font-size: 12px; padding: 6px 8px; }
-      .nav-back span.nav-back-text { display: none; }
-      .nav-title { font-size: 12px; }
-      .page { padding: 16px 16px 80px; }
-
-      .sort-sticky-header {
-        top: 56px;
-        padding: 12px 0 10px;
-      }
-      .groups-grid {
-        grid-template-columns: 1fr;
-        gap: 10px;
-      }
-      /* Full-width unsorted cards on mobile */
-      .card-unsorted {
-        max-width: 100%;
-        width: 100%;
-        box-sizing: border-box;
-      }
-      /* Unsorted pile becomes a vertical list */
-      #unsorted-pile {
-        flex-direction: column;
-      }
-      .btn-primary { width: 100%; text-align: center; justify-content: center; }
-      .btn-sm-green, .btn-sm-purple { font-size: 14px; padding: 9px 16px; }
-      /* Sort header buttons row wrap on very narrow screens */
-      .sort-header-actions { flex-wrap: wrap; gap: 8px; }
     }
   </style>
 </head>
@@ -550,7 +399,7 @@
     <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M8.75 2.625L4.375 7L8.75 11.375" stroke="#525252" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
-    <span class="nav-back-text">Back to today</span>
+    Back to today
   </a>
   <span class="nav-title">Card sort exercise</span>
 </nav>
@@ -647,19 +496,6 @@ function shuffle(arr) {
   return a;
 }
 
-// ── Group color palette ─────────────────────────────────────────────
-const GROUP_COLORS = [
-  { border: '#3B82F6', bg: '#EFF6FF', badge: '#DBEAFE', text: '#1D4ED8' }, // blue
-  { border: '#8B5CF6', bg: '#F5F3FF', badge: '#EDE9FE', text: '#6D28D9' }, // purple
-  { border: '#F97316', bg: '#FFF7ED', badge: '#FFEDD5', text: '#C2410C' }, // orange
-  { border: '#EC4899', bg: '#FDF2F8', badge: '#FCE7F3', text: '#BE185D' }, // pink
-  { border: '#F59E0B', bg: '#FFFBEB', badge: '#FEF3C7', text: '#B45309' }, // amber
-  { border: '#EF4444', bg: '#FEF2F2', badge: '#FEE2E2', text: '#B91C1C' }, // red
-  { border: '#06B6D4', bg: '#ECFEFF', badge: '#CFFAFE', text: '#0E7490' }, // cyan
-  { border: '#10B981', bg: '#F0FDF4', badge: '#D1FAE5', text: '#047857' }, // green
-];
-function groupColor(group) { return GROUP_COLORS[(group.color ?? 0) % GROUP_COLORS.length]; }
-
 // ── Application state ──────────────────────────────────────────────
 const state = {
   phase: 'intro',        // 'intro' | 'sort' | 'results'
@@ -668,10 +504,6 @@ const state = {
   editingGroupId: null,
   addingCard: false,
   editingCardId: null,
-  mobileSelectedCardId: null,
-  mobileCreatingGroup: false,
-  mobileGroupName: '',
-  sortView: 'cards',     // 'cards' | 'groups'
 };
 
 // Module-level drag variables (no re-render on dragover)
@@ -679,109 +511,9 @@ let dragCardId = null;
 let dragGroupId = null;
 let dragOverCardId = null; // for in-group reorder indicator
 
-// ── Touch drag state ───────────────────────────────────────────────
-let touchPendingCardId = null;
-let touchDragCardId    = null;
-let touchDragActive    = false;
-let touchDragGhost     = null;
-let touchDragOffsetX   = 0;
-let touchDragOffsetY   = 0;
-let touchDragStartX    = 0;
-let touchDragStartY    = 0;
-const TOUCH_THRESHOLD  = 8; // px before drag starts
-
-function touchCreateGhost(sourceEl) {
-  const rect = sourceEl.getBoundingClientRect();
-  touchDragGhost = sourceEl.cloneNode(true);
-  touchDragGhost.className = (touchDragGhost.className || '') + ' touch-drag-ghost';
-  touchDragGhost.style.width  = rect.width  + 'px';
-  touchDragGhost.style.left   = rect.left   + 'px';
-  touchDragGhost.style.top    = rect.top    + 'px';
-  document.body.appendChild(touchDragGhost);
-}
-
-function touchMoveGhost(clientX, clientY) {
-  if (!touchDragGhost) return;
-  touchDragGhost.style.left = (clientX - touchDragOffsetX) + 'px';
-  touchDragGhost.style.top  = (clientY - touchDragOffsetY) + 'px';
-}
-
-function touchHighlightZone(clientX, clientY) {
-  document.querySelectorAll('.group-drop').forEach(g => g.classList.remove('drag-over'));
-  if (touchDragGhost) touchDragGhost.style.visibility = 'hidden';
-  const el = document.elementFromPoint(clientX, clientY);
-  if (touchDragGhost) touchDragGhost.style.visibility = '';
-  const zone = el && el.closest('.group-drop');
-  if (zone) zone.classList.add('drag-over');
-}
-
-function touchCleanup(sourceEl) {
-  document.querySelectorAll('.group-drop').forEach(g => g.classList.remove('drag-over'));
-  if (touchDragGhost) { touchDragGhost.remove(); touchDragGhost = null; }
-  if (sourceEl) sourceEl.style.opacity = '';
-  touchPendingCardId = null;
-  touchDragCardId    = null;
-  touchDragActive    = false;
-}
-
-function attachTouchDrag(el) {
-  el.addEventListener('touchstart', (e) => {
-    if (e.target.closest('button') || e.target.closest('input')) return;
-    const cardId = parseInt(el.dataset.cardId, 10);
-    if (!cardId) return;
-    const t = e.touches[0];
-    const rect = el.getBoundingClientRect();
-    touchPendingCardId = cardId;
-    touchDragActive    = false;
-    touchDragStartX    = t.clientX;
-    touchDragStartY    = t.clientY;
-    touchDragOffsetX   = t.clientX - rect.left;
-    touchDragOffsetY   = t.clientY - rect.top;
-  }, { passive: true });
-
-  el.addEventListener('touchmove', (e) => {
-    if (!touchPendingCardId) return;
-    const t = e.touches[0];
-    const dx = t.clientX - touchDragStartX;
-    const dy = t.clientY - touchDragStartY;
-
-    if (!touchDragActive && Math.sqrt(dx * dx + dy * dy) > TOUCH_THRESHOLD) {
-      touchDragActive  = true;
-      touchDragCardId  = touchPendingCardId;
-      touchCreateGhost(el);
-      el.style.opacity = '0.3';
-    }
-
-    if (touchDragActive) {
-      touchMoveGhost(t.clientX, t.clientY);
-      touchHighlightZone(t.clientX, t.clientY);
-      e.preventDefault();
-    }
-  }, { passive: false });
-
-  el.addEventListener('touchend', (e) => {
-    if (!touchDragActive || !touchDragCardId) {
-      touchCleanup(el);
-      return;
-    }
-    const t = e.changedTouches[0];
-    if (touchDragGhost) touchDragGhost.style.visibility = 'hidden';
-    const below    = document.elementFromPoint(t.clientX, t.clientY);
-    const zone     = below && below.closest('.group-drop');
-    const cardId   = touchDragCardId;
-    touchCleanup(el);
-    if (zone) {
-      const groupId = parseInt(zone.dataset.groupId, 10);
-      if (groupId) moveCardToGroup(cardId, groupId);
-    }
-    render();
-    e.preventDefault();
-  }, { passive: false });
-}
-
 // ── State helpers ──────────────────────────────────────────────────
 function addGroup() {
-  const newGroup = { id: Date.now(), name: '', cards: [], collapsed: false, color: state.groups.length % GROUP_COLORS.length };
+  const newGroup = { id: Date.now(), name: 'Untitled group', cards: [], collapsed: false };
   state.groups.push(newGroup);
   state.editingGroupId = newGroup.id;
   render();
@@ -796,8 +528,6 @@ function renameGroup(gid, name) {
 }
 
 function saveGroupName(gid) {
-  const g = state.groups.find(g => g.id === gid);
-  if (g && !g.name.trim()) g.name = 'Untitled group';
   state.editingGroupId = null;
   render();
 }
@@ -927,36 +657,36 @@ function render() {
 function renderIntro() {
   return `
     <div style="max-width:640px;margin:0 auto;padding-top:8px;">
-      <div style="font-size:12px;text-transform:uppercase;letter-spacing:1px;color:#1B6B5A;font-weight:600;margin-bottom:10px;">
+      <div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#1B6B5A;font-weight:500;margin-bottom:8px;">
         Age Bold — Card sort exercise
       </div>
-      <h2 style="font-size:26px;font-weight:600;color:#171717;margin-bottom:16px;line-height:1.3;">
-        Help us design a better app
+      <h2 style="font-size:22px;font-weight:500;color:#171717;margin-bottom:12px;">
+        Open card sort
       </h2>
-      <p style="font-size:16px;color:#404040;line-height:1.7;margin-bottom:20px;">
-        Imagine you're using a health and wellness app. We'll show you <strong style="color:#171717;">36 cards</strong>, each describing something you might want to do in the app.
+      <p style="font-size:14px;color:#525252;line-height:1.6;margin-bottom:20px;">
+        Imagine you're using a health and wellness app designed for adults 65 and older.
+        Below are 36 things you might want to do in the app.
       </p>
-      <p style="font-size:16px;color:#404040;line-height:1.7;margin-bottom:24px;">
-        <strong style="color:#171717;">Sort the cards into groups that make sense to you</strong>, then give each group a name. There are no right or wrong answers — we just want to learn how you think about these activities.
+      <p style="font-size:14px;color:#525252;line-height:1.6;margin-bottom:20px;">
+        Your job is to <strong style="color:#171717;">sort these cards into groups that make sense to you</strong>,
+        then give each group a name. There are no right or wrong answers — we want to understand how you think about these activities.
       </p>
       <div class="info-box">
-        <strong style="color:#171717;font-size:16px;">Here's how it works:</strong><br><br>
-        1. Press <strong>"Add group"</strong> to create a category<br>
-        2. Give the group a name that feels right to you<br>
-        3. Drag cards into the group — or click a card, then click a group<br>
-        4. When you've sorted all the cards, you can see your results
+        <strong style="color:#171717;">How it works:</strong><br>
+        1. Create groups using the "Add group" button<br>
+        2. Name each group something meaningful to you<br>
+        3. Drag cards from the unsorted pile into your groups<br>
+        4. When all cards are sorted, review your results
       </div>
-      <button class="btn-primary" id="btn-start">Start sorting →</button>
+      <button class="btn-primary" id="btn-start">Start sorting</button>
     </div>
   `;
 }
 
 function renderResults() {
-  const groupsHtml = state.groups.map(g => {
-    const col = groupColor(g);
-    return `
-    <div class="result-group" style="border-color:${col.border};">
-      <div class="result-group-header" style="background:${col.bg}; color:${col.text}; border-bottom:2px solid ${col.border};">${escHtml(g.name)}</div>
+  const groupsHtml = state.groups.map(g => `
+    <div class="result-group">
+      <div class="result-group-header">${escHtml(g.name)}</div>
       ${g.cards.map(c => `
         <div class="result-row">
           <span style="color:#171717;flex:1;">${escHtml(c.text)}</span>
@@ -964,8 +694,8 @@ function renderResults() {
         </div>
       `).join('')}
       ${g.cards.length === 0 ? '<div class="result-row" style="color:#737373;font-style:italic;">No cards in this group</div>' : ''}
-    </div>`;
-  }).join('');
+    </div>
+  `).join('');
 
   return `
     <div style="padding-top:8px;" id="export-target">
@@ -996,32 +726,31 @@ function exportAsImage() {
 }
 
 function renderSort() {
-  return renderMobileSort();
   const totalPlaced = state.groups.reduce((sum, g) => sum + g.cards.length, 0);
   const totalCards = state.cards.length + totalPlaced;
   const sorted = state.cards.length === 0 && state.groups.length > 0;
   const pct = totalCards > 0 ? Math.round((totalPlaced / totalCards) * 100) : 0;
 
   const addCardForm = state.addingCard ? `
-    <div style="display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap;">
+    <div style="display:flex;gap:6px;align-items:center;margin-top:8px;">
       <input id="new-card-input" type="text" placeholder="Describe what you'd do…"
-        style="flex:1;min-width:200px;border:2px solid #1B6B5A;border-radius:10px;padding:10px 14px;font-size:15px;font-family:'Inter',sans-serif;outline:none;color:#171717;background:#fff;" />
-      <button class="btn-sm-green" id="btn-save-card">Add card</button>
-      <button class="btn-secondary" id="btn-cancel-card" style="padding:10px 18px;font-size:15px;min-height:44px;">Cancel</button>
+        style="flex:1;border:1.5px solid #1B6B5A;border-radius:8px;padding:7px 10px;font-size:12px;font-family:'Inter',sans-serif;outline:none;color:#171717;background:#fff;" />
+      <button class="btn-sm-green" id="btn-save-card">Add</button>
+      <button class="btn-secondary" id="btn-cancel-card" style="padding:7px 12px;font-size:12px;">Cancel</button>
     </div>
   ` : `
-    <button id="btn-add-card" style="margin-top:10px;display:inline-flex;align-items:center;gap:6px;background:none;border:1.5px dashed #a3a3a3;border-radius:10px;padding:10px 18px;font-size:15px;color:#525252;cursor:pointer;font-family:'Inter',sans-serif;min-height:44px;transition:border-color 0.15s,color 0.15s;">
-      <svg width="14" height="14" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    <button id="btn-add-card" style="margin-top:8px;display:inline-flex;align-items:center;gap:5px;background:none;border:1px dashed #d4d4d4;border-radius:8px;padding:6px 12px;font-size:12px;color:#737373;cursor:pointer;font-family:'Inter',sans-serif;transition:border-color 0.15s,color 0.15s;">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
       Add your own card
     </button>
   `;
 
   const unsortedHtml = `
-    <div style="margin-bottom:24px;">
-      <div style="font-size:14px;font-weight:600;color:#404040;margin-bottom:12px;">
-        Cards to sort (${state.cards.length} remaining)
+    <div style="margin-bottom:20px;">
+      <div style="font-size:12px;font-weight:500;color:#525252;margin-bottom:8px;">
+        Unsorted cards (${state.cards.length})
       </div>
-      <div id="unsorted-pile" style="display:flex;flex-wrap:wrap;gap:8px;">
+      <div style="display:flex;flex-wrap:wrap;gap:6px;">
         ${state.cards.map(card => {
           if (card.custom && state.editingCardId === card.id) {
             return `
@@ -1053,8 +782,8 @@ function renderSort() {
     const isCollapsed = group.collapsed;
 
     const headerContent = isEditing
-      ? `<input class="group-name-input" type="text" value="${escAttr(group.name)}" placeholder="Name this group…" data-group-id="${group.id}" />`
-      : `<div class="group-name-display" data-edit-group="${group.id}">${group.name ? escHtml(group.name) : '<span style="color:#a3a3a3;font-weight:400;">Untitled group</span>'}</div>`;
+      ? `<input class="group-name-input" type="text" value="${escAttr(group.name)}" data-group-id="${group.id}" />`
+      : `<div class="group-name-display" data-edit-group="${group.id}">${escHtml(group.name)}</div>`;
 
     const cardsHtml = group.cards.length === 0
       ? `<span class="group-empty-hint">Drag cards here</span>`
@@ -1100,29 +829,27 @@ function renderSort() {
   }).join('');
 
   const emptyState = state.groups.length === 0
-    ? `<div class="empty-state">Press <strong>"Add group"</strong> above to create your first category,<br>then drag cards into it.</div>`
+    ? `<div class="empty-state">Click "Add group" to create your first group, then drag cards into it.</div>`
     : '';
 
   return `
     <div style="padding-top:4px;">
-      <div class="sort-sticky-header">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-          <div>
-            <div style="font-size:12px;text-transform:uppercase;letter-spacing:1px;color:#1B6B5A;font-weight:600;">Card sort</div>
-            <div style="font-size:14px;color:#525252;margin-top:3px;">${totalPlaced} of ${CARDS_DATA.length} cards sorted · ${state.groups.length} group${state.groups.length !== 1 ? 's' : ''}</div>
-          </div>
-          <div class="sort-header-actions" style="display:flex;gap:10px;align-items:center;">
-            <button class="btn-sm-green" id="btn-add-group">+ Add group</button>
-            ${sorted ? `<button class="btn-sm-purple" id="btn-view-results">View results</button>` : ''}
-            <button class="btn-export" id="btn-export">
-              <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1v7M3.5 5.5l3 3 3-3M1.5 10h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              Export
-            </button>
-          </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <div>
+          <div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#1B6B5A;font-weight:500;">Card sort</div>
+          <div style="font-size:13px;color:#525252;margin-top:2px;">${totalPlaced} of ${CARDS_DATA.length} cards sorted · ${state.groups.length} group${state.groups.length !== 1 ? 's' : ''}</div>
         </div>
-        <div class="progress-bar-wrap">
-          <div class="progress-bar-fill" style="width:${pct}%;"></div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <button class="btn-sm-green" id="btn-add-group">+ Add group</button>
+          ${sorted ? `<button class="btn-sm-purple" id="btn-view-results">View results</button>` : ''}
+          <button class="btn-export" id="btn-export">
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1v7M3.5 5.5l3 3 3-3M1.5 10h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Export
+          </button>
         </div>
+      </div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" style="width:${pct}%;"></div>
       </div>
       ${unsortedHtml}
       <div class="groups-grid">
@@ -1131,152 +858,6 @@ function renderSort() {
       ${emptyState}
     </div>
   `;
-}
-
-// ── Mobile sort (one-card-at-a-time) ───────────────────────────────
-function renderMobileSort() {
-  const totalPlaced = state.groups.reduce((sum, g) => sum + g.cards.length, 0);
-  const totalCards  = state.cards.length + totalPlaced;
-  const pct = totalCards > 0 ? Math.round((totalPlaced / totalCards) * 100) : 0;
-  const allSorted = state.cards.length === 0 && state.groups.length > 0;
-
-  // Find selected card (unsorted or already in a group)
-  let selectedCard = null, selectedInGroup = null;
-  if (state.mobileSelectedCardId !== null) {
-    selectedCard = state.cards.find(c => c.id === state.mobileSelectedCardId) || null;
-    if (!selectedCard) {
-      for (const g of state.groups) {
-        const found = g.cards.find(c => c.id === state.mobileSelectedCardId);
-        if (found) { selectedCard = found; selectedInGroup = g; break; }
-      }
-    }
-  }
-  const sheetOpen = selectedCard !== null;
-
-  // All cards (unsorted first, then sorted with group reference)
-  const allCards = [
-    ...state.cards,
-    ...state.groups.flatMap(g => g.cards.map(c => ({ ...c, _group: g })))
-  ];
-
-  const cardListHtml = allCards.map(card => {
-    const inGroup = card._group || null;
-    const isSelected = card.id === state.mobileSelectedCardId;
-    const col = inGroup ? groupColor(inGroup) : null;
-    const cls = ['m-card-item', inGroup ? 'sorted' : '', isSelected ? 'selected' : ''].filter(Boolean).join(' ');
-    const inlineStyle = [
-      col ? `border-color:${col.border}; background:${col.bg};` : '',
-      isSelected && col ? `box-shadow:0 0 0 3px ${col.border}40;` : '',
-    ].filter(Boolean).join('');
-    const badge = inGroup
-      ? `<span class="m-card-badge" style="background:${col.badge}; color:${col.text};">${escHtml(inGroup.name || 'Untitled')}</span>`
-      : '';
-    return `<div class="${cls}"${inlineStyle ? ` style="${inlineStyle}"` : ''} data-action="m-select-card" data-card-id="${card.id}">
-      <span style="flex:1">${escHtml(card.text)}</span>${badge}
-    </div>`;
-  }).join('');
-
-  // Sheet body
-  let sheetBody = '';
-  if (sheetOpen) {
-    if (state.mobileCreatingGroup) {
-      sheetBody = `
-        <div class="m-sheet-section-label">Name this group:</div>
-        <input id="m-group-input" class="m-create-input" type="text"
-          placeholder="Group name…" value="${escAttr(state.mobileGroupName)}"
-          maxlength="60" autocomplete="off" />
-        <button class="btn-primary" data-action="m-create-group" style="width:100%">Add to this group</button>
-        <button class="m-back-btn" data-action="m-cancel-create">← Back to groups</button>`;
-    } else {
-      const groupBtns = state.groups.map(g => {
-        const col = groupColor(g);
-        return `<button class="m-group-btn" data-action="m-assign" data-group-id="${g.id}"
-          style="border-left:4px solid ${col.border}; background:${col.bg};">
-          <span>${g.name ? escHtml(g.name) : '<em style="color:#a3a3a3">Untitled group</em>'}</span>
-          <span class="m-group-count">${g.cards.length}</span>
-        </button>`;
-      }).join('');
-      const unsortBtn = selectedInGroup
-        ? `<button class="m-unsort-btn" data-action="m-unsort">Move back to unsorted</button>` : '';
-      sheetBody = `
-        <div class="m-sheet-section-label">${state.groups.length ? 'Add to a group:' : 'Create a group to add this card:'}</div>
-        ${groupBtns}
-        <button class="m-new-group-btn" data-action="m-start-create">
-          <span style="font-size:20px;line-height:1">+</span><span>Create new group</span>
-        </button>
-        ${unsortBtn}`;
-    }
-  }
-
-  // Desktop panel content (same as sheet body but with empty state)
-  const desktopPanel = sheetOpen
-    ? `<div class="m-sheet-card-label">"${escHtml(selectedCard.text)}"</div>${sheetBody}`
-    : `<div class="sort-panel-empty">
-        <div class="sort-panel-empty-icon">&#8592;</div>
-        <div>Click any card to assign it to a group</div>
-      </div>`;
-
-  const toggleLabel = state.sortView === 'groups'
-    ? '← Back to cards'
-    : `Groups (${state.groups.length}) →`;
-
-  const mainContent = state.sortView === 'groups'
-    ? renderGroupsOverview()
-    : `
-      <div class="sort-layout">
-        <div class="sort-cards-col">
-          ${allSorted ? `
-            <div class="m-all-sorted" style="margin-bottom:16px">
-              <div class="m-all-sorted-title">All cards sorted!</div>
-              <div class="m-all-sorted-sub">You can still move cards between groups, or finish below.</div>
-              <button class="btn-primary" data-action="finish-sort" style="width:100%">See results →</button>
-            </div>` : ''}
-          <div class="m-card-list">${cardListHtml}</div>
-        </div>
-        <div class="sort-panel-desktop">
-          <div class="sort-panel-inner">${desktopPanel}</div>
-        </div>
-      </div>
-      <div class="m-overlay${sheetOpen ? ' open' : ''}" data-action="m-close-sheet"></div>
-      <div class="m-sheet${sheetOpen ? ' open' : ''}">
-        <div class="m-sheet-handle"></div>
-        ${sheetOpen ? `<div class="m-sheet-card-label">"${escHtml(selectedCard.text)}"</div>${sheetBody}` : ''}
-      </div>`;
-
-  return `
-    <div class="m-progress">
-      <div class="m-progress-label">
-        <span>${totalPlaced} of ${totalCards} cards sorted</span>
-        <button class="m-view-toggle" data-action="m-toggle-view">${toggleLabel}</button>
-      </div>
-      <div class="m-progress-bar"><div class="m-progress-fill" style="width:${pct}%"></div></div>
-    </div>
-    ${mainContent}`;
-}
-
-// ── Groups overview ─────────────────────────────────────────────────
-function renderGroupsOverview() {
-  if (state.groups.length === 0) {
-    return `<div class="m-groups-overview">
-      <div style="text-align:center;color:#a3a3a3;padding:40px 0;font-size:15px;">
-        No groups yet. Sort some cards first.
-      </div>
-    </div>`;
-  }
-  const sections = state.groups.map(g => {
-    const col = groupColor(g);
-    const rows = g.cards.length === 0
-      ? `<div class="m-group-empty">No cards yet</div>`
-      : g.cards.map(c => `<div class="m-group-card-row">${escHtml(c.text)}</div>`).join('');
-    return `<div class="m-group-section">
-      <div class="m-group-section-header" style="border-left:4px solid ${col.border}; background:${col.bg};">
-        <span>${escHtml(g.name || 'Untitled group')}</span>
-        <span class="m-group-section-count">${g.cards.length} card${g.cards.length !== 1 ? 's' : ''}</span>
-      </div>
-      ${rows}
-    </div>`;
-  }).join('');
-  return `<div class="m-groups-overview">${sections}</div>`;
 }
 
 // ── Events ─────────────────────────────────────────────────────────
@@ -1330,9 +911,8 @@ function attachEvents() {
   const btnExport = document.getElementById('btn-export');
   if (btnExport) btnExport.addEventListener('click', exportAsImage);
 
-  // Draggable cards (unsorted + sorted) — mouse + touch drag
+  // Draggable cards (unsorted + sorted)
   document.querySelectorAll('[data-card-id][draggable]').forEach(el => {
-    attachTouchDrag(el);
     el.addEventListener('dragstart', (e) => {
       dragCardId = parseInt(el.dataset.cardId, 10);
       dragGroupId = null;
@@ -1541,84 +1121,6 @@ function attachEvents() {
       removeGroup(parseInt(el.dataset.deleteGroup, 10));
     });
   });
-
-  // ── Mobile sort events ──────────────────────────────────────────
-  document.querySelectorAll('[data-action="m-select-card"]').forEach(el => {
-    el.addEventListener('click', () => {
-      const id = Number(el.dataset.cardId);
-      state.mobileSelectedCardId = (state.mobileSelectedCardId === id) ? null : id;
-      state.mobileCreatingGroup = false;
-      state.mobileGroupName = '';
-      render();
-    });
-  });
-
-  document.querySelector('[data-action="m-close-sheet"]')?.addEventListener('click', () => {
-    state.mobileSelectedCardId = null;
-    state.mobileCreatingGroup = false;
-    state.mobileGroupName = '';
-    render();
-  });
-
-  document.querySelectorAll('[data-action="m-assign"]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      moveCardToGroup(state.mobileSelectedCardId, Number(btn.dataset.groupId));
-      state.mobileSelectedCardId = null;
-      state.mobileCreatingGroup = false;
-      render();
-    });
-  });
-
-  document.querySelector('[data-action="m-unsort"]')?.addEventListener('click', () => {
-    moveCardBack(state.mobileSelectedCardId);
-    state.mobileSelectedCardId = null;
-    render();
-  });
-
-  document.querySelector('[data-action="m-start-create"]')?.addEventListener('click', () => {
-    state.mobileCreatingGroup = true;
-    state.mobileGroupName = '';
-    render();
-    document.getElementById('m-group-input')?.focus();
-  });
-
-  document.querySelector('[data-action="m-cancel-create"]')?.addEventListener('click', () => {
-    state.mobileCreatingGroup = false;
-    state.mobileGroupName = '';
-    render();
-  });
-
-  document.querySelector('[data-action="m-create-group"]')?.addEventListener('click', () => {
-    const name = (document.getElementById('m-group-input')?.value || '').trim();
-    if (state.mobileSelectedCardId === null) return;
-    const newGroup = { id: Date.now(), name, cards: [], collapsed: false, color: state.groups.length % GROUP_COLORS.length };
-    state.groups.push(newGroup);
-    moveCardToGroup(state.mobileSelectedCardId, newGroup.id);
-    state.mobileSelectedCardId = null;
-    state.mobileCreatingGroup = false;
-    state.mobileGroupName = '';
-    render();
-  });
-
-  const mGroupInput = document.getElementById('m-group-input');
-  if (mGroupInput) {
-    mGroupInput.addEventListener('input', e => { state.mobileGroupName = e.target.value; });
-    mGroupInput.addEventListener('keydown', e => {
-      if (e.key === 'Enter') document.querySelector('[data-action="m-create-group"]')?.click();
-    });
-  }
-
-  document.querySelector('[data-action="m-toggle-view"]')?.addEventListener('click', () => {
-    state.sortView = state.sortView === 'groups' ? 'cards' : 'groups';
-    state.mobileSelectedCardId = null;
-    state.mobileCreatingGroup = false;
-    state.mobileGroupName = '';
-    render();
-  });
-
-  document.querySelectorAll('[data-action="finish-sort"]').forEach(btn => {
-    btn.addEventListener('click', () => { state.phase = 'results'; render(); });
-  });
 }
 
 // ── Utilities ──────────────────────────────────────────────────────
@@ -1636,13 +1138,6 @@ function escAttr(str) {
 
 // ── Boot ───────────────────────────────────────────────────────────
 render();
-
-// Re-render when crossing the mobile breakpoint
-let _lastMobile = window.innerWidth < 640;
-window.addEventListener('resize', () => {
-  const isMobile = window.innerWidth < 640;
-  if (isMobile !== _lastMobile) { _lastMobile = isMobile; render(); }
-});
 </script>
 </body>
 </html>
