@@ -1,0 +1,202 @@
+/**
+ * BOLD DESIGN SYSTEM — Design Tokens
+ * Derived from today-plan.html and the broader Bold product suite.
+ *
+ * Usage: import this file before any component stylesheets.
+ * @import url('./tokens.css');
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+:root {
+
+  /* ══════════════════════════════════════════════
+     BRAND COLORS
+  ══════════════════════════════════════════════ */
+
+  /* Primary — Purple (post-auth, interactive) */
+  --color-purple-700:   #3f00a8;   /* hover deepest */
+  --color-purple-600:   #5200d4;   /* PRIMARY — buttons, active states, links */
+  --color-purple-500:   #6333E8;   /* onboarding / landing variant */
+  --color-purple-400:   #4F1FCC;   /* hover on landing buttons */
+  --color-purple-100:   #f5f0ff;   /* light tint — option hover, active bg */
+  --color-purple-50:    #faf5ff;   /* nav active item bg */
+  --color-purple-eaf:   #eaf0ff;   /* "why box" background */
+  --color-purple-ebf:   #ebf0ff;   /* tag background */
+  --color-purple-ede:   #EDE9FE;   /* form hover / landing purple-light */
+
+  /* Yellow/Gold — CTA, Use App, Streak */
+  --color-yellow-500:   #FFCC1A;   /* "Use app" button, bold CTA */
+  --color-yellow-400:   #FFCC1B;   /* landing variant */
+  --color-yellow-300:   #FCD34D;   /* onboarding highlight */
+  --color-yellow-200:   #F5B800;   /* hover on yellow buttons */
+  --color-yellow-streak-start: #c99434;  /* streak gradient start */
+  --color-yellow-streak-mid:   #e5ca56;  /* streak gradient mid */
+  --color-yellow-streak-end:   #e6d168;  /* streak gradient end */
+
+  /* Navy — Hero backgrounds, dark sections */
+  --color-navy:         #001d56;
+  --color-navy-hero:    #160840;
+  --color-navy-mid:     #2D1263;
+  --color-navy-dark:    #1a1a2e;   /* video/media dark bg */
+
+  /* Semantic — Success */
+  --color-green-600:    #16a34a;   /* completed steps, success states */
+  --color-green-500:    #00887a;   /* onboarding progress % */
+  --color-green-100:    #DCFCE7;
+
+  /* Semantic — Error */
+  --color-red-600:      #DC2626;
+  --color-red-500:      #ef4444;   /* notification badge */
+  --color-red-50:       #FEF2F2;
+
+  /* Semantic — Info / Tag */
+  --color-blue-600:     #2563eb;   /* tag text */
+  --color-blue-50:      #ebf0ff;   /* tag background */
+
+  /* Semantic — Swap/Updated */
+  --color-teal-500:     #14b8a6;   /* swap banner */
+
+  /* ══════════════════════════════════════════════
+     NEUTRAL GRAYS
+  ══════════════════════════════════════════════ */
+  --color-gray-950:   #140d26;   /* darkest brand text (not pure black) */
+  --color-gray-900:   #171717;   /* primary text */
+  --color-gray-800:   #111827;   /* framework gray-900 */
+  --color-gray-700:   #374151;
+  --color-gray-600:   #4B5563;
+  --color-gray-500:   #6B7280;   /* muted text, placeholders */
+  --color-gray-475:   #737373;   /* result trainer text */
+  --color-gray-450:   #8a8693;   /* date label */
+  --color-gray-400:   #9CA3AF;   /* placeholder text */
+  --color-gray-350:   #a3a3a3;   /* muted/neutral */
+  --color-gray-300:   #D1D5DB;
+  --color-gray-250:   #d4d4d4;   /* stepper dashed line, borders */
+  --color-gray-200:   #e5e5e5;   /* primary border color */
+  --color-gray-150:   #E5E7EB;   /* framework gray-200 */
+  --color-gray-100:   #f5f5f5;   /* hover bg, close button */
+  --color-gray-75:    #f9f9f9;   /* nav button hover */
+  --color-gray-50:    #fafafa;   /* page background, modal bg */
+  --color-gray-25:    #fcfcfc;   /* class page bg */
+  --color-white:      #ffffff;
+
+  /* ══════════════════════════════════════════════
+     TYPOGRAPHY
+  ══════════════════════════════════════════════ */
+  --font-family:      'Inter', system-ui, -apple-system, sans-serif;
+
+  /* Scale */
+  --font-size-2xs:    10px;    /* badge labels, tiny UI */
+  --font-size-xs:     12px;    /* tag text, meta, footer */
+  --font-size-sm:     13px;    /* labels, helper text, back buttons */
+  --font-size-md:     14px;    /* secondary CTAs, nav labels, result items */
+  --font-size-base:   15px;    /* body text (landing) */
+  --font-size-lg:     16px;    /* nav links, card body, inputs, buttons */
+  --font-size-xl:     18px;    /* class titles, coach intro, why text */
+  --font-size-2xl:    20px;    /* modal title */
+  --font-size-3xl:    28px;    /* page greeting (mobile) */
+  --font-size-4xl:    32px;    /* page greeting (desktop) */
+
+  /* Weights */
+  --font-weight-regular:    400;
+  --font-weight-medium:     500;
+  --font-weight-semibold:   600;
+  --font-weight-bold:       700;
+  --font-weight-extrabold:  800;
+  --font-weight-black:      900;
+
+  /* Line heights */
+  --line-height-tight:    1.2;
+  --line-height-snug:     1.3;
+  --line-height-normal:   1.4;
+  --line-height-relaxed:  1.5;
+  --line-height-loose:    1.57;
+  --line-height-body:     1.6;
+
+  /* Letter spacing */
+  --letter-spacing-tight:   -0.8px;   /* headings */
+  --letter-spacing-snug:    -0.5px;   /* logo, titles */
+  --letter-spacing-sm:      -0.2px;   /* bottom sheet title */
+  --letter-spacing-caps:     0.5px;   /* uppercase labels */
+
+  /* ══════════════════════════════════════════════
+     SPACING
+  ══════════════════════════════════════════════ */
+  --space-1:    4px;
+  --space-2:    6px;
+  --space-3:    8px;
+  --space-4:    10px;
+  --space-5:    12px;
+  --space-6:    14px;
+  --space-7:    16px;
+  --space-8:    20px;
+  --space-9:    24px;
+  --space-10:   28px;
+  --space-11:   32px;
+  --space-12:   40px;
+  --space-13:   48px;
+  --space-14:   60px;
+  --space-15:   80px;
+
+  /* Component-specific spacing */
+  --nav-height-auth:     72px;    /* post-auth sticky nav */
+  --nav-height-public:   64px;    /* pre-auth marketing nav */
+  --page-max-width:      1100px;  /* post-auth content max */
+  --marketing-max-width: 1160px;  /* marketing/landing max */
+  --sheet-max-width:     540px;   /* bottom sheet */
+  --modal-max-width:     460px;   /* modal card */
+  --desktop-content-max: 480px;   /* desktop modal/sheet */
+
+  /* ══════════════════════════════════════════════
+     BORDER RADIUS
+  ══════════════════════════════════════════════ */
+  --radius-2xs:   4px;     /* small tags */
+  --radius-xs:    6px;     /* error message blocks */
+  --radius-sm:    8px;     /* cards, inputs, result thumbs, small buttons */
+  --radius-md:    12px;    /* primary buttons, modals close button */
+  --radius-lg:    14px;    /* option cards in bottom sheet, result cards */
+  --radius-xl:    16px;    /* modal cards */
+  --radius-2xl:   20px;    /* bottom sheets */
+  --radius-3xl:   25px;    /* "why this class" info box */
+  --radius-full:  360px;   /* pill buttons, streaks, avatar buttons */
+  --radius-circle: 50%;    /* avatars, step dots */
+
+  /* ══════════════════════════════════════════════
+     SHADOWS
+  ══════════════════════════════════════════════ */
+  --shadow-xs:     0 1px 2px rgba(16,24,40,0.05);
+  --shadow-sm:     0 1px 3px rgba(16,24,40,0.1), 0 1px 2px rgba(16,24,40,0.06);
+  --shadow-md:     0 4px 16px rgba(0,0,0,0.10);
+  --shadow-lg:     0 12px 40px rgba(0,0,0,0.14);
+  --shadow-xl:     0 20px 24px -4px rgba(16,24,40,0.08), 0 8px 8px -4px rgba(16,24,40,0.03);
+  --shadow-sheet:  0 -4px 32px rgba(16,24,40,0.12);
+  --shadow-purple: 0 4px 16px rgba(99,51,232,0.35);
+  --shadow-card-swap: 0 -2px 8px rgba(16,24,40,0.2);
+
+  /* Focus rings */
+  --focus-ring-purple: 0 0 0 3px rgba(82,0,212,0.12);
+  --focus-ring-purple-landing: 0 0 0 3px rgba(99,51,232,0.12);
+
+  /* ══════════════════════════════════════════════
+     TRANSITIONS
+  ══════════════════════════════════════════════ */
+  --transition-fast:    all 0.15s ease;
+  --transition-base:    all 0.20s ease;
+  --transition-slow:    all 0.28s cubic-bezier(0.32, 0.72, 0, 1);
+  --transition-modal:   all 0.20s cubic-bezier(0.32, 0.72, 0, 1);
+
+  /* ══════════════════════════════════════════════
+     Z-INDEX LAYERS
+  ══════════════════════════════════════════════ */
+  --z-base:     0;
+  --z-above:    1;
+  --z-nav:      20;
+  --z-overlay:  200;
+  --z-sheet:    300;
+
+  /* ══════════════════════════════════════════════
+     BREAKPOINTS (reference only — use in media queries)
+  ══════════════════════════════════════════════ */
+  /* --bp-mobile:   767px  (max)  — mobile-first default */
+  /* --bp-desktop:  768px  (min)  — tablet and up */
+}

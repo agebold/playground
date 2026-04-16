@@ -1,0 +1,1473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bold Design System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="components.css" />
+  <style>
+    /* ── Guide chrome ─────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font-family); background: #f4f4f6; color: #140d26; -webkit-font-smoothing: antialiased; display: flex; min-height: 100vh; }
+
+    /* Sidebar */
+    .ds-sidebar {
+      width: 220px; flex-shrink: 0;
+      background: #fff; border-right: 1px solid #e5e5e5;
+      position: fixed; top: 0; left: 0; bottom: 0;
+      overflow-y: auto; z-index: 50;
+      display: flex; flex-direction: column;
+    }
+    .ds-sidebar::-webkit-scrollbar { width: 4px; }
+    .ds-sidebar::-webkit-scrollbar-thumb { background: #e5e5e5; border-radius: 4px; }
+    .ds-sidebar-header {
+      padding: 20px 20px 12px;
+      border-bottom: 1px solid #f0f0f0;
+      flex-shrink: 0;
+    }
+    .ds-sidebar-brand {
+      font-size: 13px; font-weight: 700; letter-spacing: 0.8px;
+      text-transform: uppercase; color: #5200d4;
+    }
+    .ds-sidebar-sub { font-size: 11px; color: #a3a3a3; margin-top: 2px; }
+    .ds-nav { padding: 12px 0 24px; flex: 1; }
+    .ds-nav-group { margin-bottom: 4px; }
+    .ds-nav-group-label {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.8px; color: #a3a3a3;
+      padding: 8px 20px 4px;
+    }
+    .ds-nav a {
+      display: block; padding: 6px 20px;
+      font-size: 13px; font-weight: 500; color: #525252;
+      text-decoration: none; border-radius: 0;
+      transition: color 0.12s, background 0.12s;
+      border-left: 2px solid transparent;
+    }
+    .ds-nav a:hover { color: #140d26; background: #fafafa; }
+    .ds-nav a.active { color: #5200d4; background: #faf5ff; border-left-color: #5200d4; font-weight: 600; }
+
+    /* Main content */
+    .ds-main {
+      margin-left: 220px; flex: 1;
+      padding: 0 0 120px;
+      max-width: calc(100vw - 220px);
+    }
+
+    /* Section */
+    .ds-section {
+      padding: 56px 48px 40px;
+      border-bottom: 1px solid #e5e5e5;
+    }
+    .ds-section:last-child { border-bottom: none; }
+    .ds-section-eyebrow {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1px; color: #5200d4; margin-bottom: 6px;
+    }
+    .ds-section-title {
+      font-size: 28px; font-weight: 700; color: #140d26;
+      letter-spacing: -0.5px; line-height: 1.2; margin-bottom: 8px;
+    }
+    .ds-section-desc {
+      font-size: 15px; color: #525252; line-height: 1.6; max-width: 600px;
+      margin-bottom: 36px;
+    }
+    .ds-divider { height: 1px; background: #f0f0f0; margin: 32px 0; }
+
+    /* Sub-section */
+    .ds-sub { margin-bottom: 32px; }
+    .ds-sub-label {
+      font-size: 12px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.6px; color: #a3a3a3; margin-bottom: 16px;
+    }
+
+    /* Token chip */
+    .token {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; font-weight: 500;
+      background: #f4f4f6; color: #5200d4;
+      border: 1px solid #e5e5e5; border-radius: 4px;
+      padding: 2px 6px; margin: 2px 2px;
+    }
+
+    /* Demo card container */
+    .demo {
+      background: #fff; border: 1px solid #e5e5e5;
+      border-radius: 12px; padding: 28px;
+      margin-bottom: 16px;
+    }
+    .demo-dark { background: #160840; border-color: #2D1263; }
+    .demo-gray { background: #f4f4f6; border-color: #e5e5e5; }
+    .demo-label {
+      font-size: 11px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.5px; color: #a3a3a3; margin-bottom: 16px;
+    }
+
+    /* Row utility */
+    .row { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-start; }
+    .row-center { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+    .col { display: flex; flex-direction: column; gap: 12px; }
+
+    /* ── Color swatches ─── */
+    .swatch-grid { display: flex; flex-wrap: wrap; gap: 10px; }
+    .swatch {
+      display: flex; flex-direction: column; gap: 6px;
+      min-width: 80px;
+    }
+    .swatch-box {
+      width: 80px; height: 52px;
+      border-radius: 8px;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .swatch-hex { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #737373; }
+    .swatch-name { font-size: 11px; font-weight: 600; color: #404040; }
+
+    /* ── Type specimens ─── */
+    .type-row {
+      display: flex; align-items: baseline; gap: 20px;
+      padding: 12px 0; border-bottom: 1px solid #f4f4f6;
+    }
+    .type-row:last-child { border-bottom: none; }
+    .type-meta { flex-shrink: 0; width: 160px; }
+    .type-size  { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #5200d4; }
+    .type-spec  { font-size: 11px; color: #a3a3a3; margin-top: 2px; }
+    .type-sample { color: #140d26; }
+
+    /* ── Spacing scale ─── */
+    .space-row {
+      display: flex; align-items: center; gap: 16px;
+      padding: 6px 0; border-bottom: 1px solid #f4f4f6;
+    }
+    .space-row:last-child { border-bottom: none; }
+    .space-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #5200d4; width: 80px; flex-shrink: 0; }
+    .space-bar   { background: #5200d4; height: 8px; border-radius: 4px; opacity: 0.7; }
+    .space-px    { font-size: 11px; color: #a3a3a3; width: 40px; flex-shrink: 0; }
+
+    /* ── Radius demos ─── */
+    .radius-grid { display: flex; flex-wrap: wrap; gap: 16px; }
+    .radius-item { display: flex; flex-direction: column; gap: 8px; align-items: center; }
+    .radius-box  {
+      width: 72px; height: 72px;
+      background: #eaf0ff; border: 2px solid #5200d4;
+    }
+    .radius-name { font-size: 11px; font-weight: 600; color: #404040; text-align: center; }
+    .radius-val  { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #a3a3a3; text-align: center; }
+
+    /* ── Shadow demos ─── */
+    .shadow-grid { display: flex; flex-wrap: wrap; gap: 24px; }
+    .shadow-item { display: flex; flex-direction: column; gap: 10px; }
+    .shadow-box  {
+      width: 100px; height: 68px;
+      background: #fff; border-radius: 10px;
+    }
+    .shadow-name { font-size: 11px; font-weight: 600; color: #404040; }
+    .shadow-val  { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #a3a3a3; max-width: 120px; line-height: 1.4; }
+
+    /* ── Nav demo ─── */
+    .nav-demo { border-radius: 12px; overflow: hidden; }
+
+    /* ── Spec table ─── */
+    .spec-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .spec-table th {
+      text-align: left; padding: 8px 12px;
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.5px; color: #a3a3a3;
+      border-bottom: 1px solid #e5e5e5; background: #fafafa;
+    }
+    .spec-table td {
+      padding: 10px 12px; border-bottom: 1px solid #f4f4f6;
+      color: #404040; vertical-align: top;
+    }
+    .spec-table td:first-child { font-weight: 600; color: #140d26; }
+    .spec-table tr:last-child td { border-bottom: none; }
+
+    /* ── Motion demo ─── */
+    .motion-box {
+      width: 48px; height: 48px;
+      background: #5200d4; border-radius: 12px;
+      cursor: pointer; transition: transform 0.15s;
+    }
+    .motion-box:hover { transform: translateY(-4px); }
+
+    /* Annotation */
+    .ann {
+      font-size: 12px; color: #a3a3a3; margin-top: 6px; line-height: 1.5;
+    }
+
+    @media (max-width: 900px) {
+      .ds-sidebar { display: none; }
+      .ds-main { margin-left: 0; max-width: 100vw; }
+      .ds-section { padding: 40px 24px 32px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════ SIDEBAR ═══════════════════ -->
+<aside class="ds-sidebar">
+  <div class="ds-sidebar-header">
+    <svg width="84" height="25" viewBox="0 0 140 42" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;margin-bottom:4px">
+      <path d="M30.6023 32.6454L0.595903 41.9791C0.299764 42.0712 0 41.8471 0 41.5335V34.6844C0 34.4796 0.131864 34.2989 0.325331 34.2388L30.3317 24.9052C30.6278 24.8131 30.9276 25.0372 30.9276 25.3507V32.1999C30.9276 32.4046 30.7955 32.5853 30.6023 32.6454Z" fill="#5200D4"/>
+      <path d="M36.3061 20.2035L6.29976 29.5372C6.00362 29.6293 5.70386 29.4052 5.70386 29.0916V22.2425C5.70386 22.0377 5.83572 21.857 6.02919 21.7969L36.0355 12.4633C36.3317 12.3712 36.6314 12.5953 36.6314 12.9088V19.758C36.6314 19.9627 36.4996 20.1434 36.3061 20.2035Z" fill="#3366FF"/>
+      <path d="M42.0101 7.76116L12.0037 17.0948C11.7076 17.1869 11.4078 16.9628 11.4078 16.6493V9.80008C11.4078 9.59534 11.5397 9.41463 11.7332 9.35453L41.7393 0.0208756C42.0355 -0.07121 42.3352 0.152892 42.3352 0.466431V7.3156C42.3352 7.52015 42.2034 7.70106 42.0101 7.76116Z" fill="#80E8FF"/>
+      <path d="M87.7489 8.79443C81.0778 8.79443 74.6696 14.2495 73.4756 21.1025C72.2874 27.9216 76.7947 33.3768 83.4658 33.3768C90.1369 33.3768 96.5453 27.9213 97.7333 21.1025C98.9273 14.2495 94.42 8.79443 87.7489 8.79443ZM84.25 28.876C80.0386 28.876 77.3312 25.4666 78.0916 21.1025C78.858 16.7044 82.7536 13.295 86.9649 13.295C91.1763 13.295 93.8837 16.7044 93.1174 21.1025C92.3569 25.4664 88.4613 28.876 84.25 28.876Z" fill="#140D26"/>
+      <path d="M65.8863 20.148C67.7235 19.4661 69.3307 17.5908 69.7643 15.102C70.3286 11.863 68.4912 9.06738 63.8081 9.06738H55.7894H53.2036C52.8443 9.06738 52.5644 9.47953 52.7239 9.77412L54.5672 13.1799L51.2144 32.4221C51.1608 32.7291 51.3275 32.9337 51.6309 32.9337H59.6496C65.5455 32.9337 68.7577 30.5472 69.5418 26.0464C70.0824 22.944 68.2665 20.7959 65.8863 20.148ZM59.1808 13.1927H62.6507C64.504 13.1927 65.6318 13.8746 65.317 15.6815C64.9842 17.5908 63.6172 18.4774 61.7299 18.4774H58.2599L59.1808 13.1927ZM60.5028 28.8083H56.4599L57.5887 22.3302H61.6316C64.0907 22.3302 65.3892 23.3871 65.015 25.5352C64.6228 27.7852 62.9619 28.8083 60.5028 28.8083Z" fill="#140D26"/>
+      <path d="M113.695 28.8083H106.047L109.397 9.57895C109.451 9.27213 109.285 9.06738 108.981 9.06738L105.157 10.3228C104.803 10.4307 104.617 10.5275 104.563 10.8343L100.802 32.4223C100.748 32.7293 100.915 32.9339 101.218 32.9339H112.977C113.279 32.9339 113.517 32.7295 113.571 32.4223L114.111 29.3197C114.165 29.0127 113.998 28.8083 113.695 28.8083Z" fill="#140D26"/>
+      <path d="M129.492 9.06738H122.855H120.269C119.91 9.06738 119.63 9.47953 119.789 9.77412L121.633 13.1807L118.28 32.4221C118.227 32.7291 118.393 32.9337 118.696 32.9337H125.334C133.42 32.9337 138.619 27.6489 139.778 21.0008C140.936 14.3521 137.578 9.06738 129.492 9.06738ZM126.053 28.8083H123.526L126.247 13.1929H128.774C133.894 13.1929 135.95 16.0912 135.095 21.0008C134.239 25.9105 131.173 28.8083 126.053 28.8083Z" fill="#140D26"/>
+    </svg>
+    <div class="ds-sidebar-sub">Design System · v1.0</div>
+  </div>
+  <nav class="ds-nav" id="ds-nav">
+    <div class="ds-nav-group">
+      <div class="ds-nav-group-label">Foundation</div>
+      <a href="#brand">Brand</a>
+      <a href="#colors">Colors</a>
+      <a href="#typography">Typography</a>
+      <a href="#spacing">Spacing</a>
+      <a href="#radius">Border Radius</a>
+      <a href="#shadows">Shadows</a>
+    </div>
+    <div class="ds-nav-group">
+      <div class="ds-nav-group-label">Components</div>
+      <a href="#buttons">Buttons</a>
+      <a href="#navigation">Navigation</a>
+      <a href="#tags">Tags & Badges</a>
+      <a href="#avatars">Avatars</a>
+      <a href="#forms">Forms</a>
+      <a href="#cards">Cards</a>
+      <a href="#why-box">Info Box</a>
+      <a href="#stepper">Stepper</a>
+      <a href="#progress">Progress</a>
+    </div>
+    <div class="ds-nav-group">
+      <div class="ds-nav-group-label">Patterns</div>
+      <a href="#loading">Loading States</a>
+      <a href="#overlays">Overlays</a>
+      <a href="#swap-banner">Swap Banner</a>
+      <a href="#pain-scale">Pain Scale</a>
+      <a href="#motion">Motion</a>
+      <a href="#layout">Layout</a>
+    </div>
+  </nav>
+</aside>
+
+<!-- ═══════════════════ MAIN ═══════════════════ -->
+<main class="ds-main">
+
+  <!-- ── 1. BRAND ───────────────────────────────── -->
+  <section class="ds-section" id="brand">
+    <div class="ds-section-eyebrow">01 · Foundation</div>
+    <h2 class="ds-section-title">Brand Identity</h2>
+    <p class="ds-section-desc">The Bold logo is a two-part SVG lockup: a three-stripe mark (cyan → blue → purple, staggered diagonally) and the dark wordmark "BOLD". The mark represents motion and momentum. At small sizes (mobile nav), the wordmark is hidden and only the mark is shown. The wordmark uses #140D26 on light backgrounds and switches to #fff on dark.</p>
+
+    <div class="ds-sub">
+      <div class="ds-sub-label">Logo — Full (Desktop)</div>
+      <div class="demo">
+        <div style="display:flex;align-items:center;gap:40px;flex-wrap:wrap;">
+          <div>
+            <div style="display:inline-flex;align-items:center;justify-content:center;background:#fff;border-radius:8px;padding:12px 16px;border:1px solid #e5e5e5;">
+              <svg width="140" height="42" viewBox="0 0 140 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M30.6023 32.6454L0.595903 41.9791C0.299764 42.0712 0 41.8471 0 41.5335V34.6844C0 34.4796 0.131864 34.2989 0.325331 34.2388L30.3317 24.9052C30.6278 24.8131 30.9276 25.0372 30.9276 25.3507V32.1999C30.9276 32.4046 30.7955 32.5853 30.6023 32.6454Z" fill="#5200D4"/>
+                <path d="M36.3061 20.2035L6.29976 29.5372C6.00362 29.6293 5.70386 29.4052 5.70386 29.0916V22.2425C5.70386 22.0377 5.83572 21.857 6.02919 21.7969L36.0355 12.4633C36.3317 12.3712 36.6314 12.5953 36.6314 12.9088V19.758C36.6314 19.9627 36.4996 20.1434 36.3061 20.2035Z" fill="#3366FF"/>
+                <path d="M42.0101 7.76116L12.0037 17.0948C11.7076 17.1869 11.4078 16.9628 11.4078 16.6493V9.80008C11.4078 9.59534 11.5397 9.41463 11.7332 9.35453L41.7393 0.0208756C42.0355 -0.07121 42.3352 0.152892 42.3352 0.466431V7.3156C42.3352 7.52015 42.2034 7.70106 42.0101 7.76116Z" fill="#80E8FF"/>
+                <path d="M87.7489 8.79443C81.0778 8.79443 74.6696 14.2495 73.4756 21.1025C72.2874 27.9216 76.7947 33.3768 83.4658 33.3768C90.1369 33.3768 96.5453 27.9213 97.7333 21.1025C98.9273 14.2495 94.42 8.79443 87.7489 8.79443ZM84.25 28.876C80.0386 28.876 77.3312 25.4666 78.0916 21.1025C78.858 16.7044 82.7536 13.295 86.9649 13.295C91.1763 13.295 93.8837 16.7044 93.1174 21.1025C92.3569 25.4664 88.4613 28.876 84.25 28.876Z" fill="#140D26"/>
+                <path d="M65.8863 20.148C67.7235 19.4661 69.3307 17.5908 69.7643 15.102C70.3286 11.863 68.4912 9.06738 63.8081 9.06738H55.7894H53.2036C52.8443 9.06738 52.5644 9.47953 52.7239 9.77412L54.5672 13.1799L51.2144 32.4221C51.1608 32.7291 51.3275 32.9337 51.6309 32.9337H59.6496C65.5455 32.9337 68.7577 30.5472 69.5418 26.0464C70.0824 22.944 68.2665 20.7959 65.8863 20.148ZM59.1808 13.1927H62.6507C64.504 13.1927 65.6318 13.8746 65.317 15.6815C64.9842 17.5908 63.6172 18.4774 61.7299 18.4774H58.2599L59.1808 13.1927ZM60.5028 28.8083H56.4599L57.5887 22.3302H61.6316C64.0907 22.3302 65.3892 23.3871 65.015 25.5352C64.6228 27.7852 62.9619 28.8083 60.5028 28.8083Z" fill="#140D26"/>
+                <path d="M113.695 28.8083H106.047L109.397 9.57895C109.451 9.27213 109.285 9.06738 108.981 9.06738L105.157 10.3228C104.803 10.4307 104.617 10.5275 104.563 10.8343L100.802 32.4223C100.748 32.7293 100.915 32.9339 101.218 32.9339H112.977C113.279 32.9339 113.517 32.7295 113.571 32.4223L114.111 29.3197C114.165 29.0127 113.998 28.8083 113.695 28.8083Z" fill="#140D26"/>
+                <path d="M129.492 9.06738H122.855H120.269C119.91 9.06738 119.63 9.47953 119.789 9.77412L121.633 13.1807L118.28 32.4221C118.227 32.7291 118.393 32.9337 118.696 32.9337H125.334C133.42 32.9337 138.619 27.6489 139.778 21.0008C140.936 14.3521 137.578 9.06738 129.492 9.06738ZM126.053 28.8083H123.526L126.247 13.1929H128.774C133.894 13.1929 135.95 16.0912 135.095 21.0008C134.239 25.9105 131.173 28.8083 126.053 28.8083Z" fill="#140D26"/>
+              </svg>
+            </div>
+            <p class="ann">140×42px · Desktop nav</p>
+          </div>
+          <div>
+            <div style="display:inline-flex;align-items:center;justify-content:center;background:#fff;border-radius:8px;padding:12px;border:1px solid #e5e5e5;">
+              <svg width="38" height="38" viewBox="0 0 43 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M30.6023 32.6454L0.595903 41.9791C0.299764 42.0712 0 41.8471 0 41.5335V34.6844C0 34.4796 0.131864 34.2989 0.325331 34.2388L30.3317 24.9052C30.6278 24.8131 30.9276 25.0372 30.9276 25.3507V32.1999C30.9276 32.4046 30.7955 32.5853 30.6023 32.6454Z" fill="#5200D4"/>
+                <path d="M36.3061 20.2035L6.29976 29.5372C6.00362 29.6293 5.70386 29.4052 5.70386 29.0916V22.2425C5.70386 22.0377 5.83572 21.857 6.02919 21.7969L36.0355 12.4633C36.3317 12.3712 36.6314 12.5953 36.6314 12.9088V19.758C36.6314 19.9627 36.4996 20.1434 36.3061 20.2035Z" fill="#3366FF"/>
+                <path d="M42.0101 7.76116L12.0037 17.0948C11.7076 17.1869 11.4078 16.9628 11.4078 16.6493V9.80008C11.4078 9.59534 11.5397 9.41463 11.7332 9.35453L41.7393 0.0208756C42.0355 -0.07121 42.3352 0.152892 42.3352 0.466431V7.3156C42.3352 7.52015 42.2034 7.70106 42.0101 7.76116Z" fill="#80E8FF"/>
+              </svg>
+            </div>
+            <p class="ann">38×38px · Mobile nav (mark only)</p>
+          </div>
+          <div>
+            <div style="display:inline-flex;align-items:center;justify-content:center;background:#160840;border-radius:8px;padding:12px 16px;">
+              <svg width="140" height="42" viewBox="0 0 140 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M30.6023 32.6454L0.595903 41.9791C0.299764 42.0712 0 41.8471 0 41.5335V34.6844C0 34.4796 0.131864 34.2989 0.325331 34.2388L30.3317 24.9052C30.6278 24.8131 30.9276 25.0372 30.9276 25.3507V32.1999C30.9276 32.4046 30.7955 32.5853 30.6023 32.6454Z" fill="#5200D4"/>
+                <path d="M36.3061 20.2035L6.29976 29.5372C6.00362 29.6293 5.70386 29.4052 5.70386 29.0916V22.2425C5.70386 22.0377 5.83572 21.857 6.02919 21.7969L36.0355 12.4633C36.3317 12.3712 36.6314 12.5953 36.6314 12.9088V19.758C36.6314 19.9627 36.4996 20.1434 36.3061 20.2035Z" fill="#3366FF"/>
+                <path d="M42.0101 7.76116L12.0037 17.0948C11.7076 17.1869 11.4078 16.9628 11.4078 16.6493V9.80008C11.4078 9.59534 11.5397 9.41463 11.7332 9.35453L41.7393 0.0208756C42.0355 -0.07121 42.3352 0.152892 42.3352 0.466431V7.3156C42.3352 7.52015 42.2034 7.70106 42.0101 7.76116Z" fill="#80E8FF"/>
+                <path d="M87.7489 8.79443C81.0778 8.79443 74.6696 14.2495 73.4756 21.1025C72.2874 27.9216 76.7947 33.3768 83.4658 33.3768C90.1369 33.3768 96.5453 27.9213 97.7333 21.1025C98.9273 14.2495 94.42 8.79443 87.7489 8.79443ZM84.25 28.876C80.0386 28.876 77.3312 25.4666 78.0916 21.1025C78.858 16.7044 82.7536 13.295 86.9649 13.295C91.1763 13.295 93.8837 16.7044 93.1174 21.1025C92.3569 25.4664 88.4613 28.876 84.25 28.876Z" fill="#ffffff"/>
+                <path d="M65.8863 20.148C67.7235 19.4661 69.3307 17.5908 69.7643 15.102C70.3286 11.863 68.4912 9.06738 63.8081 9.06738H55.7894H53.2036C52.8443 9.06738 52.5644 9.47953 52.7239 9.77412L54.5672 13.1799L51.2144 32.4221C51.1608 32.7291 51.3275 32.9337 51.6309 32.9337H59.6496C65.5455 32.9337 68.7577 30.5472 69.5418 26.0464C70.0824 22.944 68.2665 20.7959 65.8863 20.148ZM59.1808 13.1927H62.6507C64.504 13.1927 65.6318 13.8746 65.317 15.6815C64.9842 17.5908 63.6172 18.4774 61.7299 18.4774H58.2599L59.1808 13.1927ZM60.5028 28.8083H56.4599L57.5887 22.3302H61.6316C64.0907 22.3302 65.3892 23.3871 65.015 25.5352C64.6228 27.7852 62.9619 28.8083 60.5028 28.8083Z" fill="#ffffff"/>
+                <path d="M113.695 28.8083H106.047L109.397 9.57895C109.451 9.27213 109.285 9.06738 108.981 9.06738L105.157 10.3228C104.803 10.4307 104.617 10.5275 104.563 10.8343L100.802 32.4223C100.748 32.7293 100.915 32.9339 101.218 32.9339H112.977C113.279 32.9339 113.517 32.7295 113.571 32.4223L114.111 29.3197C114.165 29.0127 113.998 28.8083 113.695 28.8083Z" fill="#ffffff"/>
+                <path d="M129.492 9.06738H122.855H120.269C119.91 9.06738 119.63 9.47953 119.789 9.77412L121.633 13.1807L118.28 32.4221C118.227 32.7291 118.393 32.9337 118.696 32.9337H125.334C133.42 32.9337 138.619 27.6489 139.778 21.0008C140.936 14.3521 137.578 9.06738 129.492 9.06738ZM126.053 28.8083H123.526L126.247 13.1929H128.774C133.894 13.1929 135.95 16.0912 135.095 21.0008C134.239 25.9105 131.173 28.8083 126.053 28.8083Z" fill="#ffffff"/>
+              </svg>
+            </div>
+            <p class="ann">White wordmark on dark</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ds-sub">
+      <div class="ds-sub-label">Brand Voice</div>
+      <div class="demo">
+        <table class="spec-table">
+          <tr><th>Attribute</th><th>Description</th></tr>
+          <tr><td>Audience</td><td>Adults 60+ reclaiming movement, balance, and independence</td></tr>
+          <tr><td>Tone</td><td>Warm, encouraging, direct — never condescending</td></tr>
+          <tr><td>Clarity</td><td>Short sentences, active voice. "Start class" not "Begin your session"</td></tr>
+          <tr><td>Personalization</td><td>AI-generated, time-of-day greetings, name-first addressing</td></tr>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 2. COLORS ──────────────────────────────── -->
+  <section class="ds-section" id="colors">
+    <div class="ds-section-eyebrow">02 · Foundation</div>
+    <h2 class="ds-section-title">Color Palette</h2>
+    <p class="ds-section-desc">Two purple scales (post-auth app vs. landing/marketing), a gold CTA, semantic colors, and a full neutral gray ramp. Always prefer named tokens over raw hex values.</p>
+
+    <div class="ds-sub">
+      <div class="ds-sub-label">Logo Mark — Three Stripe Colors</div>
+      <div class="swatch-grid">
+        <div class="swatch"><div class="swatch-box" style="background:#80E8FF"></div><div class="swatch-name">mark-cyan</div><div class="swatch-hex">#80E8FF · Top stripe</div></div>
+        <div class="swatch"><div class="swatch-box" style="background:#3366FF"></div><div class="swatch-name">mark-blue</div><div class="swatch-hex">#3366FF · Mid stripe</div></div>
+        <div class="swatch"><div class="swatch-box" style="background:#5200D4"></div><div class="swatch-name">mark-purple</div><div class="swatch-hex">#5200D4 · Bottom stripe</div></div>
+        <div class="swatch"><div class="swatch-box" style="background:#140D26"></div><div class="swatch-name">wordmark</div><div class="swatch-hex">#140D26 · Letterforms</div></div>
+      </div>
+      <p class="ann">The three stripes are always these exact colors — never tinted or changed. The wordmark switches to #fff on dark backgrounds only.</p>
+    </div>
+
+    <div class="ds-sub">
+      <div class="ds-sub-label">Primary — Purple (Post-Auth App)</div>
+      <div class="swatch-grid">
+        <div class="swatch"><div class="swatch-box" style="background:#3f00a8"></div><div class="swatch-name">purple-700</div><div class="swatch-hex">#3f00a8</div></div>
+        <div class="swatch"><div class="swatch-box" style="background:#5200d4"></div><div class="swatch-name">purple-600 ★</div><div class="swatch-hex">#5200d4</div></div>
+        <div class="swatch"><div class="swatch-box" style="background:#f5f0ff"></div><div class="swatch-name">purple-100</div><div class="swatch-hex">#f5f0ff</div></div>
+        <div class="swatch"><div class="swatch-box" style="background:#faf5ff"></div><div class="swatch-name">purple-50</div><div class="swatch-hex">#faf5ff</div></div>
+        <div class="swatch"><div class="swatch-box" style="background:#eaf0ff"></div><div class="swatch-name">purple-eaf</div><div class="swatch-hex">#eaf0ff</div></div>
+        <div class="swatch"><div class="swatch-box" style="background:#ebf0ff"></div><div class="swatch-name">purple-ebf</div><div class="swatch-hex">#ebf0ff</div></div>
+      </div>
+      <p class="ann">★ Primary interactive color. Used for buttons, active nav, links, focus rings, step dots.</p>
+    </div>
+
+    <div class="ds-sub">
+      <div class="ds-sub-label">Primary — Purple (Landing / Marketing)</div>
+      <div class="swatch-grid">
+        <div class="swatch"><div class="swatch-box" style="background:#4F1FCC"></div><div class="swatch-name">purple-400</div><div class="swatch-hex">#4F1FCC</div></div>
+        <div class="swatch"><div class="swatch-box" style="background:#6333E8"></div><div class="swatch-name">purple-500 ★</div><div class="swatch-hex">#6333E8</div></div>
+        <div class="swatch"><div class="swatch-box" style="background:#EDE9FE"></div><div class="swatch-name">purple-light</div><div class="swatch-hex">#EDE9FE</div></div>
+      </div>
+      <p class="ann">★ Used on the marketing/landing site. Slightly lighter, lifts on hover.</p>
+    </div>
+
+    <div class="ds-sub">
+      <div class="ds-sub-label">Yellow / Gold — CTA & Streak</div>
+      <div class="swatch-grid">
+        <div class="swatch"><div class="swatch-box" style="background:#FFCC1A"></div><div class="swatch-name">yellow-500 ★</div><div class="swatch-hex">#FFCC1A</div></div>
+        <div class="swatch"><div class="swatch-box" style="background:#F5B800"></div><div class="swatch-name">yellow-dark</div><div class="swatch-hex">#F5B800</div></div>
+        <div class="swatch"><div class="swatch-box" style="background:#FCD34D"></div><div class="swatch-name">yellow-300</div><div class="swatch-hex">#FCD34D</div></div>
+        <div class="swatch">
+          <div class="swatch-box" style="background:linear-gradient(246.6deg,#c99434 22.7%,#e5ca56 56%,#e6d168 91.6%)"></div>
+          <div class="swatch-name">streak-grad</div>
+          <div class="swatch-hex">246.6° gradient</div>
+        </div>
+      </div>
+      <p class="ann">★ "Use app" mobile CTA, streak button (gold gradient), onboarding highlights.</p>
+    </div>
+
+    <div class="ds-sub">
+      <div class="ds-sub-label">Navy — Hero & Dark Sections</div>
+      <div class="swatch-grid">
+        <div class="swatch"><div class="swatch-box" style="background:#160840"></div><div class="swatch-name">navy-hero</div><div class="swatch-hex">#160840</div></div>
+        <div class="swatch"><div class="swatch-box" style="background:#2D1263"></div><div class="swatch-name">navy-mid</div><div class="swatch-hex">#2D1263</div></div>
+        <div class="swatch"><div class="swatch-box" style="background:#001d56"></div><div class="swatch-name">navy</div><div class="swatch-hex">#001d56</div></div>
+        <div class="swatch"><div class="swatch-box" style="background:#1a1a2e"></div><div class="swatch-name">dark-media</div><div class="swatch-hex">#1a1a2e</div></div>
+      </div>
+    </div>
+
+    <div class="ds-sub">
+      <div class="ds-sub-label">Semantic Colors</div>
+      <div class="swatch-grid">
+        <div class="swatch"><div class="swatch-box" style="background:#16a34a"></div><div class="swatch-name">green-600</div><div class="swatch-hex">#16a34a · Done</div></div>
+        <div class="swatch"><div class="swatch-box" style="background:#00887a"></div><div class="swatch-name">green-500</div><div class="swatch-hex">#00887a · Progress</div></div>
+        <div class="swatch"><div class="swatch-box" style="background:#DCFCE7"></div><div class="swatch-name">green-100</div><div class="swatch-hex">#DCFCE7</div></div>
+        <div class="swatch"><div class="swatch-box" style="background:#ef4444"></div><div class="swatch-name">red-500</div><div class="swatch-hex">#ef4444 · Badge</div></div>
+        <div class="swatch"><div class="swatch-box" style="background:#DC2626"></div><div class="swatch-name">red-600</div><div class="swatch-hex">#DC2626 · Error</div></div>
+        <div class="swatch"><div class="swatch-box" style="background:#FEF2F2"></div><div class="swatch-name">red-50</div><div class="swatch-hex">#FEF2F2</div></div>
+        <div class="swatch"><div class="swatch-box" style="background:#14b8a6"></div><div class="swatch-name">teal-500</div><div class="swatch-hex">#14b8a6 · Swap</div></div>
+        <div class="swatch"><div class="swatch-box" style="background:#2563eb"></div><div class="swatch-name">blue-600</div><div class="swatch-hex">#2563eb · Tags</div></div>
+        <div class="swatch"><div class="swatch-box" style="background:#ebf0ff"></div><div class="swatch-name">blue-50</div><div class="swatch-hex">#ebf0ff · Tag bg</div></div>
+      </div>
+    </div>
+
+    <div class="ds-sub">
+      <div class="ds-sub-label">Neutral Grays</div>
+      <div class="swatch-grid">
+        <div class="swatch"><div class="swatch-box" style="background:#140d26"></div><div class="swatch-name">950</div><div class="swatch-hex">#140d26</div></div>
+        <div class="swatch"><div class="swatch-box" style="background:#171717"></div><div class="swatch-name">900</div><div class="swatch-hex">#171717</div></div>
+        <div class="swatch"><div class="swatch-box" style="background:#404040"></div><div class="swatch-name">700</div><div class="swatch-hex">#404040</div></div>
+        <div class="swatch"><div class="swatch-box" style="background:#525252"></div><div class="swatch-name">600</div><div class="swatch-hex">#525252</div></div>
+        <div class="swatch"><div class="swatch-box" style="background:#737373"></div><div class="swatch-name">500</div><div class="swatch-hex">#737373</div></div>
+        <div class="swatch"><div class="swatch-box" style="background:#8a8693"></div><div class="swatch-name">450</div><div class="swatch-hex">#8a8693</div></div>
+        <div class="swatch"><div class="swatch-box" style="background:#a3a3a3"></div><div class="swatch-name">350</div><div class="swatch-hex">#a3a3a3</div></div>
+        <div class="swatch"><div class="swatch-box" style="background:#d4d4d4"></div><div class="swatch-name">250</div><div class="swatch-hex">#d4d4d4</div></div>
+        <div class="swatch"><div class="swatch-box" style="background:#e5e5e5"></div><div class="swatch-name">200</div><div class="swatch-hex">#e5e5e5</div></div>
+        <div class="swatch"><div class="swatch-box" style="background:#f5f5f5"></div><div class="swatch-name">100</div><div class="swatch-hex">#f5f5f5</div></div>
+        <div class="swatch"><div class="swatch-box" style="background:#fafafa"></div><div class="swatch-name">50</div><div class="swatch-hex">#fafafa</div></div>
+        <div class="swatch"><div class="swatch-box" style="background:#fff;border:1px solid #e5e5e5"></div><div class="swatch-name">white</div><div class="swatch-hex">#ffffff</div></div>
+      </div>
+      <p class="ann">#140d26 is the brand's near-black text color — warmer than pure black. Use over #fafafa page backgrounds.</p>
+    </div>
+  </section>
+
+  <!-- ── 3. TYPOGRAPHY ──────────────────────────── -->
+  <section class="ds-section" id="typography">
+    <div class="ds-section-eyebrow">03 · Foundation</div>
+    <h2 class="ds-section-title">Typography</h2>
+    <p class="ds-section-desc">Inter across all weights. The type scale runs from 10px (badge labels) to 32px (page headings). Antialiasing is always enabled.</p>
+
+    <div class="ds-sub">
+      <div class="ds-sub-label">Type Scale</div>
+      <div class="demo">
+        <div class="type-row">
+          <div class="type-meta"><div class="type-size">32px · 700</div><div class="type-spec">letter-spacing: -0.8px · lh 1.2</div></div>
+          <div class="type-sample" style="font-size:32px;font-weight:700;letter-spacing:-0.8px;line-height:1.2">Good morning, Sarah</div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta"><div class="type-size">28px · 600</div><div class="type-spec">letter-spacing: -0.8px · lh 1.2</div></div>
+          <div class="type-sample" style="font-size:28px;font-weight:600;letter-spacing:-0.8px;line-height:1.2">Good morning, Sarah</div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta"><div class="type-size">20px · 600</div><div class="type-spec">lh 1.4</div></div>
+          <div class="type-sample" style="font-size:20px;font-weight:600;line-height:1.4">Your Bold trainer Amanda</div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta"><div class="type-size">18px · 600</div><div class="type-spec">lh 1.4 · Card titles</div></div>
+          <div class="type-sample" style="font-size:18px;font-weight:600;line-height:1.4">9 min Strength: Full Body Toning</div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta"><div class="type-size">18px · 400</div><div class="type-spec">lh 1.5 · Coach intro, Why text</div></div>
+          <div class="type-sample" style="font-size:18px;font-weight:400;line-height:1.5;color:#171717">Your first class is short and gentle — designed to build your confidence.</div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta"><div class="type-size">16px · 600</div><div class="type-spec">lh 1.5 · Buttons, nav, body bold</div></div>
+          <div class="type-sample" style="font-size:16px;font-weight:600;line-height:1.5">Start class · Free access confirmed</div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta"><div class="type-size">16px · 400</div><div class="type-spec">lh 1.5 · Body</div></div>
+          <div class="type-sample" style="font-size:16px;font-weight:400;line-height:1.5;color:#171717">Amanda is one of the trainers at Bold. The more classes you take, the more personalized your experience gets.</div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta"><div class="type-size">15px · 400</div><div class="type-spec">lh 1.6 · Landing body</div></div>
+          <div class="type-sample" style="font-size:15px;font-weight:400;line-height:1.6;color:#4B5563">Science-backed exercises designed for adults 60 and beyond.</div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta"><div class="type-size">14px · 600</div><div class="type-spec">lh 1.5 · Labels, CTAs, "Read more"</div></div>
+          <div class="type-sample" style="font-size:14px;font-weight:600;line-height:1.5;color:#5200d4">Read more… · Plan summary · Change class</div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta"><div class="type-size">14px · 400</div><div class="type-spec">lh 1.57 · Step labels</div></div>
+          <div class="type-sample" style="font-size:14px;font-weight:400;line-height:1.57;color:#171717">Completed · Up Next</div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta"><div class="type-size">13px · 600</div><div class="type-spec">lh 1.5 · Form labels, back buttons</div></div>
+          <div class="type-sample" style="font-size:13px;font-weight:600;line-height:1.5;color:#374151">Email address · Date of birth</div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta"><div class="type-size">12px · 600</div><div class="type-spec">lh 1.33 · Tags</div></div>
+          <div class="type-sample" style="font-size:12px;font-weight:600;line-height:1.33;color:#2563eb">Move class · Chair class</div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta"><div class="type-size">11–13px · 700</div><div class="type-spec">uppercase · letter-spacing 0.5–1px</div></div>
+          <div class="type-sample" style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#5200d4">HERE'S YOUR NEW CLASS</div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta"><div class="type-size">10px · 600</div><div class="type-spec">Badge labels, day-of-week</div></div>
+          <div class="type-sample" style="font-size:10px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;color:#6B7280">MON · TUE · 1 notification</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ds-sub">
+      <div class="ds-sub-label">Font Weights</div>
+      <div class="demo">
+        <div class="row-center" style="gap:24px;flex-wrap:wrap;">
+          <div style="text-align:center"><div style="font-size:22px;font-weight:300">Aa</div><div class="ann">300 · Light</div></div>
+          <div style="text-align:center"><div style="font-size:22px;font-weight:400">Aa</div><div class="ann">400 · Regular</div></div>
+          <div style="text-align:center"><div style="font-size:22px;font-weight:500">Aa</div><div class="ann">500 · Medium</div></div>
+          <div style="text-align:center"><div style="font-size:22px;font-weight:600">Aa</div><div class="ann">600 · SemiBold ★</div></div>
+          <div style="text-align:center"><div style="font-size:22px;font-weight:700">Aa</div><div class="ann">700 · Bold</div></div>
+          <div style="text-align:center"><div style="font-size:22px;font-weight:800">Aa</div><div class="ann">800 · ExtraBold</div></div>
+          <div style="text-align:center"><div style="font-size:22px;font-weight:900">Aa</div><div class="ann">900 · Black (logo)</div></div>
+        </div>
+        <p class="ann" style="margin-top:16px">★ 600 SemiBold is the workhorse weight — used for almost all UI labels, buttons, and headings.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 4. SPACING ─────────────────────────────── -->
+  <section class="ds-section" id="spacing">
+    <div class="ds-section-eyebrow">04 · Foundation</div>
+    <h2 class="ds-section-title">Spacing</h2>
+    <p class="ds-section-desc">A 4px base grid. Most spacing uses multiples of 4. The most common values are 8, 12, 16, 24, and 32px.</p>
+    <div class="demo">
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div class="space-row"><div class="space-label">--space-1</div><div class="space-bar" style="width:4px"></div><div class="space-px">4px</div><div class="ann">Icon gap, tiny offsets</div></div>
+        <div class="space-row"><div class="space-label">--space-2</div><div class="space-bar" style="width:6px"></div><div class="space-px">6px</div><div class="ann">Logo gap, badge gap</div></div>
+        <div class="space-row"><div class="space-label">--space-3</div><div class="space-bar" style="width:8px"></div><div class="space-px">8px</div><div class="ann">Nav link gap, button icon gap</div></div>
+        <div class="space-row"><div class="space-label">--space-4</div><div class="space-bar" style="width:10px"></div><div class="space-px">10px</div><div class="ann">Plan summary pill padding</div></div>
+        <div class="space-row"><div class="space-label">--space-5</div><div class="space-bar" style="width:12px"></div><div class="space-px">12px</div><div class="ann">Card meta gap, modal header padding</div></div>
+        <div class="space-row"><div class="space-label">--space-6</div><div class="space-bar" style="width:14px"></div><div class="space-px">14px</div><div class="ann">Sheet option padding, result card padding</div></div>
+        <div class="space-row"><div class="space-label">--space-7</div><div class="space-bar" style="width:16px"></div><div class="space-px">16px</div><div class="ann">★ Primary content padding, button gap, step gap</div></div>
+        <div class="space-row"><div class="space-label">--space-8</div><div class="space-bar" style="width:20px"></div><div class="space-px">20px</div><div class="ann">Sheet/modal padding</div></div>
+        <div class="space-row"><div class="space-label">--space-9</div><div class="space-bar" style="width:24px"></div><div class="space-px">24px</div><div class="ann">★ Desktop hero padding, modal body padding</div></div>
+        <div class="space-row"><div class="space-label">--space-10</div><div class="space-bar" style="width:28px"></div><div class="space-px">28px</div><div class="ann">Desktop card meta padding</div></div>
+        <div class="space-row"><div class="space-label">--space-11</div><div class="space-bar" style="width:32px"></div><div class="space-px">32px</div><div class="ann">★ Desktop nav padding</div></div>
+        <div class="space-row"><div class="space-label">--space-12</div><div class="space-bar" style="width:40px"></div><div class="space-px">40px</div><div class="ann">Desktop main layout padding</div></div>
+        <div class="space-row"><div class="space-label">--space-13</div><div class="space-bar" style="width:48px"></div><div class="space-px">48px</div><div class="ann">Desktop hero padding-top, button height</div></div>
+        <div class="space-row"><div class="space-label">--space-15</div><div class="space-bar" style="width:80px"></div><div class="space-px">80px</div><div class="ann">Desktop layout bottom padding</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 5. BORDER RADIUS ───────────────────────── -->
+  <section class="ds-section" id="radius">
+    <div class="ds-section-eyebrow">05 · Foundation</div>
+    <h2 class="ds-section-title">Border Radius</h2>
+    <p class="ds-section-desc">Radius is generous and intentional — from small tags to fully-rounded pills. Each radius maps to specific component contexts.</p>
+    <div class="demo">
+      <div class="radius-grid">
+        <div class="radius-item"><div class="radius-box" style="border-radius:4px"></div><div class="radius-name">2xs</div><div class="radius-val">4px · Tags</div></div>
+        <div class="radius-item"><div class="radius-box" style="border-radius:6px"></div><div class="radius-name">xs</div><div class="radius-val">6px · Error blocks</div></div>
+        <div class="radius-item"><div class="radius-box" style="border-radius:8px"></div><div class="radius-name">sm ★</div><div class="radius-val">8px · Cards, inputs</div></div>
+        <div class="radius-item"><div class="radius-box" style="border-radius:12px"></div><div class="radius-name">md ★</div><div class="radius-val">12px · Buttons, close btn</div></div>
+        <div class="radius-item"><div class="radius-box" style="border-radius:14px"></div><div class="radius-name">lg</div><div class="radius-val">14px · Sheet options</div></div>
+        <div class="radius-item"><div class="radius-box" style="border-radius:16px"></div><div class="radius-name">xl</div><div class="radius-val">16px · Modals</div></div>
+        <div class="radius-item"><div class="radius-box" style="border-radius:20px"></div><div class="radius-name">2xl</div><div class="radius-val">20px · Bottom sheets</div></div>
+        <div class="radius-item"><div class="radius-box" style="border-radius:25px"></div><div class="radius-name">3xl</div><div class="radius-val">25px · Why box</div></div>
+        <div class="radius-item"><div class="radius-box" style="border-radius:360px"></div><div class="radius-name">full</div><div class="radius-val">360px · Pills</div></div>
+        <div class="radius-item"><div class="radius-box" style="border-radius:50%"></div><div class="radius-name">circle</div><div class="radius-val">50% · Avatars, dots</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 6. SHADOWS ─────────────────────────────── -->
+  <section class="ds-section" id="shadows">
+    <div class="ds-section-eyebrow">06 · Foundation</div>
+    <h2 class="ds-section-title">Shadows</h2>
+    <p class="ds-section-desc">Shadows use rgba(16,24,40, …) — a warm near-black from the brand palette. Elevation grows from xs → xl. Special shadows exist for the purple glow effect and the bottom sheet.</p>
+    <div class="demo">
+      <div class="shadow-grid">
+        <div class="shadow-item">
+          <div class="shadow-box" style="box-shadow:0 1px 2px rgba(16,24,40,.05)"></div>
+          <div class="shadow-name">xs</div>
+          <div class="shadow-val">0 1px 2px rgba(16,24,40,.05) · Nav pills, plan btn</div>
+        </div>
+        <div class="shadow-item">
+          <div class="shadow-box" style="box-shadow:0 1px 3px rgba(16,24,40,.1),0 1px 2px rgba(16,24,40,.06)"></div>
+          <div class="shadow-name">sm ★</div>
+          <div class="shadow-val">0 1px 3px/2px · Post-auth nav</div>
+        </div>
+        <div class="shadow-item">
+          <div class="shadow-box" style="box-shadow:0 4px 16px rgba(0,0,0,.10)"></div>
+          <div class="shadow-name">md</div>
+          <div class="shadow-val">0 4px 16px rgba(0,0,0,.10) · Trainer photo</div>
+        </div>
+        <div class="shadow-item">
+          <div class="shadow-box" style="box-shadow:0 12px 40px rgba(0,0,0,.14)"></div>
+          <div class="shadow-name">lg</div>
+          <div class="shadow-val">0 12px 40px rgba(0,0,0,.14)</div>
+        </div>
+        <div class="shadow-item">
+          <div class="shadow-box" style="box-shadow:0 20px 24px -4px rgba(16,24,40,.08),0 8px 8px -4px rgba(16,24,40,.03)"></div>
+          <div class="shadow-name">xl</div>
+          <div class="shadow-val">0 20px 24px -4px / 0 8px 8px -4px · Modals</div>
+        </div>
+        <div class="shadow-item">
+          <div class="shadow-box" style="box-shadow:0 -4px 32px rgba(16,24,40,.12)"></div>
+          <div class="shadow-name">sheet</div>
+          <div class="shadow-val">0 -4px 32px · Upward, bottom sheets</div>
+        </div>
+        <div class="shadow-item">
+          <div class="shadow-box" style="box-shadow:0 4px 16px rgba(99,51,232,.35);background:#6333E8"></div>
+          <div class="shadow-name">purple</div>
+          <div class="shadow-val">0 4px 16px rgba(99,51,232,.35) · Landing btn hover</div>
+        </div>
+        <div class="shadow-item">
+          <div class="shadow-box" style="box-shadow:0 0 0 3px rgba(82,0,212,.12);border:1.5px solid #5200d4"></div>
+          <div class="shadow-name">focus-ring</div>
+          <div class="shadow-val">0 0 0 3px rgba(82,0,212,.12) · Input focus</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 7. BUTTONS ─────────────────────────────── -->
+  <section class="ds-section" id="buttons">
+    <div class="ds-section-eyebrow">07 · Components</div>
+    <h2 class="ds-section-title">Buttons</h2>
+    <p class="ds-section-desc">Eight button variants covering every context in the product. Hover all buttons to see states. Height defaults to 48px.</p>
+
+    <div class="ds-sub">
+      <div class="ds-sub-label">Primary Actions (Post-Auth)</div>
+      <div class="demo">
+        <div class="row">
+          <button class="bold-btn bold-btn-primary">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 3.5L16 10L5 16.5V3.5Z" fill="white"/></svg>
+            Start class
+          </button>
+          <button class="bold-btn bold-btn-primary bold-btn-sm">Start class</button>
+          <button class="bold-btn bold-btn-primary" disabled>Disabled</button>
+        </div>
+        <p class="ann">Radius: 12px · Height: 48px (sm: 40px) · Hover: #3f00a8 <span class="token">bold-btn-primary</span></p>
+      </div>
+    </div>
+
+    <div class="ds-sub">
+      <div class="ds-sub-label">Primary Pill (Landing / Marketing)</div>
+      <div class="demo">
+        <div class="row">
+          <button class="bold-btn bold-btn-primary-pill">Check my eligibility →</button>
+          <button class="bold-btn bold-btn-primary-pill bold-btn-sm">Get started free</button>
+        </div>
+        <p class="ann">Radius: full · Hover: lift + purple glow <span class="token">bold-btn-primary-pill</span></p>
+      </div>
+    </div>
+
+    <div class="ds-sub">
+      <div class="ds-sub-label">Yellow CTA</div>
+      <div class="demo">
+        <div class="row">
+          <button class="bold-btn bold-btn-yellow">Use app</button>
+          <button class="bold-btn bold-btn-yellow bold-btn-lg">Start for free</button>
+        </div>
+        <p class="ann">Black text on yellow · Radius: full <span class="token">bold-btn-yellow</span></p>
+      </div>
+    </div>
+
+    <div class="ds-sub">
+      <div class="ds-sub-label">Outline Pill (Nav, Secondary)</div>
+      <div class="demo">
+        <div class="row-center">
+          <button class="bold-btn bold-btn-outline" style="height:48px;gap:6px;padding:0 16px;position:relative">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 17.5c-3.31 0-6-2.57-6-5.75 0-3 3-6 4-8 .25 2.5 2 3.5 2 5.5a2.5 2.5 0 0 0 2.75-2.5C14 9 15 10 15 11.75c0 3.18-2.69 5.75-5 5.75Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+            Bold Streak
+          </button>
+          <button class="bold-btn bold-btn-outline" style="height:48px;padding:0 16px;gap:6px;position:relative">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M3 8l9 5.5L21 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <div class="bold-badge">1</div>
+          </button>
+          <button class="bold-btn bold-btn-outline bold-btn-streak" style="height:48px;padding:0 12px;gap:4px;">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 17.5c-3.31 0-6-2.57-6-5.75 0-3 3-6 4-8 .25 2.5 2 3.5 2 5.5a2.5 2.5 0 0 0 2.75-2.5C14 9 15 10 15 11.75c0 3.18-2.69 5.75-5 5.75Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+            <span>1</span>
+          </button>
+        </div>
+        <p class="ann">Nav pill: border-radius full · Streak gold gradient (mobile) <span class="token">bold-btn-outline</span> <span class="token">bold-btn-streak</span></p>
+      </div>
+    </div>
+
+    <div class="ds-sub">
+      <div class="ds-sub-label">Ghost & Text</div>
+      <div class="demo">
+        <div class="row-center">
+          <button class="bold-btn bold-btn-ghost">Sign in</button>
+          <button class="bold-btn bold-btn-text" style="display:flex;align-items:center;gap:10px">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M17.5 10A7.5 7.5 0 1 1 10 2.5c2.42 0 4.58 1.14 6 2.93" stroke="#525252" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 1.5v4h-4" stroke="#525252" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Not feeling this today? <span class="accent">Change class</span>
+          </button>
+        </div>
+      </div>
+      <div class="demo demo-dark">
+        <div class="row">
+          <button class="bold-btn bold-btn-ghost-white">Learn more</button>
+          <button class="bold-btn bold-btn-ghost-white">Sign in</button>
+        </div>
+        <p class="ann" style="color:#fff8">Ghost white — for dark hero/navy backgrounds <span class="token">bold-btn-ghost-white</span></p>
+      </div>
+    </div>
+
+    <div class="ds-sub">
+      <div class="ds-sub-label">Specialty</div>
+      <div class="demo" style="background:#1a1a2e;position:relative;padding-top:40px">
+        <div style="position:absolute;top:12px;right:12px">
+          <button class="bold-btn-save">
+            <svg width="16" height="18" viewBox="0 0 16 18" fill="none"><path d="M14 17L8 13L2 17V3C2 2.45 2.45 2 3 2H13C13.55 2 14 2.45 14 3V17Z" stroke="#140d26" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Save
+          </button>
+        </div>
+        <p class="ann" style="color:#fff8">Save button — frosted glass overlay on video thumbnail <span class="token">bold-btn-save</span></p>
+      </div>
+      <div class="demo" style="margin-top:12px">
+        <a href="#" class="bold-btn-plan">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="2" y="7" width="2.5" height="5" rx="0.5" fill="#525252"/><rect x="5.75" y="4" width="2.5" height="8" rx="0.5" fill="#525252"/><rect x="9.5" y="2" width="2.5" height="10" rx="0.5" fill="#525252"/></svg>
+          Plan summary
+        </a>
+        <p class="ann" style="margin-top:8px">Plan summary pill — outline, 8px radius, used in hero <span class="token">bold-btn-plan</span></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 8. NAVIGATION ──────────────────────────── -->
+  <section class="ds-section" id="navigation">
+    <div class="ds-section-eyebrow">08 · Components</div>
+    <h2 class="ds-section-title">Navigation</h2>
+    <p class="ds-section-desc">Two nav variants: post-auth (authenticated app, 72px, box-shadow) and pre-auth (marketing, 64px, border-bottom + backdrop blur). Both are sticky.</p>
+
+    <div class="ds-sub">
+      <div class="ds-sub-label">Post-Auth Nav — Desktop</div>
+      <div class="demo" style="padding:0;overflow:hidden">
+        <nav style="background:#fff;box-shadow:0px 1px 3px rgba(16,24,40,0.1),0px 1px 2px rgba(16,24,40,0.06);height:72px;display:flex;align-items:center;padding:0 32px;position:relative;">
+          <!-- Logo -->
+          <div style="width:140px;height:42px;flex-shrink:0">
+            <svg width="140" height="42" viewBox="0 0 140 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M30.6023 32.6454L0.595903 41.9791C0.299764 42.0712 0 41.8471 0 41.5335V34.6844C0 34.4796 0.131864 34.2989 0.325331 34.2388L30.3317 24.9052C30.6278 24.8131 30.9276 25.0372 30.9276 25.3507V32.1999C30.9276 32.4046 30.7955 32.5853 30.6023 32.6454Z" fill="#5200D4"/>
+              <path d="M36.3061 20.2035L6.29976 29.5372C6.00362 29.6293 5.70386 29.4052 5.70386 29.0916V22.2425C5.70386 22.0377 5.83572 21.857 6.02919 21.7969L36.0355 12.4633C36.3317 12.3712 36.6314 12.5953 36.6314 12.9088V19.758C36.6314 19.9627 36.4996 20.1434 36.3061 20.2035Z" fill="#3366FF"/>
+              <path d="M42.0101 7.76116L12.0037 17.0948C11.7076 17.1869 11.4078 16.9628 11.4078 16.6493V9.80008C11.4078 9.59534 11.5397 9.41463 11.7332 9.35453L41.7393 0.0208756C42.0355 -0.07121 42.3352 0.152892 42.3352 0.466431V7.3156C42.3352 7.52015 42.2034 7.70106 42.0101 7.76116Z" fill="#80E8FF"/>
+              <path d="M87.7489 8.79443C81.0778 8.79443 74.6696 14.2495 73.4756 21.1025C72.2874 27.9216 76.7947 33.3768 83.4658 33.3768C90.1369 33.3768 96.5453 27.9213 97.7333 21.1025C98.9273 14.2495 94.42 8.79443 87.7489 8.79443ZM84.25 28.876C80.0386 28.876 77.3312 25.4666 78.0916 21.1025C78.858 16.7044 82.7536 13.295 86.9649 13.295C91.1763 13.295 93.8837 16.7044 93.1174 21.1025C92.3569 25.4664 88.4613 28.876 84.25 28.876Z" fill="#140D26"/>
+              <path d="M65.8863 20.148C67.7235 19.4661 69.3307 17.5908 69.7643 15.102C70.3286 11.863 68.4912 9.06738 63.8081 9.06738H55.7894H53.2036C52.8443 9.06738 52.5644 9.47953 52.7239 9.77412L54.5672 13.1799L51.2144 32.4221C51.1608 32.7291 51.3275 32.9337 51.6309 32.9337H59.6496C65.5455 32.9337 68.7577 30.5472 69.5418 26.0464C70.0824 22.944 68.2665 20.7959 65.8863 20.148ZM59.1808 13.1927H62.6507C64.504 13.1927 65.6318 13.8746 65.317 15.6815C64.9842 17.5908 63.6172 18.4774 61.7299 18.4774H58.2599L59.1808 13.1927ZM60.5028 28.8083H56.4599L57.5887 22.3302H61.6316C64.0907 22.3302 65.3892 23.3871 65.015 25.5352C64.6228 27.7852 62.9619 28.8083 60.5028 28.8083Z" fill="#140D26"/>
+              <path d="M113.695 28.8083H106.047L109.397 9.57895C109.451 9.27213 109.285 9.06738 108.981 9.06738L105.157 10.3228C104.803 10.4307 104.617 10.5275 104.563 10.8343L100.802 32.4223C100.748 32.7293 100.915 32.9339 101.218 32.9339H112.977C113.279 32.9339 113.517 32.7295 113.571 32.4223L114.111 29.3197C114.165 29.0127 113.998 28.8083 113.695 28.8083Z" fill="#140D26"/>
+              <path d="M129.492 9.06738H122.855H120.269C119.91 9.06738 119.63 9.47953 119.789 9.77412L121.633 13.1807L118.28 32.4221C118.227 32.7291 118.393 32.9337 118.696 32.9337H125.334C133.42 32.9337 138.619 27.6489 139.778 21.0008C140.936 14.3521 137.578 9.06738 129.492 9.06738ZM126.053 28.8083H123.526L126.247 13.1929H128.774C133.894 13.1929 135.95 16.0912 135.095 21.0008C134.239 25.9105 131.173 28.8083 126.053 28.8083Z" fill="#140D26"/>
+            </svg>
+          </div>
+          <!-- Center links -->
+          <div style="display:flex;align-items:center;gap:4px;position:absolute;left:50%;transform:translateX(-50%)">
+            <a href="#" style="display:flex;align-items:center;gap:8px;padding:12px 16px;border-radius:12px;font-size:16px;font-weight:600;background:#faf5ff;color:#5200d4;text-decoration:none">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M2.5 8.33L10 2.5l7.5 5.83V17.5h-5V12.5H7.5v5h-5V8.33Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+              Today
+            </a>
+            <a href="#" style="display:flex;align-items:center;gap:8px;padding:12px 16px;border-radius:12px;font-size:16px;font-weight:600;color:#171717;text-decoration:none">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 16.25S2.5 12 2.5 6.875a3.958 3.958 0 0 1 7.5-1.75 3.958 3.958 0 0 1 7.5 1.75C17.5 12 10 16.25 10 16.25Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+              Care
+            </a>
+            <a href="#" style="display:flex;align-items:center;gap:8px;padding:12px 16px;border-radius:12px;font-size:16px;font-weight:600;color:#171717;text-decoration:none">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7.5" stroke="currentColor" stroke-width="1.5"/><path d="M13.5 6.5l-2.25 4.5-4.5 2.25 2.25-4.5 4.5-2.25Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+              Explore
+            </a>
+          </div>
+          <!-- Right -->
+          <div style="display:flex;align-items:center;gap:8px;margin-left:auto">
+            <button style="display:inline-flex;align-items:center;gap:6px;border:1px solid #e5e5e5;border-radius:360px;background:#fff;box-shadow:0 1px 2px rgba(16,24,40,.05);padding:0 16px;height:48px;font-size:16px;font-weight:600;color:#140d26;cursor:pointer;font-family:inherit">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 17.5c-3.31 0-6-2.57-6-5.75 0-3 3-6 4-8 .25 2.5 2 3.5 2 5.5a2.5 2.5 0 0 0 2.75-2.5C14 9 15 10 15 11.75c0 3.18-2.69 5.75-5 5.75Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+              Bold Streak
+            </button>
+            <button style="display:inline-flex;align-items:center;gap:6px;border:1px solid #e5e5e5;border-radius:360px;background:#fff;box-shadow:0 1px 2px rgba(16,24,40,.05);padding:0 16px;height:48px;font-size:16px;font-weight:600;color:#140d26;cursor:pointer;font-family:inherit;position:relative">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M3 8l9 5.5L21 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              <div class="bold-badge">1</div>
+            </button>
+            <button style="display:inline-flex;align-items:center;gap:6px;border:1px solid #e5e5e5;border-radius:360px;background:#fff;box-shadow:0 1px 2px rgba(16,24,40,.05);padding:0 16px;height:48px;font-size:16px;font-weight:600;color:#140d26;cursor:pointer;font-family:inherit">
+              <div class="bold-avatar bold-avatar-xs">IB</div>
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 7.5l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+        </nav>
+      </div>
+      <p class="ann">Height: 72px · Shadow: sm · Active link: #faf5ff bg + #5200d4 text · Nav pills: border-radius full, 48px high</p>
+    </div>
+
+    <div class="ds-sub">
+      <div class="ds-sub-label">Spec</div>
+      <div class="demo">
+        <table class="spec-table">
+          <tr><th>Property</th><th>Post-Auth</th><th>Pre-Auth</th></tr>
+          <tr><td>Height</td><td>72px</td><td>64px</td></tr>
+          <tr><td>Background</td><td>#fff</td><td>rgba(255,255,255,.95) + backdrop-filter blur(10px)</td></tr>
+          <tr><td>Border</td><td>box-shadow sm</td><td>border-bottom 1px #E5E7EB</td></tr>
+          <tr><td>Logo size</td><td>133×40px desktop, 34×34px mobile</td><td>Same</td></tr>
+          <tr><td>Nav links</td><td>Centered absolute, icon+text, 16px 600</td><td>Left-aligned, 14px 500</td></tr>
+          <tr><td>Active state</td><td>#faf5ff bg, #5200d4 text, border-radius 12px</td><td>n/a</td></tr>
+          <tr><td>Mobile</td><td>Links hidden, mark-only logo, yellow "Use app" pill</td><td>Links hidden</td></tr>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 9. TAGS & BADGES ───────────────────────── -->
+  <section class="ds-section" id="tags">
+    <div class="ds-section-eyebrow">09 · Components</div>
+    <h2 class="ds-section-title">Tags & Badges</h2>
+    <div class="demo">
+      <div class="row-center">
+        <span class="bold-tag bold-tag-blue">Move class ⓘ</span>
+        <span class="bold-tag bold-tag-blue">Chair class ⓘ</span>
+        <span class="bold-tag bold-tag-purple">Balance</span>
+        <span class="bold-tag bold-tag-green">Completed</span>
+        <span class="bold-tag bold-tag-red">Error</span>
+      </div>
+      <div class="row-center" style="margin-top:20px">
+        <span class="bold-label-caps">Here's your new class</span>
+        <span class="bold-score-pill bold-score-high">↑ 85%</span>
+        <span class="bold-score-pill bold-score-mid">→ 74%</span>
+        <span class="bold-score-pill bold-score-low">↓ 58%</span>
+        <span class="bold-count-badge">4</span>
+      </div>
+    </div>
+    <p class="ann">Tags: 12px 600, radius 4px. Notification badge: 16×16px, absolute positioned. Score pills: conditional green/yellow/red.</p>
+  </section>
+
+  <!-- ── 10. AVATARS ────────────────────────────── -->
+  <section class="ds-section" id="avatars">
+    <div class="ds-section-eyebrow">10 · Components</div>
+    <h2 class="ds-section-title">Avatars</h2>
+    <div class="demo">
+      <div class="row-center">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+          <div class="bold-avatar bold-avatar-xs">IB</div>
+          <div class="ann">24px · Nav desktop</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+          <div class="bold-avatar bold-avatar-sm">IB</div>
+          <div class="ann">36px · Nav mobile</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+          <div class="bold-avatar bold-avatar-md">AB</div>
+          <div class="ann">48px · Cards</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+          <div class="bold-avatar bold-avatar-lg">IB</div>
+          <div class="ann">96px · Modal</div>
+        </div>
+      </div>
+      <p class="ann" style="margin-top:16px">Background: #5200d4 · Text: white · Weight: 600 · 2–3 initials from first+last name</p>
+    </div>
+  </section>
+
+  <!-- ── 11. FORMS ──────────────────────────────── -->
+  <section class="ds-section" id="forms">
+    <div class="ds-section-eyebrow">11 · Components</div>
+    <h2 class="ds-section-title">Form Elements</h2>
+    <p class="ds-section-desc">All inputs use a 1.5px border and 3px purple focus ring. Option tiles are the primary selection pattern in onboarding flows.</p>
+
+    <div class="ds-sub">
+      <div class="ds-sub-label">Text Inputs</div>
+      <div class="demo" style="max-width:400px">
+        <div class="bold-form-group">
+          <label class="bold-form-label">Email address</label>
+          <input type="email" class="bold-input" placeholder="you@example.com" />
+        </div>
+        <div class="bold-form-group">
+          <label class="bold-form-label">Password</label>
+          <div class="bold-input-wrap">
+            <input type="password" class="bold-input" value="mypassword" />
+            <button class="bold-reveal-toggle">👁</button>
+          </div>
+        </div>
+        <div class="bold-form-group">
+          <label class="bold-form-label">Date of birth</label>
+          <input type="text" class="bold-input error" value="13/45/2" />
+          <div class="bold-input-error-msg">Please enter a valid date (MM/DD/YYYY)</div>
+        </div>
+        <div class="bold-divider">or</div>
+        <button class="bold-btn-social">
+          <svg width="18" height="18" viewBox="0 0 18 18"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/><path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
+          Continue with Google
+        </button>
+        <div class="bold-trust-strip">
+          <span>🔒 256-bit encryption</span>
+          <span>🏥 HIPAA compliant</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ds-sub">
+      <div class="ds-sub-label">Option Tiles (Onboarding)</div>
+      <div class="demo" style="max-width:400px">
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <button class="bold-option-tile selected">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="#5200d4" stroke-width="1.5"/><path d="M7 10l2 2 4-4" stroke="#5200d4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Balance &amp; fall prevention
+          </button>
+          <button class="bold-option-tile">Pain management</button>
+          <button class="bold-option-tile">Build a routine</button>
+          <button class="bold-option-tile">Pelvic floor health</button>
+        </div>
+        <p class="ann" style="margin-top:8px">Selected: #5200d4 border + #EDE9FE bg + 500 weight</p>
+      </div>
+    </div>
+
+    <div class="ds-sub">
+      <div class="ds-sub-label">Sheet Options (Change Class Flow)</div>
+      <div class="demo" style="max-width:400px">
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <button class="bold-sheet-option selected">
+            <span class="bold-sheet-option-icon">🟢</span>
+            <span class="bold-sheet-option-text">I want something easier today</span>
+          </button>
+          <button class="bold-sheet-option">
+            <span class="bold-sheet-option-icon">🔵</span>
+            <span class="bold-sheet-option-text">I want more of a challenge</span>
+          </button>
+          <button class="bold-sheet-option">
+            <span class="bold-sheet-option-icon">⏱️</span>
+            <span class="bold-sheet-option-text">I'm short on time</span>
+          </button>
+        </div>
+        <p class="ann" style="margin-top:8px">Radius: 14px · Border: 2px · Icon: 22px emoji</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 12. CARDS ──────────────────────────────── -->
+  <section class="ds-section" id="cards">
+    <div class="ds-section-eyebrow">12 · Components</div>
+    <h2 class="ds-section-title">Cards</h2>
+
+    <div class="ds-sub">
+      <div class="ds-sub-label">Class Card — Mobile (Stacked)</div>
+      <div class="demo" style="max-width:400px;padding:0">
+        <div style="background:#fff;border:1px solid #e5e5e5;border-radius:8px;overflow:hidden">
+          <div style="position:relative;width:100%;aspect-ratio:16/9;background:#1a1a2e;display:flex;align-items:center;justify-content:center;">
+            <div style="color:rgba(255,255,255,.3);font-size:13px">16:9 thumbnail</div>
+            <button class="bold-btn-save" style="position:absolute;top:12px;right:12px">
+              <svg width="16" height="18" viewBox="0 0 16 18" fill="none"><path d="M14 17L8 13L2 17V3C2 2.45 2.45 2 3 2H13C13.55 2 14 2.45 14 3V17Z" stroke="#140d26" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Save
+            </button>
+          </div>
+          <div style="padding:12px 12px 16px;display:flex;flex-direction:column;gap:16px">
+            <div>
+              <span class="bold-tag bold-tag-blue">Move class ⓘ</span>
+              <p style="font-size:18px;font-weight:600;color:#140d26;margin-top:8px;line-height:1.4">9 min Strength: Full Body Toning</p>
+              <p style="font-size:16px;color:#140d26">Amanda</p>
+            </div>
+            <div class="bold-why-box">
+              <div class="bold-why-header">
+                <div class="bold-avatar bold-avatar-xs">A</div>
+                Why this class
+              </div>
+              <p class="bold-why-text">Short and structured — the perfect first step to a routine you can actually stick to.</p>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:12px">
+              <button class="bold-btn bold-btn-primary bold-btn-full">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 3.5L16 10L5 16.5V3.5Z" fill="white"/></svg>
+                Start class
+              </button>
+              <button class="bold-btn bold-btn-text bold-btn-full" style="justify-content:center">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M17.5 10A7.5 7.5 0 1 1 10 2.5c2.42 0 4.58 1.14 6 2.93" stroke="#525252" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 1.5v4h-4" stroke="#525252" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Not feeling this today? <span class="accent">Change class</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="ann" style="margin-top:8px">Mobile: stacked layout. Desktop: grid-template-columns 1fr 440px (text left, thumb right). Radius 8px.</p>
+    </div>
+
+    <div class="ds-sub">
+      <div class="ds-sub-label">Result Mini-Card</div>
+      <div class="demo" style="max-width:360px">
+        <div class="bold-card-result">
+          <div style="width:72px;height:56px;background:#1a1a2e;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center"><span style="color:rgba(255,255,255,.4);font-size:10px">thumb</span></div>
+          <div class="bold-card-result-info">
+            <span class="bold-card-result-tag">Chair class</span>
+            <p class="bold-card-result-name">20 min Seated Strength &amp; Stability</p>
+            <p class="bold-card-result-sub">Amanda</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ds-sub">
+      <div class="ds-sub-label">Teal Win Card &amp; Session Card</div>
+      <div class="demo">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:600px">
+          <div class="bold-card-win">
+            <div class="bold-card-win-title">Streak</div>
+            <div class="bold-card-win-value">7 days 🔥</div>
+            <div style="font-size:13px;opacity:.8;position:relative;margin-top:4px">Keep it going!</div>
+          </div>
+          <div class="bold-card-session">
+            <div class="bold-session-day-box">
+              <div class="bold-session-day">Mon</div>
+              <div class="bold-session-date">14</div>
+            </div>
+            <div>
+              <div style="font-size:16px;font-weight:600;color:#140d26">9 min class completed</div>
+              <div class="bold-session-note">Felt great — no joint pain</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 13. WHY BOX ────────────────────────────── -->
+  <section class="ds-section" id="why-box">
+    <div class="ds-section-eyebrow">13 · Components</div>
+    <h2 class="ds-section-title">Info Box ("Why this class")</h2>
+    <p class="ds-section-desc">A light blue-purple rounded box that surfaces AI-generated personalization context. Text clamps to 2 lines with a "Read more" reveal.</p>
+    <div class="demo" style="max-width:400px">
+      <div class="bold-why-box">
+        <div class="bold-why-header">
+          <div class="bold-avatar bold-avatar-xs">A</div>
+          Why this class
+        </div>
+        <p class="bold-why-text" id="demo-why">Knee comfort noted — this seated class avoids any deep bending or high-impact moves. Additional context here that would be hidden when clamped to 2 lines.</p>
+        <button class="bold-why-readmore" id="demo-readmore" onclick="toggleWhy()">Read more…</button>
+      </div>
+    </div>
+    <p class="ann">Background: #eaf0ff · Radius: 25px · Text: 18px regular · Clamp: -webkit-line-clamp 2 → toggle via JS</p>
+  </section>
+
+  <!-- ── 14. STEPPER ────────────────────────────── -->
+  <section class="ds-section" id="stepper">
+    <div class="ds-section-eyebrow">14 · Components</div>
+    <h2 class="ds-section-title">Stepper / Progress Timeline</h2>
+    <p class="ds-section-desc">A vertical timeline showing completed, current, and upcoming steps. The "next" dot pulses continuously to draw attention.</p>
+    <div class="demo">
+      <div class="bold-stepper">
+        <div class="bold-step-row">
+          <div class="bold-step-dot done">✓</div>
+          <div>
+            <p class="bold-step-label">Completed</p>
+            <div class="bold-step-tasks">
+              <span class="bold-step-task">Free access confirmed
+                <button style="background:none;border:none;padding:0;cursor:pointer;opacity:.7;display:flex;align-items:center">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7.25" stroke="#5200d4" stroke-width="1.5"/><circle cx="8" cy="5.25" r="1" fill="#5200d4"/><rect x="7.25" y="7.25" width="1.5" height="4.5" rx=".75" fill="#5200d4"/></svg>
+                </button>
+              </span>
+              <span class="bold-step-task">Personalized plan created
+                <button style="background:none;border:none;padding:0;cursor:pointer;opacity:.7;display:flex;align-items:center">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7.25" stroke="#5200d4" stroke-width="1.5"/><circle cx="8" cy="5.25" r="1" fill="#5200d4"/><rect x="7.25" y="7.25" width="1.5" height="4.5" rx=".75" fill="#5200d4"/></svg>
+                </button>
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="bold-step-row">
+          <div class="bold-step-dot next"></div>
+          <div>
+            <p class="bold-step-label">Up Next</p>
+            <p class="bold-step-title">Finish your first class</p>
+          </div>
+        </div>
+        <div class="bold-step-row">
+          <div class="bold-step-dot future"></div>
+          <div>
+            <p class="bold-step-label">Coming up</p>
+            <p class="bold-step-title" style="color:#a3a3a3">Rate how you felt</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="ann">Connector: 2px dashed #d4d4d4 · Done: green #16a34a + ✓ · Next: white bg + purple border + pulse animation · Future: gray</p>
+  </section>
+
+  <!-- ── 15. PROGRESS ───────────────────────────── -->
+  <section class="ds-section" id="progress">
+    <div class="ds-section-eyebrow">15 · Components</div>
+    <h2 class="ds-section-title">Progress Indicators</h2>
+
+    <div class="ds-sub">
+      <div class="ds-sub-label">Dot Progress Track</div>
+      <div class="demo">
+        <div style="max-width:400px">
+          <div class="bold-dot-track-wrap">
+            <div class="bold-dot-track-line"></div>
+            <div class="bold-dot-track-fill" style="width:45%"></div>
+            <div class="bold-dot-track" style="gap:0;justify-content:space-between">
+              <div class="bold-dot past"></div>
+              <div class="bold-dot past"></div>
+              <div class="bold-dot past"></div>
+              <div class="bold-dot now"></div>
+              <div class="bold-dot"></div>
+              <div class="bold-dot"></div>
+              <div class="bold-dot"></div>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:11px;color:#a3a3a3">
+            <span>Past (purple)</span><span>Now (ring)</span><span>Future (gray)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ds-sub">
+      <div class="ds-sub-label">Linear Progress Bar</div>
+      <div class="demo">
+        <div style="display:flex;flex-direction:column;gap:16px;max-width:400px">
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px"><span style="color:#525252;font-weight:600">Week 1 progress</span><span style="color:#16a34a;font-weight:700">62%</span></div>
+            <div class="bold-progress-bar"><div class="bold-progress-fill" style="width:62%"></div></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px"><span style="color:#525252;font-weight:600">Card sort</span><span style="color:#6B7280">8 / 20</span></div>
+            <div class="bold-progress-bar"><div class="bold-progress-fill yellow" style="width:40%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ds-sub">
+      <div class="ds-sub-label">Nav Progress (Onboarding)</div>
+      <div class="demo">
+        <div style="display:flex;align-items:center;justify-content:space-between;font-size:14px;font-weight:600">
+          <span style="color:#140d26">About you</span>
+          <span style="color:#00887a">40%</span>
+        </div>
+      </div>
+      <p class="ann">Section label (600, dark) + percentage (700, #00887a teal-green)</p>
+    </div>
+  </section>
+
+  <!-- ── 16. LOADING STATES ─────────────────────── -->
+  <section class="ds-section" id="loading">
+    <div class="ds-section-eyebrow">16 · Patterns</div>
+    <h2 class="ds-section-title">Loading States</h2>
+
+    <div class="ds-sub">
+      <div class="ds-sub-label">Skeleton Shimmer</div>
+      <div class="demo" style="max-width:400px">
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div class="bold-skel" style="height:14px;width:60%"></div>
+          <div class="bold-skel" style="height:32px;width:85%"></div>
+          <div class="bold-skel" style="height:20px;width:95%"></div>
+          <div class="bold-skel" style="height:20px;width:75%"></div>
+        </div>
+        <p class="ann" style="margin-top:12px">Used on date, greeting, coach intro, and "why" text until AI response resolves. Apply class <span class="token">bold-skel</span> then remove it on data load.</p>
+      </div>
+    </div>
+
+    <div class="ds-sub">
+      <div class="ds-sub-label">Bouncing Dots Loader</div>
+      <div class="demo">
+        <div style="display:flex;align-items:center;gap:20px">
+          <div class="bold-loader-dots">
+            <div class="bold-loader-dot"></div>
+            <div class="bold-loader-dot"></div>
+            <div class="bold-loader-dot"></div>
+            <div class="bold-loader-dot"></div>
+          </div>
+          <p style="font-size:14px;color:#525252">Processing your personalized plan…</p>
+        </div>
+        <p class="ann" style="margin-top:12px">4 dots: purple → blue → yellow → cyan. Each bounces -22px with 0.15s stagger. Used on full-screen loading page.</p>
+      </div>
+    </div>
+
+    <div class="ds-sub">
+      <div class="ds-sub-label">Staggered Checklist Reveal</div>
+      <div class="demo">
+        <div style="display:flex;flex-direction:column;gap:12px" id="reveal-demo">
+          <div class="bold-reveal-item" style="display:flex;align-items:center;gap:10px;font-size:15px;font-weight:500">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="#16a34a" stroke-width="1.5"/><path d="M7 10l2 2 4-4" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Checking your eligibility
+          </div>
+          <div class="bold-reveal-item" style="display:flex;align-items:center;gap:10px;font-size:15px;font-weight:500">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="#16a34a" stroke-width="1.5"/><path d="M7 10l2 2 4-4" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Building your personalized plan
+          </div>
+          <div class="bold-reveal-item" style="display:flex;align-items:center;gap:10px;font-size:15px;font-weight:500">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="#16a34a" stroke-width="1.5"/><path d="M7 10l2 2 4-4" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Matching you with your trainer
+          </div>
+        </div>
+        <button onclick="triggerReveal()" style="margin-top:16px;padding:8px 16px;background:#5200d4;color:#fff;border:none;border-radius:8px;cursor:pointer;font-family:inherit;font-size:14px;font-weight:600">Replay animation</button>
+        <p class="ann" style="margin-top:8px">Items: opacity 0 + translateY(6px) → visible. Stagger: 400ms + (i × 600ms).</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 17. OVERLAYS ───────────────────────────── -->
+  <section class="ds-section" id="overlays">
+    <div class="ds-section-eyebrow">17 · Patterns</div>
+    <h2 class="ds-section-title">Overlays, Sheets & Modals</h2>
+    <p class="ds-section-desc">Bottom sheets on mobile slide up. At ≥768px they switch to centered modals with a fade+scale entrance. Both close on backdrop click and Escape key.</p>
+
+    <div class="ds-sub">
+      <div class="ds-sub-label">Bottom Sheet Anatomy</div>
+      <div class="demo" style="max-width:400px;padding:0;overflow:hidden;border-radius:20px">
+        <div style="background:#fff;border-radius:20px 20px 0 0;border-top:1px solid #e5e5e5">
+          <div class="bold-sheet-handle"></div>
+          <div class="bold-sheet-header">
+            <span class="bold-sheet-title">Let's find a better fit.</span>
+            <button class="bold-sheet-close" aria-label="Close">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M12 4L4 12M4 4l8 8" stroke="#404040" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </button>
+          </div>
+          <div style="padding:0 16px 20px;display:flex;flex-direction:column;gap:8px">
+            <button class="bold-sheet-option"><span class="bold-sheet-option-icon">🟢</span><span class="bold-sheet-option-text">I want something easier</span></button>
+            <button class="bold-sheet-option"><span class="bold-sheet-option-icon">🔵</span><span class="bold-sheet-option-text">I want more of a challenge</span></button>
+          </div>
+        </div>
+      </div>
+      <button class="bold-btn bold-btn-primary" style="margin-top:16px" onclick="document.getElementById('demo-sheet').classList.add('open');document.body.style.overflow='hidden'">Open live sheet</button>
+    </div>
+
+    <div class="ds-sub">
+      <div class="ds-sub-label">Trainer Modal Anatomy</div>
+      <div class="demo" style="max-width:460px;padding:0;background:#fafafa;border-radius:16px;overflow:hidden">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;padding:12px">
+          <div class="bold-avatar bold-avatar-lg" style="margin:4px 0 0 4px">A</div>
+          <button class="bold-modal-close">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M15 5L5 15M5 5l10 10" stroke="#171717" stroke-width="1.6" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;padding:0 24px">
+          <h2 style="font-size:20px;font-weight:600;color:#140d26">Your Bold trainer Amanda</h2>
+          <p style="font-size:16px;color:#171717;line-height:1.5">I'm Amanda, one of the trainers at Bold. The more classes you take, the more personalized your experience gets.</p>
+        </div>
+        <div style="padding:24px">
+          <button class="bold-btn bold-btn-primary bold-btn-full">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="ds-sub">
+      <div class="ds-sub-label">Spec</div>
+      <div class="demo">
+        <table class="spec-table">
+          <tr><th>Property</th><th>Bottom Sheet</th><th>Centered Modal</th></tr>
+          <tr><td>Mobile breakpoint</td><td>&lt; 768px</td><td>≥ 768px</td></tr>
+          <tr><td>Entrance animation</td><td>slide-up 0.28s cubic-bezier(.32,.72,0,1)</td><td>fade+scale 0.2s cubic-bezier</td></tr>
+          <tr><td>Border radius</td><td>20px 20px 0 0</td><td>20px (all sides)</td></tr>
+          <tr><td>Drag handle</td><td>36×4px, #d4d4d4, radius 99px</td><td>Hidden</td></tr>
+          <tr><td>Max width</td><td>540px</td><td>480px (sheet) / 460px (modal)</td></tr>
+          <tr><td>Backdrop</td><td colspan="2">rgba(16,24,40,0.5), fixed inset 0</td></tr>
+          <tr><td>Close triggers</td><td colspan="2">Backdrop click · Escape key · Close button</td></tr>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 18. SWAP BANNER ───────────────────────── -->
+  <section class="ds-section" id="swap-banner">
+    <div class="ds-section-eyebrow">18 · Patterns</div>
+    <h2 class="ds-section-title">Swap Banner</h2>
+    <p class="ds-section-desc">A teal confirmation strip that slides behind and partially under the class card when the user selects a new class. The card lifts above it with an upward shadow.</p>
+    <div class="demo" style="padding:0;max-width:400px">
+      <div>
+        <div class="bold-swap-banner">
+          <span class="bold-swap-banner-text">Updated based on your preferences</span>
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style="flex-shrink:0"><circle cx="9" cy="9" r="8.25" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"/><path d="M9 8.25v4.5" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/><circle cx="9" cy="5.625" r=".75" fill="#fff"/></svg>
+        </div>
+        <div class="bold-swap-card-lifted" style="background:#fff;border:1px solid #e5e5e5;border-radius:8px;padding:16px">
+          <span class="bold-tag bold-tag-blue">Chair class ⓘ</span>
+          <p style="font-size:16px;font-weight:600;margin-top:8px">20 min Seated Strength &amp; Stability</p>
+        </div>
+      </div>
+    </div>
+    <p class="ann" style="margin-top:8px">Banner: teal #14b8a6 · padding-bottom: 32px · margin-bottom: -24px · z-index: 0. Card: z-index: 1 + upward shadow.</p>
+  </section>
+
+  <!-- ── 19. PAIN SCALE ────────────────────────── -->
+  <section class="ds-section" id="pain-scale">
+    <div class="ds-section-eyebrow">19 · Patterns</div>
+    <h2 class="ds-section-title">Pain Scale</h2>
+    <p class="ds-section-desc">A 1–10 numeric grid used to capture baseline pain. Desktop expands to 11 columns (0–10). Emoji faces provide additional emotional context.</p>
+    <div class="demo">
+      <div style="margin-bottom:12px;display:flex;justify-content:space-between;font-size:16px;padding:0 2px">
+        <span>😊</span><span>🙂</span><span>😐</span><span>😟</span><span>😢</span>
+      </div>
+      <div class="bold-pain-grid" style="max-width:360px">
+        <button class="bold-pain-btn">1</button>
+        <button class="bold-pain-btn">2</button>
+        <button class="bold-pain-btn">3</button>
+        <button class="bold-pain-btn selected">4</button>
+        <button class="bold-pain-btn">5</button>
+        <button class="bold-pain-btn">6</button>
+      </div>
+      <p class="ann" style="margin-top:10px">Baseline score shown in a #5200d4 circle badge. Mobile: 6 cols. Desktop: 11 cols (0–10).</p>
+    </div>
+  </section>
+
+  <!-- ── 20. MOTION ─────────────────────────────── -->
+  <section class="ds-section" id="motion">
+    <div class="ds-section-eyebrow">20 · Patterns</div>
+    <h2 class="ds-section-title">Motion & Animation</h2>
+    <p class="ds-section-desc">Three timing tiers. Always use ease or cubic-bezier — never linear for UI. Animations signal state, not decoration.</p>
+
+    <div class="ds-sub">
+      <div class="ds-sub-label">Timing Tiers</div>
+      <div class="demo">
+        <table class="spec-table">
+          <tr><th>Name</th><th>Duration</th><th>Easing</th><th>Use case</th></tr>
+          <tr><td>fast</td><td>0.15s</td><td>ease</td><td>Hover bg, active states, option tile borders</td></tr>
+          <tr><td>base</td><td>0.20s</td><td>ease</td><td>Trainer overlay fade, input transitions, modal CTA</td></tr>
+          <tr><td>slow</td><td>0.28s</td><td>cubic-bezier(.32,.72,0,1)</td><td>Bottom sheet slide-up (feels native/springy)</td></tr>
+          <tr><td>modal</td><td>0.20s</td><td>cubic-bezier(.32,.72,0,1)</td><td>Desktop modal fade+scale</td></tr>
+          <tr><td>pulse</td><td>2s</td><td>ease-in-out infinite</td><td>Step dot glow, attract attention to next action</td></tr>
+          <tr><td>shimmer</td><td>1.5s</td><td>ease-in-out infinite</td><td>Skeleton loading state</td></tr>
+          <tr><td>bounce</td><td>1s</td><td>ease-in-out infinite</td><td>Loader dots (0.15s stagger between dots)</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="ds-sub">
+      <div class="ds-sub-label">Keyframes Reference</div>
+      <div class="demo">
+        <table class="spec-table">
+          <tr><th>Name</th><th>Effect</th><th>Used on</th></tr>
+          <tr><td>bold-shimmer</td><td>Gradient sweeps left → right (200% bg-size)</td><td>Skeleton placeholders</td></tr>
+          <tr><td>bold-step-pulse</td><td>Box-shadow oscillates 6px → 10px spread</td><td>"Next" step dot</td></tr>
+          <tr><td>bold-dot-bounce</td><td>translateY 0 → -22px at 40%</td><td>Loading page dots</td></tr>
+          <tr><td>bold-slide-up</td><td>translateY(100%) → 0, opacity 0 → 1</td><td>Bottom sheet entrance</td></tr>
+          <tr><td>bold-fade-scale</td><td>scale(0.96) → 1, opacity 0 → 1</td><td>Desktop modal entrance</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="ds-sub">
+      <div class="ds-sub-label">Live Demos</div>
+      <div class="demo">
+        <div class="row-center">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+            <div class="bold-step-dot next" style="width:40px;height:40px"></div>
+            <div class="ann">Pulse (next step)</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+            <div class="bold-loader-dots">
+              <div class="bold-loader-dot"></div>
+              <div class="bold-loader-dot"></div>
+              <div class="bold-loader-dot"></div>
+              <div class="bold-loader-dot"></div>
+            </div>
+            <div class="ann">Bounce (loader)</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+            <div class="bold-skel" style="width:120px;height:20px"></div>
+            <div class="ann">Shimmer (skeleton)</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+            <button class="bold-btn bold-btn-primary-pill" style="padding:10px 20px;height:auto;font-size:14px">Hover me</button>
+            <div class="ann">Lift (landing btn)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 21. LAYOUT ─────────────────────────────── -->
+  <section class="ds-section" id="layout">
+    <div class="ds-section-eyebrow">21 · Patterns</div>
+    <h2 class="ds-section-title">Layout & Grid</h2>
+    <p class="ds-section-desc">Mobile-first, single breakpoint at 768px. Content centers within max-width containers. Page background is always #fafafa.</p>
+
+    <div class="demo">
+      <table class="spec-table">
+        <tr><th>Context</th><th>Max Width</th><th>Padding (mobile)</th><th>Padding (desktop)</th></tr>
+        <tr><td>Post-auth page content</td><td>1100px</td><td>16px</td><td>40px</td></tr>
+        <tr><td>Marketing nav</td><td>1160px</td><td>16px</td><td>24px</td></tr>
+        <tr><td>Onboarding form</td><td>480px (form), 1052px (split)</td><td>20px</td><td>—</td></tr>
+        <tr><td>Bottom sheet</td><td>540px</td><td>full width</td><td>90% width, centered</td></tr>
+        <tr><td>Modals</td><td>460px</td><td>—</td><td>24px all sides</td></tr>
+        <tr><td>Class card desktop thumb</td><td>440px (fixed col)</td><td>—</td><td>grid</td></tr>
+      </table>
+    </div>
+
+    <div class="ds-sub" style="margin-top:24px">
+      <div class="ds-sub-label">Page Structure</div>
+      <div class="demo demo-gray">
+        <div style="font-size:12px;font-family:'JetBrains Mono',monospace;line-height:1.8;color:#525252">
+          &lt;nav class="tp-nav"&gt; ← sticky, z-index 20<br>
+          &lt;div class="tp-hero"&gt; ← trainer photo + greeting + date<br>
+          &lt;div class="tp-main-layout"&gt; ← max-width 1100px, centered<br>
+          &nbsp;&nbsp;&lt;div class="tp-steps"&gt; ← stepper<br>
+          &nbsp;&nbsp;&lt;div class="tp-card-wrap"&gt; ← class card (+ swap banner)<br>
+          &lt;/div&gt;<br>
+          &lt;div class="cc-overlay"&gt; ← change class sheet, z-index 300<br>
+          &lt;div class="tp-modal-overlay"&gt; ← trainer modal, z-index 200
+        </div>
+      </div>
+    </div>
+
+    <div class="ds-sub">
+      <div class="ds-sub-label">Z-Index Layers</div>
+      <div class="demo">
+        <table class="spec-table">
+          <tr><th>Layer</th><th>z-index</th><th>Elements</th></tr>
+          <tr><td>base</td><td>0</td><td>Content, swap banner</td></tr>
+          <tr><td>above</td><td>1</td><td>Swapped class card (above banner)</td></tr>
+          <tr><td>nav</td><td>20</td><td>Sticky navigation</td></tr>
+          <tr><td>overlay</td><td>200</td><td>Trainer modal, info modals</td></tr>
+          <tr><td>sheet</td><td>300</td><td>Change class bottom sheet</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="ds-sub">
+      <div class="ds-sub-label">Breakpoint</div>
+      <div class="demo">
+        <table class="spec-table">
+          <tr><th>Breakpoint</th><th>Value</th><th>Key changes</th></tr>
+          <tr><td>Mobile (default)</td><td>max-width: 767px</td><td>Nav links hidden, logo mark-only, card stacked, bottom sheet</td></tr>
+          <tr><td>Desktop</td><td>min-width: 768px</td><td>Nav full, card grid (1fr 440px), sheet → centered modal, hero padding 48px</td></tr>
+        </table>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ── Live sheet demo ──────────────────────────── -->
+<div class="bold-overlay" id="demo-sheet" onclick="if(event.target===this){this.classList.remove('open');document.body.style.overflow=''}">
+  <div class="bold-sheet" role="dialog" aria-modal="true">
+    <div class="bold-sheet-handle"></div>
+    <div class="bold-sheet-header">
+      <span class="bold-sheet-title">Let's find a better fit.</span>
+      <button class="bold-sheet-close" onclick="document.getElementById('demo-sheet').classList.remove('open');document.body.style.overflow=''">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M12 4L4 12M4 4l8 8" stroke="#404040" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="bold-sheet-body" style="display:flex;flex-direction:column;gap:8px">
+      <button class="bold-sheet-option"><span class="bold-sheet-option-icon">🟢</span><span class="bold-sheet-option-text">I want something easier today</span></button>
+      <button class="bold-sheet-option"><span class="bold-sheet-option-icon">🔵</span><span class="bold-sheet-option-text">I want more of a challenge</span></button>
+      <button class="bold-sheet-option"><span class="bold-sheet-option-icon">⏱️</span><span class="bold-sheet-option-text">I'm short on time</span></button>
+      <button class="bold-sheet-option"><span class="bold-sheet-option-icon">🪑</span><span class="bold-sheet-option-text">I'd prefer seated today</span></button>
+      <button class="bold-sheet-option"><span class="bold-sheet-option-icon">🔄</span><span class="bold-sheet-option-text">Just show me something different</span></button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Sidebar scrollspy
+  const navLinks = document.querySelectorAll('#ds-nav a');
+  const sections = document.querySelectorAll('.ds-section');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navLinks.forEach(l => l.classList.remove('active'));
+        const link = document.querySelector(`#ds-nav a[href="#${e.target.id}"]`);
+        if (link) link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+  sections.forEach(s => obs.observe(s));
+
+  // Why box toggle
+  function toggleWhy() {
+    const el = document.getElementById('demo-why');
+    const btn = document.getElementById('demo-readmore');
+    el.classList.toggle('expanded');
+    btn.textContent = el.classList.contains('expanded') ? 'Show less' : 'Read more…';
+  }
+  // Check if why text is clamped
+  requestAnimationFrame(() => {
+    const el = document.getElementById('demo-why');
+    const btn = document.getElementById('demo-readmore');
+    if (el.scrollHeight > el.clientHeight) btn.style.display = 'block';
+  });
+
+  // Staggered reveal demo
+  function triggerReveal() {
+    const items = document.querySelectorAll('#reveal-demo .bold-reveal-item');
+    items.forEach(el => el.classList.remove('visible'));
+    items.forEach((el, i) => {
+      setTimeout(() => el.classList.add('visible'), 400 + i * 600);
+    });
+  }
+  // Auto-trigger on load
+  setTimeout(triggerReveal, 300);
+
+  // Escape key closes sheet
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      document.getElementById('demo-sheet').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+  });
+</script>
+</body>
+</html>
