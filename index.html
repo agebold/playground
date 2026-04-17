@@ -90,6 +90,7 @@
       gap: 5px;
     }
 
+    /* Filter chips — now <button> elements */
     .contrib-chip {
       display: flex;
       align-items: center;
@@ -98,6 +99,23 @@
       background: rgba(255,255,255,0.07);
       border: 1px solid rgba(255,255,255,0.09);
       border-radius: 100px;
+      cursor: pointer;
+      font-family: var(--font-ui);
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .contrib-chip:hover {
+      background: rgba(255,255,255,0.13);
+      border-color: rgba(255,255,255,0.2);
+    }
+
+    .contrib-chip.active {
+      background: rgba(255,255,255,0.18);
+      border-color: rgba(255,255,255,0.38);
+    }
+
+    .contrib-chip.active .contrib-name {
+      color: rgba(255,255,255,0.92);
     }
 
     .contrib-dot {
@@ -190,6 +208,8 @@
       transition: background 0.12s, border-color 0.12s, box-shadow 0.12s;
     }
 
+    .project-row.row-hidden { display: none; }
+
     .accent-purple .project-row:hover { background: var(--white); border-left-color: var(--purple-600); box-shadow: 0 1px 8px rgba(82,0,212,0.07); }
     .accent-blue   .project-row:hover { background: var(--white); border-left-color: var(--blue-600);   box-shadow: 0 1px 8px rgba(37,99,235,0.07); }
     .accent-green  .project-row:hover { background: var(--white); border-left-color: var(--green-600);  box-shadow: 0 1px 8px rgba(22,163,74,0.07); }
@@ -208,7 +228,7 @@
     .row-meta {
       display: flex;
       flex-direction: column;
-      gap: 1px;
+      gap: 2px;
       min-width: 0;
     }
 
@@ -227,10 +247,18 @@
       text-overflow: ellipsis;
     }
 
+    .row-updated {
+      font-size: 11px;
+      color: var(--gray-muted);
+      font-weight: 400;
+    }
+
+    /* Fixed-column grid — pins author / path / arrow at identical X across all rows */
     .row-right {
-      display: flex;
+      display: grid;
+      grid-template-columns: 96px 130px 18px;
       align-items: center;
-      gap: 12px;
+      column-gap: 10px;
       flex-shrink: 0;
     }
 
@@ -241,6 +269,7 @@
       font-size: 12px;
       color: var(--gray-500);
       font-weight: 500;
+      overflow: hidden;
     }
 
     .author-dot-sm {
@@ -258,12 +287,14 @@
       color: var(--gray-muted);
       font-family: 'SF Mono', 'Fira Code', 'Menlo', monospace;
       letter-spacing: -0.2px;
+      white-space: nowrap;
     }
 
     .row-arrow {
       font-size: 13px;
       color: var(--gray-200);
       transition: color 0.12s, transform 0.12s;
+      justify-self: end;
     }
 
     .project-row:hover .row-arrow {
@@ -284,7 +315,8 @@
 
     /* ── Responsive ── */
     @media (max-width: 600px) {
-      .row-path, .row-author .author-name { display: none; }
+      .row-right { grid-template-columns: 96px 18px; }
+      .row-path { display: none; }
       .contrib-name { display: none; }
       main { padding: 8px 12px 48px; }
       .topbar { padding: 0 16px; }
@@ -300,18 +332,18 @@
       <span class="wordmark-sub">Playground</span>
     </div>
     <div class="contrib-row">
-      <div class="contrib-chip">
+      <button class="contrib-chip" data-filter="Izabela" aria-pressed="false">
         <div class="contrib-dot" style="background:var(--dot-iz)">I</div>
         <span class="contrib-name">Izabela</span>
-      </div>
-      <div class="contrib-chip">
+      </button>
+      <button class="contrib-chip" data-filter="Tzu-Yi" aria-pressed="false">
         <div class="contrib-dot" style="background:var(--dot-tz)">T</div>
         <span class="contrib-name">Tzu-Yi</span>
-      </div>
-      <div class="contrib-chip">
+      </button>
+      <button class="contrib-chip" data-filter="Monica" aria-pressed="false">
         <div class="contrib-dot" style="background:var(--dot-mo)">M</div>
         <span class="contrib-name">Monica</span>
-      </div>
+      </button>
     </div>
   </header>
 
@@ -326,11 +358,12 @@
       </div>
       <div class="project-list">
 
-        <a class="project-row" href="dynamic-header/">
+        <a class="project-row" href="dynamic-header/" data-author="Izabela">
           <div class="row-icon">📱</div>
           <div class="row-meta">
             <span class="row-name">App Prototype</span>
             <span class="row-desc">Today plan, class, onboarding, and navigation explorations</span>
+            <span class="row-updated">Updated Apr 16</span>
           </div>
           <div class="row-right">
             <div class="row-author">
@@ -342,11 +375,12 @@
           </div>
         </a>
 
-        <a class="project-row" href="MSK-ACCESS/">
+        <a class="project-row" href="MSK-ACCESS/" data-author="Monica">
           <div class="row-icon">🦴</div>
           <div class="row-meta">
             <span class="row-name">MSK ACCESS</span>
             <span class="row-desc">28-screen patient journey for MSK care access and onboarding</span>
+            <span class="row-updated">Updated Apr 13</span>
           </div>
           <div class="row-right">
             <div class="row-author">
@@ -358,11 +392,12 @@
           </div>
         </a>
 
-        <a class="project-row" href="care_plan/care-plan.html">
+        <a class="project-row" href="care_plan/care-plan.html" data-author="Tzu-Yi">
           <div class="row-icon">🩺</div>
           <div class="row-meta">
             <span class="row-name">Care Plan</span>
             <span class="row-desc">Care plan screens, MSK progress tracking and program views</span>
+            <span class="row-updated">Updated Apr 16</span>
           </div>
           <div class="row-right">
             <div class="row-author">
@@ -374,11 +409,12 @@
           </div>
         </a>
 
-        <a class="project-row" href="telehealth/">
+        <a class="project-row" href="telehealth/" data-author="Tzu-Yi">
           <div class="row-icon">🎥</div>
           <div class="row-meta">
             <span class="row-name">Telehealth</span>
             <span class="row-desc">Telehealth video call interface and flow</span>
+            <span class="row-updated">Updated Apr 16</span>
           </div>
           <div class="row-right">
             <div class="row-author">
@@ -402,11 +438,12 @@
       </div>
       <div class="project-list">
 
-        <a class="project-row" href="design-system/">
+        <a class="project-row" href="design-system/" data-author="Tzu-Yi">
           <div class="row-icon">🎨</div>
           <div class="row-meta">
             <span class="row-name">Bold Design System</span>
             <span class="row-desc">Tokens, type scale, spacing system, and component library</span>
+            <span class="row-updated">Updated Apr 16</span>
           </div>
           <div class="row-right">
             <div class="row-author">
@@ -430,11 +467,12 @@
       </div>
       <div class="project-list">
 
-        <a class="project-row" href="user-research/">
+        <a class="project-row" href="user-research/" data-author="Izabela">
           <div class="row-icon">🔬</div>
           <div class="row-meta">
             <span class="row-name">Research Tools</span>
             <span class="row-desc">Card sort (36 cards) and tree test (8 tasks, 2 nav variants)</span>
+            <span class="row-updated">Updated Apr 16</span>
           </div>
           <div class="row-right">
             <div class="row-author">
@@ -458,11 +496,12 @@
       </div>
       <div class="project-list">
 
-        <a class="project-row" href="vision/">
+        <a class="project-row" href="vision/" data-author="Izabela">
           <div class="row-icon">✦</div>
           <div class="row-meta">
             <span class="row-name">Product Vision</span>
             <span class="row-desc">Bold product vision and strategy overview</span>
+            <span class="row-updated">Updated Apr 16</span>
           </div>
           <div class="row-right">
             <div class="row-author">
@@ -478,6 +517,47 @@
     </div>
 
   </main>
+
+  <script>
+    (function () {
+      const active = new Set();
+
+      document.querySelectorAll('.contrib-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          const author = chip.dataset.filter;
+          if (active.has(author)) {
+            active.delete(author);
+            chip.classList.remove('active');
+            chip.setAttribute('aria-pressed', 'false');
+          } else {
+            active.add(author);
+            chip.classList.add('active');
+            chip.setAttribute('aria-pressed', 'true');
+          }
+          applyFilter();
+        });
+      });
+
+      function applyFilter() {
+        document.querySelectorAll('.section-group').forEach(group => {
+          const rows = group.querySelectorAll('.project-row');
+          let visible = 0;
+          rows.forEach(row => {
+            const show = active.size === 0 || active.has(row.dataset.author);
+            row.classList.toggle('row-hidden', !show);
+            if (show) visible++;
+          });
+          // Hide entire section when no rows match
+          group.style.display = visible === 0 ? 'none' : '';
+          // Update count
+          const countEl = group.querySelector('.section-count');
+          if (countEl) {
+            countEl.textContent = active.size === 0 ? rows.length : `${visible}/${rows.length}`;
+          }
+        });
+      }
+    })();
+  </script>
 
 </body>
 </html>
