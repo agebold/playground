@@ -1,0 +1,1648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Card Sort – Bold</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f5f5f5;
+      min-height: 100vh;
+      color: #171717;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Nav ── */
+    .nav {
+      background: #fff;
+      box-shadow: 0 1px 3px rgba(16,24,40,0.1), 0 1px 2px rgba(16,24,40,0.06);
+      height: 64px;
+      display: flex;
+      align-items: center;
+      padding: 0 32px;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      gap: 16px;
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+    .nav-logo-lines {
+      width: 28px;
+      height: 28px;
+      flex-shrink: 0;
+    }
+    .nav-logo-text {
+      width: 60px;
+      height: 17px;
+      flex-shrink: 0;
+    }
+    .nav-back {
+      margin-left: 20px;
+      font-size: 13px;
+      color: #525252;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 10px;
+      border-radius: 8px;
+      transition: background 0.15s;
+    }
+    .nav-back:hover { background: #f5f5f5; }
+    .nav-title {
+      margin-left: auto;
+      font-size: 13px;
+      font-weight: 500;
+      color: #737373;
+    }
+
+    /* ── Layout ── */
+    .page {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 24px 28px 80px;
+    }
+
+    /* ── Buttons ── */
+    button { font-family: 'Inter', sans-serif; }
+    .btn-primary {
+      background: #1B6B5A;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 14px 36px;
+      font-size: 17px;
+      font-weight: 600;
+      cursor: pointer;
+      min-height: 52px;
+      transition: background 0.15s;
+    }
+    .btn-primary:hover { background: #155549; }
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid #d4d4d4;
+      border-radius: 10px;
+      padding: 12px 24px;
+      font-size: 15px;
+      cursor: pointer;
+      color: #404040;
+      min-height: 48px;
+      transition: background 0.15s;
+    }
+    .btn-secondary:hover { background: #f5f5f5; }
+    .btn-sm-green {
+      background: #1B6B5A;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 22px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      min-height: 44px;
+      transition: background 0.15s;
+    }
+    .btn-sm-green:hover { background: #155549; }
+    .btn-sm-purple {
+      background: #EEEDFE;
+      color: #3F37A8;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 22px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      min-height: 44px;
+      transition: background 0.15s;
+    }
+    .btn-sm-purple:hover { background: #e0dffe; }
+
+    /* ── Group drop zone ── */
+    .group-drop {
+      background: #ffffff;
+      border: 0.5px solid #e5e5e5;
+      border-radius: 12px;
+      overflow: hidden;
+      min-height: 80px;
+      transition: border-color 0.12s, box-shadow 0.12s;
+    }
+    .group-drop.drag-over {
+      border-color: #1B6B5A;
+      box-shadow: 0 0 0 2px rgba(27,107,90,0.15);
+    }
+
+    /* ── Card ── */
+    .card-unsorted {
+      background: #ffffff;
+      border: 1px solid #e5e5e5;
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 15px;
+      color: #171717;
+      cursor: grab;
+      user-select: none;
+      max-width: 280px;
+      line-height: 1.5;
+      transition: border-color 0.1s, box-shadow 0.1s, opacity 0.1s;
+    }
+    .card-unsorted:hover { border-color: #a3a3a3; box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
+    .card-unsorted:active { cursor: grabbing; }
+    .card-unsorted.is-dragging {
+      opacity: 0.5;
+      border-color: #1B6B5A;
+    }
+    .card-sorted {
+      background: #E1F5EE;
+      border: 1px solid #9FE1CB;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 15px;
+      color: #0A5A46;
+      cursor: grab;
+      user-select: none;
+      width: 100%;
+      line-height: 1.5;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      transition: opacity 0.1s;
+    }
+    .card-sorted:active { cursor: grabbing; }
+    .card-sorted.is-dragging { opacity: 0.5; }
+    .card-remove-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      opacity: 0.5;
+      padding: 2px 4px;
+      color: #0A5A46;
+      flex-shrink: 0;
+      margin-top: 1px;
+      min-width: 28px;
+      min-height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+    }
+    .card-remove-btn:hover { opacity: 1; background: rgba(0,0,0,0.06); }
+
+    /* ── Group header ── */
+    .group-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-bottom: 1px solid #e5e5e5;
+      background: #f5f5f5;
+    }
+    .group-name-display {
+      font-size: 16px;
+      font-weight: 600;
+      color: #171717;
+      cursor: text;
+      flex: 1;
+      line-height: 1.4;
+      padding: 4px 0;
+    }
+    .group-name-input {
+      border: none;
+      background: transparent;
+      font-size: 16px;
+      font-weight: 600;
+      color: #171717;
+      outline: none;
+      width: 100%;
+      font-family: 'Inter', sans-serif;
+      padding: 4px 0;
+    }
+    .group-name-input::placeholder { color: #a3a3a3; font-weight: 400; }
+    .group-meta {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .group-count {
+      font-size: 13px;
+      color: #525252;
+    }
+    .group-delete-btn {
+      background: none;
+      border: none;
+      color: #737373;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 0;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 6px;
+      transition: background 0.1s, color 0.1s;
+    }
+    .group-delete-btn:hover { background: #e5e5e5; color: #171717; }
+
+    .group-body {
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 52px;
+    }
+    .groups-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+      align-items: start;
+    }
+    .group-drag-handle {
+      cursor: grab;
+      color: #d4d4d4;
+      font-size: 18px;
+      line-height: 1;
+      padding: 0 8px 0 0;
+      flex-shrink: 0;
+      user-select: none;
+      display: flex;
+      align-items: center;
+    }
+    .group-drag-handle:hover { color: #737373; }
+    .group-drag-handle:active { cursor: grabbing; }
+    .group-collapse-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #525252;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 6px;
+      font-size: 12px;
+      transition: background 0.1s;
+      flex-shrink: 0;
+    }
+    .group-collapse-btn:hover { background: #e5e5e5; color: #171717; }
+    .group-drop.group-dragging { opacity: 0.45; }
+    .group-drop.is-group-drag-over {
+      border-color: #185FA5;
+      box-shadow: 0 0 0 2px rgba(24,95,165,0.2);
+    }
+    .group-empty-hint {
+      font-size: 14px;
+      color: #737373;
+      padding: 10px 8px;
+      font-style: italic;
+      pointer-events: none;
+    }
+
+    /* ── Intro info box ── */
+    .info-box {
+      background: #f5f5f5;
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 28px;
+      font-size: 16px;
+      color: #404040;
+      line-height: 1.8;
+    }
+
+    /* ── Results ── */
+    .result-group {
+      margin-bottom: 20px;
+      background: #ffffff;
+      border: 1px solid #e5e5e5;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .result-group-header {
+      padding: 12px 18px;
+      font-weight: 600;
+      font-size: 16px;
+    }
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 18px;
+      border-bottom: 1px solid #e5e5e5;
+      font-size: 15px;
+    }
+    .result-row:last-child { border-bottom: none; }
+    .result-hypothesis {
+      font-size: 13px;
+      color: #737373;
+      margin-left: 16px;
+      text-align: right;
+      min-width: 140px;
+      flex-shrink: 0;
+    }
+
+    /* ── Card drop indicator ── */
+    .card-sorted.drop-above { border-top: 2px solid #1B6B5A; }
+    .card-sorted.drop-below { border-bottom: 2px solid #1B6B5A; }
+
+    /* ── Export button ── */
+    .btn-export {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #fff; border: 1px solid #e5e5e5; border-radius: 10px;
+      padding: 10px 16px; font-size: 14px; font-weight: 500; color: #404040;
+      cursor: pointer; min-height: 44px; transition: background 0.15s;
+    }
+    .btn-export:hover { background: #f5f5f5; }
+
+    /* ── Empty state ── */
+    .empty-state {
+      text-align: center;
+      padding: 48px 40px;
+      color: #525252;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    /* ── Progress bar ── */
+    .progress-bar-wrap {
+      background: #e5e5e5;
+      border-radius: 6px;
+      height: 8px;
+      margin-bottom: 0;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: #1B6B5A;
+      border-radius: 6px;
+      transition: width 0.3s;
+    }
+
+    /* ── Sticky sort header ── */
+    .sort-sticky-header {
+      position: sticky;
+      top: 64px;
+      z-index: 10;
+      background: #f5f5f5;
+      padding: 16px 0 14px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #e5e5e5;
+    }
+
+    /* ── Touch drag ghost ── */
+    .touch-drag-ghost {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.9;
+      box-shadow: 0 10px 32px rgba(0,0,0,0.2);
+      transform: scale(1.04) rotate(1.5deg);
+      border-radius: 10px;
+      transition: transform 0.08s;
+    }
+
+    /* ── Mobile sort: card list + bottom sheet ── */
+    .m-progress { position: sticky; top: 56px; z-index: 9; background: #f5f5f5; padding: 12px 0 10px; border-bottom: 1px solid #e5e7eb; }
+    .m-progress-label { font-size: 13px; color: #525252; font-weight: 500; margin-bottom: 6px; display: flex; justify-content: space-between; }
+    .m-progress-bar { height: 6px; background: #e5e7eb; border-radius: 6px; overflow: hidden; }
+    .m-progress-fill { height: 100%; background: #1B6B5A; border-radius: 6px; transition: width 0.3s; }
+    .m-card-list { display: flex; flex-direction: column; gap: 10px; padding: 16px 0 100px; }
+    .m-card-item {
+      background: #fff; border: 2px solid #e5e7eb; border-radius: 14px;
+      padding: 18px 16px; font-size: 16px; font-weight: 500; color: #171717;
+      cursor: pointer; transition: border-color 0.15s, box-shadow 0.15s;
+      min-height: 64px; display: flex; align-items: center;
+      justify-content: space-between; gap: 12px; line-height: 1.4;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .m-card-item:active { background: #f9fafb; }
+    .m-card-item.selected { border-color: #1B6B5A; box-shadow: 0 0 0 3px rgba(27,107,90,0.2); background: #f0faf7; }
+    .m-card-badge { font-size: 12px; font-weight: 500; border-radius: 20px; padding: 3px 10px; white-space: nowrap; flex-shrink: 0; }
+    .m-view-toggle { background: none; border: none; font-size: 13px; color: #1B6B5A; font-weight: 600; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; padding: 0; min-height: 0; }
+    .m-groups-overview { display: flex; flex-direction: column; gap: 14px; padding: 16px 0 100px; }
+    .m-group-section { background: #fff; border-radius: 14px; border: 1.5px solid #e5e7eb; overflow: hidden; }
+    .m-group-section-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; font-size: 15px; font-weight: 600; color: #171717; border-bottom: 1px solid #f0f0f0; }
+    .m-group-section-count { font-size: 13px; color: #737373; font-weight: 400; }
+    .m-group-card-row { padding: 10px 16px; font-size: 14px; color: #525252; border-bottom: 1px solid #f5f5f5; }
+    .m-group-card-row:last-child { border-bottom: none; }
+    .m-group-empty { padding: 14px 16px; font-size: 14px; color: #a3a3a3; font-style: italic; }
+    .m-overlay { position: fixed; inset: 0; z-index: 40; background: rgba(0,0,0,0.4); opacity: 0; pointer-events: none; transition: opacity 0.25s; }
+    .m-overlay.open { opacity: 1; pointer-events: all; }
+    .m-sheet {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 50;
+      background: #fff; border-radius: 20px 20px 0 0;
+      padding: 12px 20px 36px;
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.32,0.72,0,1);
+      max-height: 75vh; overflow-y: auto;
+    }
+    .m-sheet.open { transform: translateY(0); }
+    .m-sheet-handle { width: 40px; height: 4px; background: #d4d4d4; border-radius: 4px; margin: 0 auto 16px; }
+    .m-sheet-card-label { font-size: 15px; color: #525252; margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid #f0f0f0; font-style: italic; line-height: 1.4; }
+    .m-sheet-section-label { font-size: 14px; font-weight: 600; color: #171717; margin-bottom: 10px; }
+    .m-group-btn { width: 100%; background: #fff; border: 1.5px solid #e5e7eb; border-radius: 12px; padding: 14px 18px; font-size: 16px; font-weight: 500; color: #171717; text-align: left; cursor: pointer; min-height: 52px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; transition: background 0.1s, border-color 0.1s; }
+    .m-group-btn:hover, .m-group-btn:active { background: #f0faf7; border-color: #1B6B5A; }
+    .m-group-count { font-size: 13px; color: #737373; }
+    .m-new-group-btn { width: 100%; background: transparent; border: 1.5px dashed #a3a3a3; border-radius: 12px; padding: 14px 18px; font-size: 16px; font-weight: 500; color: #525252; text-align: left; cursor: pointer; min-height: 52px; display: flex; align-items: center; gap: 10px; margin-bottom: 8px; transition: background 0.1s; }
+    .m-new-group-btn:hover { background: #f5f5f5; }
+    .m-unsort-btn { width: 100%; background: none; border: none; font-size: 14px; color: #737373; cursor: pointer; padding: 12px 0; text-decoration: underline; text-underline-offset: 3px; min-height: 44px; }
+    .m-create-input { width: 100%; border: 2px solid #1B6B5A; border-radius: 12px; padding: 14px 16px; font-size: 16px; font-family: 'Inter', sans-serif; outline: none; color: #171717; min-height: 52px; margin-bottom: 10px; box-sizing: border-box; }
+    .m-create-input::placeholder { color: #a3a3a3; }
+    .m-back-btn { background: none; border: none; font-size: 15px; color: #525252; cursor: pointer; padding: 10px 0; text-decoration: underline; text-underline-offset: 3px; min-height: 44px; display: block; margin-top: 4px; }
+    .m-all-sorted { background: #f0faf7; border: 2px solid #1B6B5A; border-radius: 14px; padding: 18px 16px; text-align: center; margin-bottom: 16px; }
+    .m-all-sorted-title { font-size: 17px; font-weight: 700; color: #1B6B5A; margin-bottom: 6px; }
+    .m-all-sorted-sub { font-size: 14px; color: #525252; margin-bottom: 14px; }
+
+    /* ── Desktop layout (card grid + sticky panel) ── */
+    .sort-layout { display: block; }
+    .sort-panel-desktop { display: none; }
+
+    @media (min-width: 640px) {
+      .m-progress { top: 64px; }
+      .sort-layout { display: grid; grid-template-columns: 1fr 300px; gap: 24px; align-items: start; padding-top: 16px; }
+      .sort-cards-col { min-width: 0; }
+      .m-card-list { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding-bottom: 60px; }
+      .sort-panel-desktop { display: block; }
+      .sort-panel-inner {
+        position: sticky; top: 120px;
+        background: #fff; border-radius: 16px;
+        border: 1.5px solid #e5e7eb;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        padding: 20px; overflow-y: auto;
+        max-height: calc(100vh - 140px);
+      }
+      .sort-panel-empty { text-align: center; padding: 32px 16px; color: #737373; font-size: 14px; line-height: 1.6; }
+      .sort-panel-empty-icon { font-size: 28px; margin-bottom: 10px; }
+      .m-sheet { display: none !important; }
+      .m-overlay { display: none !important; }
+      .m-sheet-card-label { font-size: 14px; }
+      .m-back-btn { font-size: 14px; }
+    }
+
+    /* ── Mobile responsive ── */
+    @media (max-width: 640px) {
+      .nav {
+        padding: 0 16px;
+        height: 56px;
+        gap: 10px;
+      }
+      .nav-back { margin-left: 4px; font-size: 12px; padding: 6px 8px; }
+      .nav-back span.nav-back-text { display: none; }
+      .nav-title { font-size: 12px; }
+      .page { padding: 16px 16px 80px; }
+
+      .sort-sticky-header {
+        top: 56px;
+        padding: 12px 0 10px;
+      }
+      .groups-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+      /* Full-width unsorted cards on mobile */
+      .card-unsorted {
+        max-width: 100%;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      /* Unsorted pile becomes a vertical list */
+      #unsorted-pile {
+        flex-direction: column;
+      }
+      .btn-primary { width: 100%; text-align: center; justify-content: center; }
+      .btn-sm-green, .btn-sm-purple { font-size: 14px; padding: 9px 16px; }
+      /* Sort header buttons row wrap on very narrow screens */
+      .sort-header-actions { flex-wrap: wrap; gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo" aria-label="Bold home">
+    <svg class="nav-logo-lines" preserveAspectRatio="none" viewBox="0 0 40.217 39.9999" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M29.0721 31.0908L0.566108 39.98C0.284775 40.0677 0 39.8543 0 39.5557V33.0326C0 32.8376 0.125271 32.6655 0.309064 32.6083L28.8151 23.7191C29.0964 23.6314 29.3812 23.8448 29.3812 24.1434V30.6665C29.3812 30.8615 29.2557 31.0336 29.0721 31.0908Z" fill="#5200D4"/>
+      <path d="M34.494 19.2412L5.98798 28.1304C5.70665 28.2181 5.42188 28.0047 5.42188 27.706V21.183C5.42188 20.988 5.54715 20.8159 5.73094 20.7587L34.237 11.8695C34.5183 11.7818 34.8031 11.9952 34.8031 12.2938V18.8169C34.8031 19.0119 34.6778 19.184 34.494 19.2412Z" fill="#3366FF"/>
+      <path d="M39.9081 7.39158L11.402 16.2808C11.1207 16.3685 10.8359 16.155 10.8359 15.8564V9.33341C10.8359 9.13841 10.9612 8.96631 11.145 8.90907L39.6508 0.0198815C39.9322 -0.0678191 40.217 0.145612 40.217 0.44422V6.96724C40.217 7.16205 40.0917 7.33434 39.9081 7.39158Z" fill="#80E8FF"/>
+    </svg>
+    <svg class="nav-logo-text" preserveAspectRatio="none" viewBox="0 0 84.3618 23.4118" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M34.7168 0C28.3793 0 22.2915 5.19529 21.1572 11.722C20.0284 18.2163 24.3104 23.4118 30.6479 23.4118C36.9854 23.4118 43.0734 18.2161 44.202 11.722C45.3363 5.19529 41.0544 0 34.7168 0ZM31.3928 19.1253C27.392 19.1253 24.8201 15.8783 25.5424 11.722C26.2705 7.53332 29.9713 4.28627 33.9721 4.28627C37.9729 4.28627 40.5449 7.53332 39.8169 11.722C39.0944 15.8781 35.3937 19.1253 31.3928 19.1253Z" fill="#140D26"/>
+      <path d="M13.9477 10.8127C15.6931 10.1633 17.2199 8.37731 17.6318 6.00706C18.1679 2.92222 16.4224 0.259766 11.9734 0.259766H4.35564H1.89919C1.55781 0.259766 1.29197 0.652284 1.44344 0.932848L3.19455 4.17641L0.00942494 22.5023C-0.0414483 22.7947 0.116909 22.9895 0.405127 22.9895H8.02292C13.6239 22.9895 16.6756 20.7167 17.4205 16.4302C17.934 13.4756 16.2089 11.4298 13.9477 10.8127ZM7.57749 4.18864H10.8739C12.6346 4.18864 13.706 4.83805 13.4069 6.55888C13.0907 8.37731 11.7921 9.22172 9.99913 9.22172H6.7027L7.57749 4.18864ZM8.83344 19.0607H4.99271L6.06506 12.891H9.9058C12.242 12.891 13.4755 13.8976 13.12 15.9434C12.7474 18.0863 11.1696 19.0607 8.83344 19.0607Z" fill="#140D26"/>
+      <path d="M59.3676 19.0607H52.1015L55.2845 0.74697C55.3354 0.454764 55.1776 0.259766 54.8894 0.259766L51.2567 1.45537C50.9201 1.5582 50.743 1.65036 50.6922 1.94257L47.1188 22.5025C47.0679 22.7949 47.2263 22.9897 47.5141 22.9897H58.685C58.9726 22.9897 59.1987 22.7951 59.2496 22.5025L59.7631 19.5477C59.8136 19.2553 59.6552 19.0607 59.3676 19.0607Z" fill="#140D26"/>
+      <path d="M74.3796 0.259766H68.0738H65.6174C65.276 0.259766 65.0102 0.652284 65.1616 0.932848L66.9131 4.17719L63.7282 22.5023C63.6773 22.7947 63.8351 22.9895 64.1233 22.9895H70.4291C78.1108 22.9895 83.0501 17.9565 84.1506 11.6249C85.251 5.29285 82.0613 0.259766 74.3796 0.259766ZM71.1121 19.0607H68.7115L71.2963 4.18883H73.6969C78.5614 4.18883 80.5143 6.94907 79.7016 11.6249C78.889 16.3008 75.9764 19.0607 71.1121 19.0607Z" fill="#140D26"/>
+    </svg>
+  </a>
+  <a href="today-plan.html" class="nav-back">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M8.75 2.625L4.375 7L8.75 11.375" stroke="#525252" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span class="nav-back-text">Back to today</span>
+  </a>
+  <span class="nav-title">Card sort exercise</span>
+</nav>
+
+<div class="page">
+  <div id="app"></div>
+</div>
+
+<script>
+const CARDS_DATA = [
+  { id: 1,  text: "Start my recommended exercise class for today" },
+  { id: 2,  text: "Watch an educational video about joint health" },
+  { id: 3,  text: "Tell Bold how I'm feeling this week" },
+  { id: 4,  text: "Log what I ate for lunch" },
+  { id: 5,  text: "Log my weight" },
+  { id: 6,  text: "Browse all available exercise classes" },
+  { id: 7,  text: "Find a yoga class I can do seated" },
+  { id: 8,  text: "See what live classes are happening this week" },
+  { id: 9,  text: "Read an article about managing knee pain" },
+  { id: 10, text: "Listen to a guided relaxation audio" },
+  { id: 11, text: "Search for a specific class or topic" },
+  { id: 12, text: "See how my balance has improved over time" },
+  { id: 13, text: "See what exercise focus I'm working on right now" },
+  { id: 14, text: "Look at which classes I've completed" },
+  { id: 15, text: "Find a class I saved to do again later" },
+  { id: 16, text: "See how many days I've been active this month" },
+  { id: 17, text: "Connect my Apple Watch or Fitbit data" },
+  { id: 18, text: "See my nutrition and meal trends over time" },
+  { id: 19, text: "See my weight trends over time" },
+  { id: 20, text: "Take a balance or strength assessment" },
+  { id: 21, text: "Message my doctor about my hip pain" },
+  { id: 22, text: "Schedule a telehealth appointment" },
+  { id: 23, text: "Join my upcoming video appointment with my doctor" },
+  { id: 24, text: "See my care plan and treatment goals" },
+  { id: 25, text: "See my past appointments with my doctor" },
+  { id: 26, text: "Learn what care services Bold offers" },
+  { id: 27, text: "See my care team's profile" },
+  { id: 28, text: "Read a message from my doctor" },
+  { id: 29, text: "Get a notification that my check-in is due" },
+  { id: 30, text: "Change my exercise preferences (seated, standing, time of day)" },
+  { id: 31, text: "Turn off reminder notifications" },
+  { id: 32, text: "Check what my insurance covers" },
+  { id: 33, text: "See a summary of my overall plan and where I'm headed" },
+  { id: 34, text: "Find out why Bold recommended today's class for me" },
+  { id: 35, text: "Switch to an easier class because I'm sore today" },
+  { id: 36, text: "See what live classes are happening today" },
+];
+
+const HYPOTHESIS = {
+  1:  "Today",
+  2:  "Today / Explore",
+  3:  "Today",
+  4:  "Today",
+  5:  "Today",
+  6:  "Explore",
+  7:  "Explore",
+  8:  "Explore",
+  9:  "Explore / Today",
+  10: "Explore",
+  11: "Explore",
+  12: "Progress",
+  13: "Progress",
+  14: "Progress",
+  15: "OPEN — Progress / Profile / Explore",
+  16: "Progress",
+  17: "Progress",
+  18: "Progress",
+  19: "Progress",
+  20: "Progress",
+  21: "Care",
+  22: "Care",
+  23: "Care / Today",
+  24: "Care",
+  25: "Care",
+  26: "OPEN — Care / Explore",
+  27: "Care",
+  28: "Inbox / Care",
+  29: "Inbox / Today",
+  30: "Settings",
+  31: "Settings",
+  32: "Settings",
+  33: "Progress / Care",
+  34: "Today",
+  35: "Today",
+  36: "Today",
+};
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ── Group color palette ─────────────────────────────────────────────
+const GROUP_COLORS = [
+  { border: '#3B82F6', bg: '#EFF6FF', badge: '#DBEAFE', text: '#1D4ED8' }, // blue
+  { border: '#8B5CF6', bg: '#F5F3FF', badge: '#EDE9FE', text: '#6D28D9' }, // purple
+  { border: '#F97316', bg: '#FFF7ED', badge: '#FFEDD5', text: '#C2410C' }, // orange
+  { border: '#EC4899', bg: '#FDF2F8', badge: '#FCE7F3', text: '#BE185D' }, // pink
+  { border: '#F59E0B', bg: '#FFFBEB', badge: '#FEF3C7', text: '#B45309' }, // amber
+  { border: '#EF4444', bg: '#FEF2F2', badge: '#FEE2E2', text: '#B91C1C' }, // red
+  { border: '#06B6D4', bg: '#ECFEFF', badge: '#CFFAFE', text: '#0E7490' }, // cyan
+  { border: '#10B981', bg: '#F0FDF4', badge: '#D1FAE5', text: '#047857' }, // green
+];
+function groupColor(group) { return GROUP_COLORS[(group.color ?? 0) % GROUP_COLORS.length]; }
+
+// ── Application state ──────────────────────────────────────────────
+const state = {
+  phase: 'intro',        // 'intro' | 'sort' | 'results'
+  cards: shuffle(CARDS_DATA),
+  groups: [],
+  editingGroupId: null,
+  addingCard: false,
+  editingCardId: null,
+  mobileSelectedCardId: null,
+  mobileCreatingGroup: false,
+  mobileGroupName: '',
+  sortView: 'cards',     // 'cards' | 'groups'
+};
+
+// Module-level drag variables (no re-render on dragover)
+let dragCardId = null;
+let dragGroupId = null;
+let dragOverCardId = null; // for in-group reorder indicator
+
+// ── Touch drag state ───────────────────────────────────────────────
+let touchPendingCardId = null;
+let touchDragCardId    = null;
+let touchDragActive    = false;
+let touchDragGhost     = null;
+let touchDragOffsetX   = 0;
+let touchDragOffsetY   = 0;
+let touchDragStartX    = 0;
+let touchDragStartY    = 0;
+const TOUCH_THRESHOLD  = 8; // px before drag starts
+
+function touchCreateGhost(sourceEl) {
+  const rect = sourceEl.getBoundingClientRect();
+  touchDragGhost = sourceEl.cloneNode(true);
+  touchDragGhost.className = (touchDragGhost.className || '') + ' touch-drag-ghost';
+  touchDragGhost.style.width  = rect.width  + 'px';
+  touchDragGhost.style.left   = rect.left   + 'px';
+  touchDragGhost.style.top    = rect.top    + 'px';
+  document.body.appendChild(touchDragGhost);
+}
+
+function touchMoveGhost(clientX, clientY) {
+  if (!touchDragGhost) return;
+  touchDragGhost.style.left = (clientX - touchDragOffsetX) + 'px';
+  touchDragGhost.style.top  = (clientY - touchDragOffsetY) + 'px';
+}
+
+function touchHighlightZone(clientX, clientY) {
+  document.querySelectorAll('.group-drop').forEach(g => g.classList.remove('drag-over'));
+  if (touchDragGhost) touchDragGhost.style.visibility = 'hidden';
+  const el = document.elementFromPoint(clientX, clientY);
+  if (touchDragGhost) touchDragGhost.style.visibility = '';
+  const zone = el && el.closest('.group-drop');
+  if (zone) zone.classList.add('drag-over');
+}
+
+function touchCleanup(sourceEl) {
+  document.querySelectorAll('.group-drop').forEach(g => g.classList.remove('drag-over'));
+  if (touchDragGhost) { touchDragGhost.remove(); touchDragGhost = null; }
+  if (sourceEl) sourceEl.style.opacity = '';
+  touchPendingCardId = null;
+  touchDragCardId    = null;
+  touchDragActive    = false;
+}
+
+function attachTouchDrag(el) {
+  el.addEventListener('touchstart', (e) => {
+    if (e.target.closest('button') || e.target.closest('input')) return;
+    const cardId = parseInt(el.dataset.cardId, 10);
+    if (!cardId) return;
+    const t = e.touches[0];
+    const rect = el.getBoundingClientRect();
+    touchPendingCardId = cardId;
+    touchDragActive    = false;
+    touchDragStartX    = t.clientX;
+    touchDragStartY    = t.clientY;
+    touchDragOffsetX   = t.clientX - rect.left;
+    touchDragOffsetY   = t.clientY - rect.top;
+  }, { passive: true });
+
+  el.addEventListener('touchmove', (e) => {
+    if (!touchPendingCardId) return;
+    const t = e.touches[0];
+    const dx = t.clientX - touchDragStartX;
+    const dy = t.clientY - touchDragStartY;
+
+    if (!touchDragActive && Math.sqrt(dx * dx + dy * dy) > TOUCH_THRESHOLD) {
+      touchDragActive  = true;
+      touchDragCardId  = touchPendingCardId;
+      touchCreateGhost(el);
+      el.style.opacity = '0.3';
+    }
+
+    if (touchDragActive) {
+      touchMoveGhost(t.clientX, t.clientY);
+      touchHighlightZone(t.clientX, t.clientY);
+      e.preventDefault();
+    }
+  }, { passive: false });
+
+  el.addEventListener('touchend', (e) => {
+    if (!touchDragActive || !touchDragCardId) {
+      touchCleanup(el);
+      return;
+    }
+    const t = e.changedTouches[0];
+    if (touchDragGhost) touchDragGhost.style.visibility = 'hidden';
+    const below    = document.elementFromPoint(t.clientX, t.clientY);
+    const zone     = below && below.closest('.group-drop');
+    const cardId   = touchDragCardId;
+    touchCleanup(el);
+    if (zone) {
+      const groupId = parseInt(zone.dataset.groupId, 10);
+      if (groupId) moveCardToGroup(cardId, groupId);
+    }
+    render();
+    e.preventDefault();
+  }, { passive: false });
+}
+
+// ── State helpers ──────────────────────────────────────────────────
+function addGroup() {
+  const newGroup = { id: Date.now(), name: '', cards: [], collapsed: false, color: state.groups.length % GROUP_COLORS.length };
+  state.groups.push(newGroup);
+  state.editingGroupId = newGroup.id;
+  render();
+  // Focus the newly created input
+  const input = document.querySelector('.group-name-input');
+  if (input) input.focus();
+}
+
+function renameGroup(gid, name) {
+  const g = state.groups.find(g => g.id === gid);
+  if (g) g.name = name;
+}
+
+function saveGroupName(gid) {
+  const g = state.groups.find(g => g.id === gid);
+  if (g && !g.name.trim()) g.name = 'Untitled group';
+  state.editingGroupId = null;
+  render();
+}
+
+function moveCardToGroup(cardId, groupId) {
+  // Find the card wherever it is
+  let card = state.cards.find(c => c.id === cardId);
+  if (!card) {
+    for (const g of state.groups) {
+      card = g.cards.find(c => c.id === cardId);
+      if (card) break;
+    }
+  }
+  if (!card) return;
+
+  // Remove from unsorted pile
+  state.cards = state.cards.filter(c => c.id !== cardId);
+
+  // Remove from any group
+  for (const g of state.groups) {
+    g.cards = g.cards.filter(c => c.id !== cardId);
+  }
+
+  // Add to target group (avoid duplicates)
+  const target = state.groups.find(g => g.id === groupId);
+  if (target && !target.cards.find(c => c.id === cardId)) {
+    target.cards.push(card);
+  }
+}
+
+function moveCardBack(cardId) {
+  let card = null;
+  for (const g of state.groups) {
+    const found = g.cards.find(c => c.id === cardId);
+    if (found) { card = found; g.cards = g.cards.filter(c => c.id !== cardId); break; }
+  }
+  if (card) state.cards.push(card);
+  render();
+}
+
+function addCustomCard(text) {
+  const trimmed = text.trim();
+  if (!trimmed) return;
+  state.cards.push({ id: Date.now(), text: trimmed, custom: true });
+  state.addingCard = false;
+  render();
+}
+
+function deleteCustomCard(cardId) {
+  // Remove from unsorted pile or any group
+  state.cards = state.cards.filter(c => c.id !== cardId);
+  for (const g of state.groups) g.cards = g.cards.filter(c => c.id !== cardId);
+  render();
+}
+
+function saveCardEdit(cardId, text) {
+  const trimmed = text.trim();
+  if (!trimmed) return;
+  // Update wherever the card lives
+  const inPile = state.cards.find(c => c.id === cardId);
+  if (inPile) { inPile.text = trimmed; }
+  else {
+    for (const g of state.groups) {
+      const c = g.cards.find(c => c.id === cardId);
+      if (c) { c.text = trimmed; break; }
+    }
+  }
+  state.editingCardId = null;
+  render();
+}
+
+function toggleGroupCollapse(gid) {
+  const g = state.groups.find(g => g.id === gid);
+  if (g) g.collapsed = !g.collapsed;
+  render();
+}
+
+function reorderCardInGroup(groupId, fromCardId, toCardId) {
+  const group = state.groups.find(g => g.id === groupId);
+  if (!group) return;
+  const fromIdx = group.cards.findIndex(c => c.id === fromCardId);
+  const toIdx   = group.cards.findIndex(c => c.id === toCardId);
+  if (fromIdx === -1 || toIdx === -1 || fromIdx === toIdx) return;
+  const [card] = group.cards.splice(fromIdx, 1);
+  group.cards.splice(toIdx, 0, card);
+}
+
+function reorderGroup(fromId, toId) {
+  if (fromId === toId) return;
+  const fromIdx = state.groups.findIndex(g => g.id === fromId);
+  const toIdx   = state.groups.findIndex(g => g.id === toId);
+  if (fromIdx === -1 || toIdx === -1) return;
+  const [group] = state.groups.splice(fromIdx, 1);
+  state.groups.splice(toIdx, 0, group);
+}
+
+function removeGroup(gid) {
+  const group = state.groups.find(g => g.id === gid);
+  if (group) {
+    state.cards.push(...group.cards);
+    state.groups = state.groups.filter(g => g.id !== gid);
+  }
+  render();
+}
+
+// ── Render ─────────────────────────────────────────────────────────
+function render() {
+  const app = document.getElementById('app');
+
+  if (state.phase === 'intro') {
+    app.innerHTML = renderIntro();
+  } else if (state.phase === 'results') {
+    app.innerHTML = renderResults();
+  } else {
+    app.innerHTML = renderSort();
+  }
+
+  attachEvents();
+
+  // If editing a group name, focus the input
+  if (state.editingGroupId !== null) {
+    const input = document.querySelector('.group-name-input');
+    if (input) input.focus();
+  }
+}
+
+function renderIntro() {
+  return `
+    <div style="max-width:640px;margin:0 auto;padding-top:8px;">
+      <div style="font-size:12px;text-transform:uppercase;letter-spacing:1px;color:#1B6B5A;font-weight:600;margin-bottom:10px;">
+        Age Bold — Card sort exercise
+      </div>
+      <h2 style="font-size:26px;font-weight:600;color:#171717;margin-bottom:16px;line-height:1.3;">
+        Help us design a better app
+      </h2>
+      <p style="font-size:16px;color:#404040;line-height:1.7;margin-bottom:20px;">
+        Imagine you're using a health and wellness app. We'll show you <strong style="color:#171717;">36 cards</strong>, each describing something you might want to do in the app.
+      </p>
+      <p style="font-size:16px;color:#404040;line-height:1.7;margin-bottom:24px;">
+        <strong style="color:#171717;">Sort the cards into groups that make sense to you</strong>, then give each group a name. There are no right or wrong answers — we just want to learn how you think about these activities.
+      </p>
+      <div class="info-box">
+        <strong style="color:#171717;font-size:16px;">Here's how it works:</strong><br><br>
+        1. Press <strong>"Add group"</strong> to create a category<br>
+        2. Give the group a name that feels right to you<br>
+        3. Drag cards into the group — or click a card, then click a group<br>
+        4. When you've sorted all the cards, you can see your results
+      </div>
+      <button class="btn-primary" id="btn-start">Start sorting →</button>
+    </div>
+  `;
+}
+
+function renderResults() {
+  const groupsHtml = state.groups.map(g => {
+    const col = groupColor(g);
+    return `
+    <div class="result-group" style="border-color:${col.border};">
+      <div class="result-group-header" style="background:${col.bg}; color:${col.text}; border-bottom:2px solid ${col.border};">${escHtml(g.name)}</div>
+      ${g.cards.map(c => `
+        <div class="result-row">
+          <span style="color:#171717;flex:1;">${escHtml(c.text)}</span>
+          <span class="result-hypothesis">Hypothesis: ${escHtml(HYPOTHESIS[c.id] || '—')}</span>
+        </div>
+      `).join('')}
+      ${g.cards.length === 0 ? '<div class="result-row" style="color:#737373;font-style:italic;">No cards in this group</div>' : ''}
+    </div>`;
+  }).join('');
+
+  return `
+    <div style="padding-top:8px;" id="export-target">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <div>
+          <div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#1B6B5A;font-weight:500;margin-bottom:4px;">Card sort results</div>
+          <h2 style="font-size:20px;font-weight:500;color:#171717;">Your groups vs. proposed IA</h2>
+        </div>
+        <button class="btn-export" id="btn-export">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1v7M3.5 5.5l3 3 3-3M1.5 10h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Export as image
+        </button>
+      </div>
+      ${groupsHtml}
+      <button class="btn-secondary" id="btn-reset">Reset and try again</button>
+    </div>
+  `;
+}
+
+function exportAsImage() {
+  const target = document.getElementById('export-target') || document.getElementById('app');
+  html2canvas(target, { scale: 2, backgroundColor: '#f5f5f5', useCORS: true }).then(canvas => {
+    const a = document.createElement('a');
+    a.download = 'card-sort-results.png';
+    a.href = canvas.toDataURL('image/png');
+    a.click();
+  });
+}
+
+function renderSort() {
+  return renderMobileSort();
+  const totalPlaced = state.groups.reduce((sum, g) => sum + g.cards.length, 0);
+  const totalCards = state.cards.length + totalPlaced;
+  const sorted = state.cards.length === 0 && state.groups.length > 0;
+  const pct = totalCards > 0 ? Math.round((totalPlaced / totalCards) * 100) : 0;
+
+  const addCardForm = state.addingCard ? `
+    <div style="display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap;">
+      <input id="new-card-input" type="text" placeholder="Describe what you'd do…"
+        style="flex:1;min-width:200px;border:2px solid #1B6B5A;border-radius:10px;padding:10px 14px;font-size:15px;font-family:'Inter',sans-serif;outline:none;color:#171717;background:#fff;" />
+      <button class="btn-sm-green" id="btn-save-card">Add card</button>
+      <button class="btn-secondary" id="btn-cancel-card" style="padding:10px 18px;font-size:15px;min-height:44px;">Cancel</button>
+    </div>
+  ` : `
+    <button id="btn-add-card" style="margin-top:10px;display:inline-flex;align-items:center;gap:6px;background:none;border:1.5px dashed #a3a3a3;border-radius:10px;padding:10px 18px;font-size:15px;color:#525252;cursor:pointer;font-family:'Inter',sans-serif;min-height:44px;transition:border-color 0.15s,color 0.15s;">
+      <svg width="14" height="14" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Add your own card
+    </button>
+  `;
+
+  const unsortedHtml = `
+    <div style="margin-bottom:24px;">
+      <div style="font-size:14px;font-weight:600;color:#404040;margin-bottom:12px;">
+        Cards to sort (${state.cards.length} remaining)
+      </div>
+      <div id="unsorted-pile" style="display:flex;flex-wrap:wrap;gap:8px;">
+        ${state.cards.map(card => {
+          if (card.custom && state.editingCardId === card.id) {
+            return `
+              <div style="display:flex;gap:5px;align-items:center;width:100%;max-width:360px;">
+                <input class="edit-card-input" type="text" value="${escAttr(card.text)}" data-card-id="${card.id}"
+                  style="flex:1;border:1.5px solid #1B6B5A;border-radius:8px;padding:6px 10px;font-size:12px;font-family:'Inter',sans-serif;outline:none;color:#171717;background:#fff;" />
+                <button class="btn-sm-green" data-save-card-edit="${card.id}" style="padding:6px 10px;font-size:11px;">Save</button>
+                <button class="btn-secondary" data-cancel-card-edit="${card.id}" style="padding:6px 10px;font-size:11px;">Cancel</button>
+              </div>`;
+          }
+          const actions = card.custom ? `
+            <div style="display:flex;gap:3px;margin-left:4px;flex-shrink:0;">
+              <button data-edit-card="${card.id}" title="Edit" style="background:none;border:none;cursor:pointer;padding:1px 3px;font-size:10px;color:#737373;border-radius:3px;line-height:1;" onmouseover="this.style.background='#e5e5e5'" onmouseout="this.style.background='none'">✎</button>
+              <button data-delete-card="${card.id}" title="Delete" style="background:none;border:none;cursor:pointer;padding:1px 3px;font-size:10px;color:#737373;border-radius:3px;line-height:1;" onmouseover="this.style.background='#fee2e2';this.style.color='#dc2626'" onmouseout="this.style.background='none';this.style.color='#737373'">✕</button>
+            </div>` : '';
+          return `
+            <div class="card-unsorted" draggable="${card.custom && state.editingCardId === card.id ? 'false' : 'true'}" data-card-id="${card.id}" style="display:flex;align-items:flex-start;gap:2px;max-width:${card.custom ? '280px' : '240px'};">
+              <span style="flex:1;">${escHtml(card.text)}</span>
+              ${actions}
+            </div>`;
+        }).join('')}
+      </div>
+      ${addCardForm}
+    </div>
+  `;
+
+  const groupsHtml = state.groups.map(group => {
+    const isEditing  = state.editingGroupId === group.id;
+    const isCollapsed = group.collapsed;
+
+    const headerContent = isEditing
+      ? `<input class="group-name-input" type="text" value="${escAttr(group.name)}" placeholder="Name this group…" data-group-id="${group.id}" />`
+      : `<div class="group-name-display" data-edit-group="${group.id}">${group.name ? escHtml(group.name) : '<span style="color:#a3a3a3;font-weight:400;">Untitled group</span>'}</div>`;
+
+    const cardsHtml = group.cards.length === 0
+      ? `<span class="group-empty-hint">Drag cards here</span>`
+      : group.cards.map(card => {
+          if (card.custom && state.editingCardId === card.id) {
+            return `
+              <div style="display:flex;gap:5px;align-items:center;">
+                <input class="edit-card-input" type="text" value="${escAttr(card.text)}" data-card-id="${card.id}"
+                  style="flex:1;border:1.5px solid #1B6B5A;border-radius:8px;padding:5px 8px;font-size:12px;font-family:'Inter',sans-serif;outline:none;color:#171717;background:#fff;" />
+                <button class="btn-sm-green" data-save-card-edit="${card.id}" style="padding:5px 8px;font-size:11px;">Save</button>
+                <button class="btn-secondary" data-cancel-card-edit="${card.id}" style="padding:5px 8px;font-size:11px;">✕</button>
+              </div>`;
+          }
+          const extraActions = card.custom ? `
+            <button data-edit-card="${card.id}" title="Edit" style="background:none;border:none;cursor:pointer;padding:1px 3px;font-size:10px;color:#0F6E56;opacity:0.6;border-radius:3px;line-height:1;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'">✎</button>
+            <button data-delete-card="${card.id}" title="Delete" style="background:none;border:none;cursor:pointer;padding:1px 3px;font-size:10px;color:#dc2626;opacity:0.5;border-radius:3px;line-height:1;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.5'">✕</button>` : `
+            <button class="card-remove-btn" data-remove-card="${card.id}" title="Remove from group">✕</button>`;
+          return `
+            <div class="card-sorted" draggable="true" data-card-id="${card.id}" data-group-parent="${group.id}">
+              <span style="flex:1;">${escHtml(card.text)}</span>
+              ${extraActions}
+            </div>`;
+        }).join('');
+
+    const chevron = isCollapsed
+      ? `<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 2l4 3-4 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+      : `<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 3.5l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+    return `
+      <div class="group-drop" data-group-id="${group.id}">
+        <div class="group-header" draggable="true" data-drag-group="${group.id}">
+          <span class="group-drag-handle" title="Drag to reorder">⠿</span>
+          ${headerContent}
+          <div class="group-meta">
+            <span class="group-count">${group.cards.length} card${group.cards.length !== 1 ? 's' : ''}</span>
+            <button class="group-collapse-btn" data-toggle-group="${group.id}" title="${isCollapsed ? 'Expand' : 'Collapse'}">${chevron}</button>
+            <button class="group-delete-btn" data-delete-group="${group.id}" title="Remove group">✕</button>
+          </div>
+        </div>
+        ${!isCollapsed ? `<div class="group-body" data-group-id="${group.id}">${cardsHtml}</div>` : ''}
+      </div>
+    `;
+  }).join('');
+
+  const emptyState = state.groups.length === 0
+    ? `<div class="empty-state">Press <strong>"Add group"</strong> above to create your first category,<br>then drag cards into it.</div>`
+    : '';
+
+  return `
+    <div style="padding-top:4px;">
+      <div class="sort-sticky-header">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <div>
+            <div style="font-size:12px;text-transform:uppercase;letter-spacing:1px;color:#1B6B5A;font-weight:600;">Card sort</div>
+            <div style="font-size:14px;color:#525252;margin-top:3px;">${totalPlaced} of ${CARDS_DATA.length} cards sorted · ${state.groups.length} group${state.groups.length !== 1 ? 's' : ''}</div>
+          </div>
+          <div class="sort-header-actions" style="display:flex;gap:10px;align-items:center;">
+            <button class="btn-sm-green" id="btn-add-group">+ Add group</button>
+            ${sorted ? `<button class="btn-sm-purple" id="btn-view-results">View results</button>` : ''}
+            <button class="btn-export" id="btn-export">
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1v7M3.5 5.5l3 3 3-3M1.5 10h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Export
+            </button>
+          </div>
+        </div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill" style="width:${pct}%;"></div>
+        </div>
+      </div>
+      ${unsortedHtml}
+      <div class="groups-grid">
+        ${groupsHtml}
+      </div>
+      ${emptyState}
+    </div>
+  `;
+}
+
+// ── Mobile sort (one-card-at-a-time) ───────────────────────────────
+function renderMobileSort() {
+  const totalPlaced = state.groups.reduce((sum, g) => sum + g.cards.length, 0);
+  const totalCards  = state.cards.length + totalPlaced;
+  const pct = totalCards > 0 ? Math.round((totalPlaced / totalCards) * 100) : 0;
+  const allSorted = state.cards.length === 0 && state.groups.length > 0;
+
+  // Find selected card (unsorted or already in a group)
+  let selectedCard = null, selectedInGroup = null;
+  if (state.mobileSelectedCardId !== null) {
+    selectedCard = state.cards.find(c => c.id === state.mobileSelectedCardId) || null;
+    if (!selectedCard) {
+      for (const g of state.groups) {
+        const found = g.cards.find(c => c.id === state.mobileSelectedCardId);
+        if (found) { selectedCard = found; selectedInGroup = g; break; }
+      }
+    }
+  }
+  const sheetOpen = selectedCard !== null;
+
+  // All cards (unsorted first, then sorted with group reference)
+  const allCards = [
+    ...state.cards,
+    ...state.groups.flatMap(g => g.cards.map(c => ({ ...c, _group: g })))
+  ];
+
+  const cardListHtml = allCards.map(card => {
+    const inGroup = card._group || null;
+    const isSelected = card.id === state.mobileSelectedCardId;
+    const col = inGroup ? groupColor(inGroup) : null;
+    const cls = ['m-card-item', inGroup ? 'sorted' : '', isSelected ? 'selected' : ''].filter(Boolean).join(' ');
+    const inlineStyle = [
+      col ? `border-color:${col.border}; background:${col.bg};` : '',
+      isSelected && col ? `box-shadow:0 0 0 3px ${col.border}40;` : '',
+    ].filter(Boolean).join('');
+    const badge = inGroup
+      ? `<span class="m-card-badge" style="background:${col.badge}; color:${col.text};">${escHtml(inGroup.name || 'Untitled')}</span>`
+      : '';
+    return `<div class="${cls}"${inlineStyle ? ` style="${inlineStyle}"` : ''} data-action="m-select-card" data-card-id="${card.id}">
+      <span style="flex:1">${escHtml(card.text)}</span>${badge}
+    </div>`;
+  }).join('');
+
+  // Sheet body
+  let sheetBody = '';
+  if (sheetOpen) {
+    if (state.mobileCreatingGroup) {
+      sheetBody = `
+        <div class="m-sheet-section-label">Name this group:</div>
+        <input id="m-group-input" class="m-create-input" type="text"
+          placeholder="Group name…" value="${escAttr(state.mobileGroupName)}"
+          maxlength="60" autocomplete="off" />
+        <button class="btn-primary" data-action="m-create-group" style="width:100%">Add to this group</button>
+        <button class="m-back-btn" data-action="m-cancel-create">← Back to groups</button>`;
+    } else {
+      const groupBtns = state.groups.map(g => {
+        const col = groupColor(g);
+        return `<button class="m-group-btn" data-action="m-assign" data-group-id="${g.id}"
+          style="border-left:4px solid ${col.border}; background:${col.bg};">
+          <span>${g.name ? escHtml(g.name) : '<em style="color:#a3a3a3">Untitled group</em>'}</span>
+          <span class="m-group-count">${g.cards.length}</span>
+        </button>`;
+      }).join('');
+      const unsortBtn = selectedInGroup
+        ? `<button class="m-unsort-btn" data-action="m-unsort">Move back to unsorted</button>` : '';
+      sheetBody = `
+        <div class="m-sheet-section-label">${state.groups.length ? 'Add to a group:' : 'Create a group to add this card:'}</div>
+        ${groupBtns}
+        <button class="m-new-group-btn" data-action="m-start-create">
+          <span style="font-size:20px;line-height:1">+</span><span>Create new group</span>
+        </button>
+        ${unsortBtn}`;
+    }
+  }
+
+  // Desktop panel content (same as sheet body but with empty state)
+  const desktopPanel = sheetOpen
+    ? `<div class="m-sheet-card-label">"${escHtml(selectedCard.text)}"</div>${sheetBody}`
+    : `<div class="sort-panel-empty">
+        <div class="sort-panel-empty-icon">&#8592;</div>
+        <div>Click any card to assign it to a group</div>
+      </div>`;
+
+  const toggleLabel = state.sortView === 'groups'
+    ? '← Back to cards'
+    : `Groups (${state.groups.length}) →`;
+
+  const mainContent = state.sortView === 'groups'
+    ? renderGroupsOverview()
+    : `
+      <div class="sort-layout">
+        <div class="sort-cards-col">
+          ${allSorted ? `
+            <div class="m-all-sorted" style="margin-bottom:16px">
+              <div class="m-all-sorted-title">All cards sorted!</div>
+              <div class="m-all-sorted-sub">You can still move cards between groups, or finish below.</div>
+              <button class="btn-primary" data-action="finish-sort" style="width:100%">See results →</button>
+            </div>` : ''}
+          <div class="m-card-list">${cardListHtml}</div>
+        </div>
+        <div class="sort-panel-desktop">
+          <div class="sort-panel-inner">${desktopPanel}</div>
+        </div>
+      </div>
+      <div class="m-overlay${sheetOpen ? ' open' : ''}" data-action="m-close-sheet"></div>
+      <div class="m-sheet${sheetOpen ? ' open' : ''}">
+        <div class="m-sheet-handle"></div>
+        ${sheetOpen ? `<div class="m-sheet-card-label">"${escHtml(selectedCard.text)}"</div>${sheetBody}` : ''}
+      </div>`;
+
+  return `
+    <div class="m-progress">
+      <div class="m-progress-label">
+        <span>${totalPlaced} of ${totalCards} cards sorted</span>
+        <button class="m-view-toggle" data-action="m-toggle-view">${toggleLabel}</button>
+      </div>
+      <div class="m-progress-bar"><div class="m-progress-fill" style="width:${pct}%"></div></div>
+    </div>
+    ${mainContent}`;
+}
+
+// ── Groups overview ─────────────────────────────────────────────────
+function renderGroupsOverview() {
+  if (state.groups.length === 0) {
+    return `<div class="m-groups-overview">
+      <div style="text-align:center;color:#a3a3a3;padding:40px 0;font-size:15px;">
+        No groups yet. Sort some cards first.
+      </div>
+    </div>`;
+  }
+  const sections = state.groups.map(g => {
+    const col = groupColor(g);
+    const rows = g.cards.length === 0
+      ? `<div class="m-group-empty">No cards yet</div>`
+      : g.cards.map(c => `<div class="m-group-card-row">${escHtml(c.text)}</div>`).join('');
+    return `<div class="m-group-section">
+      <div class="m-group-section-header" style="border-left:4px solid ${col.border}; background:${col.bg};">
+        <span>${escHtml(g.name || 'Untitled group')}</span>
+        <span class="m-group-section-count">${g.cards.length} card${g.cards.length !== 1 ? 's' : ''}</span>
+      </div>
+      ${rows}
+    </div>`;
+  }).join('');
+  return `<div class="m-groups-overview">${sections}</div>`;
+}
+
+// ── Events ─────────────────────────────────────────────────────────
+function attachEvents() {
+  // Intro
+  const btnStart = document.getElementById('btn-start');
+  if (btnStart) btnStart.addEventListener('click', () => { state.phase = 'sort'; render(); });
+
+  // Results
+  const btnReset = document.getElementById('btn-reset');
+  if (btnReset) btnReset.addEventListener('click', () => {
+    state.phase = 'intro';
+    state.cards = shuffle(CARDS_DATA);
+    state.groups = [];
+    state.editingGroupId = null;
+    state.addingCard = false;
+    state.editingCardId = null;
+    render();
+  });
+
+  // Sort phase
+  const btnAdd = document.getElementById('btn-add-group');
+  if (btnAdd) btnAdd.addEventListener('click', addGroup);
+
+  // Add custom card
+  const btnAddCard = document.getElementById('btn-add-card');
+  if (btnAddCard) btnAddCard.addEventListener('click', () => { state.addingCard = true; render(); });
+
+  const btnSaveCard = document.getElementById('btn-save-card');
+  if (btnSaveCard) btnSaveCard.addEventListener('click', () => {
+    const input = document.getElementById('new-card-input');
+    if (input) addCustomCard(input.value);
+  });
+
+  const btnCancelCard = document.getElementById('btn-cancel-card');
+  if (btnCancelCard) btnCancelCard.addEventListener('click', () => { state.addingCard = false; render(); });
+
+  const newCardInput = document.getElementById('new-card-input');
+  if (newCardInput) {
+    newCardInput.focus();
+    newCardInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') addCustomCard(newCardInput.value);
+      if (e.key === 'Escape') { state.addingCard = false; render(); }
+    });
+  }
+
+  const btnResults = document.getElementById('btn-view-results');
+  if (btnResults) btnResults.addEventListener('click', () => { state.phase = 'results'; render(); });
+
+  // Export button
+  const btnExport = document.getElementById('btn-export');
+  if (btnExport) btnExport.addEventListener('click', exportAsImage);
+
+  // Draggable cards (unsorted + sorted) — mouse + touch drag
+  document.querySelectorAll('[data-card-id][draggable]').forEach(el => {
+    attachTouchDrag(el);
+    el.addEventListener('dragstart', (e) => {
+      dragCardId = parseInt(el.dataset.cardId, 10);
+      dragGroupId = null;
+      dragOverCardId = null;
+      el.classList.add('is-dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      e.stopPropagation();
+    });
+    el.addEventListener('dragend', () => {
+      document.querySelectorAll('.group-drop.drag-over').forEach(d => d.classList.remove('drag-over'));
+      document.querySelectorAll('.card-sorted.drop-above,.card-sorted.drop-below').forEach(d => { d.classList.remove('drop-above'); d.classList.remove('drop-below'); });
+      dragCardId = null;
+      dragOverCardId = null;
+      render();
+    });
+
+    // In-group card reorder: dragover on a sorted card
+    if (el.dataset.groupParent) {
+      el.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const targetCardId = parseInt(el.dataset.cardId, 10);
+        if (dragCardId === null || dragCardId === targetCardId) return;
+        // Determine above/below based on mouse position
+        const rect = el.getBoundingClientRect();
+        const isAbove = e.clientY < rect.top + rect.height / 2;
+        document.querySelectorAll('.card-sorted.drop-above,.card-sorted.drop-below').forEach(d => { d.classList.remove('drop-above'); d.classList.remove('drop-below'); });
+        el.classList.add(isAbove ? 'drop-above' : 'drop-below');
+        dragOverCardId = { cardId: targetCardId, above: isAbove };
+      });
+
+      el.addEventListener('drop', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        document.querySelectorAll('.card-sorted.drop-above,.card-sorted.drop-below').forEach(d => { d.classList.remove('drop-above'); d.classList.remove('drop-below'); });
+        const groupId = parseInt(el.dataset.groupParent, 10);
+        const targetCardId = parseInt(el.dataset.cardId, 10);
+        if (dragCardId !== null && dragCardId !== targetCardId) {
+          // Check if dragging within same group
+          const group = state.groups.find(g => g.id === groupId);
+          const isInGroup = group && group.cards.some(c => c.id === dragCardId);
+          if (isInGroup && dragOverCardId) {
+            reorderCardInGroup(groupId, dragCardId, targetCardId);
+          } else {
+            moveCardToGroup(dragCardId, groupId);
+          }
+          dragCardId = null;
+          dragOverCardId = null;
+          render();
+        }
+      });
+    }
+  });
+
+  // Group header drag (reorder groups)
+  document.querySelectorAll('[data-drag-group]').forEach(el => {
+    const groupId = parseInt(el.dataset.dragGroup, 10);
+    el.addEventListener('dragstart', (e) => {
+      if (e.target.closest('button') || e.target.closest('input')) { e.preventDefault(); return; }
+      dragGroupId = groupId;
+      dragCardId = null;
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', 'group');
+      setTimeout(() => {
+        const groupEl = el.closest('.group-drop');
+        if (groupEl) groupEl.classList.add('group-dragging');
+      }, 0);
+    });
+    el.addEventListener('dragend', () => {
+      document.querySelectorAll('.group-drop.group-dragging').forEach(d => d.classList.remove('group-dragging'));
+      document.querySelectorAll('.group-drop.is-group-drag-over').forEach(d => d.classList.remove('is-group-drag-over'));
+      dragGroupId = null;
+      render();
+    });
+  });
+
+  // Group drop zones
+  document.querySelectorAll('.group-drop').forEach(el => {
+    const groupId = parseInt(el.dataset.groupId, 10);
+
+    el.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      if (dragGroupId !== null && dragGroupId !== groupId) {
+        document.querySelectorAll('.group-drop.is-group-drag-over').forEach(d => { if (d !== el) d.classList.remove('is-group-drag-over'); });
+        el.classList.add('is-group-drag-over');
+      } else if (dragCardId !== null) {
+        document.querySelectorAll('.group-drop.drag-over').forEach(d => { if (d !== el) d.classList.remove('drag-over'); });
+        el.classList.add('drag-over');
+      }
+    });
+
+    el.addEventListener('dragleave', (e) => {
+      if (!el.contains(e.relatedTarget)) {
+        el.classList.remove('drag-over');
+        el.classList.remove('is-group-drag-over');
+      }
+    });
+
+    el.addEventListener('drop', (e) => {
+      e.preventDefault();
+      el.classList.remove('drag-over');
+      el.classList.remove('is-group-drag-over');
+      if (dragGroupId !== null && dragGroupId !== groupId) {
+        reorderGroup(dragGroupId, groupId);
+        dragGroupId = null;
+        render();
+      } else if (dragCardId !== null) {
+        moveCardToGroup(dragCardId, groupId);
+        dragCardId = null;
+        render();
+      }
+    });
+  });
+
+  // Collapse toggle
+  document.querySelectorAll('[data-toggle-group]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleGroupCollapse(parseInt(el.dataset.toggleGroup, 10));
+    });
+  });
+
+  // Group name editing
+  document.querySelectorAll('[data-edit-group]').forEach(el => {
+    el.addEventListener('click', () => {
+      state.editingGroupId = parseInt(el.dataset.editGroup, 10);
+      render();
+    });
+  });
+
+  // Group name input
+  const nameInput = document.querySelector('.group-name-input');
+  if (nameInput) {
+    const gid = parseInt(nameInput.dataset.groupId, 10);
+    nameInput.addEventListener('input', (e) => {
+      renameGroup(gid, e.target.value);
+    });
+    nameInput.addEventListener('blur', () => {
+      saveGroupName(gid);
+    });
+    nameInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') saveGroupName(gid);
+      if (e.key === 'Escape') { state.editingGroupId = null; render(); }
+    });
+  }
+
+  // Remove card from group
+  document.querySelectorAll('[data-remove-card]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      moveCardBack(parseInt(el.dataset.removeCard, 10));
+    });
+  });
+
+  // Edit custom card
+  document.querySelectorAll('[data-edit-card]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      state.editingCardId = parseInt(el.dataset.editCard, 10);
+      render();
+    });
+  });
+
+  // Delete custom card
+  document.querySelectorAll('[data-delete-card]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      deleteCustomCard(parseInt(el.dataset.deleteCard, 10));
+    });
+  });
+
+  // Save card edit
+  document.querySelectorAll('[data-save-card-edit]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const id = parseInt(el.dataset.saveCardEdit, 10);
+      const input = document.querySelector(`.edit-card-input[data-card-id="${id}"]`);
+      if (input) saveCardEdit(id, input.value);
+    });
+  });
+
+  // Cancel card edit
+  document.querySelectorAll('[data-cancel-card-edit]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      state.editingCardId = null;
+      render();
+    });
+  });
+
+  // Edit card input keyboard
+  document.querySelectorAll('.edit-card-input').forEach(el => {
+    const id = parseInt(el.dataset.cardId, 10);
+    el.focus();
+    el.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') saveCardEdit(id, el.value);
+      if (e.key === 'Escape') { state.editingCardId = null; render(); }
+    });
+  });
+
+  // Delete group
+  document.querySelectorAll('[data-delete-group]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      removeGroup(parseInt(el.dataset.deleteGroup, 10));
+    });
+  });
+
+  // ── Mobile sort events ──────────────────────────────────────────
+  document.querySelectorAll('[data-action="m-select-card"]').forEach(el => {
+    el.addEventListener('click', () => {
+      const id = Number(el.dataset.cardId);
+      state.mobileSelectedCardId = (state.mobileSelectedCardId === id) ? null : id;
+      state.mobileCreatingGroup = false;
+      state.mobileGroupName = '';
+      render();
+    });
+  });
+
+  document.querySelector('[data-action="m-close-sheet"]')?.addEventListener('click', () => {
+    state.mobileSelectedCardId = null;
+    state.mobileCreatingGroup = false;
+    state.mobileGroupName = '';
+    render();
+  });
+
+  document.querySelectorAll('[data-action="m-assign"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      moveCardToGroup(state.mobileSelectedCardId, Number(btn.dataset.groupId));
+      state.mobileSelectedCardId = null;
+      state.mobileCreatingGroup = false;
+      render();
+    });
+  });
+
+  document.querySelector('[data-action="m-unsort"]')?.addEventListener('click', () => {
+    moveCardBack(state.mobileSelectedCardId);
+    state.mobileSelectedCardId = null;
+    render();
+  });
+
+  document.querySelector('[data-action="m-start-create"]')?.addEventListener('click', () => {
+    state.mobileCreatingGroup = true;
+    state.mobileGroupName = '';
+    render();
+    document.getElementById('m-group-input')?.focus();
+  });
+
+  document.querySelector('[data-action="m-cancel-create"]')?.addEventListener('click', () => {
+    state.mobileCreatingGroup = false;
+    state.mobileGroupName = '';
+    render();
+  });
+
+  document.querySelector('[data-action="m-create-group"]')?.addEventListener('click', () => {
+    const name = (document.getElementById('m-group-input')?.value || '').trim();
+    if (state.mobileSelectedCardId === null) return;
+    const newGroup = { id: Date.now(), name, cards: [], collapsed: false, color: state.groups.length % GROUP_COLORS.length };
+    state.groups.push(newGroup);
+    moveCardToGroup(state.mobileSelectedCardId, newGroup.id);
+    state.mobileSelectedCardId = null;
+    state.mobileCreatingGroup = false;
+    state.mobileGroupName = '';
+    render();
+  });
+
+  const mGroupInput = document.getElementById('m-group-input');
+  if (mGroupInput) {
+    mGroupInput.addEventListener('input', e => { state.mobileGroupName = e.target.value; });
+    mGroupInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter') document.querySelector('[data-action="m-create-group"]')?.click();
+    });
+  }
+
+  document.querySelector('[data-action="m-toggle-view"]')?.addEventListener('click', () => {
+    state.sortView = state.sortView === 'groups' ? 'cards' : 'groups';
+    state.mobileSelectedCardId = null;
+    state.mobileCreatingGroup = false;
+    state.mobileGroupName = '';
+    render();
+  });
+
+  document.querySelectorAll('[data-action="finish-sort"]').forEach(btn => {
+    btn.addEventListener('click', () => { state.phase = 'results'; render(); });
+  });
+}
+
+// ── Utilities ──────────────────────────────────────────────────────
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+function escAttr(str) {
+  return String(str).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+// ── Boot ───────────────────────────────────────────────────────────
+render();
+
+// Re-render when crossing the mobile breakpoint
+let _lastMobile = window.innerWidth < 640;
+window.addEventListener('resize', () => {
+  const isMobile = window.innerWidth < 640;
+  if (isMobile !== _lastMobile) { _lastMobile = isMobile; render(); }
+});
+</script>
+</body>
+</html>

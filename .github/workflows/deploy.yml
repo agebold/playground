@@ -43,6 +43,7 @@ jobs:
           # Copy old static content to root
           cp -r dynamic-header _deploy/ 2>/dev/null || true
           cp -r vision _deploy/ 2>/dev/null || true
+          cp -r user-research _deploy/ 2>/dev/null || true
           # Copy any root HTML files
           cp *.html _deploy/ 2>/dev/null || true
           # Copy built React app into MSK-ACCESS subfolder

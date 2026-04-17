@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Research Tools</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f5f5f5;
+      color: #171717;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #fff;
+      border-bottom: 1px solid #e5e7eb;
+      padding: 20px 24px;
+    }
+
+    header h1 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #171717;
+    }
+
+    header p {
+      font-size: 14px;
+      color: #737373;
+      margin-top: 4px;
+    }
+
+    main {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 32px 24px;
+    }
+
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .tool-card {
+      background: #fff;
+      border: 1.5px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 28px 24px;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .tool-card:hover {
+      border-color: #1B6B5A;
+      box-shadow: 0 4px 16px rgba(27, 107, 90, 0.1);
+    }
+
+    .tool-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+
+    .icon-card { background: #EFF6FF; }
+    .icon-tree { background: #F0FDF4; }
+
+    .tool-name {
+      font-size: 17px;
+      font-weight: 700;
+      color: #171717;
+    }
+
+    .tool-desc {
+      font-size: 14px;
+      color: #525252;
+      line-height: 1.5;
+    }
+
+    .tool-tag {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 3px 10px;
+      border-radius: 20px;
+      background: #f0faf7;
+      color: #1B6B5A;
+      margin-top: 4px;
+    }
+
+    .tool-arrow {
+      margin-top: auto;
+      font-size: 14px;
+      font-weight: 600;
+      color: #1B6B5A;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>User Research Tools</h1>
+    <p>Age Bold — information architecture &amp; usability studies</p>
+  </header>
+
+  <main>
+    <div class="tools-grid">
+
+      <a class="tool-card" href="card-sort.html">
+        <div class="tool-icon icon-card">🃏</div>
+        <div class="tool-name">Card Sort</div>
+        <div class="tool-desc">
+          Open card sort — participants organize 36 cards into groups that make sense to them.
+          Explore navigation surface hypotheses for the Age Bold app.
+        </div>
+        <span class="tool-tag">36 cards · Open sort</span>
+        <div class="tool-arrow">Open →</div>
+      </a>
+
+      <a class="tool-card" href="tree-test.html">
+        <div class="tool-icon icon-tree">🌳</div>
+        <div class="tool-name">Tree Test</div>
+        <div class="tool-desc">
+          Tree test with two navigation variants — Fitness-only (4 tabs) vs Fitness + Care (4 tabs).
+          8 tasks, scored by correct destination selection.
+        </div>
+        <span class="tool-tag">8 tasks · 2 variants</span>
+        <div class="tool-arrow">Open →</div>
+      </a>
+
+    </div>
+  </main>
+</body>
+</html>
