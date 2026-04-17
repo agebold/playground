@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ MSK-ACCESS-Prototype ]
+    branches: [ main, MSK-ACCESS-Prototype ]
   workflow_dispatch:
 
 permissions:
@@ -32,22 +32,24 @@ jobs:
           cache-dependency-path: MSK-ACCESS/package-lock.json
 
       - name: Install dependencies
+        if: hashFiles('MSK-ACCESS/package-lock.json') != ''
         run: cd MSK-ACCESS && npm install
 
       - name: Build React app
+        if: hashFiles('MSK-ACCESS/package-lock.json') != ''
         run: cd MSK-ACCESS && npm run build
 
       - name: Assemble deployment folder
         run: |
           mkdir -p _deploy/MSK-ACCESS
-          # Copy old static content to root
+          # Copy static content
           cp -r dynamic-header _deploy/ 2>/dev/null || true
           cp -r vision _deploy/ 2>/dev/null || true
           cp -r user-research _deploy/ 2>/dev/null || true
           # Copy any root HTML files
           cp *.html _deploy/ 2>/dev/null || true
-          # Copy built React app into MSK-ACCESS subfolder
-          cp -r MSK-ACCESS/dist/. _deploy/MSK-ACCESS/
+          # Copy built React app into MSK-ACCESS subfolder (only if built)
+          cp -r MSK-ACCESS/dist/. _deploy/MSK-ACCESS/ 2>/dev/null || true
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
