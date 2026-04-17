@@ -4,236 +4,303 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Age Bold — Playground</title>
+  <!-- Design system — Google Fonts (mirrors tokens.css) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Syne:wght@500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <style>
+    /* ── Design system tokens (from design-system/tokens.css) ── */
     :root {
-      --bg:       #0f0e0d;
-      --surface:  #1a1917;
-      --border:   #2c2b28;
-      --text:     #f0ede7;
-      --muted:    #6b6966;
-      --gold:     #c9a96e;
-      --gold-dim: rgba(201,169,110,0.12);
-
-      --c-proto:    #4a90d9;
-      --c-system:   #7ec8a0;
-      --c-research: #c97a6e;
-      --c-strategy: #9b82c9;
-
-      --iz: #4a90d9;
-      --tz: #7ec8a0;
+      --font-family:              'Inter', system-ui, -apple-system, sans-serif;
+      --color-white:              #ffffff;
+      --color-gray-50:            #fafafa;
+      --color-gray-100:           #f5f5f5;
+      --color-gray-150:           #E5E7EB;
+      --color-gray-200:           #e5e5e5;
+      --color-gray-300:           #D1D5DB;
+      --color-gray-350:           #a3a3a3;
+      --color-gray-500:           #6B7280;
+      --color-gray-900:           #171717;
+      --color-navy:               #001d56;
+      --color-navy-mid:           #2D1263;
+      --color-purple-300:         #a67df0;
+      --color-purple-500:         #6333E8;
+      --color-purple-600:         #5200d4;
+      --color-purple-100:         #f5f0ff;
+      --color-purple-ede:         #EDE9FE;
+      --color-purple-ebf:         #ebf0ff;
+      --color-purple-eaf:         #eaf0ff;
+      --color-green-600:          #16a34a;
+      --color-green-100:          #DCFCE7;
+      --color-blue-600:           #2563eb;
+      --color-blue-50:            #ebf0ff;
+      --color-red-600:            #DC2626;
+      --color-red-50:             #FEF2F2;
+      --font-size-2xs:            10px;
+      --font-size-xs:             12px;
+      --font-size-sm:             13px;
+      --font-size-md:             14px;
+      --font-size-base:           15px;
+      --font-size-lg:             16px;
+      --font-size-xl:             18px;
+      --font-size-3xl:            28px;
+      --font-size-4xl:            32px;
+      --font-weight-regular:      400;
+      --font-weight-medium:       500;
+      --font-weight-semibold:     600;
+      --font-weight-bold:         700;
+      --font-weight-extrabold:    800;
+      --line-height-tight:        1.2;
+      --line-height-snug:         1.3;
+      --line-height-relaxed:      1.5;
+      --letter-spacing-tight:     -0.8px;
+      --letter-spacing-caps:      0.5px;
+      --space-2:  4px;
+      --space-3:  8px;
+      --space-4:  16px;
+      --space-5:  24px;
+      --space-6:  32px;
+      --space-7:  40px;
+      --space-8:  48px;
+      --space-9:  64px;
+      --space-10: 80px;
+      --radius-sm:     8px;
+      --radius-md:     12px;
+      --radius-lg:     14px;
+      --radius-xl:     16px;
+      --radius-full:   360px;
+      --radius-circle: 50%;
+      --shadow-xs:  0 1px 2px rgba(16,24,40,0.05);
+      --shadow-md:  0 4px 16px rgba(0,0,0,0.10);
+      --transition-fast: all 0.15s ease;
+      --transition-base: all 0.20s ease;
+      --z-above: 1;
+      --page-max-width: 1100px;
     }
+
+    /* ── bold-tag components (from design-system/components.css) ── */
+    .bold-tag {
+      display: inline-flex;
+      align-items: center;
+      font-size: var(--font-size-md);
+      font-weight: var(--font-weight-semibold);
+      padding: 4px 10px;
+      border-radius: 4px;
+    }
+    .bold-tag-purple { background: var(--color-purple-eaf); color: var(--color-purple-600); }
+    .bold-tag-blue   { background: var(--color-blue-50);   color: var(--color-blue-600); }
+    .bold-tag-green  { background: var(--color-green-100); color: var(--color-green-600); }
+    .bold-tag-red    { background: var(--color-red-50);    color: var(--color-red-600); }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    html { scroll-behavior: smooth; }
-
     body {
-      font-family: 'Syne', sans-serif;
-      background: var(--bg);
-      color: var(--text);
+      font-family: var(--font-family);
+      background: var(--color-gray-50);
+      color: var(--color-gray-900);
       min-height: 100vh;
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ── Header ── */
-    .header {
-      padding: 56px 48px 40px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      gap: 24px;
+    /* ── Hero header ── */
+    .hero {
+      background: var(--color-navy);
+      padding: var(--space-8) var(--space-8) var(--space-7);
+      position: relative;
+      overflow: hidden;
     }
 
-    .header-left { max-width: 520px; }
-
-    .eyebrow {
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: 14px;
+    .hero::after {
+      content: '';
+      position: absolute;
+      top: -80px; right: -80px;
+      width: 360px; height: 360px;
+      border-radius: var(--radius-circle);
+      background: radial-gradient(circle, var(--color-navy-mid) 0%, transparent 70%);
+      pointer-events: none;
     }
 
-    .title {
-      font-family: 'DM Serif Display', serif;
-      font-size: clamp(36px, 5vw, 58px);
-      font-weight: 400;
-      line-height: 1.08;
-      color: var(--text);
-      letter-spacing: -0.02em;
-    }
-
-    .header-meta {
-      text-align: right;
-      flex-shrink: 0;
-    }
-
-    .header-meta p {
-      font-size: 12px;
-      color: var(--muted);
-      font-family: 'DM Mono', monospace;
-      line-height: 1.8;
-    }
-
-    .contrib-list {
-      display: flex;
-      gap: 10px;
-      margin-top: 12px;
-      justify-content: flex-end;
-    }
-
-    .contrib-chip {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 12px;
-      color: var(--muted);
-      font-family: 'DM Mono', monospace;
-    }
-
-    .dot {
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 9px;
-      font-weight: 700;
-      color: #fff;
-      flex-shrink: 0;
-    }
-
-    .dot-iz { background: var(--iz); }
-    .dot-tz { background: var(--tz); }
-
-    /* ── Main layout ── */
-    main {
-      max-width: 1100px;
+    .hero-inner {
+      max-width: var(--page-max-width);
       margin: 0 auto;
-      padding: 48px 48px 80px;
+      position: relative;
+      z-index: var(--z-above);
+    }
+
+    .hero-eyebrow {
+      font-size: var(--font-size-md);
+      font-weight: var(--font-weight-semibold);
+      color: var(--color-purple-300, #a67df0);
+      letter-spacing: var(--letter-spacing-caps);
+      text-transform: uppercase;
+      margin-bottom: var(--space-3);
+    }
+
+    .hero-title {
+      font-size: clamp(var(--font-size-3xl), 4vw, var(--font-size-4xl));
+      font-weight: var(--font-weight-extrabold);
+      color: var(--color-white);
+      line-height: var(--line-height-tight);
+      letter-spacing: var(--letter-spacing-tight);
+      margin-bottom: var(--space-4);
+    }
+
+    .hero-subtitle {
+      font-size: var(--font-size-lg);
+      color: rgba(255,255,255,0.55);
+      font-weight: var(--font-weight-regular);
+      margin-bottom: var(--space-6);
+      max-width: 480px;
+    }
+
+    .contrib-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      flex-wrap: wrap;
+    }
+
+    .contrib-label {
+      font-size: var(--font-size-md);
+      color: rgba(255,255,255,0.4);
+      font-weight: var(--font-weight-medium);
+    }
+
+    .contrib-avatars {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .avatar-chip {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: var(--radius-full);
+      padding: 5px 12px 5px 5px;
+      min-height: 44px;
+    }
+
+    .avatar-dot {
+      width: 32px; height: 32px;
+      border-radius: var(--radius-circle);
+      display: flex; align-items: center; justify-content: center;
+      font-size: var(--font-size-md);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-white);
+      flex-shrink: 0;
+    }
+
+    .dot-iz { background: var(--color-purple-500); }
+    .dot-tz { background: var(--color-green-600); }
+
+    .avatar-name {
+      font-size: var(--font-size-md);
+      color: rgba(255,255,255,0.75);
+      font-weight: var(--font-weight-medium);
+    }
+
+    /* ── Main content ── */
+    main {
+      max-width: var(--page-max-width);
+      margin: 0 auto;
+      padding: var(--space-7) var(--space-8) var(--space-10);
     }
 
     /* ── Section ── */
-    .section { margin-bottom: 48px; }
+    .section { margin-bottom: var(--space-8); }
 
     .section-header {
       display: flex;
       align-items: center;
-      gap: 12px;
-      margin-bottom: 16px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid var(--border);
+      justify-content: space-between;
+      margin-bottom: var(--space-4);
     }
-
-    .section-tag {
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      padding: 3px 8px;
-      border-radius: 4px;
-      font-weight: 500;
-    }
-
-    .tag-proto    { color: var(--c-proto);    background: rgba(74,144,217,0.1); }
-    .tag-system   { color: var(--c-system);   background: rgba(126,200,160,0.1); }
-    .tag-research { color: var(--c-research); background: rgba(201,122,110,0.1); }
-    .tag-strategy { color: var(--c-strategy); background: rgba(155,130,201,0.1); }
 
     .section-count {
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      color: var(--muted);
-      margin-left: auto;
+      font-size: var(--font-size-md);
+      color: var(--color-gray-500);
     }
 
     /* ── Card grid ── */
     .card-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 12px;
+      gap: var(--space-4);
     }
 
     .proto-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 22px 22px 18px;
+      background: var(--color-white);
+      border: 1px solid var(--color-gray-150);
+      border-radius: var(--radius-xl);
+      padding: var(--space-5);
       text-decoration: none;
       color: inherit;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: var(--space-3);
+      box-shadow: var(--shadow-xs);
+      transition: var(--transition-base);
+      min-height: 44px; /* guardian: touch target floor */
       position: relative;
       overflow: hidden;
-      transition: border-color 0.2s, transform 0.2s, background 0.2s;
     }
-
-    .proto-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0;
-      width: 3px;
-      height: 100%;
-      opacity: 0;
-      transition: opacity 0.2s;
-    }
-
-    .proto-card.proto  ::before { background: var(--c-proto); }
-    .proto-card.system ::before { background: var(--c-system); }
-    .proto-card.research::before { background: var(--c-research); }
-    .proto-card.strategy::before { background: var(--c-strategy); }
 
     .proto-card:hover {
-      border-color: #3d3c38;
-      background: #201f1d;
+      box-shadow: var(--shadow-md);
+      border-color: var(--color-purple-ede);
       transform: translateY(-2px);
     }
 
-    .proto-card:hover::before { opacity: 1; }
+    .proto-card:focus-visible {
+      outline: 3px solid var(--color-purple-600);
+      outline-offset: 2px;
+    }
 
     .card-top {
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
-      gap: 12px;
     }
 
     .card-icon {
-      font-size: 26px;
+      font-size: 28px;
       line-height: 1;
+      width: 44px; height: 44px;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--color-gray-100);
+      border-radius: var(--radius-sm);
+      flex-shrink: 0;
     }
 
     .card-arrow {
-      font-size: 18px;
-      color: var(--muted);
-      transition: color 0.2s, transform 0.2s;
-      margin-top: 2px;
+      width: 32px; height: 32px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--color-gray-300);
+      font-size: var(--font-size-xl);
+      border-radius: var(--radius-md);
+      transition: var(--transition-fast);
+      flex-shrink: 0;
     }
 
     .proto-card:hover .card-arrow {
-      color: var(--gold);
-      transform: translate(2px, -2px);
+      background: var(--color-purple-100);
+      color: var(--color-purple-600);
     }
 
     .card-name {
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--text);
-      letter-spacing: -0.01em;
+      font-size: var(--font-size-xl);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-gray-900);
+      letter-spacing: var(--letter-spacing-tight);
+      line-height: var(--line-height-snug);
     }
 
     .card-desc {
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.5;
-      font-family: 'DM Mono', monospace;
-      font-weight: 400;
+      font-size: var(--font-size-md);
+      color: var(--color-gray-500);
+      line-height: var(--line-height-relaxed);
       flex: 1;
     }
 
@@ -241,47 +308,61 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-top: 4px;
-      padding-top: 12px;
-      border-top: 1px solid var(--border);
+      padding-top: var(--space-3);
+      border-top: 1px solid var(--color-gray-150);
+      margin-top: var(--space-2);
     }
 
     .card-author {
       display: flex;
       align-items: center;
       gap: 6px;
-      font-size: 11px;
-      color: var(--muted);
-      font-family: 'DM Mono', monospace;
+      font-size: var(--font-size-md);
+      color: var(--color-gray-500);
+      font-weight: var(--font-weight-medium);
+    }
+
+    .author-dot {
+      width: 22px; height: 22px;
+      border-radius: var(--radius-circle);
+      display: flex; align-items: center; justify-content: center;
+      font-size: var(--font-size-2xs);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-white);
+      flex-shrink: 0;
     }
 
     .card-path {
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      color: #3d3c38;
-      letter-spacing: 0.02em;
+      font-size: var(--font-size-md);
+      color: var(--color-gray-350);
     }
 
-    @media (max-width: 640px) {
-      .header { flex-direction: column; align-items: flex-start; padding: 32px 24px 28px; }
-      .header-meta { text-align: left; }
-      .contrib-list { justify-content: flex-start; }
-      main { padding: 32px 24px 60px; }
+    @media (max-width: 767px) {
+      .hero { padding: var(--space-6) var(--space-4) var(--space-6); }
+      main  { padding: var(--space-5) var(--space-4) var(--space-9); }
+      .hero-subtitle { font-size: var(--font-size-base); }
     }
   </style>
 </head>
 <body>
 
-  <header class="header">
-    <div class="header-left">
-      <div class="eyebrow">Age Bold · Design Playground</div>
-      <h1 class="title">Prototypes &amp;<br>Explorations</h1>
-    </div>
-    <div class="header-meta">
-      <p>6 projects · main branch</p>
-      <div class="contrib-list">
-        <div class="contrib-chip"><div class="dot dot-iz">I</div> Izabela</div>
-        <div class="contrib-chip"><div class="dot dot-tz">T</div> Tzu-Yi</div>
+  <header class="hero">
+    <div class="hero-inner">
+      <p class="hero-eyebrow">Design Playground</p>
+      <h1 class="hero-title">Age Bold<br>Prototypes &amp; Explorations</h1>
+      <p class="hero-subtitle">Designs, prototypes, and research tools from the Bold team.</p>
+      <div class="contrib-row">
+        <span class="contrib-label">Contributors</span>
+        <div class="contrib-avatars">
+          <div class="avatar-chip">
+            <div class="avatar-dot dot-iz">I</div>
+            <span class="avatar-name">Izabela</span>
+          </div>
+          <div class="avatar-chip">
+            <div class="avatar-dot dot-tz">T</div>
+            <span class="avatar-name">Tzu-Yi</span>
+          </div>
+        </div>
       </div>
     </div>
   </header>
@@ -289,49 +370,58 @@
   <main>
 
     <!-- Prototypes -->
-    <section class="section">
+    <section class="section" aria-labelledby="section-proto">
       <div class="section-header">
-        <span class="section-tag tag-proto">Prototypes</span>
+        <span id="section-proto" class="bold-tag bold-tag-purple">Prototypes</span>
         <span class="section-count">3 projects</span>
       </div>
       <div class="card-grid">
 
-        <a class="proto-card proto" href="dynamic-header/">
+        <a class="proto-card" href="dynamic-header/">
           <div class="card-top">
-            <div class="card-icon">📱</div>
-            <div class="card-arrow">↗</div>
+            <div class="card-icon" aria-hidden="true">📱</div>
+            <div class="card-arrow" aria-hidden="true">↗</div>
           </div>
           <div class="card-name">App Prototype</div>
           <div class="card-desc">Today plan, class, onboarding, and navigation explorations</div>
           <div class="card-footer">
-            <div class="card-author"><div class="dot dot-iz">I</div> Izabela</div>
-            <div class="card-path">dynamic-header/</div>
+            <div class="card-author">
+              <div class="author-dot dot-iz" aria-hidden="true">I</div>
+              Izabela
+            </div>
+            <span class="card-path">dynamic-header/</span>
           </div>
         </a>
 
-        <a class="proto-card proto" href="care_plan/">
+        <a class="proto-card" href="care_plan/">
           <div class="card-top">
-            <div class="card-icon">🩺</div>
-            <div class="card-arrow">↗</div>
+            <div class="card-icon" aria-hidden="true">🩺</div>
+            <div class="card-arrow" aria-hidden="true">↗</div>
           </div>
           <div class="card-name">Care Plan</div>
           <div class="card-desc">Care plan screens, MSK progress tracking and program views</div>
           <div class="card-footer">
-            <div class="card-author"><div class="dot dot-tz">T</div> Tzu-Yi</div>
-            <div class="card-path">care_plan/</div>
+            <div class="card-author">
+              <div class="author-dot dot-tz" aria-hidden="true">T</div>
+              Tzu-Yi
+            </div>
+            <span class="card-path">care_plan/</span>
           </div>
         </a>
 
-        <a class="proto-card proto" href="telehealth/">
+        <a class="proto-card" href="telehealth/">
           <div class="card-top">
-            <div class="card-icon">🎥</div>
-            <div class="card-arrow">↗</div>
+            <div class="card-icon" aria-hidden="true">🎥</div>
+            <div class="card-arrow" aria-hidden="true">↗</div>
           </div>
           <div class="card-name">Telehealth</div>
           <div class="card-desc">Telehealth video call interface and flow</div>
           <div class="card-footer">
-            <div class="card-author"><div class="dot dot-tz">T</div> Tzu-Yi</div>
-            <div class="card-path">telehealth/</div>
+            <div class="card-author">
+              <div class="author-dot dot-tz" aria-hidden="true">T</div>
+              Tzu-Yi
+            </div>
+            <span class="card-path">telehealth/</span>
           </div>
         </a>
 
@@ -339,47 +429,53 @@
     </section>
 
     <!-- Design System -->
-    <section class="section">
+    <section class="section" aria-labelledby="section-system">
       <div class="section-header">
-        <span class="section-tag tag-system">Design System</span>
+        <span id="section-system" class="bold-tag bold-tag-blue">Design System</span>
         <span class="section-count">1 project</span>
       </div>
       <div class="card-grid">
 
-        <a class="proto-card system" href="design-system/">
+        <a class="proto-card" href="design-system/">
           <div class="card-top">
-            <div class="card-icon">🎨</div>
-            <div class="card-arrow">↗</div>
+            <div class="card-icon" aria-hidden="true">🎨</div>
+            <div class="card-arrow" aria-hidden="true">↗</div>
           </div>
           <div class="card-name">Bold Design System</div>
-          <div class="card-desc">Tokens, type scale, spacing, and component library</div>
+          <div class="card-desc">Tokens, type scale, spacing system, and component library</div>
           <div class="card-footer">
-            <div class="card-author"><div class="dot dot-tz">T</div> Tzu-Yi</div>
-            <div class="card-path">design-system/</div>
+            <div class="card-author">
+              <div class="author-dot dot-tz" aria-hidden="true">T</div>
+              Tzu-Yi
+            </div>
+            <span class="card-path">design-system/</span>
           </div>
         </a>
 
       </div>
     </section>
 
-    <!-- Research -->
-    <section class="section">
+    <!-- User Research -->
+    <section class="section" aria-labelledby="section-research">
       <div class="section-header">
-        <span class="section-tag tag-research">User Research</span>
+        <span id="section-research" class="bold-tag bold-tag-green">User Research</span>
         <span class="section-count">1 project</span>
       </div>
       <div class="card-grid">
 
-        <a class="proto-card research" href="user-research/">
+        <a class="proto-card" href="user-research/">
           <div class="card-top">
-            <div class="card-icon">🔬</div>
-            <div class="card-arrow">↗</div>
+            <div class="card-icon" aria-hidden="true">🔬</div>
+            <div class="card-arrow" aria-hidden="true">↗</div>
           </div>
           <div class="card-name">Research Tools</div>
           <div class="card-desc">Card sort (36 cards) and tree test (8 tasks, 2 nav variants)</div>
           <div class="card-footer">
-            <div class="card-author"><div class="dot dot-iz">I</div> Izabela</div>
-            <div class="card-path">user-research/</div>
+            <div class="card-author">
+              <div class="author-dot dot-iz" aria-hidden="true">I</div>
+              Izabela
+            </div>
+            <span class="card-path">user-research/</span>
           </div>
         </a>
 
@@ -387,23 +483,26 @@
     </section>
 
     <!-- Strategy -->
-    <section class="section">
+    <section class="section" aria-labelledby="section-strategy">
       <div class="section-header">
-        <span class="section-tag tag-strategy">Strategy</span>
+        <span id="section-strategy" class="bold-tag bold-tag-red">Strategy</span>
         <span class="section-count">1 project</span>
       </div>
       <div class="card-grid">
 
-        <a class="proto-card strategy" href="vision/">
+        <a class="proto-card" href="vision/">
           <div class="card-top">
-            <div class="card-icon">✦</div>
-            <div class="card-arrow">↗</div>
+            <div class="card-icon" aria-hidden="true">✦</div>
+            <div class="card-arrow" aria-hidden="true">↗</div>
           </div>
           <div class="card-name">Product Vision</div>
           <div class="card-desc">Bold product vision and strategy overview</div>
           <div class="card-footer">
-            <div class="card-author"><div class="dot dot-iz">I</div> Izabela</div>
-            <div class="card-path">vision/</div>
+            <div class="card-author">
+              <div class="author-dot dot-iz" aria-hidden="true">I</div>
+              Izabela
+            </div>
+            <span class="card-path">vision/</span>
           </div>
         </a>
 
