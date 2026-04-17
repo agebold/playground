@@ -805,7 +805,7 @@
   cursor: pointer; transition: all 0.15s; font-family: var(--font-family);
 }
 .bold-pain-btn:hover    { border-color: #5200d4; background: #faf5ff; }
-.bold-pain-btn.selected { border-color: #5200d4; background: #f5f0ff; color: #5200d4; }
+.bold-pain-btn.selected { border-color: #5200d4; background: #5200d4; color: #fff; }
 @media (min-width: 768px) { .bold-pain-grid { grid-template-columns: repeat(11, 1fr); } }
 
 
