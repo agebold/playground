@@ -122,21 +122,19 @@
   /* ══════════════════════════════════════════════
      SPACING
   ══════════════════════════════════════════════ */
-  --space-1:    4px;
-  --space-2:    6px;
+  /* Additional sub-base values */
+  --space-0:    0px;
+  --space-1:    2px;
+  --space-2:    4px;
+  /* 8-point scale */
   --space-3:    8px;
-  --space-4:    10px;
-  --space-5:    12px;
-  --space-6:    14px;
-  --space-7:    16px;
-  --space-8:    20px;
-  --space-9:    24px;
-  --space-10:   28px;
-  --space-11:   32px;
-  --space-12:   40px;
-  --space-13:   48px;
-  --space-14:   60px;
-  --space-15:   80px;
+  --space-4:    16px;
+  --space-5:    24px;
+  --space-6:    32px;
+  --space-7:    40px;
+  --space-8:    48px;
+  --space-9:    64px;
+  --space-10:   80px;
 
   /* Component-specific spacing */
   --nav-height-auth:     72px;    /* post-auth sticky nav */
