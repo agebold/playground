@@ -4,370 +4,313 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Age Bold — Playground</title>
-  <!-- Design system — Google Fonts (mirrors tokens.css) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
   <style>
-    /* ── Design system tokens (from design-system/tokens.css) ── */
+    /* ── Bold design system tokens ── */
     :root {
-      --font-family:              'Inter', system-ui, -apple-system, sans-serif;
-      --color-white:              #ffffff;
-      --color-gray-50:            #fafafa;
-      --color-gray-100:           #f5f5f5;
-      --color-gray-150:           #E5E7EB;
-      --color-gray-200:           #e5e5e5;
-      --color-gray-300:           #D1D5DB;
-      --color-gray-350:           #a3a3a3;
-      --color-gray-500:           #6B7280;
-      --color-gray-900:           #171717;
-      --color-navy:               #001d56;
-      --color-navy-mid:           #2D1263;
-      --color-purple-300:         #a67df0;
-      --color-purple-500:         #6333E8;
-      --color-purple-600:         #5200d4;
-      --color-purple-100:         #f5f0ff;
-      --color-purple-ede:         #EDE9FE;
-      --color-purple-ebf:         #ebf0ff;
-      --color-purple-eaf:         #eaf0ff;
-      --color-green-600:          #16a34a;
-      --color-green-100:          #DCFCE7;
-      --color-blue-600:           #2563eb;
-      --color-blue-50:            #ebf0ff;
-      --color-red-600:            #DC2626;
-      --color-red-50:             #FEF2F2;
-      --font-size-2xs:            10px;
-      --font-size-xs:             12px;
-      --font-size-sm:             13px;
-      --font-size-md:             14px;
-      --font-size-base:           15px;
-      --font-size-lg:             16px;
-      --font-size-xl:             18px;
-      --font-size-3xl:            28px;
-      --font-size-4xl:            32px;
-      --font-weight-regular:      400;
-      --font-weight-medium:       500;
-      --font-weight-semibold:     600;
-      --font-weight-bold:         700;
-      --font-weight-extrabold:    800;
-      --line-height-tight:        1.2;
-      --line-height-snug:         1.3;
-      --line-height-relaxed:      1.5;
-      --letter-spacing-tight:     -0.8px;
-      --letter-spacing-caps:      0.5px;
-      --space-2:  4px;
-      --space-3:  8px;
-      --space-4:  16px;
-      --space-5:  24px;
-      --space-6:  32px;
-      --space-7:  40px;
-      --space-8:  48px;
-      --space-9:  64px;
-      --space-10: 80px;
-      --radius-sm:     8px;
-      --radius-md:     12px;
-      --radius-lg:     14px;
-      --radius-xl:     16px;
-      --radius-full:   360px;
-      --radius-circle: 50%;
-      --shadow-xs:  0 1px 2px rgba(16,24,40,0.05);
-      --shadow-md:  0 4px 16px rgba(0,0,0,0.10);
-      --transition-fast: all 0.15s ease;
-      --transition-base: all 0.20s ease;
-      --z-above: 1;
-      --page-max-width: 1100px;
-    }
+      --font-ui:      'Inter', system-ui, sans-serif;
+      --font-display: 'DM Serif Display', Georgia, serif;
 
-    /* ── bold-tag components (from design-system/components.css) ── */
-    .bold-tag {
-      display: inline-flex;
-      align-items: center;
-      font-size: var(--font-size-md);
-      font-weight: var(--font-weight-semibold);
-      padding: 4px 10px;
-      border-radius: 4px;
+      --navy:         #001d56;
+      --white:        #ffffff;
+      --gray-50:      #fafafa;
+      --gray-100:     #f5f5f5;
+      --gray-150:     #E5E7EB;
+      --gray-200:     #e5e5e5;
+      --gray-500:     #6B7280;
+      --gray-900:     #171717;
+      --gray-muted:   #a3a3a3;
+
+      --purple-600:   #5200d4;
+      --blue-600:     #2563eb;
+      --green-600:    #16a34a;
+      --red-600:      #DC2626;
+
+      --dot-iz: #6333E8;
+      --dot-tz: #16a34a;
+      --dot-mo: #2563eb;
     }
-    .bold-tag-purple { background: var(--color-purple-eaf); color: var(--color-purple-600); }
-    .bold-tag-blue   { background: var(--color-blue-50);   color: var(--color-blue-600); }
-    .bold-tag-green  { background: var(--color-green-100); color: var(--color-green-600); }
-    .bold-tag-red    { background: var(--color-red-50);    color: var(--color-red-600); }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: var(--font-family);
-      background: var(--color-gray-50);
-      color: var(--color-gray-900);
+      font-family: var(--font-ui);
+      background: var(--gray-100);
+      color: var(--gray-900);
       min-height: 100vh;
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ── Hero header ── */
-    .hero {
-      background: var(--color-navy);
-      padding: var(--space-8) var(--space-8) var(--space-7);
-      position: relative;
-      overflow: hidden;
+    /* ── Top bar ── */
+    .topbar {
+      background: var(--navy);
+      height: 52px;
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      animation: fadeDown 0.35s ease both;
     }
 
-    .hero::after {
-      content: '';
-      position: absolute;
-      top: -80px; right: -80px;
-      width: 360px; height: 360px;
-      border-radius: var(--radius-circle);
-      background: radial-gradient(circle, var(--color-navy-mid) 0%, transparent 70%);
-      pointer-events: none;
+    .wordmark {
+      display: flex;
+      align-items: baseline;
     }
 
-    .hero-inner {
-      max-width: var(--page-max-width);
-      margin: 0 auto;
-      position: relative;
-      z-index: var(--z-above);
+    .wordmark-brand {
+      font-family: var(--font-display);
+      font-size: 19px;
+      font-style: italic;
+      color: var(--white);
+      letter-spacing: -0.2px;
     }
 
-    .hero-eyebrow {
-      font-size: var(--font-size-md);
-      font-weight: var(--font-weight-semibold);
-      color: var(--color-purple-300, #a67df0);
-      letter-spacing: var(--letter-spacing-caps);
+    .wordmark-sep {
+      font-size: 14px;
+      color: rgba(255,255,255,0.22);
+      margin: 0 9px;
+      font-weight: 300;
+    }
+
+    .wordmark-sub {
+      font-size: 12px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.45);
+      letter-spacing: 0.4px;
       text-transform: uppercase;
-      margin-bottom: var(--space-3);
-    }
-
-    .hero-title {
-      font-size: clamp(var(--font-size-3xl), 4vw, var(--font-size-4xl));
-      font-weight: var(--font-weight-extrabold);
-      color: var(--color-white);
-      line-height: var(--line-height-tight);
-      letter-spacing: var(--letter-spacing-tight);
-      margin-bottom: var(--space-4);
-    }
-
-    .hero-subtitle {
-      font-size: var(--font-size-lg);
-      color: rgba(255,255,255,0.55);
-      font-weight: var(--font-weight-regular);
-      margin-bottom: var(--space-6);
-      max-width: 480px;
     }
 
     .contrib-row {
       display: flex;
       align-items: center;
-      gap: var(--space-4);
-      flex-wrap: wrap;
+      gap: 5px;
     }
 
-    .contrib-label {
-      font-size: var(--font-size-md);
-      color: rgba(255,255,255,0.4);
-      font-weight: var(--font-weight-medium);
-    }
-
-    .contrib-avatars {
+    .contrib-chip {
       display: flex;
       align-items: center;
-      gap: var(--space-3);
+      gap: 5px;
+      padding: 3px 8px 3px 3px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 100px;
     }
 
-    .avatar-chip {
-      display: flex;
-      align-items: center;
-      gap: var(--space-2);
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: var(--radius-full);
-      padding: 5px 12px 5px 5px;
-      min-height: 44px;
-    }
-
-    .avatar-dot {
-      width: 32px; height: 32px;
-      border-radius: var(--radius-circle);
+    .contrib-dot {
+      width: 22px; height: 22px;
+      border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      font-size: var(--font-size-md);
-      font-weight: var(--font-weight-bold);
-      color: var(--color-white);
+      font-size: 10px;
+      font-weight: 700;
+      color: white;
       flex-shrink: 0;
     }
 
-    .dot-iz { background: var(--color-purple-500); }
-    .dot-tz { background: var(--color-green-600); }
-    .dot-mo { background: var(--color-blue-600); }
-
-    .avatar-name {
-      font-size: var(--font-size-md);
-      color: rgba(255,255,255,0.75);
-      font-weight: var(--font-weight-medium);
+    .contrib-name {
+      font-size: 12px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.6);
     }
 
-    /* ── Main content ── */
+    /* ── Main ── */
     main {
-      max-width: var(--page-max-width);
+      max-width: 820px;
       margin: 0 auto;
-      padding: var(--space-7) var(--space-8) var(--space-10);
+      padding: 8px 20px 64px;
     }
 
-    /* ── Section ── */
-    .section { margin-bottom: var(--space-8); }
+    /* ── Section group ── */
+    .section-group {
+      margin-top: 24px;
+      animation: fadeUp 0.4s ease both;
+    }
+    .section-group:nth-child(1) { animation-delay: 0.06s; }
+    .section-group:nth-child(2) { animation-delay: 0.13s; }
+    .section-group:nth-child(3) { animation-delay: 0.20s; }
+    .section-group:nth-child(4) { animation-delay: 0.27s; }
 
-    .section-header {
+    .section-label {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      margin-bottom: var(--space-4);
+      gap: 10px;
+      margin-bottom: 4px;
+      padding: 0 2px;
+    }
+
+    .section-tag {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.9px;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    .section-rule {
+      flex: 1;
+      height: 1px;
+      background: var(--gray-200);
     }
 
     .section-count {
-      font-size: var(--font-size-md);
-      color: var(--color-gray-500);
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--gray-muted);
+      flex-shrink: 0;
     }
 
-    /* ── Card grid ── */
-    .card-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: var(--space-4);
-    }
+    /* Section accent theming */
+    .accent-purple .section-tag { background: #f0ebff; color: var(--purple-600); }
+    .accent-blue   .section-tag { background: #ebf0ff; color: var(--blue-600); }
+    .accent-green  .section-tag { background: #dcfce7; color: var(--green-600); }
+    .accent-red    .section-tag { background: #fef2f2; color: var(--red-600); }
 
-    .proto-card {
-      background: var(--color-white);
-      border: 1px solid var(--color-gray-150);
-      border-radius: var(--radius-xl);
-      padding: var(--space-5);
-      text-decoration: none;
-      color: inherit;
+    /* ── Project rows ── */
+    .project-list {
       display: flex;
       flex-direction: column;
-      gap: var(--space-3);
-      box-shadow: var(--shadow-xs);
-      transition: var(--transition-base);
-      min-height: 44px; /* guardian: touch target floor */
-      position: relative;
+      gap: 2px;
+    }
+
+    .project-row {
+      display: grid;
+      grid-template-columns: 34px 1fr auto;
+      align-items: center;
+      column-gap: 12px;
+      padding: 9px 10px 9px 7px;
+      border-radius: 10px;
+      text-decoration: none;
+      color: inherit;
+      border-left: 3px solid transparent;
+      transition: background 0.12s, border-color 0.12s, box-shadow 0.12s;
+    }
+
+    .accent-purple .project-row:hover { background: var(--white); border-left-color: var(--purple-600); box-shadow: 0 1px 8px rgba(82,0,212,0.07); }
+    .accent-blue   .project-row:hover { background: var(--white); border-left-color: var(--blue-600);   box-shadow: 0 1px 8px rgba(37,99,235,0.07); }
+    .accent-green  .project-row:hover { background: var(--white); border-left-color: var(--green-600);  box-shadow: 0 1px 8px rgba(22,163,74,0.07); }
+    .accent-red    .project-row:hover { background: var(--white); border-left-color: var(--red-600);    box-shadow: 0 1px 8px rgba(220,38,38,0.07); }
+
+    .row-icon {
+      font-size: 16px;
+      width: 34px; height: 34px;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--white);
+      border-radius: 8px;
+      border: 1px solid var(--gray-150);
+      flex-shrink: 0;
+    }
+
+    .row-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      min-width: 0;
+    }
+
+    .row-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--gray-900);
+      line-height: 1.3;
+    }
+
+    .row-desc {
+      font-size: 12px;
+      color: var(--gray-500);
+      white-space: nowrap;
       overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    .proto-card:hover {
-      box-shadow: var(--shadow-md);
-      border-color: var(--color-purple-ede);
-      transform: translateY(-2px);
-    }
-
-    .proto-card:focus-visible {
-      outline: 3px solid var(--color-purple-600);
-      outline-offset: 2px;
-    }
-
-    .card-top {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-    }
-
-    .card-icon {
-      font-size: 28px;
-      line-height: 1;
-      width: 44px; height: 44px;
-      display: flex; align-items: center; justify-content: center;
-      background: var(--color-gray-100);
-      border-radius: var(--radius-sm);
-      flex-shrink: 0;
-    }
-
-    .card-arrow {
-      width: 32px; height: 32px;
-      display: flex; align-items: center; justify-content: center;
-      color: var(--color-gray-300);
-      font-size: var(--font-size-xl);
-      border-radius: var(--radius-md);
-      transition: var(--transition-fast);
-      flex-shrink: 0;
-    }
-
-    .proto-card:hover .card-arrow {
-      background: var(--color-purple-100);
-      color: var(--color-purple-600);
-    }
-
-    .card-name {
-      font-size: var(--font-size-xl);
-      font-weight: var(--font-weight-bold);
-      color: var(--color-gray-900);
-      letter-spacing: var(--letter-spacing-tight);
-      line-height: var(--line-height-snug);
-    }
-
-    .card-desc {
-      font-size: var(--font-size-md);
-      color: var(--color-gray-500);
-      line-height: var(--line-height-relaxed);
-      flex: 1;
-    }
-
-    .card-footer {
+    .row-right {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      padding-top: var(--space-3);
-      border-top: 1px solid var(--color-gray-150);
-      margin-top: var(--space-2);
-    }
-
-    .card-author {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: var(--font-size-md);
-      color: var(--color-gray-500);
-      font-weight: var(--font-weight-medium);
-    }
-
-    .author-dot {
-      width: 22px; height: 22px;
-      border-radius: var(--radius-circle);
-      display: flex; align-items: center; justify-content: center;
-      font-size: var(--font-size-2xs);
-      font-weight: var(--font-weight-bold);
-      color: var(--color-white);
+      gap: 12px;
       flex-shrink: 0;
     }
 
-    .card-path {
-      font-size: var(--font-size-md);
-      color: var(--color-gray-350);
+    .row-author {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      color: var(--gray-500);
+      font-weight: 500;
     }
 
-    @media (max-width: 767px) {
-      .hero { padding: var(--space-6) var(--space-4) var(--space-6); }
-      main  { padding: var(--space-5) var(--space-4) var(--space-9); }
-      .hero-subtitle { font-size: var(--font-size-base); }
+    .author-dot-sm {
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 9px;
+      font-weight: 700;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .row-path {
+      font-size: 11px;
+      color: var(--gray-muted);
+      font-family: 'SF Mono', 'Fira Code', 'Menlo', monospace;
+      letter-spacing: -0.2px;
+    }
+
+    .row-arrow {
+      font-size: 13px;
+      color: var(--gray-200);
+      transition: color 0.12s, transform 0.12s;
+    }
+
+    .project-row:hover .row-arrow {
+      color: var(--gray-500);
+      transform: translate(2px, -2px);
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .row-path, .row-author .author-name { display: none; }
+      .contrib-name { display: none; }
+      main { padding: 8px 12px 48px; }
+      .topbar { padding: 0 16px; }
     }
   </style>
 </head>
 <body>
 
-  <header class="hero">
-    <div class="hero-inner">
-      <p class="hero-eyebrow">Design Playground</p>
-      <h1 class="hero-title">Age Bold<br>Prototypes &amp; Explorations</h1>
-      <p class="hero-subtitle">Designs, prototypes, and research tools from the Bold team.</p>
-      <div class="contrib-row">
-        <span class="contrib-label">Contributors</span>
-        <div class="contrib-avatars">
-          <div class="avatar-chip">
-            <div class="avatar-dot dot-iz">I</div>
-            <span class="avatar-name">Izabela</span>
-          </div>
-          <div class="avatar-chip">
-            <div class="avatar-dot dot-tz">T</div>
-            <span class="avatar-name">Tzu-Yi</span>
-          </div>
-          <div class="avatar-chip">
-            <div class="avatar-dot dot-mo">M</div>
-            <span class="avatar-name">Monica</span>
-          </div>
-        </div>
+  <header class="topbar">
+    <div class="wordmark">
+      <span class="wordmark-brand">Age Bold</span>
+      <span class="wordmark-sep">/</span>
+      <span class="wordmark-sub">Playground</span>
+    </div>
+    <div class="contrib-row">
+      <div class="contrib-chip">
+        <div class="contrib-dot" style="background:var(--dot-iz)">I</div>
+        <span class="contrib-name">Izabela</span>
+      </div>
+      <div class="contrib-chip">
+        <div class="contrib-dot" style="background:var(--dot-tz)">T</div>
+        <span class="contrib-name">Tzu-Yi</span>
+      </div>
+      <div class="contrib-chip">
+        <div class="contrib-dot" style="background:var(--dot-mo)">M</div>
+        <span class="contrib-name">Monica</span>
       </div>
     </div>
   </header>
@@ -375,160 +318,164 @@
   <main>
 
     <!-- Prototypes -->
-    <section class="section" aria-labelledby="section-proto">
-      <div class="section-header">
-        <span id="section-proto" class="bold-tag bold-tag-purple">Prototypes</span>
-        <span class="section-count">4 projects</span>
+    <div class="section-group accent-purple">
+      <div class="section-label">
+        <span class="section-tag">Prototypes</span>
+        <div class="section-rule"></div>
+        <span class="section-count">4</span>
       </div>
-      <div class="card-grid">
+      <div class="project-list">
 
-        <a class="proto-card" href="dynamic-header/">
-          <div class="card-top">
-            <div class="card-icon" aria-hidden="true">📱</div>
-            <div class="card-arrow" aria-hidden="true">↗</div>
+        <a class="project-row" href="dynamic-header/">
+          <div class="row-icon">📱</div>
+          <div class="row-meta">
+            <span class="row-name">App Prototype</span>
+            <span class="row-desc">Today plan, class, onboarding, and navigation explorations</span>
           </div>
-          <div class="card-name">App Prototype</div>
-          <div class="card-desc">Today plan, class, onboarding, and navigation explorations</div>
-          <div class="card-footer">
-            <div class="card-author">
-              <div class="author-dot dot-iz" aria-hidden="true">I</div>
-              Izabela
+          <div class="row-right">
+            <div class="row-author">
+              <div class="author-dot-sm" style="background:var(--dot-iz)">I</div>
+              <span class="author-name">Izabela</span>
             </div>
-            <span class="card-path">dynamic-header/</span>
+            <span class="row-path">dynamic-header/</span>
+            <span class="row-arrow">↗</span>
           </div>
         </a>
 
-        <a class="proto-card" href="MSK-ACCESS/">
-          <div class="card-top">
-            <div class="card-icon" aria-hidden="true">🦴</div>
-            <div class="card-arrow" aria-hidden="true">↗</div>
+        <a class="project-row" href="MSK-ACCESS/">
+          <div class="row-icon">🦴</div>
+          <div class="row-meta">
+            <span class="row-name">MSK ACCESS</span>
+            <span class="row-desc">28-screen patient journey for MSK care access and onboarding</span>
           </div>
-          <div class="card-name">MSK ACCESS</div>
-          <div class="card-desc">28-screen patient journey for MSK care access and onboarding</div>
-          <div class="card-footer">
-            <div class="card-author">
-              <div class="author-dot dot-mo" aria-hidden="true">M</div>
-              Monica
+          <div class="row-right">
+            <div class="row-author">
+              <div class="author-dot-sm" style="background:var(--dot-mo)">M</div>
+              <span class="author-name">Monica</span>
             </div>
-            <span class="card-path">MSK-ACCESS/</span>
+            <span class="row-path">MSK-ACCESS/</span>
+            <span class="row-arrow">↗</span>
           </div>
         </a>
 
-        <a class="proto-card" href="care_plan/care-plan.html">
-          <div class="card-top">
-            <div class="card-icon" aria-hidden="true">🩺</div>
-            <div class="card-arrow" aria-hidden="true">↗</div>
+        <a class="project-row" href="care_plan/care-plan.html">
+          <div class="row-icon">🩺</div>
+          <div class="row-meta">
+            <span class="row-name">Care Plan</span>
+            <span class="row-desc">Care plan screens, MSK progress tracking and program views</span>
           </div>
-          <div class="card-name">Care Plan</div>
-          <div class="card-desc">Care plan screens, MSK progress tracking and program views</div>
-          <div class="card-footer">
-            <div class="card-author">
-              <div class="author-dot dot-tz" aria-hidden="true">T</div>
-              Tzu-Yi
+          <div class="row-right">
+            <div class="row-author">
+              <div class="author-dot-sm" style="background:var(--dot-tz)">T</div>
+              <span class="author-name">Tzu-Yi</span>
             </div>
-            <span class="card-path">care_plan/care-plan.html</span>
+            <span class="row-path">care_plan/</span>
+            <span class="row-arrow">↗</span>
           </div>
         </a>
 
-        <a class="proto-card" href="telehealth/">
-          <div class="card-top">
-            <div class="card-icon" aria-hidden="true">🎥</div>
-            <div class="card-arrow" aria-hidden="true">↗</div>
+        <a class="project-row" href="telehealth/">
+          <div class="row-icon">🎥</div>
+          <div class="row-meta">
+            <span class="row-name">Telehealth</span>
+            <span class="row-desc">Telehealth video call interface and flow</span>
           </div>
-          <div class="card-name">Telehealth</div>
-          <div class="card-desc">Telehealth video call interface and flow</div>
-          <div class="card-footer">
-            <div class="card-author">
-              <div class="author-dot dot-tz" aria-hidden="true">T</div>
-              Tzu-Yi
+          <div class="row-right">
+            <div class="row-author">
+              <div class="author-dot-sm" style="background:var(--dot-tz)">T</div>
+              <span class="author-name">Tzu-Yi</span>
             </div>
-            <span class="card-path">telehealth/</span>
+            <span class="row-path">telehealth/</span>
+            <span class="row-arrow">↗</span>
           </div>
         </a>
 
       </div>
-    </section>
+    </div>
 
     <!-- Design System -->
-    <section class="section" aria-labelledby="section-system">
-      <div class="section-header">
-        <span id="section-system" class="bold-tag bold-tag-blue">Design System</span>
-        <span class="section-count">1 project</span>
+    <div class="section-group accent-blue">
+      <div class="section-label">
+        <span class="section-tag">Design System</span>
+        <div class="section-rule"></div>
+        <span class="section-count">1</span>
       </div>
-      <div class="card-grid">
+      <div class="project-list">
 
-        <a class="proto-card" href="design-system/">
-          <div class="card-top">
-            <div class="card-icon" aria-hidden="true">🎨</div>
-            <div class="card-arrow" aria-hidden="true">↗</div>
+        <a class="project-row" href="design-system/">
+          <div class="row-icon">🎨</div>
+          <div class="row-meta">
+            <span class="row-name">Bold Design System</span>
+            <span class="row-desc">Tokens, type scale, spacing system, and component library</span>
           </div>
-          <div class="card-name">Bold Design System</div>
-          <div class="card-desc">Tokens, type scale, spacing system, and component library</div>
-          <div class="card-footer">
-            <div class="card-author">
-              <div class="author-dot dot-tz" aria-hidden="true">T</div>
-              Tzu-Yi
+          <div class="row-right">
+            <div class="row-author">
+              <div class="author-dot-sm" style="background:var(--dot-tz)">T</div>
+              <span class="author-name">Tzu-Yi</span>
             </div>
-            <span class="card-path">design-system/</span>
+            <span class="row-path">design-system/</span>
+            <span class="row-arrow">↗</span>
           </div>
         </a>
 
       </div>
-    </section>
+    </div>
 
     <!-- User Research -->
-    <section class="section" aria-labelledby="section-research">
-      <div class="section-header">
-        <span id="section-research" class="bold-tag bold-tag-green">User Research</span>
-        <span class="section-count">1 project</span>
+    <div class="section-group accent-green">
+      <div class="section-label">
+        <span class="section-tag">User Research</span>
+        <div class="section-rule"></div>
+        <span class="section-count">1</span>
       </div>
-      <div class="card-grid">
+      <div class="project-list">
 
-        <a class="proto-card" href="user-research/">
-          <div class="card-top">
-            <div class="card-icon" aria-hidden="true">🔬</div>
-            <div class="card-arrow" aria-hidden="true">↗</div>
+        <a class="project-row" href="user-research/">
+          <div class="row-icon">🔬</div>
+          <div class="row-meta">
+            <span class="row-name">Research Tools</span>
+            <span class="row-desc">Card sort (36 cards) and tree test (8 tasks, 2 nav variants)</span>
           </div>
-          <div class="card-name">Research Tools</div>
-          <div class="card-desc">Card sort (36 cards) and tree test (8 tasks, 2 nav variants)</div>
-          <div class="card-footer">
-            <div class="card-author">
-              <div class="author-dot dot-iz" aria-hidden="true">I</div>
-              Izabela
+          <div class="row-right">
+            <div class="row-author">
+              <div class="author-dot-sm" style="background:var(--dot-iz)">I</div>
+              <span class="author-name">Izabela</span>
             </div>
-            <span class="card-path">user-research/</span>
+            <span class="row-path">user-research/</span>
+            <span class="row-arrow">↗</span>
           </div>
         </a>
 
       </div>
-    </section>
+    </div>
 
     <!-- Strategy -->
-    <section class="section" aria-labelledby="section-strategy">
-      <div class="section-header">
-        <span id="section-strategy" class="bold-tag bold-tag-red">Strategy</span>
-        <span class="section-count">1 project</span>
+    <div class="section-group accent-red">
+      <div class="section-label">
+        <span class="section-tag">Strategy</span>
+        <div class="section-rule"></div>
+        <span class="section-count">1</span>
       </div>
-      <div class="card-grid">
+      <div class="project-list">
 
-        <a class="proto-card" href="vision/">
-          <div class="card-top">
-            <div class="card-icon" aria-hidden="true">✦</div>
-            <div class="card-arrow" aria-hidden="true">↗</div>
+        <a class="project-row" href="vision/">
+          <div class="row-icon">✦</div>
+          <div class="row-meta">
+            <span class="row-name">Product Vision</span>
+            <span class="row-desc">Bold product vision and strategy overview</span>
           </div>
-          <div class="card-name">Product Vision</div>
-          <div class="card-desc">Bold product vision and strategy overview</div>
-          <div class="card-footer">
-            <div class="card-author">
-              <div class="author-dot dot-iz" aria-hidden="true">I</div>
-              Izabela
+          <div class="row-right">
+            <div class="row-author">
+              <div class="author-dot-sm" style="background:var(--dot-iz)">I</div>
+              <span class="author-name">Izabela</span>
             </div>
-            <span class="card-path">vision/</span>
+            <span class="row-path">vision/</span>
+            <span class="row-arrow">↗</span>
           </div>
         </a>
 
       </div>
-    </section>
+    </div>
 
   </main>
 
