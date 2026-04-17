@@ -21,8 +21,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout triggering branch (for React source)
         uses: actions/checkout@v4
+
+      - name: Checkout main (source of truth for static content)
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: _main
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -42,16 +48,15 @@ jobs:
       - name: Assemble deployment folder
         run: |
           mkdir -p _deploy/MSK-ACCESS
-          # Copy static content
-          cp -r dynamic-header _deploy/ 2>/dev/null || true
-          cp -r vision _deploy/ 2>/dev/null || true
-          cp -r user-research _deploy/ 2>/dev/null || true
-          cp -r care_plan _deploy/ 2>/dev/null || true
-          cp -r design-system _deploy/ 2>/dev/null || true
-          cp -r telehealth _deploy/ 2>/dev/null || true
-          # Copy any root HTML files
-          cp *.html _deploy/ 2>/dev/null || true
-          # Copy built React app into MSK-ACCESS subfolder (only if built)
+          # Always copy static content from main
+          cp -r _main/dynamic-header _deploy/ 2>/dev/null || true
+          cp -r _main/vision _deploy/ 2>/dev/null || true
+          cp -r _main/user-research _deploy/ 2>/dev/null || true
+          cp -r _main/care_plan _deploy/ 2>/dev/null || true
+          cp -r _main/design-system _deploy/ 2>/dev/null || true
+          cp -r _main/telehealth _deploy/ 2>/dev/null || true
+          cp _main/*.html _deploy/ 2>/dev/null || true
+          # Copy built React app (only present when triggered from MSK-ACCESS-Prototype)
           cp -r MSK-ACCESS/dist/. _deploy/MSK-ACCESS/ 2>/dev/null || true
 
       - name: Setup Pages
