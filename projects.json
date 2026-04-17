@@ -1,0 +1,67 @@
+{
+  "projects": [
+    {
+      "path": "dynamic-header",
+      "href": "dynamic-header/",
+      "name": "App Prototype",
+      "desc": "Today plan, class, onboarding, and navigation explorations",
+      "icon": "📱",
+      "author": "Izabela",
+      "category": "Prototypes"
+    },
+    {
+      "path": "MSK-ACCESS",
+      "href": "MSK-ACCESS/",
+      "name": "MSK ACCESS",
+      "desc": "28-screen patient journey for MSK care access and onboarding",
+      "icon": "🦴",
+      "author": "Monica",
+      "category": "Prototypes"
+    },
+    {
+      "path": "care_plan",
+      "href": "care_plan/care-plan.html",
+      "name": "Care Plan",
+      "desc": "Care plan screens, MSK progress tracking and program views",
+      "icon": "🩺",
+      "author": "Tzu-Yi",
+      "category": "Prototypes"
+    },
+    {
+      "path": "telehealth",
+      "href": "telehealth/",
+      "name": "Telehealth",
+      "desc": "Telehealth video call interface and flow",
+      "icon": "🎥",
+      "author": "Tzu-Yi",
+      "category": "Prototypes"
+    },
+    {
+      "path": "design-system",
+      "href": "design-system/",
+      "name": "Bold Design System",
+      "desc": "Tokens, type scale, spacing system, and component library",
+      "icon": "🎨",
+      "author": "Tzu-Yi",
+      "category": "Design System"
+    },
+    {
+      "path": "user-research",
+      "href": "user-research/",
+      "name": "Research Tools",
+      "desc": "Card sort (36 cards) and tree test (8 tasks, 2 nav variants)",
+      "icon": "🔬",
+      "author": "Izabela",
+      "category": "User Research"
+    },
+    {
+      "path": "vision",
+      "href": "vision/",
+      "name": "Product Vision",
+      "desc": "Bold product vision and strategy overview",
+      "icon": "✦",
+      "author": "Izabela",
+      "category": "Strategy"
+    }
+  ]
+}
