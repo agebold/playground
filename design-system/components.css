@@ -453,7 +453,7 @@
 }
 .bold-card-result-info { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 0; }
 .bold-card-result-tag  { font-size: 14px; font-weight: 600; color: #5200d4; }
-.bold-card-result-name { font-size: 15px; font-weight: 600; color: #140d26; line-height: 1.3; }
+.bold-card-result-name { font-size: 16px; font-weight: 600; color: #140d26; line-height: 1.3; }
 .bold-card-result-sub  { font-size: 14px; color: #737373; }
 
 /* Teal win card */
