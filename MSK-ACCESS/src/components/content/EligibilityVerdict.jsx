@@ -1,31 +1,32 @@
+import boldLogo from '../../assets/bold-logo@2x.png'
 import { C, OnboardingHeader, OnboardingScreen, PurpleButton } from './shared.jsx'
 
 export default function EligibilityVerdict({ onNext }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: C.white }}>
-      <OnboardingHeader showBack={false} progress={2} totalSteps={14} />
+      <OnboardingHeader showBack={false} progress={2} totalSteps={14} logoSrc={boldLogo} />
       <OnboardingScreen cta={<PurpleButton onClick={onNext}>Continue</PurpleButton>}>
         {/* Centered hero */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: '24px 0 28px' }}>
           {/* Teal checkmark circle */}
           <div style={{
-            width: 100, height: 100, borderRadius: '50%',
+            width: 64, height: 64, borderRadius: '50%',
             background: '#d1fae5',
             border: '4px solid #34c759',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             marginBottom: 20,
           }}>
-            <svg width="44" height="36" viewBox="0 0 44 36" fill="none">
-              <path d="M2 18L15 31L42 2" stroke="#34c759" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
+            <svg width="32" height="24" viewBox="0 0 44 36" fill="none">
+              <path d="M2 18L15 31L42 2" stroke="#34c759" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </div>
 
-          <h2 style={{ fontSize: 26, fontWeight: 800, color: C.text, marginBottom: 10, lineHeight: 1.2 }}>
+          <h2 style={{ fontSize: 22, fontWeight: 600, color: C.text, marginBottom: 8, lineHeight: 1.2 }}>
             You qualify, Carol!
           </h2>
 
-          <p style={{ fontSize: 15, color: C.textSec, lineHeight: 1.6, maxWidth: 300 }}>
-            Your Medicare Advantage plan covers Bold through the CMS ACCESS program at no extra cost to you.
+          <p style={{ fontSize: 16, color: C.textSec, lineHeight: 1.4, maxWidth: 370 }}>
+          You qualify for Bold through the ACCESS program available by the Centers for Medicare and Medicaid Services.
           </p>
         </div>
 
@@ -33,9 +34,8 @@ export default function EligibilityVerdict({ onNext }) {
         <div style={{ background: C.bg, borderRadius: 14, padding: '16px', marginBottom: 8 }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             {[
-              'Covered by your Medicare Advantage plan',
+              'Covered the Centers for Medicare and Medicaid Services',
               '$0 cost to you',
-              'Unlimited live and on-demand classes',
               'Personalized plan for your specific condition',
             ].map((text, i) => (
               <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
@@ -48,7 +48,7 @@ export default function EligibilityVerdict({ onNext }) {
                     <path d="M1 4l2.5 2.5L8 1" stroke="#34c759" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                 </div>
-                <span style={{ fontSize: 14, color: C.text, lineHeight: 1.5 }}>{text}</span>
+                <span style={{ fontSize: 16, color: C.text, lineHeight: 1.5 }}>{text}</span>
               </div>
             ))}
           </div>

@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react'
-import { C, BoldWordmark, SafariBottomBar } from './shared.jsx'
+import { C, BoldWordmark } from './shared.jsx'
 
 const checks = [
-  '<primary focus e.g. manage pain>',
-  '<functional goal (if available)>',
+  'Manage knee pain',
+  'Feel safer walking up and down stairs',
   'Preference for seated movements',
+  '15-25 minute classes',
+
 ]
 
 export default function PlanLoading({ onNext }) {
@@ -23,10 +25,7 @@ export default function PlanLoading({ onNext }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '32px 24px', background: C.white }}>
-        {/* Logo */}
-        <div style={{ marginBottom: 40 }}>
-          <BoldWordmark height={32} />
-        </div>
+        
 
         {/* Bouncing dots */}
         <div style={{ display: 'flex', gap: 12, marginBottom: 40 }}>
@@ -48,7 +47,7 @@ export default function PlanLoading({ onNext }) {
           }
         `}</style>
 
-        <h2 style={{ fontSize: 22, fontWeight: 700, color: C.text, marginBottom: 24, textAlign: 'center' }}>
+        <h2 style={{ fontSize: 20, fontWeight: 600, color: C.text, marginBottom: 24, textAlign: 'center' }}>
           Creating your personalized plan
         </h2>
 
@@ -73,12 +72,12 @@ export default function PlanLoading({ onNext }) {
                   <path d="M1 4l3 3.5L10 1" stroke={C.text} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </div>
-              <span style={{ fontSize: 15, color: C.text, lineHeight: 1.4, fontWeight: i === 2 ? 600 : 400 }}>{item}</span>
+              <span style={{ fontSize: 16, color: C.text, lineHeight: 1.4, }}>{item}</span>
             </div>
           ))}
         </div>
       </div>
-      <SafariBottomBar />
+    
     </div>
   )
 }

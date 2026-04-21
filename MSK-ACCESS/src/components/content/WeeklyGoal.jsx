@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { C, AppHeader, SafariBottomBar, PurpleButton, OutlineButton, TrainerTip, RadioOption } from './shared.jsx'
+import { C, AppHeader, PurpleButton, OutlineButton, TrainerTip, RadioOption } from './shared.jsx'
 
 const options = ['1 day', '2 days', '3 days', '4 days', '5+ days']
 
@@ -35,7 +35,6 @@ export default function WeeklyGoal({ onNext }) {
         <PurpleButton onClick={onNext} disabled={!goal}>I commit</PurpleButton>
         <OutlineButton onClick={onNext}>I can't commit yet</OutlineButton>
       </div>
-      <SafariBottomBar />
     </div>
   )
 }

@@ -1,4 +1,4 @@
-import { C, SafariBottomBar } from './shared.jsx'
+import { C } from './shared.jsx'
 
 export default function ClassTaking({ onNext }) {
   return (
@@ -126,7 +126,6 @@ export default function ClassTaking({ onNext }) {
         <span style={{ fontSize: 14, color: 'rgba(255,255,255,0.7)' }}>Tap to finish class →</span>
       </div>
 
-      <SafariBottomBar />
     </div>
   )
 }

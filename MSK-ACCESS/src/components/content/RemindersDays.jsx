@@ -1,9 +1,10 @@
 import { useState } from 'react'
+import boldLogo from '../../assets/bold-logo@2x.png'
 import { C, OnboardingHeader, OnboardingScreen, PurpleButton, CheckboxOption, QuestionHeader } from './shared.jsx'
 
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 
-export default function RemindersDays({ onNext }) {
+export default function RemindersDays({ onNext, onBack }) {
   const [selected, setSelected] = useState(new Set(['Mon', 'Wed', 'Fri']))
 
   const toggle = (day) => {
@@ -17,7 +18,7 @@ export default function RemindersDays({ onNext }) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <OnboardingHeader showBack progress={5} totalSteps={10} />
+      <OnboardingHeader showBack progress={5} totalSteps={10} logoSrc={boldLogo} onBack={onBack} />
       <OnboardingScreen cta={<PurpleButton onClick={onNext}>Continue</PurpleButton>}>
         <QuestionHeader
           questionNum="#"

@@ -1,14 +1,15 @@
+import boldLogo from '../../assets/bold-logo@2x.png'
 import { useState } from 'react'
 import { C, OnboardingHeader, OnboardingScreen, PurpleButton, QuestionHeader } from './shared.jsx'
 
-export default function PainScale({ onNext }) {
+export default function PainScale({ onNext, onBack }) {
   const [value, setValue] = useState(null)
 
   const select = (n) => { setValue(n); }
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <OnboardingHeader showBack progress={7} totalSteps={10} />
+      <OnboardingHeader showBack progress={7} totalSteps={10} logoSrc={boldLogo} onBack={onBack} />
       <OnboardingScreen cta={<PurpleButton onClick={onNext} disabled={value === null}>Continue</PurpleButton>}>
         <QuestionHeader
           questionNum="#"

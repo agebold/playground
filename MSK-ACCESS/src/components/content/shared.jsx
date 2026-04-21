@@ -65,28 +65,15 @@ export function SafariBottomBar({ url = 'agebold.com' }) {
       {/* URL bar row */}
       <div style={{
         display: 'flex', alignItems: 'center', gap: 8,
-        background: '#e5e5ea', borderRadius: 10,
-        padding: '6px 10px', marginBottom: 10,
+        background: '#e5e5ea', borderRadius: 16,
+        padding: '6px 12px', marginBottom: 10,
       }}>
-        <span style={{ fontSize: 12, color: C.textSec, fontWeight: 500 }}>AA</span>
         <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
-          <svg width="10" height="12" viewBox="0 0 10 12" fill="none">
-            <path d="M5 1C3.34 1 2 2.34 2 4v1H1v6h8V5H9V4c0-1.66-1.34-3-4-3zm0 1c1.1 0 2 .9 2 2v1H3V4c0-1.1.9-2 2-2z" fill={C.textTert}/>
-          </svg>
-          <span style={{ fontSize: 12, color: C.textSec }}>{url}</span>
+          <span style={{ fontSize: 14, color: C.textSec }}>{url}</span>
         </div>
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-          <path d="M7 1v6M4 4l3-3 3 3M2 10h10" stroke={C.blue} strokeWidth="1.3" strokeLinecap="round"/>
-        </svg>
+        
       </div>
-      {/* Nav buttons */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 4px' }}>
-        {['←', '→', '⬡', '⊡', '⧉'].map((icon, i) => (
-          <span key={i} style={{ fontSize: i === 0 || i === 1 ? 18 : 16, color: i < 2 ? '#c7c7cc' : C.textSec, padding: '2px 8px' }}>
-            {icon}
-          </span>
-        ))}
-      </div>
+    
     </div>
   )
 }
@@ -100,42 +87,36 @@ export function PhoneFrame({ children }) {
       background: C.white,
       borderRadius: 44,
       overflow: 'hidden',
-      border: '8px solid #1c1c1e',
-      boxShadow: '0 0 0 2px #3a3a3c, 0 24px 60px rgba(0,0,0,0.35)',
+      border: '1.5px solid #d0d0d5',
+      boxShadow: '0 8px 40px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.05)',
       display: 'flex',
       flexDirection: 'column',
       position: 'relative',
       flexShrink: 0,
     }}>
-      {/* Notch */}
-      <div style={{
-        position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)',
-        width: 120, height: 32, background: '#1c1c1e',
-        borderRadius: '0 0 20px 20px', zIndex: 10,
-      }}/>
       {/* Status bar */}
       <div style={{
         height: 44, flexShrink: 0, display: 'flex',
-        alignItems: 'flex-end', justifyContent: 'space-between',
-        padding: '0 24px 6px', background: C.white,
+        alignItems: 'center', justifyContent: 'space-between',
+        padding: '12px 36px 0px 36px', background: C.white,
       }}>
-        <span style={{ fontSize: 14, fontWeight: 600, color: C.text }}>9:41</span>
-        <div style={{ display: 'flex', gap: 5, alignItems: 'center' }}>
-          <svg width="17" height="12" viewBox="0 0 17 12" fill={C.text}><rect x="0" y="3" width="3" height="9" rx="1"/><rect x="4.5" y="2" width="3" height="10" rx="1"/><rect x="9" y="0" width="3" height="12" rx="1"/><rect x="13.5" y="0" width="3" height="12" rx="1" opacity="0.3"/></svg>
-          <svg width="16" height="12" viewBox="0 0 16 12" fill={C.text}><path d="M8 2.4C5.6 2.4 3.5 3.4 2 5L0 3C2.1 1.1 4.9 0 8 0s5.9 1.1 8 3l-2 2C12.5 3.4 10.4 2.4 8 2.4z"/><path d="M8 6c-1.4 0-2.7.6-3.6 1.5L2.5 5.6C3.9 4.3 5.9 3.5 8 3.5s4.1.8 5.5 2.1L11.6 7.5C10.7 6.6 9.4 6 8 6z"/><circle cx="8" cy="11" r="1.5"/></svg>
-          <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke={C.text} strokeOpacity="0.35"/><rect x="1" y="1" width="17" height="10" rx="3" fill={C.text}/><path d="M23 4v4a2 2 0 0 0 0-4z" fill={C.text} fillOpacity="0.4"/></svg>
-        </div>
       </div>
       {/* Content */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', background: C.white }}>
         {children}
+      </div>
+      {/* Safari bottom chrome */}
+      <SafariBottomBar />
+      {/* Home indicator */}
+      <div style={{ height: 34, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f9f9f9', flexShrink: 0 }}>
+        <div style={{ width: 134, height: 5, background: '#000', borderRadius: 3, opacity: 1 }} />
       </div>
     </div>
   )
 }
 
 // ─── Onboarding header (back + Bold wordmark + optional progress) ─────────────
-export function OnboardingHeader({ showBack = true, progress, totalSteps, onBack }) {
+export function OnboardingHeader({ showBack = true, progress, totalSteps, onBack, logoSrc }) {
   return (
     <div style={{ flexShrink: 0 }}>
       <div style={{
@@ -161,7 +142,9 @@ export function OnboardingHeader({ showBack = true, progress, totalSteps, onBack
           <div style={{ width: 36, height: 36 }} />
         )}
         <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
-          <BoldWordmark height={26} />
+          {logoSrc
+            ? <img src={logoSrc} alt="Bold" style={{ height: 30, width: 'auto' }} />
+            : <BoldWordmark height={26} />}
         </div>
         <div style={{ width: 36 }} />
       </div>
@@ -240,7 +223,6 @@ export function OnboardingScreen({ children, cta, noPadding = false }) {
           {cta}
         </div>
       )}
-      <SafariBottomBar />
     </div>
   )
 }
@@ -253,7 +235,6 @@ export function AppScreen({ children, bottomNav }) {
         {children}
       </div>
       {bottomNav && <AppNavBar activeTab={bottomNav} />}
-      <SafariBottomBar />
     </div>
   )
 }
@@ -376,18 +357,18 @@ export function QuestionHeader({ questionNum, question, sublabel }) {
   return (
     <div style={{ marginBottom: 20 }}>
       {questionNum !== undefined && (
-        <div style={{ fontSize: 13, fontWeight: 600, color: C.textSec, marginBottom: 6 }}>
+        <div style={{ fontSize: 14, fontWeight: 600, color: C.textSec, marginBottom: 6 }}>
           Question {questionNum}
         </div>
       )}
       <h2 style={{
-        fontSize: 20, fontWeight: 700, color: C.text,
+        fontSize: 18, fontWeight: 500, color: C.text,
         lineHeight: 1.3, margin: 0,
       }}>
         {question}
       </h2>
       {sublabel && (
-        <p style={{ fontSize: 14, color: C.textSec, marginTop: 6, lineHeight: 1.5 }}>
+        <p style={{ fontSize: 16, color: C.textSec, marginTop: 6, lineHeight: 1.5 }}>
           {sublabel}
         </p>
       )}
@@ -713,7 +694,7 @@ export const SectionLabel = ({ children }) => (
 )
 
 // ─── Safari browser chrome (for desktop) ─────────────────────────────────────
-export function SafariBrowserChrome({ children, url = 'https://accessprogram.bold.com' }) {
+export function SafariBrowserChrome({ children, url = 'https://agebold.com' }) {
   return (
     <div style={{
       background: '#f0f0f0', borderRadius: 12, overflow: 'hidden',

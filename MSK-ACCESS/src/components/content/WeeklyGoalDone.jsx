@@ -1,4 +1,4 @@
-import { C, AppHeader, SafariBottomBar, PurpleButton, OutlineButton } from './shared.jsx'
+import { C, AppHeader, PurpleButton, OutlineButton } from './shared.jsx'
 
 export default function WeeklyGoalDone({ onNext }) {
   return (
@@ -36,7 +36,6 @@ export default function WeeklyGoalDone({ onNext }) {
         <PurpleButton onClick={onNext}>Return to Today's Plan</PurpleButton>
         <OutlineButton onClick={onNext}>Share class feedback</OutlineButton>
       </div>
-      <SafariBottomBar />
     </div>
   )
 }

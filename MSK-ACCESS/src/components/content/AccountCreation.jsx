@@ -1,7 +1,8 @@
 import { useState } from 'react'
+import boldLogo from '../../assets/bold-logo@2x.png'
 import { C, OnboardingHeader, OnboardingScreen, PurpleButton } from './shared.jsx'
 
-export default function AccountCreation({ onNext }) {
+export default function AccountCreation({ onNext, onBack }) {
   const [form, setForm] = useState({ firstName: 'Carol', lastName: 'Sturka', password: '' })
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }))
 
@@ -16,7 +17,7 @@ export default function AccountCreation({ onNext }) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <OnboardingHeader showBack progress={9} totalSteps={10} />
+      <OnboardingHeader showBack progress={9} totalSteps={10} logoSrc={boldLogo} onBack={onBack} />
       <OnboardingScreen cta={
         <>
           <PurpleButton onClick={onNext}>I agree</PurpleButton>

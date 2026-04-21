@@ -1,9 +1,10 @@
+import boldLogo from '../../assets/bold-logo@2x.png'
 import { C, OnboardingHeader, OnboardingScreen, PurpleButton } from './shared.jsx'
 
 export default function KoosPrimer({ onNext }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: C.white }}>
-      <OnboardingHeader showBack={false} />
+      <OnboardingHeader showBack={false} logoSrc={boldLogo} />
       <OnboardingScreen cta={<PurpleButton onClick={onNext}>Continue</PurpleButton>}>
         <h2 style={{ fontSize: 22, fontWeight: 800, color: C.text, marginBottom: 10, lineHeight: 1.3 }}>
           Knee Injury and Osteoarthritis Outcome Score (KOOS JR)

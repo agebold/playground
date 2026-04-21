@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import boldLogo from '../../assets/bold-logo@2x.png'
 import { C, OnboardingHeader, OnboardingScreen, PurpleButton, QuestionHeader } from './shared.jsx'
 
 const activities = [
@@ -11,7 +12,7 @@ const activities = [
   { id: 'care', label: 'Providing care for family members' },
 ]
 
-export default function PSFSActivity({ onNext }) {
+export default function PSFSActivity({ onNext, onBack }) {
   const [step, setStep] = useState('select') // 'select' | 'rate'
   const [selected, setSelected] = useState(null)
   const [rating, setRating] = useState(null)
@@ -19,7 +20,7 @@ export default function PSFSActivity({ onNext }) {
   if (step === 'rate') {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-        <OnboardingHeader showBack={() => setStep('select')} progress={8} totalSteps={10} />
+        <OnboardingHeader showBack progress={8} totalSteps={10} logoSrc={boldLogo} onBack={() => setStep('select')} />
         <OnboardingScreen cta={<PurpleButton onClick={onNext} disabled={rating === null}>Continue</PurpleButton>}>
           <QuestionHeader questionNum="#" question="How would you rate your current ability to perform this activity?" />
 
@@ -80,7 +81,7 @@ export default function PSFSActivity({ onNext }) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <OnboardingHeader showBack progress={8} totalSteps={10} />
+      <OnboardingHeader showBack progress={8} totalSteps={10} logoSrc={boldLogo} onBack={onBack} />
       <OnboardingScreen cta={<PurpleButton onClick={() => selected && setStep('rate')} disabled={!selected}>Continue</PurpleButton>}>
         <QuestionHeader
           questionNum="#"

@@ -1,4 +1,4 @@
-import { C, AppHeader, SafariBottomBar, PurpleButton, OutlineButton } from './shared.jsx'
+import { C, AppHeader, PurpleButton, OutlineButton } from './shared.jsx'
 
 export default function KoosOutro({ onNext }) {
   return (
@@ -39,7 +39,6 @@ export default function KoosOutro({ onNext }) {
         <PurpleButton onClick={onNext}>Start class</PurpleButton>
         <OutlineButton onClick={onNext}>Return to Today's Plan</OutlineButton>
       </div>
-      <SafariBottomBar />
     </div>
   )
 }

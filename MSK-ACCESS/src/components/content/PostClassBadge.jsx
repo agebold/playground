@@ -1,4 +1,4 @@
-import { C, AppHeader, AppNavBar, SafariBottomBar, YellowButton } from './shared.jsx'
+import { C, AppHeader, AppNavBar, YellowButton } from './shared.jsx'
 
 export default function PostClassBadge({ onNext }) {
   return (
@@ -69,7 +69,6 @@ export default function PostClassBadge({ onNext }) {
         </div>
       </div>
 
-      <SafariBottomBar />
     </div>
   )
 }

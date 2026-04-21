@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import Sidebar from './components/Sidebar.jsx'
 import ContentArea from './components/ContentArea.jsx'
-import { getAllSteps, getNextStep } from './data/navigationStructure.js'
+import { getAllSteps, getNextStep, getPrevStep } from './data/navigationStructure.js'
 
 const allSteps = getAllSteps()
 
@@ -11,6 +11,11 @@ export default function App() {
   const handleNext = () => {
     const next = getNextStep(currentStep.id)
     if (next) setCurrentStep(next)
+  }
+
+  const handleBack = () => {
+    const prev = getPrevStep(currentStep.id)
+    if (prev) setCurrentStep(prev)
   }
 
   return (
@@ -27,6 +32,7 @@ export default function App() {
       <ContentArea
         step={currentStep}
         onNext={handleNext}
+        onBack={handleBack}
       />
     </div>
   )

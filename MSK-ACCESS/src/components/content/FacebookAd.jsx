@@ -27,7 +27,7 @@ export default function FacebookAd({ onNext }) {
 
       {/* Ad image area */}
       <div style={{
-        height: 340, background: '#e5e5ea',
+        height: '100%', background: '#e5e5ea',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
       }}>
         <div style={{ textAlign: 'center' }}>
@@ -48,7 +48,7 @@ export default function FacebookAd({ onNext }) {
         <div>
           <div style={{ fontSize: 12, color: C.textSec }}>agebold.com</div>
           <div style={{ fontSize: 14, fontWeight: 600, color: C.text, maxWidth: 220, lineHeight: 1.3 }}>
-            Seated and standing online exercise classes
+            Online exercise classess tailored to your needs
           </div>
         </div>
         <button

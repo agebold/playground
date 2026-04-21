@@ -1,4 +1,4 @@
-import { C, AppHeader, SafariBottomBar, PurpleButton } from './shared.jsx'
+import { C, AppHeader, PurpleButton } from './shared.jsx'
 
 export default function ClassDetails({ onNext }) {
   return (
@@ -96,7 +96,6 @@ export default function ClassDetails({ onNext }) {
       <div style={{ flexShrink: 0, padding: '12px 16px 8px', borderTop: `1px solid ${C.border}` }}>
         <PurpleButton onClick={onNext}>Start class</PurpleButton>
       </div>
-      <SafariBottomBar />
     </div>
   )
 }

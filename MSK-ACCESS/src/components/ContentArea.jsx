@@ -25,9 +25,7 @@ import PostClassBadge from './content/PostClassBadge.jsx'
 import WeeklyGoal from './content/WeeklyGoal.jsx'
 import WeeklyGoalDone from './content/WeeklyGoalDone.jsx'
 import Day2 from './content/Day2.jsx'
-import KoosPrimer from './content/KoosPrimer.jsx'
 import KoosJr from './content/KoosJr.jsx'
-import KoosOutro from './content/KoosOutro.jsx'
 import BaselineCaptured from './content/BaselineCaptured.jsx'
 
 const contentMap = {
@@ -55,13 +53,11 @@ const contentMap = {
   'weekly-goal': WeeklyGoal,
   'weekly-goal-done': WeeklyGoalDone,
   'day-2': Day2,
-  'koos-primer': KoosPrimer,
   'koos-jr': KoosJr,
-  'koos-outro': KoosOutro,
   'baseline-captured': BaselineCaptured,
 }
 
-export default function ContentArea({ step, onNext }) {
+export default function ContentArea({ step, onNext, onBack }) {
   const Component = contentMap[step.id]
   const isDesktop = step.viewType === 'desktop'
 
@@ -87,12 +83,12 @@ export default function ContentArea({ step, onNext }) {
         >
           {isDesktop ? (
             <SafariBrowserChrome>
-              {Component ? <Component onNext={onNext} /> : <div style={{ padding: 40, color: '#999' }}>No content</div>}
+              {Component ? <Component onNext={onNext} onBack={onBack} /> : <div style={{ padding: 40, color: '#999' }}>No content</div>}
             </SafariBrowserChrome>
           ) : (
             <div style={{ transform: 'scale(0.82)', transformOrigin: 'center center' }}>
               <PhoneFrame>
-                {Component ? <Component onNext={onNext} /> : <div style={{ padding: 40, color: '#999' }}>No content</div>}
+                {Component ? <Component onNext={onNext} onBack={onBack} /> : <div style={{ padding: 40, color: '#999' }}>No content</div>}
               </PhoneFrame>
             </div>
           )}

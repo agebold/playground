@@ -1,9 +1,9 @@
-import { C, BoldLogo, PurpleButton, SafariBottomBar } from './shared.jsx'
+import { C, BoldLogo, PurpleButton } from './shared.jsx'
 
 const bullets = [
-  { icon: '✓', bold: 'Goal:', text: 'Reduce lower back pain' },
+  { icon: '✓', bold: 'Goal:', text: 'Reduce knee pain' },
   { icon: '✓', bold: 'First focus:', text: 'Build core stability and hip mobility through low-intensity seated exercises' },
-  { icon: '✓', bold: 'Movements:', text: 'exercises strengthen surrounding muscles to support your lower back. All seated work, no floor movements required.' },
+  { icon: '✓', bold: 'Movements:', text: 'Exercises to strengthen surrounding muscles to support your knees. All seated work, no floor movements required.' },
 ]
 
 export default function PlanResults({ onNext }) {
@@ -39,10 +39,10 @@ export default function PlanResults({ onNext }) {
         </div>
 
         <div style={{ padding: '20px 16px' }}>
-          <h2 style={{ fontSize: 24, fontWeight: 800, color: C.text, marginBottom: 8, lineHeight: 1.2, letterSpacing: -0.3 }}>
+          <h2 style={{ fontSize: 22, fontWeight: 600, color: C.text, marginBottom: 4, lineHeight: 1.2, letterSpacing: -0.3 }}>
             Your plan is ready, Carol
           </h2>
-          <p style={{ fontSize: 14, color: C.textSec, marginBottom: 20, lineHeight: 1.5 }}>
+          <p style={{ fontSize: 16, color: C.textSec, marginBottom: 20, lineHeight: 1.4 }}>
             Simple clear daily actions that adapt to your feedback.
           </p>
 
@@ -57,7 +57,7 @@ export default function PlanResults({ onNext }) {
                   <path d="M1 4l3 3.5L10 1" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </div>
-              <p style={{ fontSize: 14, color: C.text, lineHeight: 1.5, margin: 0 }}>
+              <p style={{ fontSize: 16, color: C.text, lineHeight: 1.4, margin: 0 }}>
                 <strong>{b.bold}</strong> {b.text}
               </p>
             </div>
@@ -65,10 +65,9 @@ export default function PlanResults({ onNext }) {
         </div>
       </div>
 
-      <div style={{ flexShrink: 0, padding: '12px 16px 8px', borderTop: `1px solid ${C.border}` }}>
+      <div style={{ flexShrink: 0, padding: '12px 16px 8px', }}>
         <PurpleButton onClick={onNext}>See today's plan</PurpleButton>
       </div>
-      <SafariBottomBar />
     </div>
   )
 }

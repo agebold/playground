@@ -1,12 +1,13 @@
 import { useState } from 'react'
+import boldLogo from '../../assets/bold-logo@2x.png'
 import { C, OnboardingHeader, OnboardingScreen, PurpleButton, QuestionHeader } from './shared.jsx'
 
-export default function RemindersTime({ onNext }) {
+export default function RemindersTime({ onNext, onBack }) {
   const [time, setTime] = useState('9:00 AM')
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <OnboardingHeader showBack progress={6} totalSteps={10} />
+      <OnboardingHeader showBack progress={6} totalSteps={10} logoSrc={boldLogo} onBack={onBack} />
       <OnboardingScreen cta={<PurpleButton onClick={onNext}>Continue</PurpleButton>}>
         <QuestionHeader
           questionNum="#"

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { C, PurpleButton, SafariBottomBar } from './shared.jsx'
+import { C, PurpleButton} from './shared.jsx'
 
 export default function CheckEligibility({ onNext }) {
   const [form, setForm] = useState({ email: '', firstName: '', lastName: '', dob: '' })
@@ -16,7 +16,7 @@ export default function CheckEligibility({ onNext }) {
 
   const Field = ({ label, k, type = 'text', placeholder = '' }) => (
     <div style={{ marginBottom: 14 }}>
-      <label style={{ display: 'block', fontSize: 14, fontWeight: 600, color: C.text, marginBottom: 6 }}>{label}</label>
+      <label style={{ display: 'block', fontSize: 16, fontWeight: 500, color: C.text, marginBottom: 6 }}>{label}</label>
       <input
         type={type}
         placeholder={placeholder}
@@ -38,14 +38,14 @@ export default function CheckEligibility({ onNext }) {
           flex: 1, overflowY: 'auto',
         }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-            <h2 style={{ fontSize: 22, fontWeight: 800, color: C.text, margin: 0 }}>Check my eligibility</h2>
+            <h2 style={{ fontSize: 22, fontWeight: 600, color: C.text, margin: 0 }}>Check my eligibility</h2>
             <div style={{
               width: 30, height: 30, borderRadius: '50%',
               background: C.bg, display: 'flex', alignItems: 'center', justifyContent: 'center',
               cursor: 'pointer', fontSize: 16, color: C.textSec,
             }}>×</div>
           </div>
-          <p style={{ fontSize: 14, color: C.textSec, marginBottom: 20, lineHeight: 1.5 }}>
+          <p style={{ fontSize: 16, color: C.textSec, marginBottom: 20, lineHeight: 1.5 }}>
             Enter your information below to check if you're eligible for Bold through the CMS ACCESS program.
           </p>
 
@@ -84,7 +84,7 @@ export default function CheckEligibility({ onNext }) {
           </div>
         </div>
       </div>
-      <SafariBottomBar />
+  
     </div>
   )
 }
