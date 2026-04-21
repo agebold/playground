@@ -476,14 +476,19 @@
       .sort-layout { display: grid; grid-template-columns: 1fr 300px; gap: 24px; align-items: start; padding-top: 16px; }
       .sort-cards-col { min-width: 0; }
       .m-card-list { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding-bottom: 60px; }
-      .sort-panel-desktop { display: block; }
+      .sort-panel-desktop { display: block; pointer-events: none; }
       .sort-panel-inner {
-        position: sticky; top: 120px;
+        position: fixed;
+        top: 130px;
+        right: max(28px, calc((100vw - 1280px) / 2 + 28px));
+        width: 300px;
         background: #fff; border-radius: 16px;
         border: 1.5px solid #e5e7eb;
         box-shadow: 0 2px 12px rgba(0,0,0,0.06);
         padding: 20px; overflow-y: auto;
-        max-height: calc(100vh - 140px);
+        max-height: calc(100vh - 150px);
+        pointer-events: all;
+        z-index: 15;
       }
       .sort-panel-empty { text-align: center; padding: 32px 16px; color: #737373; font-size: 14px; line-height: 1.6; }
       .sort-panel-empty-icon { font-size: 28px; margin-bottom: 10px; }
