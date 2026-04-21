@@ -1,11 +1,11 @@
 import boldLogo from '../../assets/bold-logo@2x.png'
 import { C, OnboardingHeader, OnboardingScreen, PurpleButton } from './shared.jsx'
 
-export default function EligibilityVerdict({ onNext }) {
+export default function EligibilityVerdict({ onBack, onNavigate }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: C.white }}>
-      <OnboardingHeader showBack={false} progress={2} totalSteps={14} logoSrc={boldLogo} />
-      <OnboardingScreen cta={<PurpleButton onClick={onNext}>Continue</PurpleButton>}>
+      <OnboardingHeader showBack={true} onBack={onBack} progress={2} totalSteps={14} logoSrc={boldLogo} />
+      <OnboardingScreen cta={<PurpleButton onClick={() => onNavigate('onboarding-outline')}>Continue</PurpleButton>}>
         {/* Centered hero */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: '24px 0 28px' }}>
           {/* Teal checkmark circle */}
