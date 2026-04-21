@@ -1219,7 +1219,7 @@ function renderMobileSort() {
       ? `<div class="m-sheet-card-label">"${escHtml(selectedCard.text)}"</div>${sheetBody}`
       : `<div class="sort-panel-empty">
           <div class="sort-panel-empty-icon">&#8592;</div>
-          <div>Click any card to assign it to a group</div>
+          <div>Click any card to assign it to a group,<br>or click a group tag to inspect it</div>
         </div>`;
 
   const toggleLabel = state.sortView === 'groups'
@@ -1628,8 +1628,15 @@ function attachEvents() {
 
   // ── Mobile sort events ──────────────────────────────────────────
   document.querySelectorAll('[data-action="m-select-card"]').forEach(el => {
-    el.addEventListener('click', () => {
+    el.addEventListener('click', (e) => {
+      // Let badge button handle its own click
+      if (e.target.closest('[data-action="m-open-group-panel"]')) return;
       const id = Number(el.dataset.cardId);
+      // If group panel is open, keep it sticky — open assignment sheet alongside
+      if (state.panelGroupId) {
+        state.panelGroupId = null;
+        state.panelGroupEditing = false;
+      }
       state.mobileSelectedCardId = (state.mobileSelectedCardId === id) ? null : id;
       state.mobileCreatingGroup = false;
       state.mobileGroupName = '';
