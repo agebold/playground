@@ -15,20 +15,27 @@ export const navigationStructure = [
     ]
   },
   {
-    id: 'onboarding',
-    category: 'Onboarding',
+    id: 'eligibility',
+    category: 'Eligibility',
     items: [
       { id: 'red-flag-primer', label: 'Safety screening intro', viewType: 'mobile', canToggle: false },
       { id: 'region-focus', label: 'Provider discussion', viewType: 'mobile', canToggle: false },
       { id: 'red-flag-screening', label: 'Safety attestation', viewType: 'mobile', canToggle: false },
+      { id: 'red-flag-questions', label: 'Red flag screening', viewType: 'mobile', canToggle: false },
       { id: 'pain-regions', label: 'Pain regions', viewType: 'mobile', canToggle: false },
-      { id: 'eligibility-verdict', label: 'Eligibility verdict', viewType: 'mobile', canToggle: false },
+      { id: 'eligibility-verdict', label: 'Eligible', viewType: 'mobile', canToggle: false },
+      { id: 'ineligible', label: 'Ineligible', viewType: 'mobile', canToggle: false },
+    ]
+  },
+  {
+    id: 'onboarding',
+    category: 'Onboarding',
+    items: [
       { id: 'onboarding-outline', label: 'Program overview', viewType: 'mobile', canToggle: false },
       { id: 'preferences', label: 'Exercise preferences', viewType: 'mobile', canToggle: false },
       { id: 'pain-scale', label: 'Pain scale (NPRS)', viewType: 'mobile', canToggle: false },
       { id: 'psfs-activity', label: 'Functional activity (PSFS)', viewType: 'mobile', canToggle: false },
-      { id: 'reminders-days', label: 'Reminder days', viewType: 'mobile', canToggle: false },
-      { id: 'reminders-time', label: 'Reminder time', viewType: 'mobile', canToggle: false },
+      { id: 'reminders', label: 'Reminders', viewType: 'mobile', canToggle: false },
       { id: 'account-creation', label: 'Account creation', viewType: 'mobile', canToggle: false },
       { id: 'plan-loading', label: 'Plan building', viewType: 'mobile', canToggle: false },
       { id: 'plan-results', label: 'Plan results', viewType: 'mobile', canToggle: false },

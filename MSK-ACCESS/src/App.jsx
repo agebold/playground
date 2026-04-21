@@ -18,6 +18,11 @@ export default function App() {
     if (prev) setCurrentStep(prev)
   }
 
+  const handleNavigate = (id) => {
+    const step = allSteps.find(s => s.id === id)
+    if (step) setCurrentStep(step)
+  }
+
   return (
     <div style={{
       display: 'flex',
@@ -33,6 +38,7 @@ export default function App() {
         step={currentStep}
         onNext={handleNext}
         onBack={handleBack}
+        onNavigate={handleNavigate}
       />
     </div>
   )

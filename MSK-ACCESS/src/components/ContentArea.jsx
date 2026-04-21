@@ -5,14 +5,14 @@ import FacebookAd from './content/FacebookAd.jsx'
 import LandingPage from './content/LandingPage.jsx'
 import CheckEligibility from './content/CheckEligibility.jsx'
 import EligibilityVerdict from './content/EligibilityVerdict.jsx'
+import Ineligible from './content/Ineligible.jsx'
 import OnboardingOutline from './content/OnboardingOutline.jsx'
 import RedFlagPrimer from './content/RedFlagPrimer.jsx'
 import RedFlagScreening from './content/RedFlagScreening.jsx'
 import PainRegions from './content/PainRegions.jsx'
 import RegionFocus from './content/RegionFocus.jsx'
 import Preferences from './content/Preferences.jsx'
-import RemindersDays from './content/RemindersDays.jsx'
-import RemindersTime from './content/RemindersTime.jsx'
+import Reminders from './content/Reminders.jsx'
 import PainScale from './content/PainScale.jsx'
 import PSFSActivity from './content/PSFSActivity.jsx'
 import AccountCreation from './content/AccountCreation.jsx'
@@ -27,20 +27,21 @@ import WeeklyGoalDone from './content/WeeklyGoalDone.jsx'
 import Day2 from './content/Day2.jsx'
 import KoosJr from './content/KoosJr.jsx'
 import BaselineCaptured from './content/BaselineCaptured.jsx'
+import RedFlagQuestions from './content/RedFlagQuestions.jsx'
 
 const contentMap = {
   'facebook-ad': FacebookAd,
   'landing-page': LandingPage,
   'check-eligibility': CheckEligibility,
   'eligibility-verdict': EligibilityVerdict,
+  'ineligible': Ineligible,
   'onboarding-outline': OnboardingOutline,
   'red-flag-primer': RedFlagPrimer,
   'red-flag-screening': RedFlagScreening,
   'pain-regions': PainRegions,
   'region-focus': RegionFocus,
   'preferences': Preferences,
-  'reminders-days': RemindersDays,
-  'reminders-time': RemindersTime,
+  'reminders': Reminders,
   'pain-scale': PainScale,
   'psfs-activity': PSFSActivity,
   'account-creation': AccountCreation,
@@ -55,9 +56,10 @@ const contentMap = {
   'day-2': Day2,
   'koos-jr': KoosJr,
   'baseline-captured': BaselineCaptured,
+  'red-flag-questions': RedFlagQuestions,
 }
 
-export default function ContentArea({ step, onNext, onBack }) {
+export default function ContentArea({ step, onNext, onBack, onNavigate }) {
   const Component = contentMap[step.id]
   const isDesktop = step.viewType === 'desktop'
 
@@ -83,12 +85,12 @@ export default function ContentArea({ step, onNext, onBack }) {
         >
           {isDesktop ? (
             <SafariBrowserChrome>
-              {Component ? <Component onNext={onNext} onBack={onBack} /> : <div style={{ padding: 40, color: '#999' }}>No content</div>}
+              {Component ? <Component onNext={onNext} onBack={onBack} onNavigate={onNavigate} /> : <div style={{ padding: 40, color: '#999' }}>No content</div>}
             </SafariBrowserChrome>
           ) : (
             <div style={{ transform: 'scale(0.82)', transformOrigin: 'center center' }}>
               <PhoneFrame>
-                {Component ? <Component onNext={onNext} onBack={onBack} /> : <div style={{ padding: 40, color: '#999' }}>No content</div>}
+                {Component ? <Component onNext={onNext} onBack={onBack} onNavigate={onNavigate} /> : <div style={{ padding: 40, color: '#999' }}>No content</div>}
               </PhoneFrame>
             </div>
           )}

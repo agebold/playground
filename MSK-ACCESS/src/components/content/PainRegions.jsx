@@ -110,7 +110,7 @@ function PainChronicity({ regionLabel, chronicity, setChronicity, onNext, onBack
 }
 
 // ─── Combined flow ────────────────────────────────────────────────────────────
-export default function PainRegions({ onNext, onBack }) {
+export default function PainRegions({ onBack, onNavigate }) {
   const [step, setStep] = useState('regions')      // 'regions' | 'focus' | 'chronicity'
   const [selected, setSelected] = useState(new Set())
   const [otherText, setOtherText] = useState('')
@@ -161,12 +161,20 @@ export default function PainRegions({ onNext, onBack }) {
     )
   }
 
+  const handleChroniCity = () => {
+    if (chronicity === 'acute') {
+      onNavigate('ineligible')
+    } else {
+      onNavigate('eligibility-verdict')
+    }
+  }
+
   return (
     <PainChronicity
       regionLabel={getFocusedLabel()}
       chronicity={chronicity}
       setChronicity={setChronicity}
-      onNext={onNext}
+      onNext={handleChroniCity}
       onBack={() => setStep(selected.size > 1 ? 'focus' : 'regions')}
     />
   )
