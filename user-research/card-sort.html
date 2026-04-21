@@ -669,6 +669,9 @@ const state = {
   mobileNewCardText: '',
   mobileEditingGroupId: null,
   mobileEditingGroupName: '',
+  panelGroupId: null,       // group detail panel
+  panelGroupEditing: false, // renaming group from panel
+  panelGroupName: '',
   sortView: 'cards',     // 'cards' | 'groups'
 };
 
@@ -1167,7 +1170,9 @@ function renderMobileSort() {
       isSelected && col ? `box-shadow:0 0 0 3px ${col.border}40;` : '',
     ].filter(Boolean).join('');
     const badge = inGroup
-      ? `<span class="m-card-badge" style="background:${col.badge}; color:${col.text};">${escHtml(inGroup.name || 'Untitled')}</span>`
+      ? `<button class="m-card-badge" data-action="m-open-group-panel" data-group-id="${inGroup.id}"
+           style="background:${col.badge}; color:${col.text}; border:none; cursor:pointer; font-family:'Inter',sans-serif; display:inline-flex; align-items:center; gap:4px;"
+           title="View group">${escHtml(inGroup.name || 'Untitled')} <span style="opacity:0.6;font-size:11px;">›</span></button>`
       : '';
     return `<div class="${cls}"${inlineStyle ? ` style="${inlineStyle}"` : ''} data-action="m-select-card" data-card-id="${card.id}">
       <span style="flex:1">${escHtml(card.text)}</span>${badge}
@@ -1207,12 +1212,15 @@ function renderMobileSort() {
   }
 
   // Desktop panel content (same as sheet body but with empty state)
-  const desktopPanel = sheetOpen
-    ? `<div class="m-sheet-card-label">"${escHtml(selectedCard.text)}"</div>${sheetBody}`
-    : `<div class="sort-panel-empty">
-        <div class="sort-panel-empty-icon">&#8592;</div>
-        <div>Click any card to assign it to a group</div>
-      </div>`;
+  const panelGroup = state.panelGroupId ? state.groups.find(g => g.id === state.panelGroupId) : null;
+  const desktopPanel = panelGroup
+    ? renderGroupPanel(panelGroup)
+    : sheetOpen
+      ? `<div class="m-sheet-card-label">"${escHtml(selectedCard.text)}"</div>${sheetBody}`
+      : `<div class="sort-panel-empty">
+          <div class="sort-panel-empty-icon">&#8592;</div>
+          <div>Click any card to assign it to a group</div>
+        </div>`;
 
   const toggleLabel = state.sortView === 'groups'
     ? '← Back to cards'
@@ -1253,10 +1261,12 @@ function renderMobileSort() {
           <div class="sort-panel-inner">${desktopPanel}</div>
         </div>
       </div>
-      <div class="m-overlay${sheetOpen ? ' open' : ''}" data-action="m-close-sheet"></div>
-      <div class="m-sheet${sheetOpen ? ' open' : ''}">
+      <div class="m-overlay${sheetOpen || panelGroup ? ' open' : ''}" data-action="m-close-sheet"></div>
+      <div class="m-sheet${sheetOpen || panelGroup ? ' open' : ''}">
         <div class="m-sheet-handle"></div>
-        ${sheetOpen ? `<div class="m-sheet-card-label">"${escHtml(selectedCard.text)}"</div>${sheetBody}` : ''}
+        ${panelGroup
+          ? renderGroupPanel(panelGroup)
+          : sheetOpen ? `<div class="m-sheet-card-label">"${escHtml(selectedCard.text)}"</div>${sheetBody}` : ''}
       </div>`;
 
   return `
@@ -1268,6 +1278,49 @@ function renderMobileSort() {
       <div class="m-progress-bar"><div class="m-progress-fill" style="width:${pct}%"></div></div>
     </div>
     ${mainContent}`;
+}
+
+// ── Group detail panel ──────────────────────────────────────────────
+function renderGroupPanel(g) {
+  if (!g) return '';
+  const col = groupColor(g);
+  const nameArea = state.panelGroupEditing
+    ? `<div style="display:flex;gap:8px;align-items:center;margin-bottom:16px;">
+        <input id="panel-rename-input" class="m-create-input"
+          style="flex:1;margin:0;padding:10px 14px;font-size:15px;border-color:${col.border};"
+          type="text" value="${escAttr(state.panelGroupName)}" maxlength="60" autocomplete="off" placeholder="Group name…" />
+        <button data-action="panel-save-rename"
+          style="background:#1B6B5A;color:#fff;border:none;border-radius:10px;padding:10px 18px;font-size:15px;font-weight:600;cursor:pointer;white-space:nowrap;">Save</button>
+      </div>`
+    : `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <div style="font-size:18px;font-weight:700;color:#171717;">${escHtml(g.name || 'Untitled group')}</div>
+        <button data-action="panel-start-rename"
+          style="background:none;border:1px solid #e5e5e5;border-radius:8px;padding:6px 14px;font-size:13px;font-weight:500;color:#525252;cursor:pointer;display:flex;align-items:center;gap:5px;">
+          ✎ Rename
+        </button>
+      </div>`;
+
+  const cardRows = g.cards.length === 0
+    ? `<div style="color:#a3a3a3;font-style:italic;font-size:14px;padding:12px 0;">No cards in this group yet.</div>`
+    : g.cards.map(c => `
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:${col.bg};border:1px solid ${col.border}22;border-radius:10px;gap:10px;">
+          <span style="font-size:14px;color:#171717;line-height:1.4;flex:1;">${escHtml(c.text)}</span>
+          <button data-action="panel-remove-card" data-card-id="${c.id}"
+            style="background:none;border:none;cursor:pointer;color:#a3a3a3;font-size:16px;padding:2px 4px;flex-shrink:0;border-radius:4px;line-height:1;"
+            title="Remove from group">✕</button>
+        </div>`).join('');
+
+  return `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+      <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:#1B6B5A;">Group</div>
+      <button data-action="panel-close" style="background:none;border:none;cursor:pointer;color:#737373;font-size:20px;line-height:1;padding:4px;">✕</button>
+    </div>
+    <div style="width:100%;height:3px;border-radius:2px;background:${col.border};margin-bottom:16px;opacity:0.6;"></div>
+    ${nameArea}
+    <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:#737373;margin-bottom:10px;">
+      ${g.cards.length} card${g.cards.length !== 1 ? 's' : ''}
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;">${cardRows}</div>`;
 }
 
 // ── Groups overview ─────────────────────────────────────────────────
@@ -1649,6 +1702,62 @@ function attachEvents() {
 
   document.querySelectorAll('[data-action="finish-sort"]').forEach(btn => {
     btn.addEventListener('click', () => { state.phase = 'results'; render(); });
+  });
+
+  // ── Group detail panel ──────────────────────────────────────────
+  document.querySelectorAll('[data-action="m-open-group-panel"]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const gid = Number(el.dataset.groupId);
+      const g = state.groups.find(g => g.id === gid);
+      state.panelGroupId = gid;
+      state.panelGroupEditing = false;
+      state.panelGroupName = g ? g.name : '';
+      state.mobileSelectedCardId = null;
+      render();
+    });
+  });
+
+  document.querySelector('[data-action="panel-close"]')?.addEventListener('click', () => {
+    state.panelGroupId = null;
+    state.panelGroupEditing = false;
+    state.panelGroupName = '';
+    render();
+  });
+
+  document.querySelector('[data-action="panel-start-rename"]')?.addEventListener('click', () => {
+    const g = state.groups.find(g => g.id === state.panelGroupId);
+    state.panelGroupEditing = true;
+    state.panelGroupName = g ? g.name : '';
+    render();
+    const inp = document.getElementById('panel-rename-input');
+    if (inp) { inp.focus(); inp.select(); }
+  });
+
+  document.querySelector('[data-action="panel-save-rename"]')?.addEventListener('click', () => {
+    const g = state.groups.find(g => g.id === state.panelGroupId);
+    const inp = document.getElementById('panel-rename-input');
+    if (g) g.name = (inp?.value || state.panelGroupName).trim() || 'Untitled group';
+    state.panelGroupEditing = false;
+    render();
+  });
+
+  const panelRenameInput = document.getElementById('panel-rename-input');
+  if (panelRenameInput) {
+    panelRenameInput.addEventListener('input', e => { state.panelGroupName = e.target.value; });
+    panelRenameInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter') document.querySelector('[data-action="panel-save-rename"]')?.click();
+      if (e.key === 'Escape') { state.panelGroupEditing = false; render(); }
+    });
+  }
+
+  document.querySelectorAll('[data-action="panel-remove-card"]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      moveCardBack(Number(el.dataset.cardId));
+      // if group is now empty, keep panel open so user sees the empty state
+      render();
+    });
   });
 
   // ── Add your own card (mobile) ──────────────────────────────────
