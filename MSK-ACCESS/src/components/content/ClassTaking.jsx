@@ -31,15 +31,10 @@ export default function ClassTaking({ onNext }) {
       {/* Video area */}
       <div style={{
         flex: 1,
-        background: 'linear-gradient(180deg, #1a1a2e 0%, #16213e 40%, #0f3460 100%)',
+        background: '#000000',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         position: 'relative',
       }}>
-        {/* Trainer placeholder */}
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 64, marginBottom: 8 }}>🧑‍💼</div>
-          <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.6)' }}>19 min Strength: Upper Body Basics</div>
-        </div>
 
         {/* Skip back */}
         <div style={{ position: 'absolute', left: '22%', top: '50%', transform: 'translateY(-50%)', textAlign: 'center' }}>
@@ -54,7 +49,7 @@ export default function ClassTaking({ onNext }) {
               <path d="M6 5v10" stroke="white" strokeWidth="1.5" strokeOpacity="0.8"/>
             </svg>
           </div>
-          <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.7)', marginTop: 4, display: 'block' }}>10</span>
+
         </div>
 
         {/* Play button */}
@@ -86,7 +81,7 @@ export default function ClassTaking({ onNext }) {
               <path d="M14 5v10" stroke="white" strokeWidth="1.5" strokeOpacity="0.8"/>
             </svg>
           </div>
-          <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.7)', marginTop: 4, display: 'block' }}>10</span>
+
         </div>
 
         {/* Options */}

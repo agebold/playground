@@ -1,11 +1,11 @@
 import boldLogo from '../../assets/bold-logo@2x.png'
 import { C, OnboardingHeader, OnboardingScreen, PurpleButton } from './shared.jsx'
 
-export default function RedFlagScreening({ onNext, onBack }) {
+export default function RedFlagScreening({ onBack, onNavigate }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <OnboardingHeader showBack progress={1} totalSteps={10} logoSrc={boldLogo} onBack={onBack} />
-      <OnboardingScreen cta={<PurpleButton onClick={onNext}>I acknowledge</PurpleButton>}>
+      <OnboardingScreen cta={<PurpleButton onClick={() => onNavigate('pain-regions')}>I acknowledge</PurpleButton>}>
         {/* Shield icon */}
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
           <div style={{
@@ -23,7 +23,7 @@ export default function RedFlagScreening({ onNext, onBack }) {
           </div>
         </div>
 
-        <h2 style={{ fontSize: 24, fontWeight: 600, color: C.text, marginBottom: 4, lineHeight: 1.3 }}>
+        <h2 style={{ fontSize: 22, fontWeight: 600, color: C.text, marginBottom: 4, lineHeight: 1.3 }}>
           Your safety is our #1 priority.
         </h2>
         <p style={{ fontSize: 16, color: C.textSec, lineHeight: 1.4, marginBottom: 16 }}>
@@ -38,7 +38,7 @@ export default function RedFlagScreening({ onNext, onBack }) {
           <p style={{ fontSize: 16, color: C.textSec, lineHeight: 1.4 }}>
             The program may not be suitable for individuals actively managing some health conditions, including but not limited to:
           </p>
-          <ul style={{ margin: '10px 0 0', paddingLeft: 0, display: 'flex', flexDirection: 'column', gap: 4 }}>
+          <ul style={{ margin: '10px 0 0', paddingLeft: 16, display: 'flex', flexDirection: 'column', gap: 4 }}>
             {[
               'Bone fracture',
               'Surgery or high force trauma in the past 3 months',

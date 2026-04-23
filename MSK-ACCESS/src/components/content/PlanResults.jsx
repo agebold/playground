@@ -1,4 +1,5 @@
-import { C, BoldLogo, PurpleButton } from './shared.jsx'
+import boldLogomark from '../../assets/bold-logomark.png'
+import { C, PurpleButton } from './shared.jsx'
 
 const bullets = [
   { icon: '✓', bold: 'Goal:', text: 'Reduce knee pain' },
@@ -14,8 +15,8 @@ export default function PlanResults({ onNext }) {
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         padding: '12px 16px', borderBottom: `1px solid ${C.border}`, flexShrink: 0,
       }}>
-        <BoldLogo height={26} />
-        <span style={{ fontSize: 14, fontWeight: 600, color: C.purple }}>Your results</span>
+        <img src={boldLogomark} alt="Bold" style={{ height: 26, width: 'auto' }} />
+        <span style={{ fontSize: 14, fontWeight: 600, color: '#000000' }}>Your results</span>
       </div>
 
       <div style={{ flex: 1, overflowY: 'auto' }}>
