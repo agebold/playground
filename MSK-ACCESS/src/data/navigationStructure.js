@@ -12,13 +12,14 @@ export const navigationStructure = [
     items: [
       { id: 'landing-page', label: 'Landing page', viewType: 'desktop', canToggle: true },
       { id: 'check-eligibility', label: 'Check eligibility', viewType: 'mobile', canToggle: false },
+      { id: 'pcp-consent', label: 'PCP consent', viewType: 'mobile', canToggle: false },
     ]
   },
   {
     id: 'eligibility',
     category: 'Eligibility',
     items: [
-      { id: 'red-flag-primer', label: 'Safety screening intro', viewType: 'mobile', canToggle: false },
+      { id: 'eligibility-primer', label: 'Eligibility primer', viewType: 'mobile', canToggle: false },
       { id: 'region-focus', label: 'Provider discussion', viewType: 'mobile', canToggle: false },
       { id: 'red-flag-screening', label: 'Safety attestation', viewType: 'mobile', canToggle: false },
       { id: 'red-flag-questions', label: 'Red flag screening', viewType: 'mobile', canToggle: false },

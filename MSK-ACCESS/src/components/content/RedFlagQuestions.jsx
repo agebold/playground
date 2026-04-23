@@ -27,7 +27,7 @@ const S1_OPTIONS = [
 
 function Screen1({ selected, setSelected, onNext, onBack }) {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: '#fafafa' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: C.white, }}>
       <OnboardingHeader showBack progress={1} totalSteps={3} logoSrc={boldLogo} onBack={onBack} />
       <OnboardingScreen cta={<PurpleButton onClick={onNext} disabled={selected.size === 0}>Continue</PurpleButton>}>
         <QuestionHeader
@@ -58,7 +58,7 @@ const S2_OPTIONS = [
 
 function Screen2({ selected, setSelected, onNext, onBack }) {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: '#fafafa' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: C.white }}>
       <OnboardingHeader showBack progress={2} totalSteps={3} logoSrc={boldLogo} onBack={onBack} />
       <OnboardingScreen cta={<PurpleButton onClick={onNext} disabled={selected.size === 0}>Continue</PurpleButton>}>
         <QuestionHeader
@@ -88,7 +88,7 @@ const S3_OPTIONS = [
 
 function Screen3({ selected, setSelected, onNext, onBack }) {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: '#fafafa' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: C.white }}>
       <OnboardingHeader showBack progress={3} totalSteps={3} logoSrc={boldLogo} onBack={onBack} />
       <OnboardingScreen cta={<PurpleButton onClick={onNext} disabled={selected.size === 0}>Continue</PurpleButton>}>
         <QuestionHeader

@@ -8,14 +8,14 @@ export default function ClassDetails({ onNext }) {
       <div style={{ flex: 1, overflowY: 'auto' }}>
         {/* Breadcrumb */}
         <div style={{ padding: '10px 16px', display: 'flex', alignItems: 'center', gap: 6, borderBottom: `1px solid ${C.border}` }}>
-          <span style={{ fontSize: 13, color: C.purple }}>Home</span>
-          <span style={{ fontSize: 13, color: C.textTert }}>›</span>
-          <span style={{ fontSize: 13, color: C.textSec }}>19 min Strength: Upper Body Basics</span>
+          <span style={{ fontSize: 13, fontWeight: 500, color: C.purple }}>Home</span>
+          <span style={{ fontSize: 13, fontWeight: 500, color: C.textTert }}>›</span>
+          <span style={{ fontSize: 13, fontWeight: 500, color: C.textSec }}>19 min Strength: Upper Body Basics</span>
         </div>
 
         {/* Video thumbnail */}
         <div style={{
-          height: 200, background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
+          height: 200, background: '#000000',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           position: 'relative',
         }}>
@@ -28,22 +28,10 @@ export default function ClassDetails({ onNext }) {
               <path d="M2 2l18 10L2 22V2Z" fill="white"/>
             </svg>
           </div>
-          <div style={{ position: 'absolute', top: 12, right: 12 }}>
-            <button style={{
-              background: 'rgba(255,255,255,0.9)', border: 'none', borderRadius: 8,
-              padding: '4px 10px', display: 'flex', alignItems: 'center', gap: 4, cursor: 'pointer',
-              fontFamily: 'Inter, sans-serif',
-            }}>
-              <svg width="12" height="14" viewBox="0 0 12 14" fill="none">
-                <path d="M2 2h8v10l-4-3-4 3V2z" stroke={C.text} strokeWidth="1.2"/>
-              </svg>
-              <span style={{ fontSize: 12, fontWeight: 500 }}>Start class</span>
-            </button>
-          </div>
         </div>
 
         <div style={{ padding: '16px 16px 8px' }}>
-          <h2 style={{ fontSize: 20, fontWeight: 800, color: C.text, marginBottom: 8, lineHeight: 1.2 }}>
+          <h2 style={{ fontSize: 20, fontWeight: 600, color: C.text, marginBottom: 8, lineHeight: 1.2 }}>
             19 min Strength: Upper Body Basics
           </h2>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>

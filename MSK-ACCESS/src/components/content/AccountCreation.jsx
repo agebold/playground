@@ -27,7 +27,7 @@ export default function AccountCreation({ onNext, onBack }) {
         </>
       }>
         <div style={{ fontSize: 13, fontWeight: 600, color: C.textSec, marginBottom: 6 }}>Finish profile</div>
-        <h2 style={{ fontSize: 22, fontWeight: 800, color: C.text, marginBottom: 20, lineHeight: 1.3 }}>
+        <h2 style={{ fontSize: 22, fontWeight: 600, color: C.text, marginBottom: 20, lineHeight: 1.3 }}>
           Last step to create your Bold account
         </h2>
 

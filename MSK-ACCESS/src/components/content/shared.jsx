@@ -1,3 +1,5 @@
+import boldLogomark from '../../assets/bold-logomark.png'
+
 // ─── Design tokens ───────────────────────────────────────────────────────────
 export const C = {
   purple:      '#5200d4',
@@ -8,7 +10,7 @@ export const C = {
   text:        '#1c1c1e',
   textSec:     '#3c3c43',
   textTert:    '#8e8e93',
-  yellow:      '#f5a623',
+  yellow:      '#FFCC1A',
   teal:        '#34c759',
   red:         '#ff3b30',
   blue:        '#007aff',
@@ -79,7 +81,7 @@ export function SafariBottomBar({ url = 'agebold.com' }) {
 }
 
 // ─── Phone frame ─────────────────────────────────────────────────────────────
-export function PhoneFrame({ children }) {
+export function PhoneFrame({ children, statusBarBg }) {
   return (
     <div style={{
       width: 390,
@@ -98,7 +100,7 @@ export function PhoneFrame({ children }) {
       <div style={{
         height: 44, flexShrink: 0, display: 'flex',
         alignItems: 'center', justifyContent: 'space-between',
-        padding: '12px 36px 0px 36px', background: C.white,
+        padding: '12px 36px 0px 36px', background: statusBarBg ?? C.white,
       }}>
       </div>
       {/* Content */}
@@ -173,34 +175,26 @@ export function AppHeader({ showUseApp = false, streak, initials = 'CS', onUseAp
       borderBottom: `1px solid ${C.border}`,
       background: C.white,
     }}>
-      <BoldLogo height={28} />
+      <img src={boldLogomark} alt="Bold" style={{ height: 28, width: 'auto' }} />
       <div style={{ flex: 1 }} />
       {showUseApp && (
         <button
           onClick={onUseApp}
           style={{
-            background: C.yellow, color: C.white, border: 'none',
-            borderRadius: 20, padding: '6px 14px',
-            fontSize: 13, fontWeight: 700, cursor: 'pointer',
+            background: C.yellow, color: '#000000', border: 'none',
+            borderRadius: 20, padding: '8px 14px',
+            fontSize: 14, fontWeight: 600, cursor: 'pointer',
             fontFamily: 'Inter, sans-serif',
           }}>
           Use app
         </button>
       )}
-      {streak !== undefined && (
-        <div style={{
-          display: 'flex', alignItems: 'center', gap: 3,
-          background: C.bg, borderRadius: 20, padding: '5px 10px',
-        }}>
-          <span style={{ fontSize: 14 }}>🔥</span>
-          {streak > 0 && <span style={{ fontSize: 13, fontWeight: 600, color: C.text }}>{streak}</span>}
-        </div>
-      )}
+
       <div style={{
-        width: 34, height: 34, borderRadius: '50%',
+        width: 32, height: 32, borderRadius: '50%',
         background: C.purple,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        color: C.white, fontSize: 12, fontWeight: 700,
+        color: C.white, fontSize: 12, fontWeight: 600,
       }}>
         {initials}
       </div>

@@ -1,13 +1,15 @@
+import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { PhoneFrame, SafariBrowserChrome } from './content/shared.jsx'
 
 import FacebookAd from './content/FacebookAd.jsx'
 import LandingPage from './content/LandingPage.jsx'
 import CheckEligibility from './content/CheckEligibility.jsx'
+import PCPConsent from './content/PCPConsent.jsx'
 import EligibilityVerdict from './content/EligibilityVerdict.jsx'
 import Ineligible from './content/Ineligible.jsx'
 import OnboardingOutline from './content/OnboardingOutline.jsx'
-import RedFlagPrimer from './content/RedFlagPrimer.jsx'
+import EligibilityPrimer from './content/EligibilityPrimer.jsx'
 import RedFlagScreening from './content/RedFlagScreening.jsx'
 import PainRegions from './content/PainRegions.jsx'
 import RegionFocus from './content/RegionFocus.jsx'
@@ -33,10 +35,11 @@ const contentMap = {
   'facebook-ad': FacebookAd,
   'landing-page': LandingPage,
   'check-eligibility': CheckEligibility,
+  'pcp-consent': PCPConsent,
   'eligibility-verdict': EligibilityVerdict,
   'ineligible': Ineligible,
   'onboarding-outline': OnboardingOutline,
-  'red-flag-primer': RedFlagPrimer,
+  'eligibility-primer': EligibilityPrimer,
   'red-flag-screening': RedFlagScreening,
   'pain-regions': PainRegions,
   'region-focus': RegionFocus,
@@ -60,8 +63,14 @@ const contentMap = {
 }
 
 export default function ContentArea({ step, onNext, onBack, onNavigate }) {
+  const [eligibilitySubStep, setEligibilitySubStep] = useState('form')
   const Component = contentMap[step.id]
   const isDesktop = step.viewType === 'desktop'
+
+  // Grey status bar only for the initial modal form; white for confirm + pcp screens
+  const statusBarBg = step.id === 'check-eligibility' && eligibilitySubStep === 'form'
+    ? 'rgba(60,60,67,0.5)'
+    : undefined
 
   return (
     <div style={{
@@ -89,8 +98,15 @@ export default function ContentArea({ step, onNext, onBack, onNavigate }) {
             </SafariBrowserChrome>
           ) : (
             <div style={{ transform: 'scale(0.82)', transformOrigin: 'center center' }}>
-              <PhoneFrame>
-                {Component ? <Component onNext={onNext} onBack={onBack} onNavigate={onNavigate} /> : <div style={{ padding: 40, color: '#999' }}>No content</div>}
+              <PhoneFrame statusBarBg={statusBarBg}>
+                {Component ? (
+                  <Component
+                    onNext={onNext}
+                    onBack={onBack}
+                    onNavigate={onNavigate}
+                    onSubStepChange={step.id === 'check-eligibility' ? setEligibilitySubStep : undefined}
+                  />
+                ) : <div style={{ padding: 40, color: '#999' }}>No content</div>}
               </PhoneFrame>
             </div>
           )}
