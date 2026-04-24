@@ -5,7 +5,7 @@ export default defineConfig({
   plugins: [react()],
   base: '/playground/check-ins/',
   server: {
-    port: 5174,
+    port: 5175,
     open: true
   }
 })
