@@ -1,6 +1,15 @@
 {
   "projects": [
     {
+      "path": "check-ins",
+      "href": "check-ins/",
+      "name": "Check-ins",
+      "desc": "Adaptive check-in flows and session-based coaching explorations",
+      "icon": "📋",
+      "author": "Monica",
+      "category": "Prototypes"
+    },
+    {
       "path": "dynamic-header",
       "href": "dynamic-header/",
       "name": "App Prototype",
