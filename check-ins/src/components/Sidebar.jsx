@@ -27,8 +27,8 @@ export default function Sidebar({ activeStep, onSelect }) {
       }}>
         <BoldLogo height={30} />
         <div>
-          <div style={{ fontSize: 13, fontWeight: 700, color: C.text }}>Adaptive check-ins</div>
-          <div style={{ fontSize: 11, color: C.textTert }}>Prototype explorations</div>
+          <div style={{ fontSize: 16, fontWeight: 600, color: C.text }}>Check-ins</div>
+          <div style={{ fontSize: 12, color: C.textTert }}>Prototype explorations</div>
         </div>
       </div>
 
@@ -137,7 +137,7 @@ export default function Sidebar({ activeStep, onSelect }) {
         color: C.textTert,
         textAlign: 'center',
       }}>
-        Age Bold · Adaptive Check-Ins
+        Age Bold · Check-ins
       </div>
     </div>
   )
