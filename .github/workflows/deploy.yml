@@ -36,19 +36,28 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: MSK-ACCESS/package-lock.json
+          cache-dependency-path: |
+            MSK-ACCESS/package-lock.json
+            _main/check-ins/package-lock.json
 
-      - name: Install dependencies
+      - name: Install MSK-ACCESS dependencies
         if: hashFiles('MSK-ACCESS/package-lock.json') != ''
         run: cd MSK-ACCESS && npm install
 
-      - name: Build React app
+      - name: Build MSK-ACCESS
         if: hashFiles('MSK-ACCESS/package-lock.json') != ''
         run: cd MSK-ACCESS && npm run build
+
+      - name: Install check-ins dependencies
+        run: cd _main/check-ins && npm install
+
+      - name: Build check-ins
+        run: cd _main/check-ins && npm run build
 
       - name: Assemble deployment folder
         run: |
           mkdir -p _deploy/MSK-ACCESS
+          mkdir -p _deploy/check-ins
           # Always copy static content from main
           cp -r _main/dynamic-header _deploy/ 2>/dev/null || true
           cp -r _main/vision _deploy/ 2>/dev/null || true
@@ -57,8 +66,9 @@ jobs:
           cp -r _main/design-system _deploy/ 2>/dev/null || true
           cp -r _main/telehealth _deploy/ 2>/dev/null || true
           cp _main/*.html _deploy/ 2>/dev/null || true
-          # Copy built React app (only present when triggered from MSK-ACCESS-Prototype)
+          # Copy built React apps
           cp -r MSK-ACCESS/dist/. _deploy/MSK-ACCESS/ 2>/dev/null || true
+          cp -r _main/check-ins/dist/. _deploy/check-ins/ 2>/dev/null || true
 
       - name: Generate index from projects.json
         run: cd _main && node scripts/generate-index.js > ../_deploy/index.html
