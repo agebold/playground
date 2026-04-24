@@ -4,7 +4,7 @@
       "path": "check-ins",
       "href": "check-ins/",
       "name": "Check-ins",
-      "desc": "Adaptive check-in flows and session-based coaching explorations",
+      "desc": "Adaptive check-in explorations",
       "icon": "📋",
       "author": "Monica",
       "category": "Prototypes"
@@ -22,7 +22,7 @@
       "path": "MSK-ACCESS",
       "href": "MSK-ACCESS/",
       "name": "MSK ACCESS",
-      "desc": "28-screen patient journey for MSK care access and onboarding",
+      "desc": "Patient journey for MSK care access and onboarding",
       "icon": "🦴",
       "author": "Monica",
       "category": "Prototypes"
