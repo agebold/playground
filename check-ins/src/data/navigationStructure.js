@@ -1,9 +1,10 @@
 export const navigationStructure = [
   {
     id: 'msk',
-    category: 'MSK',
+    category: 'Session-based check-ins',
     items: [
-      { id: 'session-based-v1', label: 'Session-based V1', viewType: 'mobile' },
+      { id: 'session-based-v1', label: 'Exploration 1', viewType: 'mobile' },
+      { id: 'session-based-v2', label: 'Exploration 2', viewType: 'mobile' },
     ]
   },
 ]
