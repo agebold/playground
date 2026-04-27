@@ -3,10 +3,12 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { C, PhoneFrame, SafariBrowserChrome } from './content/shared.jsx'
 import Exploration1 from './content/Exploration1.jsx'
 import Exploration2 from './content/Exploration2.jsx'
+import Exploration3 from './content/Exploration3.jsx'
 
 const contentMap = {
   'session-based-v1': Exploration1,
   'session-based-v2': Exploration2,
+  'session-based-v3': Exploration3,
 }
 
 function ReplayIcon() {
@@ -47,12 +49,18 @@ const pillBtn = {
   transition: 'opacity 0.15s',
 }
 
+const MOBILE_ONLY = new Set(['session-based-v3'])
+
 export default function ContentArea({ step, onNext, onBack, onNavigate }) {
   const [replayKey, setReplayKey] = useState(0)
   const [viewMode, setViewMode] = useState('mobile')
   const Component = contentMap[step.id]
 
+  const mobileOnly = MOBILE_ONLY.has(step.id)
+  const effectiveViewMode = mobileOnly ? 'mobile' : viewMode
+
   const handleToggle = () => {
+    if (mobileOnly) return
     setViewMode(v => v === 'mobile' ? 'desktop' : 'mobile')
     setReplayKey(k => k + 1)
   }
@@ -65,14 +73,14 @@ export default function ContentArea({ step, onNext, onBack, onNavigate }) {
     }}>
       <AnimatePresence mode="wait">
         <motion.div
-          key={`${step.id}-${viewMode}`}
+          key={`${step.id}-${effectiveViewMode}`}
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -16 }}
           transition={{ duration: 0.22, ease: 'easeOut' }}
           style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}
         >
-          {viewMode === 'desktop' ? (
+          {effectiveViewMode === 'desktop' ? (
             <SafariBrowserChrome>
               {Component
                 ? <Component key={replayKey} viewMode="desktop" onNext={onNext} onBack={onBack} onNavigate={onNavigate} />
@@ -80,7 +88,7 @@ export default function ContentArea({ step, onNext, onBack, onNavigate }) {
             </SafariBrowserChrome>
           ) : (
             <div style={{ transform: 'scale(0.82)', transformOrigin: 'center center' }}>
-              <PhoneFrame>
+              <PhoneFrame showSafariBar={!mobileOnly}>
                 {Component
                   ? <Component key={replayKey} viewMode="mobile" onNext={onNext} onBack={onBack} onNavigate={onNavigate} />
                   : <div style={{ padding: 40, color: '#999' }}>No content</div>}
@@ -107,12 +115,15 @@ export default function ContentArea({ step, onNext, onBack, onNavigate }) {
         border: '1px solid rgba(0,0,0,0.1)', borderRadius: 10,
         boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
         padding: 3, gap: 2,
+        opacity: mobileOnly ? 0.4 : 1,
+        pointerEvents: mobileOnly ? 'none' : 'auto',
+        transition: 'opacity 0.2s',
       }}>
         {[
           { mode: 'mobile', icon: <PhoneIcon />, label: 'Mobile' },
           { mode: 'desktop', icon: <MonitorIcon />, label: 'Desktop' },
         ].map(({ mode, icon, label }) => {
-          const active = viewMode === mode
+          const active = effectiveViewMode === mode
           return (
             <button
               key={mode}

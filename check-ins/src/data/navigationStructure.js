@@ -5,6 +5,7 @@ export const navigationStructure = [
     items: [
       { id: 'session-based-v1', label: 'Exploration 1', viewType: 'mobile' },
       { id: 'session-based-v2', label: 'Exploration 2', viewType: 'mobile' },
+      { id: 'session-based-v3', label: 'Exploration 3', viewType: 'mobile' },
     ]
   },
 ]

@@ -169,16 +169,60 @@ export default function Exploration2({ viewMode = 'mobile' }) {
     </div>
   )
 
-  const classCard = (
+  const classCard = (desktop = false) => desktop ? (
+    /* ── Horizontal desktop layout (matches Exploration 1) ── */
+    <div style={{ background: C.white, border: `1px solid ${C.border}`, borderRadius: 12, overflow: 'hidden', display: 'flex' }}>
+      {/* Text content */}
+      <div style={{ flex: 1, padding: 20, display: 'flex', flexDirection: 'column', gap: 14 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          <div style={{ background: '#ebf0ff', borderRadius: 4, padding: '3px 8px', display: 'inline-flex', alignItems: 'center', gap: 4, alignSelf: 'flex-start' }}>
+            <span style={{ fontSize: 12, fontWeight: 600, color: '#2563eb' }}>Move class</span>
+            <InfoIcon />
+          </div>
+          <div style={{ fontSize: 17, fontWeight: 600, color: '#140d26', lineHeight: '24px' }}>
+            19 min Strength: Upper Body Basics
+          </div>
+          <div style={{ fontSize: 15, color: '#140d26' }}>Chris Litten</div>
+        </div>
+        <div style={{ background: '#ebf0ff', borderRadius: 12, padding: 12, display: 'flex', flexDirection: 'column', gap: 4 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <img src={imgTrainerAvatar} alt="" style={{ width: 22, height: 22, borderRadius: '50%' }} />
+            <span style={{ fontSize: 15, fontWeight: 600, color: '#171717' }}>Why this class</span>
+          </div>
+          <p style={{ fontSize: 15, color: '#171717', lineHeight: '22px', margin: 0 }}>
+            Because of your knee pain, we think this seated class is a great starting point.
+          </p>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, alignItems: 'center' }}>
+          <button style={{ width: '100%', padding: '12px 16px', background: C.purple, color: C.white, border: 'none', borderRadius: 12, fontSize: 15, fontWeight: 600, cursor: 'pointer', fontFamily: 'Inter, sans-serif' }}>
+            Start class
+          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <RefreshIcon />
+            <span style={{ fontSize: 13, color: '#525252' }}>
+              Not feeling this today?{' '}
+              <span style={{ color: C.purple, fontWeight: 600 }}>Switch class</span>
+            </span>
+          </div>
+        </div>
+      </div>
+      {/* Thumbnail */}
+      <div style={{ width: 340, flexShrink: 0, position: 'relative' }}>
+        <img src={imgClassThumbnail} alt="Class" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        <div style={{ position: 'absolute', top: 12, right: 12, background: 'rgba(255,255,255,0.88)', borderRadius: 10, padding: '5px 10px', display: 'flex', alignItems: 'center', gap: 4, fontSize: 13, fontWeight: 600, color: '#070101', border: `1px solid ${C.border}` }}>
+          <svg width="13" height="15" viewBox="0 0 13 15" fill="none">
+            <path d="M2 2h9v11l-4.5-3L2 13V2Z" stroke="#070101" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          Save
+        </div>
+      </div>
+    </div>
+  ) : (
+    /* ── Vertical mobile layout ── */
     <div style={{ background: C.white, border: `1px solid ${C.border}`, borderRadius: 12, overflow: 'hidden' }}>
       <div style={{ position: 'relative', height: 140, overflow: 'hidden' }}>
         <img src={imgClassThumbnail} alt="Class" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-        <div style={{
-          position: 'absolute', top: 10, right: 10,
-          background: 'rgba(255,255,255,0.88)', borderRadius: 10,
-          padding: '5px 10px', display: 'flex', alignItems: 'center', gap: 4,
-          fontSize: 13, fontWeight: 600, color: '#070101', border: `1px solid ${C.border}`,
-        }}>
+        <div style={{ position: 'absolute', top: 10, right: 10, background: 'rgba(255,255,255,0.88)', borderRadius: 10, padding: '5px 10px', display: 'flex', alignItems: 'center', gap: 4, fontSize: 13, fontWeight: 600, color: '#070101', border: `1px solid ${C.border}` }}>
           <svg width="13" height="15" viewBox="0 0 13 15" fill="none">
             <path d="M2 2h9v11l-4.5-3L2 13V2Z" stroke="#070101" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
@@ -187,10 +231,7 @@ export default function Exploration2({ viewMode = 'mobile' }) {
       </div>
       <div style={{ padding: 14, display: 'flex', flexDirection: 'column', gap: 14 }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-          <div style={{
-            background: '#ebf0ff', borderRadius: 4,
-            padding: '3px 8px', display: 'inline-flex', alignItems: 'center', gap: 4, alignSelf: 'flex-start',
-          }}>
+          <div style={{ background: '#ebf0ff', borderRadius: 4, padding: '3px 8px', display: 'inline-flex', alignItems: 'center', gap: 4, alignSelf: 'flex-start' }}>
             <span style={{ fontSize: 12, fontWeight: 600, color: '#2563eb' }}>Move class</span>
           </div>
           <div style={{ fontSize: 17, fontWeight: 600, color: '#140d26', lineHeight: '23px' }}>
@@ -208,12 +249,7 @@ export default function Exploration2({ viewMode = 'mobile' }) {
           </p>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10, alignItems: 'center' }}>
-          <button style={{
-            width: '100%', padding: '12px 16px',
-            background: C.purple, color: C.white,
-            border: 'none', borderRadius: 12,
-            fontSize: 15, fontWeight: 600, cursor: 'pointer', fontFamily: 'Inter, sans-serif',
-          }}>
+          <button style={{ width: '100%', padding: '12px 16px', background: C.purple, color: C.white, border: 'none', borderRadius: 12, fontSize: 15, fontWeight: 600, cursor: 'pointer', fontFamily: 'Inter, sans-serif' }}>
             Start class
           </button>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -272,7 +308,7 @@ export default function Exploration2({ viewMode = 'mobile' }) {
         </div>
 
         <div style={{ flex: 1, overflowY: 'auto' }}>
-          <div style={{ maxWidth: 600, margin: '0 auto', padding: '0 32px 48px' }}>
+          <div style={{ maxWidth: 780, margin: '0 auto', padding: '0 32px 48px' }}>
 
             <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 40 }}>
               {showAvatar && (
@@ -313,9 +349,15 @@ export default function Exploration2({ viewMode = 'mobile' }) {
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 16, position: 'relative', zIndex: 1 }}>
                   <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
-                    <div style={{ width: 40, height: 40, borderRadius: '50%', flexShrink: 0, background: C.white, border: `2px solid ${C.purple}`, boxShadow: `0 0 0 4px rgba(82,0,212,0.1)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <div style={{ width: 8, height: 8, borderRadius: '50%', background: C.purple }} />
-                    </div>
+                    {response ? (
+                      <div style={{ width: 40, height: 40, borderRadius: '50%', flexShrink: 0, background: '#22c55e', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.5 3.5 6.5-7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                      </div>
+                    ) : (
+                      <div style={{ width: 40, height: 40, borderRadius: '50%', flexShrink: 0, background: C.white, border: `2px solid ${C.purple}`, boxShadow: `0 0 0 4px rgba(82,0,212,0.1)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <div style={{ width: 8, height: 8, borderRadius: '50%', background: C.purple }} />
+                      </div>
+                    )}
                     <div>
                       <div style={{ fontSize: 14, color: '#171717', lineHeight: '22px' }}>Step 1</div>
                       <div style={{ fontSize: 16, fontWeight: 600, color: '#171717', lineHeight: '24px' }}>Let's check in on your knee</div>
@@ -328,9 +370,15 @@ export default function Exploration2({ viewMode = 'mobile' }) {
                   {showStep2 && (
                     <motion.div ref={cardRef} {...fadeIn(0)} style={{ display: 'flex', flexDirection: 'column', gap: 16, position: 'relative', zIndex: 1 }}>
                       <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
-                        <div style={{ width: 40, height: 40, borderRadius: '50%', flexShrink: 0, background: C.white, border: `2px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                          {response ? <div style={{ width: 8, height: 8, borderRadius: '50%', background: C.purple }} /> : <LockIcon />}
-                        </div>
+                        {response ? (
+                          <div style={{ width: 40, height: 40, borderRadius: '50%', flexShrink: 0, background: C.white, border: `2px solid ${C.purple}`, boxShadow: `0 0 0 4px rgba(82,0,212,0.1)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <div style={{ width: 8, height: 8, borderRadius: '50%', background: C.purple }} />
+                          </div>
+                        ) : (
+                          <div style={{ width: 40, height: 40, borderRadius: '50%', flexShrink: 0, background: C.white, border: `2px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <LockIcon />
+                          </div>
+                        )}
                         <div style={{ paddingTop: 2 }}>
                           <div style={{ fontSize: 14, color: '#171717', lineHeight: '22px' }}>Step 2</div>
                           <div style={{ fontSize: 16, fontWeight: 600, color: response ? '#171717' : '#8a8693', lineHeight: '24px' }}>
@@ -341,7 +389,7 @@ export default function Exploration2({ viewMode = 'mobile' }) {
                       <AnimatePresence>
                         {showPlan && (
                           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease }}>
-                            {classCard}
+                            {classCard(true)}
                           </motion.div>
                         )}
                       </AnimatePresence>
@@ -429,9 +477,15 @@ export default function Exploration2({ viewMode = 'mobile' }) {
               {/* Step 1 */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: 16, position: 'relative', zIndex: 1 }}>
                 <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
-                  <div style={{ width: 40, height: 40, borderRadius: '50%', flexShrink: 0, background: C.white, border: `2px solid ${C.purple}`, boxShadow: `0 0 0 4px rgba(92,0,212,0.12)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <div style={{ width: 8, height: 8, borderRadius: '50%', background: C.purple }} />
-                  </div>
+                  {response ? (
+                    <div style={{ width: 40, height: 40, borderRadius: '50%', flexShrink: 0, background: '#22c55e', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.5 3.5 6.5-7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                    </div>
+                  ) : (
+                    <div style={{ width: 40, height: 40, borderRadius: '50%', flexShrink: 0, background: C.white, border: `2px solid ${C.purple}`, boxShadow: `0 0 0 4px rgba(92,0,212,0.12)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <div style={{ width: 8, height: 8, borderRadius: '50%', background: C.purple }} />
+                    </div>
+                  )}
                   <div>
                     <div style={{ fontSize: 14, color: '#171717', lineHeight: '22px' }}>Step 1</div>
                     <div style={{ fontSize: 16, fontWeight: 600, color: '#171717', lineHeight: '24px' }}>Let's check in on your knee</div>
@@ -449,11 +503,15 @@ export default function Exploration2({ viewMode = 'mobile' }) {
                     style={{ display: 'flex', flexDirection: 'column', gap: 16, position: 'relative', zIndex: 1 }}
                   >
                     <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
-                      <div style={{ width: 40, height: 40, borderRadius: '50%', flexShrink: 0, background: C.white, border: `2px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        {response
-                          ? <div style={{ width: 8, height: 8, borderRadius: '50%', background: C.purple }} />
-                          : <LockIcon />}
-                      </div>
+                      {response ? (
+                        <div style={{ width: 40, height: 40, borderRadius: '50%', flexShrink: 0, background: C.white, border: `2px solid ${C.purple}`, boxShadow: `0 0 0 4px rgba(82,0,212,0.1)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <div style={{ width: 8, height: 8, borderRadius: '50%', background: C.purple }} />
+                        </div>
+                      ) : (
+                        <div style={{ width: 40, height: 40, borderRadius: '50%', flexShrink: 0, background: C.white, border: `2px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <LockIcon />
+                        </div>
+                      )}
                       <div style={{ flex: 1, paddingTop: 2 }}>
                         <div style={{ fontSize: 14, color: '#171717', lineHeight: '22px' }}>Step 2</div>
                         <div style={{ fontSize: 16, fontWeight: 600, color: response ? '#171717' : '#8a8693', lineHeight: '24px' }}>
@@ -464,7 +522,7 @@ export default function Exploration2({ viewMode = 'mobile' }) {
                     <AnimatePresence>
                       {showPlan && (
                         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease }}>
-                          {classCard}
+                          {classCard()}
                         </motion.div>
                       )}
                     </AnimatePresence>
