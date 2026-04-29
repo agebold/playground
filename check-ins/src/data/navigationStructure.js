@@ -8,6 +8,13 @@ export const navigationStructure = [
       { id: 'session-based-v3', label: 'Exploration 3', viewType: 'mobile' },
     ]
   },
+  {
+    id: 'monthly',
+    category: 'Monthly check-ins',
+    items: [
+      { id: 'monthly-v1', label: 'NPS + PSFS (Exploration 1)', viewType: 'mobile' },
+    ]
+  },
 ]
 
 export const getAllSteps = () => navigationStructure.flatMap(s => s.items)

@@ -4,11 +4,13 @@ import { C, PhoneFrame, SafariBrowserChrome } from './content/shared.jsx'
 import Exploration1 from './content/Exploration1.jsx'
 import Exploration2 from './content/Exploration2.jsx'
 import Exploration3 from './content/Exploration3.jsx'
+import MonthlyV1 from './content/MonthlyV1.jsx'
 
 const contentMap = {
   'session-based-v1': Exploration1,
   'session-based-v2': Exploration2,
   'session-based-v3': Exploration3,
+  'monthly-v1': MonthlyV1,
 }
 
 function ReplayIcon() {

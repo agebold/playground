@@ -108,60 +108,90 @@ export default function Exploration2({ viewMode = 'mobile' }) {
   const checkinCard = (
     <div style={{
       background: C.white, border: `1px solid ${C.border}`, borderRadius: 12,
-      padding: 16, display: 'flex', flexDirection: 'column', gap: 16,
+      overflow: 'hidden', display: 'flex', flexDirection: 'column',
     }}>
-      <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4, alignSelf: 'flex-start',
-        background: '#ebf0ff', borderRadius: 4, padding: '3px 8px' }}>
-        <span style={{ fontSize: 12, fontWeight: 600, color: '#2563eb' }}>Check in</span>
-        <InfoIcon />
+      {/* Padded content */}
+      <div style={{ padding: 16, display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4, alignSelf: 'flex-start',
+          background: '#ebf0ff', borderRadius: 4, padding: '3px 8px' }}>
+          <span style={{ fontSize: 12, fontWeight: 600, color: '#2563eb' }}>Check in</span>
+          <InfoIcon />
+        </div>
+
+        <AnimatePresence mode="wait">
+          {!response ? (
+            <motion.div key="question"
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              style={{ display: 'flex', flexDirection: 'column', gap: 8 }}
+            >
+              <div style={{ fontSize: 18, fontWeight: 600, color: '#140d26', lineHeight: '25px' }}>
+                How would you describe your knee pain today?
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {PAIN_OPTIONS.map(({ type, color, label }) => (
+                  <button key={type} onClick={() => handleResponse(type)} style={{
+                    display: 'flex', alignItems: 'center', gap: 8,
+                    padding: '8px 10px', width: '100%',
+                    background: C.white, border: `1px solid #e5e5e5`,
+                    borderRadius: 360, boxShadow: '0px 1px 2px rgba(16,24,40,0.05)',
+                    cursor: 'pointer', fontFamily: 'Inter, sans-serif', textAlign: 'left',
+                  }}>
+                    <div style={{ width: 10, height: 10, borderRadius: '50%', background: color, flexShrink: 0 }} />
+                    <span style={{ fontSize: 14, fontWeight: 600, color: '#140d26' }}>{label}</span>
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          ) : (
+            <motion.div key="selected"
+              initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+              transition={{ duration: 0.5, ease }}
+              style={{ display: 'flex', flexDirection: 'column', gap: 8 }}
+            >
+              <div style={{
+                display: 'flex', alignItems: 'center', gap: 8,
+                padding: '8px 10px',
+                background: '#f5f3ff', border: `1px solid ${C.purple}`,
+                borderRadius: 360,
+              }}>
+                <div style={{ width: 10, height: 10, borderRadius: '50%',
+                  background: PAIN_OPTIONS.find(o => o.type === response)?.color, flexShrink: 0 }} />
+                <span style={{ fontSize: 14, fontWeight: 600, color: '#140d26', flex: 1 }}>
+                  {PAIN_OPTIONS.find(o => o.type === response)?.label}
+                </span>
+                <CheckIcon />
+              </div>
+              <p style={{ fontSize: 15, color: '#09112a', lineHeight: '24px', margin: 0 }}>
+                {RESPONSE_COPY[response]}
+              </p>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
-      <AnimatePresence mode="wait">
-        {!response ? (
-          <motion.div key="question"
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            style={{ display: 'flex', flexDirection: 'column', gap: 8 }}
+      {/* Pause check-ins strip — only for stable/good responses */}
+      <AnimatePresence>
+        {(response === 'tolerable' || response === 'good') && (
+          <motion.div
+            initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+            transition={{ duration: 0.4, ease }}
+            style={{
+              background: '#ebf0ff',
+              display: 'flex', alignItems: 'flex-start', gap: 6,
+              padding: '14px 10px',
+              cursor: 'pointer',
+            }}
           >
-            <div style={{ fontSize: 18, fontWeight: 600, color: '#140d26', lineHeight: '25px' }}>
-              How would you describe your knee pain today?
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {PAIN_OPTIONS.map(({ type, color, label }) => (
-                <button key={type} onClick={() => handleResponse(type)} style={{
-                  display: 'flex', alignItems: 'center', gap: 8,
-                  padding: '8px 10px', width: '100%',
-                  background: C.white, border: `1px solid #e5e5e5`,
-                  borderRadius: 360, boxShadow: '0px 1px 2px rgba(16,24,40,0.05)',
-                  cursor: 'pointer', fontFamily: 'Inter, sans-serif', textAlign: 'left',
-                }}>
-                  <div style={{ width: 10, height: 10, borderRadius: '50%', background: color, flexShrink: 0 }} />
-                  <span style={{ fontSize: 14, fontWeight: 600, color: '#140d26' }}>{label}</span>
-                </button>
-              ))}
-            </div>
-          </motion.div>
-        ) : (
-          <motion.div key="selected"
-            initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-            transition={{ duration: 0.5, ease }}
-            style={{ display: 'flex', flexDirection: 'column', gap: 8 }}
-          >
-            <div style={{
-              display: 'flex', alignItems: 'center', gap: 8,
-              padding: '8px 10px',
-              background: '#f5f3ff', border: `1px solid ${C.purple}`,
-              borderRadius: 360,
-            }}>
-              <div style={{ width: 10, height: 10, borderRadius: '50%',
-                background: PAIN_OPTIONS.find(o => o.type === response)?.color, flexShrink: 0 }} />
-              <span style={{ fontSize: 14, fontWeight: 600, color: '#140d26', flex: 1 }}>
-                {PAIN_OPTIONS.find(o => o.type === response)?.label}
-              </span>
-              <CheckIcon />
-            </div>
-            <p style={{ fontSize: 15, color: '#09112a', lineHeight: '24px', margin: 0 }}>
-              {RESPONSE_COPY[response]}
+            {/* Pause circle icon */}
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none" style={{ flexShrink: 0, marginTop: 1 }}>
+              <circle cx="11" cy="11" r="10" stroke={C.purple} strokeWidth="1.5"/>
+              <rect x="7.5" y="7" width="2.5" height="8" rx="1" fill={C.purple}/>
+              <rect x="12" y="7" width="2.5" height="8" rx="1" fill={C.purple}/>
+            </svg>
+            <p style={{ fontSize: 15, fontWeight: 600, lineHeight: '22px', margin: 0 }}>
+              <span style={{ color: '#525252', fontWeight: 400 }}>Pain feeling relatively stable? </span>
+              <span style={{ color: C.purple }}>Pause check-ins for this week</span>
             </p>
           </motion.div>
         )}
