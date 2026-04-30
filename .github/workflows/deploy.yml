@@ -65,6 +65,7 @@ jobs:
           cp -r _main/care_plan _deploy/ 2>/dev/null || true
           cp -r _main/design-system _deploy/ 2>/dev/null || true
           cp -r _main/telehealth _deploy/ 2>/dev/null || true
+          cp -r _main/weight-clinic-sprint _deploy/ 2>/dev/null || true
           cp _main/*.html _deploy/ 2>/dev/null || true
           # Copy built React apps
           cp -r MSK-ACCESS/dist/. _deploy/MSK-ACCESS/ 2>/dev/null || true
