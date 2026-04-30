@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bold Clinic — Bullseye Customer Sprint</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy: #1A2E4A;
+      --navy-mid: #243449;
+      --bg: #F7F6F2;
+      --white: #FFFFFF;
+      --text: #1A2E4A;
+      --muted: #5A6A7E;
+      --border: #DEE3EA;
+      --green: #2E7D50;
+      --rust: #C65837;
+      --gold: #B08A3C;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    header {
+      background: var(--navy);
+      padding: 20px 40px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    header .badge {
+      background: rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.7);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+
+    header h1 {
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .hero {
+      background: var(--navy);
+      color: white;
+      padding: 60px 40px 80px;
+      text-align: center;
+    }
+
+    .hero .label {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 16px;
+    }
+
+    .hero h2 {
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 16px;
+      letter-spacing: -0.5px;
+    }
+
+    .hero p {
+      font-size: 18px;
+      color: rgba(255,255,255,0.7);
+      max-width: 580px;
+      margin: 0 auto 32px;
+      line-height: 1.6;
+    }
+
+    .framework-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.65);
+      font-size: 13px;
+      padding: 8px 16px;
+      border-radius: 40px;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 64px 40px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+
+    .prototypes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      margin-bottom: 64px;
+    }
+
+    .proto-card {
+      background: white;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .proto-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 48px rgba(26,46,74,0.12);
+    }
+
+    .proto-card:focus-visible {
+      outline: 3px solid var(--navy);
+      outline-offset: 2px;
+    }
+
+    .proto-card-banner {
+      height: 140px;
+      display: flex;
+      align-items: flex-end;
+      padding: 20px;
+      position: relative;
+    }
+
+    .proto-card-banner.a {
+      background: linear-gradient(135deg, #1F3908 0%, #3B6D11 55%, #97C459 100%);
+    }
+
+    .proto-card-banner.b {
+      background: linear-gradient(135deg, #0B2A4C 0%, #185FA5 55%, #85B7EB 100%);
+    }
+
+    .proto-card-banner.c {
+      background: linear-gradient(135deg, #2A0F30 0%, #6B2D72 55%, #C882CC 100%);
+    }
+
+    .proto-brand-name {
+      font-size: 22px;
+      font-weight: 700;
+      color: white;
+      letter-spacing: -0.3px;
+    }
+
+    .proto-axis-tag {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.25);
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+
+    .proto-card-body {
+      padding: 24px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .proto-letter {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .proto-headline {
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.35;
+      color: var(--text);
+    }
+
+    .proto-desc {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.55;
+      flex: 1;
+    }
+
+    .proto-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--navy);
+      margin-top: 8px;
+    }
+
+    .proto-cta svg {
+      transition: transform 0.2s ease;
+    }
+
+    .proto-card:hover .proto-cta svg {
+      transform: translateX(4px);
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-top: 40px;
+    }
+
+    .info-box {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .info-box h4 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .info-box p {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .info-box ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .info-box ul li {
+      font-size: 13px;
+      color: var(--muted);
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .info-box ul li::before {
+      content: "–";
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 24px 40px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Bold Clinic</h1>
+    <span class="badge">Bullseye Sprint</span>
+  </header>
+
+  <div class="hero">
+    <div class="label">Comparison Stimulus</div>
+    <h2>3 Prototypes.<br>1 Question to Answer.</h2>
+    <p>Three landing pages testing three emotional frames for Medicare-eligible adults 65–85 considering a weight program: <strong style="color:rgba(255,255,255,0.9)">stay strong</strong>, <strong style="color:rgba(255,255,255,0.9)">understand your body</strong>, <strong style="color:rgba(255,255,255,0.9)">make it stick</strong>. Which frame resonates?</p>
+    <div class="framework-pill">
+      <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg>
+      GV "Learn More Faster" Bullseye Customer Sprint
+    </div>
+  </div>
+
+  <main>
+    <div class="section-label">Three Prototypes — Three Axes</div>
+
+    <div class="prototypes-grid">
+
+      <a href="prototype-a.html" class="proto-card">
+        <div class="proto-card-banner a">
+          <span class="proto-brand-name">STRONGSPAN</span>
+          <div class="proto-axis-tag">Strength &amp; Function</div>
+        </div>
+        <div class="proto-card-body">
+          <div class="proto-letter">Prototype A · The green one</div>
+          <div class="proto-headline">"Stay strong enough to live your life."</div>
+          <div class="proto-desc">Reframes success away from the scale and toward daily capability — muscle, balance, independence. Tests whether functional capacity is the strongest motivator for this age group.</div>
+          <div class="proto-cta">
+            View prototype
+            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </div>
+        </div>
+      </a>
+
+      <a href="prototype-b.html" class="proto-card">
+        <div class="proto-card-banner b">
+          <span class="proto-brand-name">CLEARBODY</span>
+          <div class="proto-axis-tag">Body Composition</div>
+        </div>
+        <div class="proto-card-body">
+          <div class="proto-letter">Prototype B · The blue one</div>
+          <div class="proto-headline">"Your weight doesn't tell the whole story."</div>
+          <div class="proto-desc">Tests whether clinical clarity — visceral fat, muscle loss, metabolic health — pulls harder than weight loss. Includes a small insight UI element to suggest AI-driven intelligence.</div>
+          <div class="proto-cta">
+            View prototype
+            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </div>
+        </div>
+      </a>
+
+      <a href="prototype-c.html" class="proto-card">
+        <div class="proto-card-banner c">
+          <span class="proto-brand-name">VITALSHIFT</span>
+          <div class="proto-axis-tag">Lifestyle &amp; Habits</div>
+        </div>
+        <div class="proto-card-body">
+          <div class="proto-letter">Prototype C · The purple one</div>
+          <div class="proto-headline">"The problem isn't knowing what to do. It's making it stick."</div>
+          <div class="proto-desc">Tests whether habit and sustainability framing — with GLP-1 honesty about what happens after the medication — outperforms outcome or clinical positioning.</div>
+          <div class="proto-cta">
+            View prototype
+            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </div>
+        </div>
+      </a>
+
+    </div>
+
+    <div class="section-label">Sprint Context</div>
+    <div class="info-grid">
+      <div class="info-box">
+        <h4>Audience</h4>
+        <ul>
+          <li>Ages 65–85, Medicare-enrolled</li>
+          <li>BMI ≥25 or concerned about weight</li>
+          <li>1–3 chronic conditions</li>
+          <li>Mobility/independence as primary motivation</li>
+          <li>MA PPO or Medigap (HMO excluded)</li>
+        </ul>
+      </div>
+      <div class="info-box">
+        <h4>Research Method</h4>
+        <p>Each prototype is shown to 5 participants during moderated research interviews. Reactions are compared across all three. The goal is to learn which positioning drives the most intent and confidence — not to launch any of these pages.</p>
+      </div>
+      <div class="info-box">
+        <h4>What We're Learning</h4>
+        <ul>
+          <li>Does strength &amp; independence out-pull weight loss?</li>
+          <li>Does body-composition clarity feel reassuring or overwhelming?</li>
+          <li>Does "make it stick" land as honest or uncertain?</li>
+          <li>Where do GLP-1 questions surface spontaneously?</li>
+        </ul>
+      </div>
+      <div class="info-box">
+        <h4>Important</h4>
+        <p>Combinational method — the goal is not to pick a winner, but to learn which features, promises, and emotional frames participants would combine into their ideal version. Fictional brands only — no Bold brand, colors, or copy used.</p>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    Bold Clinic · Bullseye Customer Sprint · Internal use only — not for distribution
+  </footer>
+
+</body>
+</html>

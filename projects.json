@@ -1,6 +1,15 @@
 {
   "projects": [
     {
+      "path": "weight-clinic-sprint",
+      "href": "weight-clinic-sprint/",
+      "name": "Weight Clinic Sprint",
+      "desc": "3 comparison prototypes testing Strength / Body Composition / Lifestyle positioning for 65+ Medicare audience",
+      "icon": "⚕️",
+      "author": "Izabela",
+      "category": "Prototypes"
+    },
+    {
       "path": "check-ins",
       "href": "check-ins/",
       "name": "Check-ins",

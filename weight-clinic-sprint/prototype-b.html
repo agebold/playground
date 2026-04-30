@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clearbody — Your weight doesn&rsquo;t tell the whole story</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary:       #185FA5;
+      --primary-dark:  #114477;
+      --primary-deep:  #0B2A4C;
+      --accent:        #85B7EB;
+      --accent-pale:   #CFE2F5;
+      --bg:            #E6F1FB;
+      --bg-soft:       #F4F8FC;
+      --surface:       #FFFFFF;
+      --ink:           #0E2238;
+      --ink-muted:     #4A5B70;
+      --border:        #D4E2EF;
+      --amber:         #A96008;
+      --amber-pale:    #FAE9C8;
+      --green:         #2E7D50;
+      --green-pale:    #D4EADD;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: var(--surface);
+      color: var(--ink);
+      font-size: 17px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; }
+
+    /* ── NAV ─────────────────────────────────────────────────── */
+    nav.site-nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 40px;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      background: var(--primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 0 5px var(--accent-pale);
+    }
+    .brand-mark svg { color: #fff; }
+    .brand-name {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-weight: 400;
+      font-size: 24px;
+      color: var(--ink);
+      letter-spacing: -0.01em;
+    }
+    .nav-cta {
+      background: var(--primary);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      padding: 0 22px;
+      height: 48px;
+      min-width: 44px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.18s ease;
+    }
+    .nav-cta:hover { background: var(--primary-dark); }
+    .nav-cta:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+
+    /* ── HERO ─────────────────────────────────────────────────── */
+    .hero {
+      background: var(--bg);
+      color: var(--ink);
+      padding: 88px 40px 0;
+      overflow: hidden;
+      position: relative;
+    }
+    .hero-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 72px;
+      align-items: end;
+    }
+    .hero-text { padding-bottom: 96px; }
+    .hero-eyebrow {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: 24px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      width: 24px;
+      height: 1.5px;
+      background: var(--primary);
+    }
+    .hero-headline {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: clamp(38px, 4.6vw, 62px);
+      font-weight: 400;
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      margin-bottom: 24px;
+      text-wrap: balance;
+    }
+    .hero-headline em {
+      font-style: italic;
+      color: var(--primary);
+    }
+    .hero-subhead {
+      font-size: 19px;
+      line-height: 1.6;
+      color: var(--ink-muted);
+      margin-bottom: 36px;
+      max-width: 540px;
+    }
+    .hero-ctas {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+      font-size: 17px;
+      font-weight: 600;
+      padding: 0 30px;
+      height: 56px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.18s ease, transform 0.15s ease;
+    }
+    .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
+    .btn-primary:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+    .btn-ghost {
+      color: var(--primary);
+      font-size: 16px;
+      font-weight: 500;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 12px 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-ghost:hover { color: var(--primary-dark); }
+    .btn-ghost:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; border-radius: 4px; }
+    .hero-image { align-self: end; position: relative; }
+    .hero-photo {
+      width: 100%;
+      aspect-ratio: 4/5;
+      max-height: 560px;
+      border-radius: 24px 24px 0 0;
+      overflow: hidden;
+      background: var(--primary-deep);
+    }
+    .hero-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* insight card overlay on hero image */
+    .insight-overlay {
+      position: absolute;
+      bottom: 28px;
+      left: -24px;
+      background: rgba(255,255,255,0.97);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px 22px;
+      box-shadow: 0 20px 40px -12px rgba(11,42,76,0.22);
+      min-width: 240px;
+    }
+    .insight-overlay-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--ink-muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .insight-overlay-value {
+      font-family: 'DM Serif Display', serif;
+      font-size: 26px;
+      line-height: 1.1;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+    .insight-overlay-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--green);
+      background: var(--green-pale);
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+    .insight-overlay-badge .dot {
+      width: 6px; height: 6px; background: var(--green); border-radius: 50%;
+    }
+
+    /* ── TRUST STRIP ─────────────────────────────────────────── */
+    .trust-strip { background: var(--primary-deep); color: #fff; }
+    .trust-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 18px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 28px;
+      flex-wrap: wrap;
+    }
+    .trust-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.92);
+    }
+    .trust-item svg { color: var(--accent); flex-shrink: 0; }
+    .trust-dot { width: 4px; height: 4px; border-radius: 50%; background: rgba(255,255,255,0.28); }
+
+    /* ── VALUE PROPS ─────────────────────────────────────────── */
+    .props-section { background: var(--surface); padding: 112px 40px; }
+    .props-inner { max-width: 1280px; margin: 0 auto; }
+    .section-eyebrow {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: 18px;
+      text-align: center;
+    }
+    .section-heading {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(30px, 3.8vw, 46px);
+      font-weight: 400;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      text-align: center;
+      max-width: 720px;
+      margin: 0 auto 72px;
+      text-wrap: balance;
+    }
+    .props-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .prop-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border-top: 3px solid var(--primary);
+    }
+    .prop-image-wrap {
+      aspect-ratio: 16/10;
+      overflow: hidden;
+      background: var(--bg);
+    }
+    .prop-image-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .prop-body-wrap { padding: 32px 30px 36px; }
+    .prop-number {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--primary);
+      letter-spacing: 0.1em;
+      margin-bottom: 14px;
+      text-transform: uppercase;
+    }
+    .prop-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 26px;
+      font-weight: 400;
+      color: var(--ink);
+      line-height: 1.2;
+      letter-spacing: -0.01em;
+      margin-bottom: 14px;
+      text-wrap: balance;
+    }
+    .prop-body {
+      font-size: 17px;
+      line-height: 1.65;
+      color: var(--ink-muted);
+    }
+    .prop-card.no-photo {
+      background: linear-gradient(160deg, var(--bg-soft) 0%, var(--bg) 100%);
+    }
+    .prop-card.no-photo .prop-body-wrap { padding-top: 44px; }
+    .prop-icon-wrap {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      background: var(--primary);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+
+    /* ── GLP-1 BLOCK + INSIGHT PANEL ─────────────────────────── */
+    .glp-section { background: var(--bg-soft); padding: 112px 40px; }
+    .glp-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 64px;
+      align-items: center;
+    }
+    .glp-label {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: 18px;
+    }
+    .glp-headline {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(28px, 3.4vw, 42px);
+      font-weight: 400;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      margin-bottom: 20px;
+      text-wrap: balance;
+    }
+    .glp-body {
+      font-size: 18px;
+      line-height: 1.65;
+      color: var(--ink-muted);
+    }
+    .glp-disclaimer {
+      margin-top: 24px;
+      font-size: 14px;
+      color: var(--ink-muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+    .glp-disclaimer svg { color: var(--primary); flex-shrink: 0; }
+
+    /* insight panel */
+    .insight-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: 0 20px 40px -16px rgba(11,42,76,0.16);
+    }
+    .insight-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .insight-panel-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 18px;
+      color: var(--ink);
+    }
+    .insight-panel-subtitle {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--ink-muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .insight-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px dashed var(--border);
+    }
+    .insight-row:last-child { border-bottom: none; }
+    .insight-row-label {
+      font-size: 15px;
+      color: var(--ink);
+      font-weight: 500;
+    }
+    .insight-row-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      color: var(--ink-muted);
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+    .badge .dot { width: 6px; height: 6px; border-radius: 50%; }
+    .badge.amber { color: var(--amber); background: var(--amber-pale); }
+    .badge.amber .dot { background: var(--amber); }
+    .badge.green { color: var(--green); background: var(--green-pale); }
+    .badge.green .dot { background: var(--green); }
+    .insight-footnote {
+      margin-top: 18px;
+      font-size: 12px;
+      color: var(--ink-muted);
+      opacity: 0.7;
+      text-align: center;
+    }
+
+    /* ── TESTIMONIAL ─────────────────────────────────────────── */
+    .testimonial-section { background: var(--bg); padding: 96px 40px; border-top: 1px solid var(--border); }
+    .testimonial-inner {
+      max-width: 820px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .quote-mark {
+      font-family: 'DM Serif Display', serif;
+      font-size: 90px;
+      line-height: 0.5;
+      color: var(--primary);
+      opacity: 0.3;
+      display: block;
+      margin-bottom: 22px;
+    }
+    .testimonial-quote {
+      font-family: 'DM Serif Display', serif;
+      font-style: italic;
+      font-size: clamp(22px, 2.9vw, 32px);
+      font-weight: 400;
+      line-height: 1.4;
+      color: var(--ink);
+      letter-spacing: -0.01em;
+      margin-bottom: 32px;
+      text-wrap: balance;
+    }
+    .testimonial-meta {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+    .testimonial-meta span {
+      color: var(--ink-muted);
+      font-weight: 500;
+    }
+    .testimonial-disclaimer {
+      margin-top: 20px;
+      font-size: 13px;
+      color: var(--ink-muted);
+      opacity: 0.7;
+    }
+
+    /* ── FOOTER CTA ──────────────────────────────────────────── */
+    .footer-cta { background: var(--primary-deep); color: #fff; padding: 104px 40px; text-align: center; position: relative; overflow: hidden; }
+    .footer-cta::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at top, rgba(133,183,235,0.2), transparent 60%);
+      pointer-events: none;
+    }
+    .footer-cta-inner { max-width: 720px; margin: 0 auto; position: relative; }
+    .footer-cta h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(30px, 3.8vw, 46px);
+      font-weight: 400;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin-bottom: 28px;
+      text-wrap: balance;
+    }
+    .footer-cta .btn-primary {
+      background: #fff;
+      color: var(--primary-deep);
+      margin-bottom: 20px;
+    }
+    .footer-cta .btn-primary:hover { background: var(--bg); }
+    .footer-cta .coverage-line {
+      font-size: 15px;
+      color: rgba(255,255,255,0.75);
+    }
+
+    /* ── SITE FOOTER ─────────────────────────────────────────── */
+    footer.site-footer {
+      background: #071B31;
+      padding: 32px 40px;
+    }
+    .footer-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .footer-brand {
+      font-family: 'DM Serif Display', serif;
+      font-size: 18px;
+      color: rgba(255,255,255,0.85);
+    }
+    .footer-tagline {
+      font-size: 13px;
+      color: rgba(255,255,255,0.45);
+      margin-top: 2px;
+    }
+    .footer-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .footer-links a {
+      font-size: 14px;
+      color: rgba(255,255,255,0.55);
+      text-decoration: none;
+    }
+    .footer-links a:hover { color: #fff; }
+    .footer-links a:focus-visible { outline: 2px solid rgba(255,255,255,0.5); outline-offset: 3px; border-radius: 3px; }
+
+    /* ── MOBILE ──────────────────────────────────────────────── */
+    @media (max-width: 820px) {
+      body { font-size: 16px; }
+      .nav-inner, .trust-inner, .props-inner, .footer-inner { padding-left: 20px; padding-right: 20px; }
+      .hero { padding: 48px 20px 0; }
+      .hero-inner { grid-template-columns: 1fr; gap: 32px; }
+      .hero-text { padding-bottom: 20px; }
+      .hero-subhead { font-size: 17px; }
+      .insight-overlay { left: 12px; bottom: 12px; min-width: 0; padding: 14px 16px; }
+      .insight-overlay-value { font-size: 20px; }
+      .trust-inner { gap: 14px; padding: 16px 20px; }
+      .props-section, .glp-section, .testimonial-section, .footer-cta { padding: 64px 20px; }
+      .props-grid { grid-template-columns: 1fr; gap: 20px; }
+      .glp-inner { grid-template-columns: 1fr; gap: 40px; }
+      .footer-inner { flex-direction: column; align-items: flex-start; }
+      .hero-photo { border-radius: 20px; max-height: 440px; }
+    }
+    @media (min-width: 821px) and (max-width: 1120px) {
+      .props-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="site-nav" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="#" class="brand" aria-label="Clearbody — home">
+        <div class="brand-mark" aria-hidden="true">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9"/>
+            <circle cx="12" cy="12" r="4" fill="currentColor" fill-opacity="0.35"/>
+          </svg>
+        </div>
+        <span class="brand-name">Clearbody</span>
+      </a>
+      <a href="#coverage" class="nav-cta">
+        Check your coverage
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" aria-labelledby="hero-headline">
+    <div class="hero-inner">
+      <div class="hero-text">
+        <div class="hero-eyebrow">Health insight for adults 65+</div>
+        <h1 class="hero-headline" id="hero-headline">
+          Your weight doesn&rsquo;t tell the <em>whole story.</em>
+        </h1>
+        <p class="hero-subhead">
+          Visceral fat, muscle loss, bone density, metabolic health &mdash; these are what actually determine how well you age. We help you understand and improve what the scale can&rsquo;t show you.
+        </p>
+        <div class="hero-ctas">
+          <a href="#coverage" class="btn-primary">
+            Check your coverage
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <a href="#how" class="btn-ghost">See what we measure</a>
+        </div>
+      </div>
+      <div class="hero-image">
+        <div class="hero-photo">
+          <img src="assets/imgs/clearbody-hero.jpg" alt="An adult in their late 60s sitting calmly at home, reading a morning health report." />
+        </div>
+        <div class="insight-overlay" role="img" aria-label="Illustrative health insight card: metabolic age 64 years, better than average.">
+          <div class="insight-overlay-label">Metabolic age</div>
+          <div class="insight-overlay-value">64 years</div>
+          <div class="insight-overlay-badge"><span class="dot" aria-hidden="true"></span>Better than average</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST STRIP -->
+  <div class="trust-strip" aria-label="What's included">
+    <div class="trust-inner">
+      <div class="trust-item">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M9 12l2 2 4-4M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        Covered by Medicare
+      </div>
+      <span class="trust-dot" aria-hidden="true"></span>
+      <div class="trust-item">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M9 12l2 2 4-4M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        AI-powered health insights
+      </div>
+      <span class="trust-dot" aria-hidden="true"></span>
+      <div class="trust-item">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M9 12l2 2 4-4M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        Physician-supervised
+      </div>
+    </div>
+  </div>
+
+  <!-- VALUE PROPS -->
+  <section class="props-section" id="how" aria-labelledby="props-heading">
+    <div class="props-inner">
+      <div class="section-eyebrow">What we look at</div>
+      <h2 class="section-heading" id="props-heading">
+        Health signals the scale was never going to tell you about.
+      </h2>
+
+      <div class="props-grid">
+
+        <article class="prop-card" aria-labelledby="vp1-title">
+          <div class="prop-image-wrap">
+            <img src="assets/imgs/clearbody-vp1.png" alt="An older man outdoors holding his lower back, showing a hidden discomfort." />
+          </div>
+          <div class="prop-body-wrap">
+            <div class="prop-number">01 &middot; Hidden health</div>
+            <h3 class="prop-title" id="vp1-title">Beyond the scale.</h3>
+            <p class="prop-body">
+              Someone can be at a &lsquo;healthy&rsquo; weight and still carry dangerous visceral fat around their organs. We measure what matters &mdash; body composition, metabolic health, and vascular risk.
+            </p>
+          </div>
+        </article>
+
+        <article class="prop-card" aria-labelledby="vp2-title">
+          <div class="prop-image-wrap">
+            <img src="assets/imgs/clearbody-vp2.png" alt="An older woman doing seated tai chi in a calm home setting." />
+          </div>
+          <div class="prop-body-wrap">
+            <div class="prop-number">02 &middot; Insight-driven</div>
+            <h3 class="prop-title" id="vp2-title">We explain what&rsquo;s happening in your body.</h3>
+            <p class="prop-body">
+              Your labs, health history, and daily signals &mdash; analyzed and translated into plain language. No confusing numbers. Just clear explanations and a plan that responds to your body.
+            </p>
+          </div>
+        </article>
+
+        <article class="prop-card no-photo" aria-labelledby="vp3-title">
+          <div class="prop-body-wrap">
+            <div class="prop-icon-wrap" aria-hidden="true">
+              <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2v6M12 14v8M4.93 4.93l4.24 4.24M14.83 14.83l4.24 4.24M2 12h6M14 12h8M4.93 19.07l4.24-4.24M14.83 9.17l4.24-4.24"/>
+              </svg>
+            </div>
+            <div class="prop-number">03 &middot; Nutrition</div>
+            <h3 class="prop-title" id="vp3-title">Food that works for your health, not against it.</h3>
+            <p class="prop-body">
+              Fiber, hydration, anti-inflammatory eating &mdash; guidance focused on improving what&rsquo;s happening inside, not just reducing calories. Feedback like &lsquo;this supports your metabolic health.&rsquo;
+            </p>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- GLP-1 FRAMING + INSIGHT PANEL -->
+  <section class="glp-section" aria-labelledby="glp-heading">
+    <div class="glp-inner">
+      <div>
+        <div class="glp-label">On GLP-1 medications</div>
+        <h2 class="glp-headline" id="glp-heading">
+          Use medication based on what your body actually needs.
+        </h2>
+        <p class="glp-body">
+          GLP-1 medications have benefits that go beyond weight &mdash; including reducing visceral fat and improving cardiometabolic risk. Where clinically appropriate, we help you understand whether medication makes sense for your body&rsquo;s specific signals, and monitor the changes that matter.
+        </p>
+        <div class="glp-disclaimer">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+          Prescribed only if recommended by your provider.
+        </div>
+      </div>
+
+      <aside class="insight-panel" aria-label="Illustrative health signals panel">
+        <div class="insight-panel-header">
+          <div class="insight-panel-title">Your health signals</div>
+          <div class="insight-panel-subtitle">Sample</div>
+        </div>
+        <div class="insight-row">
+          <span class="insight-row-label">Visceral fat</span>
+          <span class="badge amber"><span class="dot" aria-hidden="true"></span>Moderate</span>
+        </div>
+        <div class="insight-row">
+          <span class="insight-row-label">Muscle mass</span>
+          <span class="badge green"><span class="dot" aria-hidden="true"></span>On track</span>
+        </div>
+        <div class="insight-row">
+          <span class="insight-row-label">Metabolic age</span>
+          <span class="insight-row-value">64 yrs</span>
+        </div>
+        <div class="insight-row">
+          <span class="insight-row-label">A1c trend</span>
+          <span class="badge green"><span class="dot" aria-hidden="true"></span>Improving</span>
+        </div>
+        <p class="insight-footnote">Illustrative example for research.</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- TESTIMONIAL -->
+  <section class="testimonial-section" aria-labelledby="testimonial-heading">
+    <div class="testimonial-inner">
+      <span class="quote-mark" aria-hidden="true">&ldquo;</span>
+      <blockquote>
+        <p class="testimonial-quote" id="testimonial-heading">
+          I thought I was fine because my weight was normal. Turns out I had high visceral fat. No one had ever explained that to me before.
+        </p>
+        <footer class="testimonial-meta">
+          Robert &middot; <span>68, Texas</span>
+        </footer>
+      </blockquote>
+      <p class="testimonial-disclaimer">Illustrative quote for research purposes.</p>
+    </div>
+  </section>
+
+  <!-- FOOTER CTA -->
+  <section class="footer-cta" id="coverage" aria-labelledby="footer-cta-heading">
+    <div class="footer-cta-inner">
+      <h2 id="footer-cta-heading">Understand what&rsquo;s happening inside your body.</h2>
+      <a href="#" class="btn-primary">
+        Check your coverage
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <div class="coverage-line">Covered by Medicare. Most patients pay $0.</div>
+    </div>
+  </section>
+
+  <!-- SITE FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand">Clearbody</div>
+        <div class="footer-tagline">Health insight for adults 65+</div>
+      </div>
+      <nav class="footer-links" aria-label="Footer links">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Contact</a>
+      </nav>
+    </div>
+  </footer>
+
+</body>
+</html>
