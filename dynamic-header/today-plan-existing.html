@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Today's Plan – Bold (Returning member)</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font); background: #fafafa; min-height: 100vh; display: flex; flex-direction: column; color: #140d26; -webkit-font-smoothing: antialiased; }
+
+    /* ═══════════════════════════════════════
+       POST-AUTH NAV (Figma: Post-Auth Website Navigation Header)
+    ═══════════════════════════════════════ */
+    .tp-nav {
+      background: #fff;
+      box-shadow: 0px 1px 3px rgba(16,24,40,0.1), 0px 1px 2px rgba(16,24,40,0.06);
+      height: 72px;
+      display: flex; align-items: center;
+      padding: 0 32px;
+      position: sticky; top: 0; z-index: 20;
+    }
+    .tp-nav-logo {
+      position: relative; width: 133px; height: 40px;
+      flex-shrink: 0; display: block; overflow: hidden;
+    }
+    .tp-nav-logo .logo-lines { position: absolute; top: 0; left: 0; right: 69.76%; bottom: 0; }
+    .tp-nav-logo .logo-text  { position: absolute; top: 20.94%; left: 36.57%; right: 0; bottom: 20.53%; }
+    .tp-nav-logo .logo-lines img,
+    .tp-nav-logo .logo-text img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: contain; }
+
+    /* Center nav links */
+    .tp-nav-links {
+      display: flex; align-items: center; gap: 4px;
+      position: absolute; left: 50%; transform: translateX(-50%);
+    }
+    .tp-nav-link {
+      display: flex; align-items: center; gap: 8px;
+      padding: 12px 16px; border-radius: 12px;
+      font-size: 16px; font-weight: 600; color: #171717;
+      transition: background .15s; white-space: nowrap; text-decoration: none;
+    }
+    .tp-nav-link.active { background: #faf5ff; color: #5200d4; }
+    .tp-nav-link:hover:not(.active) { background: rgba(0,0,0,0.04); }
+
+    /* Right profile pill buttons */
+    .tp-nav-right { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+    .tp-nav-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      border: 1px solid #e5e5e5; border-radius: 360px;
+      background: #fff;
+      box-shadow: 0 1px 2px rgba(16,24,40,0.05);
+      padding: 0 16px; height: 48px;
+      font-size: 16px; font-weight: 600; color: #140d26;
+      cursor: pointer; font-family: var(--font);
+      transition: background .15s; position: relative;
+    }
+    .tp-nav-btn:hover { background: #f9f9f9; }
+    .tp-nav-badge {
+      position: absolute; top: 4px; right: 4px;
+      background: #ef4444; color: #fff;
+      width: 16px; height: 16px; border-radius: 50%;
+      font-size: 10px; font-weight: 600;
+      display: flex; align-items: center; justify-content: center;
+      pointer-events: none;
+    }
+    .tp-avatar {
+      width: 24px; height: 24px; border-radius: 50%;
+      background: #5200d4; color: #fff;
+      font-size: 10px; font-weight: 600;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .tp-nav-useapp {
+      display: none; align-items: center; justify-content: center;
+      background: #ffcc1a; border: none; border-radius: 360px;
+      height: 48px; padding: 0 16px;
+      font-size: 16px; font-weight: 600; color: #000;
+      cursor: pointer; font-family: var(--font); white-space: nowrap;
+    }
+    .tp-streak-count { display: none; align-items: center; gap: 3px; }
+    @media (max-width: 767px) {
+      .tp-nav { padding: 0 16px; }
+      .tp-nav-logo { width: 34px; height: 34px; }
+      .tp-nav-logo .logo-text { display: none; }
+      .tp-nav-logo .logo-lines { right: 0; }
+      .tp-nav-links { display: none; }
+      .tp-nav-useapp { display: inline-flex; }
+      .tp-nav-btn-mail { display: none; }
+      .tp-streak-label { display: none; }
+      .tp-streak-count { display: flex; }
+      .tp-nav-btn-streak {
+        background: linear-gradient(246.6deg, #c99434 22.7%, #e5ca56 56%, #e6d168 91.6%);
+        border-color: #d5c874; padding: 0 12px; gap: 4px; color: #fff;
+      }
+      .tp-avatar { width: 36px; height: 36px; font-size: 12px; }
+    }
+
+    /* ═══════════════════════════════════════
+       HERO — trainer + blob animation
+    ═══════════════════════════════════════ */
+    .tp-hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 16px 24px;
+      text-align: center;
+      position: relative;
+    }
+
+    /* Animated blob container behind trainer photo */
+    .tp-blob-wrap {
+      position: relative;
+      width: 220px;
+      height: 160px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: -16px;
+      overflow: visible;
+    }
+    /* Canvas blob — sits behind the trainer button */
+    #blobCanvas {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Trainer circle photo on top */
+    .tp-trainer-img {
+      position: relative;
+      z-index: 1;
+      width: 96px; height: 96px;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
+      border: 3px solid #fff;
+      box-shadow: 0 4px 16px rgba(0,0,0,.12);
+    }
+
+    .tp-date   { font-size: 14px; font-weight: 600; color: #8a8693; margin-top: 24px; margin-bottom: 4px; }
+    .tp-greeting { font-size: 28px; font-weight: 600; letter-spacing: -0.8px; line-height: 1.2; color: #140d26; margin-bottom: 8px; }
+    .tp-intro  { font-size: 18px; font-weight: 400; color: #171717; line-height: 1.5; max-width: 100%; width: 100%; }
+
+    /* ── Skeleton shimmer ─────────────────────────────── */
+    @keyframes bold-shimmer {
+      0%   { background-position: -200% 0; }
+      100% { background-position:  200% 0; }
+    }
+    .skel {
+      background: linear-gradient(90deg, #ebebeb 25%, #d6d6d6 50%, #ebebeb 75%) !important;
+      background-size: 200% 100% !important;
+      animation: bold-shimmer 1.5s ease-in-out infinite;
+      border-radius: 8px;
+      color: transparent !important;
+      -webkit-text-fill-color: transparent !important;
+      pointer-events: none;
+      display: block !important;
+      min-height: 54px;
+      overflow: hidden;
+    }
+    .skel * { color: transparent !important; -webkit-text-fill-color: transparent !important; }
+
+    /* ═══════════════════════════════════════
+       STEPS TRACKER
+    ═══════════════════════════════════════ */
+    .tp-steps {
+      padding: 0 16px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .tp-step-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 8px 0;
+      position: relative;
+    }
+    /* Vertical connector line between steps */
+    .tp-step-row:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      left: 20px;
+      top: 48px;
+      bottom: -8px;
+      width: 0;
+      border-left: 2px dashed #d4d4d4;
+    }
+    /* Completed stepper dot */
+    .tp-step-dot {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+    .tp-step-dot.done {
+      background: #16a34a;
+      color: #fff;
+    }
+    @keyframes tp-pulse {
+      0%, 100% { box-shadow: 0 0 6px 2px rgba(82,0,212,.3); }
+      50%       { box-shadow: 0 0 10px 4px rgba(82,0,212,.12); }
+    }
+    .tp-step-dot.next {
+      background: #fff;
+      border: 2px solid #5200d4;
+      animation: tp-pulse 2s ease-in-out infinite;
+    }
+    .tp-step-dot.next::after {
+      content: '';
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: #5200d4;
+    }
+    .tp-step-label { font-size: 14px; font-weight: 400; color: #171717; line-height: 1.57; }
+    .tp-step-title { font-size: 16px; font-weight: 600; color: #171717; line-height: 1.5; }
+    .tp-step-tasks { display: flex; flex-direction: column; gap: 2px; }
+    .tp-step-task  { font-size: 16px; font-weight: 600; color: #171717; line-height: 1.5; display: flex; align-items: center; gap: 6px; }
+    .tp-info-btn   { background: none; border: none; padding: 0; cursor: pointer; display: flex; align-items: center; opacity: 0.7; flex-shrink: 0; }
+    .tp-info-btn:hover { opacity: 1; }
+
+    /* ═══════════════════════════════════════
+       CLASS CARD
+    ═══════════════════════════════════════ */
+    .tp-card-wrap {
+      padding: 16px 16px 32px;
+    }
+    .tp-class-card {
+      background: #fff;
+      border: 1px solid #e5e5e5;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 1px 2px rgba(16,24,40,.05);
+    }
+    .tp-swap-banner {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      background: #14b8a6;
+      padding: 16px 20px 32px;
+      border-radius: 16px 16px 0 0;
+      border: 1px solid #e5e5e5;
+      margin-bottom: -24px;
+      position: relative;
+      z-index: 0;
+    }
+    .tp-swap-banner.show { display: flex; }
+    .tp-swap-banner-text {
+      font-size: 16px; font-weight: 600; color: #fff; line-height: 1.5;
+    }
+    .tp-card-wrap.swapped .tp-class-card {
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 -2px 8px rgba(16,24,40,0.2);
+    }
+
+    /* Thumbnail */
+    .tp-thumb {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16/9;
+      overflow: hidden;
+      background: #1a1a2e;
+    }
+    .tp-thumb img {
+      width: 100%; height: 100%;
+      object-fit: cover; display: block; max-width: none;
+    }
+    .tp-save-btn {
+      position: absolute; top: 12px; right: 12px;
+      display: flex; align-items: center; gap: 4px;
+      background: rgba(255,255,255,.85); border: 1px solid #e5e5e5;
+      border-radius: 12px; padding: 8px 12px 8px 8px;
+      font-size: 14px; font-weight: 600; color: #140d26;
+      cursor: pointer; font-family: var(--font);
+      backdrop-filter: blur(4px);
+    }
+
+    /* Meta */
+    .tp-meta { padding: 12px 12px 16px; display: flex; flex-direction: column; gap: 16px; }
+    .tp-tag {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: #ebf0ff; color: #2563eb;
+      font-size: 12px; font-weight: 600; line-height: 1.33;
+      padding: 4px 8px; border-radius: 4px;
+    }
+    .tp-class-title { font-size: 18px; font-weight: 600; color: #140d26; line-height: 1.4; }
+    .tp-class-trainer { font-size: 16px; font-weight: 400; color: #140d26; }
+
+    /* "Why this class" box */
+    .tp-why {
+      background: #eaf0ff;
+      border-radius: 25px;
+      padding: 12px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .tp-why-header {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 14px; font-weight: 600; color: #171717;
+    }
+    .tp-why-avatar {
+      width: 24px; height: 24px; border-radius: 50%;
+      object-fit: cover; display: block; flex-shrink: 0;
+    }
+    .tp-why-text {
+      font-size: 18px; font-weight: 400; color: #171717; line-height: 1.5;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .tp-why-text.expanded { display: block; -webkit-line-clamp: unset; }
+    .tp-why-readmore {
+      font-size: 14px; font-weight: 600; color: #5200d4;
+      background: none; border: none; padding: 0; cursor: pointer;
+      font-family: inherit; text-align: left;
+    }
+
+    /* Actions */
+    .tp-actions { display: flex; flex-direction: column; gap: 12px; }
+    .tp-start {
+      width: 100%; height: 48px;
+      background: #5200d4; color: #fff; border: none; border-radius: 12px;
+      font-size: 16px; font-weight: 600; cursor: pointer; font-family: var(--font);
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: background .15s;
+    }
+    .tp-start:hover { background: #3f00a8; }
+    .tp-change {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      height: 40px;
+      font-size: 14px; font-weight: 600; color: #404040; cursor: pointer; background: none; border: none;
+      font-family: var(--font); padding: 0;
+    }
+    .tp-change span { color: #5200d4; }
+
+    /* Plan summary — small button in hero */
+    .tp-summary-hero {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #fff; border: 1px solid #d4d4d4; border-radius: 8px;
+      padding: 5px 10px; font-size: 14px; font-weight: 600; color: #171717;
+      cursor: pointer; font-family: var(--font);
+      margin-top: 12px;
+      box-shadow: 0 1px 2px rgba(16,24,40,.06);
+      text-decoration: none;
+    }
+    .tp-summary-hero:hover { background: #f5f5f5; }
+
+    /* Plan summary — full-width button at bottom of card (mobile) */
+    .tp-summary-card {
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      background: #fff; border: 1px solid #d4d4d4; border-radius: 8px;
+      padding: 7px 16px; font-size: 14px; font-weight: 600; color: #171717;
+      cursor: pointer; font-family: var(--font);
+      width: 100%; margin-top: 12px;
+      box-shadow: 0 1px 2px rgba(16,24,40,.06);
+    }
+    .tp-summary-card:hover { background: #f5f5f5; }
+
+    /* ── Trainer button (wraps avatar) ── */
+    .tp-trainer-btn {
+      background: none; border: none; padding: 0; cursor: pointer;
+      position: relative; border-radius: 50%;
+      display: block; width: 96px; height: 96px;
+    }
+    .tp-trainer-badge {
+      position: absolute;
+      bottom: 2px; right: 2px;
+      width: 28px; height: 28px;
+      z-index: 3;
+      pointer-events: none;
+    }
+    .tp-trainer-overlay {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      z-index: 2;
+    }
+    .tp-trainer-overlay span {
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+      font-family: var(--font);
+      text-align: center;
+      line-height: 1.3;
+    }
+    .tp-trainer-btn:hover .tp-trainer-overlay { opacity: 1; }
+
+    /* ── Trainer modal ── */
+    .tp-modal-overlay {
+      display: none;
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(16, 24, 40, 0.5);
+      align-items: center; justify-content: center;
+      padding: 24px;
+    }
+    .tp-modal-overlay.open { display: flex; }
+    .tp-modal-card {
+      background: #fafafa;
+      border-radius: 16px;
+      box-shadow: 0 20px 24px -4px rgba(16,24,40,0.08), 0 8px 8px -4px rgba(16,24,40,0.03);
+      width: 100%; max-width: 460px; min-width: 300px;
+      overflow: hidden;
+    }
+    .tp-modal-header {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      padding: 12px;
+    }
+    .tp-modal-photo {
+      width: 96px; height: 96px; border-radius: 50%;
+      object-fit: cover; display: block;
+      margin: 4px 0 0 4px;
+    }
+    .tp-modal-close {
+      width: 40px; height: 40px;
+      display: flex; align-items: center; justify-content: center;
+      background: #fff; border: 1px solid #e5e5e5; border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(16,24,40,0.1), 0 1px 2px rgba(16,24,40,0.06);
+      cursor: pointer; flex-shrink: 0;
+    }
+    .tp-modal-close:hover { background: #f5f5f5; }
+    .tp-modal-body {
+      display: flex; flex-direction: column; gap: 8px;
+      padding: 0 24px 0;
+    }
+    .tp-modal-title {
+      font-size: 20px; font-weight: 600; color: #140d26; line-height: 1.4;
+    }
+    .tp-modal-text {
+      font-size: 16px; font-weight: 400; color: #171717; line-height: 1.5;
+    }
+    .tp-modal-footer {
+      padding: 24px;
+    }
+    .tp-modal-cta {
+      width: 100%; height: 44px;
+      background: #5200d4; color: #fff; border: none; border-radius: 12px;
+      font-size: 16px; font-weight: 600; cursor: pointer; font-family: var(--font);
+      transition: background .15s;
+    }
+    .tp-modal-cta:hover { background: #3f00a8; }
+
+    /* ═══════════════════════════════════════
+       DESKTOP (≥768px)
+    ═══════════════════════════════════════ */
+    @media (min-width: 768px) {
+      .tp-hero { padding: 48px 24px 24px; }
+      .tp-blob-wrap { width: 200px; height: 160px; margin-bottom: -16px; }
+      .tp-trainer-btn { width: 88px; height: 88px; }
+      .tp-trainer-img { width: 88px; height: 88px; }
+      .tp-greeting { font-size: 32px; }
+      .tp-intro { font-size: 18px; max-width: 520px; width: auto; }
+
+      .tp-step-tasks { flex-direction: row; gap: 24px; align-items: center; }
+
+      /* Single-column centered layout — NOT a 2-col sidebar grid */
+      .tp-main-layout {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 0 40px 80px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .tp-steps { padding: 0; }
+      .tp-card-wrap { padding: 0; }
+
+      /* Desktop class card: text LEFT, thumbnail RIGHT */
+      .tp-class-card {
+        display: grid;
+        grid-template-columns: 1fr 440px;
+        grid-template-rows: auto;
+      }
+      /* Meta (text) goes to left column */
+      .tp-meta {
+        grid-column: 1;
+        grid-row: 1;
+        padding: 28px;
+        gap: 20px;
+        justify-content: space-between;
+      }
+      /* Thumbnail goes to right column */
+      .tp-thumb {
+        grid-column: 2;
+        grid-row: 1;
+        aspect-ratio: unset;
+        height: 100%;
+        min-height: 320px;
+      }
+    }
+
+    /* ══════════════════════════════════════
+       CHANGE CLASS BOTTOM SHEET
+    ══════════════════════════════════════ */
+    .cc-overlay {
+      display: none;
+      position: fixed; inset: 0; z-index: 300;
+      background: rgba(16, 24, 40, 0.5);
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .cc-overlay.open { display: flex; }
+    .cc-sheet {
+      background: #fff;
+      border-radius: 20px 20px 0 0;
+      width: 100%; max-width: 540px;
+      padding: 0 0 env(safe-area-inset-bottom, 0);
+      box-shadow: 0 -4px 32px rgba(16,24,40,0.12);
+      animation: cc-slide-up 0.28s cubic-bezier(.32,.72,0,1);
+    }
+    @keyframes cc-slide-up {
+      from { transform: translateY(100%); opacity: 0; }
+      to   { transform: translateY(0);   opacity: 1; }
+    }
+    .cc-handle {
+      width: 36px; height: 4px;
+      background: #d4d4d4; border-radius: 99px;
+      margin: 12px auto 0;
+    }
+    .cc-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 20px 12px;
+    }
+    .cc-title {
+      font-size: 18px; font-weight: 600; color: #140d26; letter-spacing: -0.2px;
+    }
+    .cc-close {
+      width: 32px; height: 32px;
+      display: flex; align-items: center; justify-content: center;
+      background: #f5f5f5; border: none; border-radius: 8px;
+      cursor: pointer; flex-shrink: 0;
+    }
+    .cc-close:hover { background: #e5e5e5; }
+
+    /* Options list */
+    .cc-options {
+      display: flex; flex-direction: column; gap: 8px;
+      padding: 0 16px 20px;
+    }
+    .cc-option {
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 16px;
+      background: #fafafa; border: 2px solid #e5e5e5; border-radius: 14px;
+      cursor: pointer; text-align: left; width: 100%;
+      font-family: var(--font); transition: border-color .15s, background .15s;
+    }
+    .cc-option:hover { background: #f5f0ff; border-color: #c4b5fd; }
+    .cc-option.selected { background: #f5f0ff; border-color: #5200d4; }
+    .cc-option-icon { font-size: 22px; flex-shrink: 0; line-height: 1; }
+    .cc-option-text { font-size: 16px; font-weight: 500; color: #140d26; line-height: 1.3; }
+
+    /* Result state */
+    .cc-result {
+      display: none;
+      flex-direction: column; gap: 0;
+      padding: 0 16px 20px;
+    }
+    .cc-result.show { display: flex; }
+    .cc-result-label {
+      font-size: 13px; font-weight: 600; color: #5200d4;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      margin-bottom: 10px;
+    }
+    .cc-result-card {
+      display: flex; gap: 12px; align-items: flex-start;
+      background: #fafafa; border: 1.5px solid #e5e5e5; border-radius: 14px;
+      padding: 14px;
+    }
+    .cc-result-thumb {
+      width: 72px; height: 56px; border-radius: 8px; object-fit: cover; flex-shrink: 0;
+    }
+    .cc-result-info { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 0; }
+    .cc-result-tag {
+      font-size: 12px; font-weight: 600; color: #5200d4;
+    }
+    .cc-result-name {
+      font-size: 15px; font-weight: 600; color: #140d26; line-height: 1.3;
+    }
+    .cc-result-trainer { font-size: 13px; color: #737373; }
+    .cc-confirm {
+      width: 100%; height: 48px; margin-top: 14px;
+      background: #5200d4; color: #fff; border: none; border-radius: 12px;
+      font-size: 16px; font-weight: 600; cursor: pointer; font-family: var(--font);
+      transition: background .15s;
+    }
+    .cc-confirm:hover { background: #3f00a8; }
+    .cc-back-link {
+      display: block; text-align: center; margin-top: 10px;
+      font-size: 14px; font-weight: 600; color: #5200d4; cursor: pointer;
+      background: none; border: none; font-family: var(--font); width: 100%;
+    }
+    .cc-back-link:hover { text-decoration: underline; }
+
+    /* ═══════════════════════════════════════
+       RETURNING-MEMBER BLOB (no trainer photo, with NEW badge)
+    ═══════════════════════════════════════ */
+    .tp-blob-btn {
+      position: relative;
+      width: 110px; height: 110px;
+      background: none; border: none; padding: 0; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 50%;
+      font-family: var(--font);
+    }
+    .tp-blob-btn .tp-new-tag {
+      position: relative; z-index: 2;
+      font-size: 11px; font-weight: 600;
+      color: #fff; letter-spacing: 0.5px;
+      text-transform: uppercase;
+      line-height: 13px;
+      pointer-events: none;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.18);
+    }
+    .tp-blob-btn:hover .tp-new-tag { transform: scale(1.06); }
+    .tp-blob-btn .tp-new-tag { transition: transform .2s ease; }
+    /* Plain (no NEW tag) variant of the blob button, for the hero */
+    .tp-blob-btn--plain { background: transparent; }
+    /* Inline "Take a quick tour" link inside the intro */
+    .tp-tour-link {
+      color: #5200d4; font-weight: 600; text-decoration: underline;
+      text-underline-offset: 2px; cursor: pointer;
+    }
+    .tp-tour-link:hover { color: #3f00a8; }
+    /* Upcoming (non-pulsing) step dot */
+    .tp-step-dot.upcoming {
+      background: #fff;
+      border: 2px solid #a3a3a3;
+      animation: none;
+    }
+    .tp-step-dot.upcoming::after {
+      content: '';
+      width: 10px; height: 10px; border-radius: 50%;
+      background: #a3a3a3;
+    }
+
+    /* ═══════════════════════════════════════
+       WELCOME / INTRO MODAL (existing-member variant)
+    ═══════════════════════════════════════ */
+    .tp-welcome-overlay {
+      display: none;
+      position: fixed; inset: 0; z-index: 220;
+      background: rgba(16, 24, 40, 0.5);
+      align-items: center; justify-content: center;
+      padding: 24px;
+    }
+    .tp-welcome-overlay.open { display: flex; }
+    .tp-welcome-card {
+      background: #fafafa;
+      border-radius: 16px;
+      box-shadow: 0 20px 24px -4px rgba(16,24,40,0.08), 0 8px 8px -4px rgba(16,24,40,0.03);
+      width: 100%; max-width: 460px; min-width: 300px;
+      overflow: hidden;
+      display: flex; flex-direction: column;
+      align-items: center;
+      padding-bottom: 24px;
+    }
+    .tp-welcome-header {
+      display: flex; justify-content: flex-end;
+      width: 100%; padding: 12px;
+    }
+    .tp-welcome-close {
+      width: 40px; height: 40px;
+      display: flex; align-items: center; justify-content: center;
+      background: #fff; border: 1px solid #e5e5e5; border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(16,24,40,0.1), 0 1px 2px rgba(16,24,40,0.06);
+      cursor: pointer; flex-shrink: 0;
+    }
+    .tp-welcome-close:hover { background: #f5f5f5; }
+    .tp-welcome-blob {
+      position: relative;
+      width: 130px; height: 110px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 16px;
+    }
+    .tp-welcome-blob canvas {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+    }
+    .tp-welcome-blob .tp-new-tag {
+      position: relative; z-index: 2;
+      font-size: 11px; font-weight: 600;
+      color: #fff; letter-spacing: 0.5px;
+      text-transform: uppercase;
+      line-height: 13px;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.18);
+    }
+    .tp-welcome-body {
+      width: 100%;
+      padding: 8px 24px 0;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .tp-welcome-title {
+      font-size: 20px; font-weight: 600; color: #140d26; line-height: 24px;
+    }
+    .tp-welcome-text {
+      font-size: 16px; font-weight: 400; color: #171717; line-height: 24px;
+    }
+    .tp-welcome-bullets {
+      list-style: none; padding: 16px 16px 0; margin: 0;
+      display: flex; flex-direction: column; gap: 8px;
+      width: 100%;
+    }
+    .tp-welcome-bullet {
+      display: flex; gap: 8px; align-items: flex-start;
+      font-size: 16px; color: #000; line-height: 24px;
+    }
+    .tp-welcome-bullet svg { flex-shrink: 0; margin-top: 2px; }
+    .tp-welcome-bullet b { font-weight: 700; }
+    .tp-welcome-bullet .muted { color: #404040; }
+    .tp-welcome-footer {
+      width: 100%; padding: 24px 24px 0;
+    }
+    .tp-welcome-cta {
+      width: 100%; height: 44px;
+      background: #5200d4; color: #fff; border: none; border-radius: 12px;
+      font-size: 16px; font-weight: 600; cursor: pointer; font-family: var(--font);
+      transition: background .15s;
+    }
+    .tp-welcome-cta:hover { background: #3f00a8; }
+
+    /* Desktop: centered modal instead of bottom sheet */
+    @media (min-width: 768px) {
+      .cc-overlay { align-items: center; justify-content: center; }
+      .cc-sheet {
+        border-radius: 20px;
+        max-width: 480px;
+        width: 90%;
+        animation: cc-fade-scale 0.2s cubic-bezier(.32,.72,0,1);
+      }
+      .cc-handle { display: none; }
+      @keyframes cc-fade-scale {
+        from { opacity: 0; transform: scale(0.96); }
+        to   { opacity: 1; transform: scale(1); }
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Post-Auth Nav -->
+<nav class="tp-nav">
+
+  <!-- Logo -->
+  <a href="index.html" class="tp-nav-logo" aria-label="Bold home">
+    <div class="logo-lines"><img src="assets/logos/nav-logo-lines.svg" alt="" /></div>
+    <div class="logo-text"><img src="assets/logos/nav-logo-text.svg" alt="BOLD" /></div>
+  </a>
+
+  <!-- Center links -->
+  <div class="tp-nav-links">
+    <a href="today-plan.html" class="tp-nav-link active" aria-current="page">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+        <path d="M2.5 8.33L10 2.5l7.5 5.83V17.5h-5V12.5H7.5v5h-5V8.33Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+      </svg>
+      Today
+    </a>
+    <a href="#" class="tp-nav-link">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+        <path d="M10 16.25S2.5 12 2.5 6.875a3.958 3.958 0 0 1 7.5-1.75 3.958 3.958 0 0 1 7.5 1.75C17.5 12 10 16.25 10 16.25Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+      </svg>
+      Care
+    </a>
+    <a href="#" class="tp-nav-link">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+        <circle cx="10" cy="10" r="7.5" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M13.5 6.5l-2.25 4.5-4.5 2.25 2.25-4.5 4.5-2.25Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+      </svg>
+      Explore
+    </a>
+  </div>
+
+  <!-- Right: profile area -->
+  <div class="tp-nav-right">
+    <!-- Use app (mobile only) -->
+    <button class="tp-nav-useapp">Use app</button>
+    <!-- Bold Streak -->
+    <button class="tp-nav-btn tp-nav-btn-streak" aria-label="Bold Streak">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+        <path d="M10 17.5c-3.31 0-6-2.57-6-5.75 0-3 3-6 4-8 .25 2.5 2 3.5 2 5.5a2.5 2.5 0 0 0 2.75-2.5C14 9 15 10 15 11.75c0 3.18-2.69 5.75-5 5.75Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+      </svg>
+      <span class="tp-streak-label">Bold Streak</span>
+      <span class="tp-streak-count">1</span>
+    </button>
+    <!-- Mail -->
+    <button class="tp-nav-btn tp-nav-btn-mail" aria-label="Notifications (1 unread)">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M3 8l9 5.5L21 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <span class="tp-nav-badge">1</span>
+    </button>
+    <!-- Avatar -->
+    <button class="tp-nav-btn" aria-label="Account menu">
+      <span class="tp-avatar" id="nav-initials">IB</span>
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+        <path d="M5 7.5l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </div>
+
+</nav>
+
+<!-- Hero -->
+<div class="tp-hero">
+  <div class="tp-blob-wrap">
+    <canvas id="blobCanvas"></canvas>
+    <button class="tp-trainer-btn" onclick="openWelcomeModal()" aria-label="Welcome to your new Today">
+      <img class="tp-trainer-img" src="assets/images/alicia.png" alt="Alicia, your Bold trainer" />
+    </button>
+  </div>
+  <p class="tp-date skel" id="today-date">Today</p>
+  <h1 class="tp-greeting skel" id="tp-greeting">Good <span id="time-of-day">afternoon</span>, <span id="user-name">there</span></h1>
+  <p class="tp-intro" id="coach-intro">Welcome to your new Today. I've designed it to give you one clear step at a time — a class picked just for you, with the why behind every recommendation. <a href="#" class="tp-tour-link" onclick="event.preventDefault(); openWelcomeModal();">Take a quick tour</a></p>
+  <a href="plan-summary.html" class="tp-summary-hero">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="2" y="7" width="2.5" height="5" rx="0.5" fill="#525252"/><rect x="5.75" y="4" width="2.5" height="8" rx="0.5" fill="#525252"/><rect x="9.5" y="2" width="2.5" height="10" rx="0.5" fill="#525252"/></svg>
+    Plan summary
+  </a>
+</div>
+
+<!-- Main layout wrapper (splits into 2-col on desktop) -->
+<div class="tp-main-layout">
+
+  <!-- Steps — returning member: just Move class + Learn class -->
+  <div class="tp-steps">
+    <div class="tp-step-row">
+      <div class="tp-step-dot next"></div>
+      <div>
+        <p class="tp-step-label">Up Next</p>
+        <p class="tp-step-title">Finish your class</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Class card + bottom summary -->
+  <div class="tp-card-wrap">
+      <!-- Swap banner -->
+      <div class="tp-swap-banner" id="tp-swap-banner">
+        <span class="tp-swap-banner-text">Updated based on your preferences</span>
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true" style="flex-shrink:0">
+          <circle cx="9" cy="9" r="8.25" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"/>
+          <path d="M9 8.25v4.5" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="9" cy="5.625" r="0.75" fill="#fff"/>
+        </svg>
+      </div>
+    <div class="tp-class-card">
+      <!-- Thumbnail -->
+      <div class="tp-thumb">
+        <img src="assets/images/class-thumbnail.jpg" alt="Class thumbnail" />
+        <button class="tp-save-btn">
+          <svg width="16" height="18" viewBox="0 0 16 18" fill="none"><path d="M14 17L8 13L2 17V3C2 2.44772 2.44772 2 3 2H13C13.5523 2 14 2.44772 14 3V17Z" stroke="#140d26" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Save
+        </button>
+      </div>
+
+      <!-- Meta info -->
+      <div class="tp-meta">
+        <div>
+          <span class="tp-tag">Move class ⓘ</span>
+          <p class="tp-class-title" id="class-title" style="margin-top:8px">9 min Strength: Full Body Toning</p>
+          <p class="tp-class-trainer">Amanda</p>
+        </div>
+
+        <!-- Why this class -->
+        <div class="tp-why">
+          <div class="tp-why-header">
+            <img class="tp-why-avatar" src="assets/images/alicia.png" alt="Alicia" />
+            Why this class
+          </div>
+          <p class="tp-why-text" id="why-text">Your first class is short and gentle — designed to build your confidence and leave you feeling great.</p>
+          <button class="tp-why-readmore" id="why-readmore" onclick="window.location.href='class.html'" style="display:none">Read more…</button>
+        </div>
+
+        <!-- Actions -->
+        <div class="tp-actions">
+          <button class="tp-start" onclick="window.location.href='class.html'">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 3.5L16 10L5 16.5V3.5Z" fill="white"/></svg>
+            Start class
+          </button>
+          <button class="tp-change" onclick="openChangeClass()">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M17.5 10A7.5 7.5 0 1 1 10 2.5c2.42 0 4.58 1.14 6 2.93" stroke="#525252" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 1.5v4h-4" stroke="#525252" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Not feeling this today? <span>Change class</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Second step: Learn class -->
+  <div class="tp-steps">
+    <div class="tp-step-row">
+      <div class="tp-step-dot upcoming"></div>
+      <div>
+        <p class="tp-step-label">Then</p>
+        <p class="tp-step-title" id="learn-step-title">Learn about balance</p>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end tp-main-layout -->
+
+<!-- Change class bottom sheet -->
+<div class="cc-overlay" id="cc-modal" onclick="handleCCOverlayClick(event)">
+  <div class="cc-sheet" role="dialog" aria-modal="true" aria-label="Change class">
+    <div class="cc-handle"></div>
+    <div class="cc-header">
+      <span class="cc-title" id="cc-title">Let's find a better fit for today.</span>
+      <button class="cc-close" onclick="closeChangeClass()" aria-label="Close">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M12 4L4 12M4 4l8 8" stroke="#404040" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+
+    <!-- Options -->
+    <div class="cc-options" id="cc-options">
+      <button class="cc-option" data-mood="easier" onclick="selectMood(this)">
+        <span class="cc-option-icon">🟢</span>
+        <span class="cc-option-text">I want something easier today</span>
+      </button>
+      <button class="cc-option" data-mood="challenge" onclick="selectMood(this)">
+        <span class="cc-option-icon">🔵</span>
+        <span class="cc-option-text">I want more of a challenge</span>
+      </button>
+      <button class="cc-option" data-mood="short" onclick="selectMood(this)">
+        <span class="cc-option-icon">⏱️</span>
+        <span class="cc-option-text">I'm short on time</span>
+      </button>
+      <button class="cc-option" data-mood="seated" onclick="selectMood(this)">
+        <span class="cc-option-icon">🪑</span>
+        <span class="cc-option-text">I'd prefer seated today</span>
+      </button>
+      <button class="cc-option" data-mood="different" onclick="selectMood(this)">
+        <span class="cc-option-icon">🔄</span>
+        <span class="cc-option-text">Just show me something different</span>
+      </button>
+    </div>
+
+    <!-- Result state (shown after selection) -->
+    <div class="cc-result" id="cc-result">
+      <p class="cc-result-label">Here's your new class</p>
+      <div class="cc-result-card">
+        <img class="cc-result-thumb" src="assets/images/class-thumbnail.jpg" alt="" />
+        <div class="cc-result-info">
+          <span class="cc-result-tag" id="cc-result-tag">Move class</span>
+          <p class="cc-result-name" id="cc-result-name">Loading…</p>
+          <p class="cc-result-trainer">Amanda</p>
+        </div>
+      </div>
+      <button class="cc-confirm" onclick="confirmClassSwap()">Start this class</button>
+      <button class="cc-back-link" onclick="resetChangeClass()">← See other options</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- Welcome / intro modal (existing-member variant) -->
+<div class="tp-welcome-overlay" id="welcome-modal" onclick="handleWelcomeOverlayClick(event)">
+  <div class="tp-welcome-card" role="dialog" aria-modal="true" aria-labelledby="welcome-modal-title">
+    <div class="tp-welcome-header">
+      <button class="tp-welcome-close" onclick="closeWelcomeModal()" aria-label="Close">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M15 5L5 15M5 5l10 10" stroke="#171717" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+    <div class="tp-welcome-blob">
+      <canvas id="welcomeBlobCanvas"></canvas>
+      <span class="tp-new-tag">New</span>
+    </div>
+    <div class="tp-welcome-body">
+      <h2 class="tp-welcome-title" id="welcome-modal-title">Welcome to your new Today</h2>
+      <p class="tp-welcome-text">Your home page is now a personalized daily plan, built around your goals and how you're progressing.</p>
+    </div>
+    <ul class="tp-welcome-bullets">
+      <li class="tp-welcome-bullet">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 3l1.8 4.6L18.4 9.4l-4 3 1 4.6L12 14.8 8.6 17l1-4.6-4-3 4.6-1.8L12 3z" stroke="#5200d4" stroke-width="1.5" stroke-linejoin="round"/>
+          <path d="M19.5 4.5l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8.8-2z" stroke="#5200d4" stroke-width="1.2" stroke-linejoin="round"/>
+        </svg>
+        <span><b>The right class, everyday:</b> <span class="muted">we pick the best class for your body — adjusting to your feedback, progress, and goals in real time.</span></span>
+      </li>
+      <li class="tp-welcome-bullet">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" stroke="#5200d4" stroke-width="1.5"/>
+          <circle cx="12" cy="8" r="1.1" fill="#5200d4"/>
+          <rect x="11.1" y="10.5" width="1.8" height="6" rx="0.9" fill="#5200d4"/>
+        </svg>
+        <span><b>Always know why:</b> <span class="muted">Every class comes with a "Why this class" note, so you'll see exactly why it's the right one for today.</span></span>
+      </li>
+    </ul>
+    <div class="tp-welcome-footer">
+      <button class="tp-welcome-cta" onclick="closeWelcomeModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<script src="assets/js/ai-coach.js"></script>
+<script>
+  const name          = localStorage.getItem('boldUserName') || '';
+  const focus         = JSON.parse(localStorage.getItem('boldFocus') || '[]');
+  const intensity     = localStorage.getItem('boldIntensity') || 'moderate';
+  const duration      = localStorage.getItem('boldDuration') || '20 minutes';
+  const accommodation = localStorage.getItem('boldAccommodations') || '';
+  const prim          = localStorage.getItem('boldPrimaryFocus') || focus[0] || 'balance';
+
+  // Name + nav initials
+  if (name) {
+    document.getElementById('user-name').textContent    = name;
+    document.getElementById('nav-initials').textContent = name.slice(0, 2).toUpperCase();
+  }
+
+  // Time of day
+  const h = new Date().getHours();
+  document.getElementById('time-of-day').textContent = h < 12 ? 'morning' : h < 17 ? 'afternoon' : 'evening';
+
+  // Date
+  const d = new Date();
+  document.getElementById('today-date').textContent = d.toLocaleDateString('en-US', { weekday:'short', month:'long', day:'numeric' });
+
+  // Reveal date + greeting immediately (sync data ready)
+  requestAnimationFrame(() => {
+    document.getElementById('today-date').classList.remove('skel');
+    document.getElementById('tp-greeting').classList.remove('skel');
+  });
+
+  // Class title — match to focus + duration
+  const durMin = parseInt(duration) || 20;
+  const titles = {
+    balance:       `${durMin} min Balance & Stability Flow`,
+    pain:          `${durMin} min Gentle Joint Relief`,
+    routine_new:   `${durMin} min Strength: Full Body Toning`,
+    routine_start: `${durMin} min Beginner Full Body Strength`,
+    pelvic:        `${durMin} min Core & Pelvic Floor Essentials`,
+    brain:         `${durMin} min Mind-Body Coordination`,
+  };
+  document.getElementById('class-title').textContent = titles[prim] || titles.balance;
+
+  // Restore persisted class swap (if any)
+  const savedClass = JSON.parse(localStorage.getItem('boldSelectedClass') || 'null');
+  if (savedClass) {
+    document.getElementById('class-title').textContent = savedClass.name;
+    document.querySelector('.tp-tag').textContent = savedClass.tag + ' ⓘ';
+    document.querySelector('.tp-thumb img').src = savedClass.thumb;
+    document.getElementById('tp-swap-banner').classList.add('show');
+    document.querySelector('.tp-card-wrap').classList.add('swapped');
+  }
+
+  // Coach intro — returning-member variant: no trainer framing
+  const intros = {
+    balance:       `Today's ${durMin}-minute class works on balance from the ground up.`,
+    pain:          `Today's ${durMin}-minute class is gentle on your joints and leaves you feeling better, not worse.`,
+    routine_new:   `Today's ${durMin}-minute class is a great addition to your current routine.`,
+    routine_start: `Your class today is just ${durMin} minutes — finish feeling good, not wiped out!`,
+    pelvic:        `Today's ${durMin}-minute class is discreet and effective — you can do it anywhere.`,
+    brain:         `Today's ${durMin}-minute class mixes movement and focus to keep your brain sharp.`,
+  };
+  // Returning-member variant: keep the welcome copy with the "Take a quick tour" link.
+  // (Skipping the dynamic intros[prim] override so the hardcoded HTML below stays intact.)
+
+  // Learn-class step title — match to primary focus
+  const learnTopics = {
+    balance:       'Learn about balance',
+    pain:          'Learn about pain relief',
+    routine_new:   'Learn about strength',
+    routine_start: 'Learn about building a routine',
+    pelvic:        'Learn about pelvic floor',
+    brain:         'Learn about brain fitness',
+  };
+  const learnEl = document.getElementById('learn-step-title');
+  if (learnEl) learnEl.textContent = learnTopics[prim] || learnTopics.balance;
+
+  // "Why this class" — use accommodation if present
+  function whyText(accommodation, prim, intensity) {
+    const t = accommodation.toLowerCase();
+    if (accommodation) {
+      if (/knee/.test(t))     return 'Knee comfort noted — this seated class avoids any deep bending or high-impact moves.';
+      if (/back|spine/.test(t)) return 'Back sensitivity noted — this class keeps your spine supported throughout.';
+      if (/hip/.test(t))      return 'Hip sensitivity noted — no deep hip flexion, all movements stay in a safe range.';
+      if (/balance|fall/.test(t)) return 'Balance concerns noted — every standing move uses a chair for full support.';
+      if (/walker|cane/.test(t))  return 'Mobility aid noted — this class is fully adaptable for supported standing.';
+      if (/pain/.test(t))     return 'Pain areas noted — this class is low-load and stops well before any strain.';
+      return 'Your preferences shaped this class — it works around your needs, not against them.';
+    }
+    // No accommodation — use focus + intensity
+    const map = {
+      balance:       'Balance is built gradually — this class focuses on the lower body movements that matter most.',
+      pain:          'Low impact, high payoff — gentle movements that support your joints without aggravating them.',
+      routine_new:   'A strong complement to what you already do — fresh movements, same commitment.',
+      routine_start: 'Short and structured — the perfect first step to a routine you can actually stick to.',
+      pelvic:        'Subtle and effective — pelvic floor work you can do anywhere, at any time.',
+      brain:         'Movement + focus in one — coordination exercises that challenge your brain and your body.',
+    };
+    return map[prim] || map.routine_start;
+  }
+  document.getElementById('why-text').textContent = whyText(accommodation, prim, intensity);
+
+  // Show "Read more" if why-text is clamped
+  function checkWhyClamped() {
+    const el = document.getElementById('why-text');
+    const btn = document.getElementById('why-readmore');
+    if (el.scrollHeight > el.clientHeight) {
+      btn.style.display = 'block';
+    }
+  }
+  requestAnimationFrame(() => requestAnimationFrame(checkWhyClamped));
+
+  // ── AI-generated coach message ──────────────────────
+  // Returning-member variant: only let the AI update the "Why this class" copy,
+  // not the welcome greeting (which has the embedded "Take a quick tour" link).
+  (async () => {
+    const ctx = getBoldContext();
+    const coachEl = document.getElementById('coach-intro');
+    const whyEl = document.getElementById('why-text');
+    coachEl.classList.remove('skel'); // welcome copy is static — no skeleton
+    whyEl.classList.add('skel');
+    try {
+      const msg = await generateCoachMessage(ctx);
+      if (msg?.why) whyEl.textContent = msg.why;
+    } catch (e) {
+      console.warn('Bold AI:', e);
+    }
+    whyEl.classList.remove('skel');
+    requestAnimationFrame(() => requestAnimationFrame(checkWhyClamped));
+  })();
+
+  // ── Change class bottom sheet ───────────────────────
+  const CC_CLASSES = {
+    easier: {
+      tag: 'Move class',
+      name: `${durMin > 10 ? durMin - 10 : 5} min Gentle Strength: Chair-Assisted`,
+    },
+    challenge: {
+      tag: 'Move class',
+      name: `${durMin + 10} min Strength: Advanced Balance & Power`,
+    },
+    short: {
+      tag: 'Move class',
+      name: `5 min Express ${prim === 'balance' ? 'Balance' : prim === 'pain' ? 'Gentle Flow' : 'Full Body'}`,
+    },
+    seated: {
+      tag: 'Chair class',
+      name: `${durMin} min Seated Strength & Stability`,
+    },
+    different: {
+      tag: 'Move class',
+      name: `${durMin} min ${prim === 'balance' ? 'Balance: Standing Stability' : prim === 'pain' ? 'Gentle Mobility Flow' : 'Cardio Strength Mix'}`,
+    },
+  };
+
+  const CC_THUMBS = {
+    easier:    'assets/images/DSCF3699.jpg',
+    challenge: 'assets/images/DSCF3776.jpg',
+    short:     'assets/images/DSCF3788.jpg',
+    seated:    'assets/images/DSCF3824.jpg',
+    different: 'assets/images/DSCF3919.jpg',
+  };
+  let ccSelectedMood = null;
+
+  function openChangeClass() {
+    resetChangeClass();
+    document.getElementById('cc-modal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeChangeClass() {
+    document.getElementById('cc-modal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  function handleCCOverlayClick(e) {
+    if (e.target === e.currentTarget) closeChangeClass();
+  }
+  function selectMood(btn) {
+    document.querySelectorAll('.cc-option').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    ccSelectedMood = btn.dataset.mood;
+    const cls = CC_CLASSES[ccSelectedMood] || CC_CLASSES.different;
+    setTimeout(() => {
+      document.getElementById('cc-options').style.display = 'none';
+      document.getElementById('cc-result-tag').textContent = cls.tag;
+      document.getElementById('cc-result-name').textContent = cls.name;
+      document.querySelector('.cc-result-thumb').src = CC_THUMBS[ccSelectedMood] || 'assets/images/class-thumbnail.jpg';
+      document.getElementById('cc-result').classList.add('show');
+      document.getElementById('cc-title').textContent = 'Here\u2019s what we found.';
+    }, 200);
+  }
+  function resetChangeClass() {
+    ccSelectedMood = null;
+    document.getElementById('cc-options').style.display = '';
+    document.querySelectorAll('.cc-option').forEach(b => b.classList.remove('selected'));
+    document.getElementById('cc-result').classList.remove('show');
+    document.getElementById('cc-title').textContent = 'Let\u2019s find a better fit for today.';
+  }
+  function confirmClassSwap() {
+    const newName  = document.getElementById('cc-result-name').textContent;
+    const newTag   = document.getElementById('cc-result-tag').textContent;
+    const newThumb = CC_THUMBS[ccSelectedMood] || 'assets/images/class-thumbnail.jpg';
+    document.getElementById('class-title').textContent = newName;
+    document.querySelector('.tp-tag').textContent = newTag + ' ⓘ';
+    document.querySelector('.tp-thumb img').src = newThumb;
+    localStorage.setItem('boldSelectedClass', JSON.stringify({ name: newName, tag: newTag, thumb: newThumb }));
+    document.getElementById('tp-swap-banner').classList.add('show');
+    document.querySelector('.tp-card-wrap').classList.add('swapped');
+    closeChangeClass();
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { closeChangeClass(); closeWelcomeModal(); }
+  });
+
+  // ── Welcome / intro modal ───────────────────────────
+  function openWelcomeModal() {
+    document.getElementById('welcome-modal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+    // Kick the modal blob canvas to size + start animating
+    requestAnimationFrame(() => {
+      if (window.startBlobOnCanvas) {
+        window.startBlobOnCanvas(document.getElementById('welcomeBlobCanvas'));
+      } else {
+        // blob-animation.js will pick up #blobCanvas only — fall back to manual init
+        window.dispatchEvent(new Event('resize'));
+      }
+    });
+  }
+  function closeWelcomeModal() {
+    document.getElementById('welcome-modal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  function handleWelcomeOverlayClick(e) {
+    if (e.target === e.currentTarget) closeWelcomeModal();
+  }
+
+  // Auto-open the welcome modal on first visit for this variant
+  if (!localStorage.getItem('boldWelcomeSeenV1')) {
+    requestAnimationFrame(() => {
+      openWelcomeModal();
+      localStorage.setItem('boldWelcomeSeenV1', '1');
+    });
+  }
+</script>
+<script src="assets/js/blob-animation.js"></script>
+<script>
+  // ── Animate the blob inside the welcome modal ──────
+  // Same metaball algorithm as blob-animation.js (3 layered blobs, screen blend),
+  // but bound to #welcomeBlobCanvas. Sized smaller to fit the modal.
+  (function () {
+    const canvas = document.getElementById('welcomeBlobCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let W = 0, H = 0, dpr = 1, time = 0, raf = null;
+
+    function resize() {
+      dpr = window.devicePixelRatio || 1;
+      const rect = canvas.parentElement.getBoundingClientRect();
+      W = rect.width;
+      H = rect.height;
+      canvas.width  = W * dpr;
+      canvas.height = H * dpr;
+      canvas.style.width  = W + 'px';
+      canvas.style.height = H + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    class Blob {
+      constructor(cfg) {
+        this.cx = cfg.cx; this.cy = cfg.cy;
+        this.baseR = cfg.r; this.points = cfg.points || 6;
+        this.speed = cfg.speed || 0.008; this.wobble = cfg.wobble || 0.3;
+        this.colors = cfg.colors; this.phase = cfg.phase || 0;
+        this.breathe = cfg.breathe || 0.06; this.breatheSpeed = cfg.breatheSpeed || 0.003;
+        this.opacity = cfg.opacity || 0.6;
+      }
+      getPath(t) {
+        const pts = [], n = this.points;
+        const br = 1 + Math.sin(t * this.breatheSpeed + this.phase * 3) * this.breathe;
+        for (let i = 0; i < n; i++) {
+          const angle = (Math.PI * 2 * i) / n;
+          const n1 = Math.sin(t * this.speed + i * 1.7 + this.phase) * this.wobble;
+          const n2 = Math.cos(t * this.speed * 0.7 + i * 2.3 + this.phase * 1.5) * this.wobble * 0.5;
+          const n3 = Math.sin(t * this.speed * 1.4 + i * 0.8 + this.phase * 0.7) * this.wobble * 0.25;
+          const r = this.baseR * br * (1 + n1 + n2 + n3);
+          pts.push({ x: this.cx * W + Math.cos(angle) * r, y: this.cy * H + Math.sin(angle) * r });
+        }
+        return pts;
+      }
+      draw(t) {
+        const pts = this.getPath(t), n = pts.length;
+        ctx.beginPath();
+        for (let i = 0; i < n; i++) {
+          const curr = pts[i], next = pts[(i + 1) % n], prev = pts[(i - 1 + n) % n];
+          if (i === 0) ctx.moveTo((prev.x + curr.x) / 2, (prev.y + curr.y) / 2);
+          ctx.quadraticCurveTo(curr.x, curr.y, (curr.x + next.x) / 2, (curr.y + next.y) / 2);
+        }
+        ctx.closePath();
+        const gx = this.cx * W, gy = this.cy * H;
+        const grad = ctx.createRadialGradient(gx - this.baseR * 0.2, gy - this.baseR * 0.2, 0, gx, gy, this.baseR * 1.3);
+        grad.addColorStop(0, this.colors[0]);
+        grad.addColorStop(1, this.colors[1]);
+        ctx.globalAlpha = this.opacity;
+        ctx.fillStyle = grad;
+        ctx.fill();
+        ctx.globalAlpha = 1;
+      }
+    }
+
+    // Smaller radii than the hero so it fits the 130×110 modal blob area.
+    const blobs = [
+      new Blob({ cx: 0.5, cy: 0.5, r: 42, points: 8, speed: 0.004, wobble: 0.16,
+        colors: ['rgba(82, 0, 212, 0.55)', 'rgba(82, 0, 212, 0.12)'],
+        phase: 0, breathe: 0.04, breatheSpeed: 0.002, opacity: 0.7 }),
+      new Blob({ cx: 0.5, cy: 0.5, r: 38, points: 6, speed: 0.007, wobble: 0.2,
+        colors: ['rgba(37, 99, 235, 0.5)', 'rgba(37, 99, 235, 0.1)'],
+        phase: 2.2, breathe: 0.05, breatheSpeed: 0.003, opacity: 0.65 }),
+      new Blob({ cx: 0.5, cy: 0.5, r: 32, points: 7, speed: 0.005, wobble: 0.18,
+        colors: ['rgba(82, 0, 212, 0.45)', 'rgba(37, 99, 235, 0.15)'],
+        phase: 4.5, breathe: 0.04, breatheSpeed: 0.0025, opacity: 0.6 }),
+    ];
+
+    function render() {
+      time++;
+      ctx.clearRect(0, 0, W, H);
+      ctx.globalCompositeOperation = 'screen';
+      for (const b of blobs) b.draw(time);
+      ctx.globalCompositeOperation = 'source-over';
+      raf = requestAnimationFrame(render);
+    }
+    function start() { if (raf) return; resize(); render(); }
+    function stop()  { if (raf) cancelAnimationFrame(raf); raf = null; }
+
+    window.addEventListener('resize', () => { if (raf) resize(); });
+    const obs = new MutationObserver(() => {
+      const open = document.getElementById('welcome-modal').classList.contains('open');
+      if (open) start(); else stop();
+    });
+    obs.observe(document.getElementById('welcome-modal'), { attributes: true, attributeFilter: ['class'] });
+  })();
+</script>
+</body>
+</html>
