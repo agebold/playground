@@ -1,0 +1,1326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bold — Medical Director Oversight</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f4f0;
+      color: #1a1a1a;
+      height: 100vh;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* ─── SIDEBAR ─── */
+    .sidebar {
+      width: 212px;
+      background: #fff;
+      border-right: 1px solid #e8e8e4;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      flex-shrink: 0;
+    }
+    .sidebar-logo {
+      padding: 14px 16px;
+      font-weight: 700;
+      font-size: 12.5px;
+      color: #1a1a1a;
+      border-bottom: 1px solid #f0f0ec;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: -0.01em;
+    }
+    .logo-dot { width: 8px; height: 8px; background: #2a5c24; border-radius: 50%; flex-shrink: 0; }
+    .sidebar-section { padding: 14px 8px 2px; }
+    .sidebar-section-label {
+      font-size: 10px; font-weight: 600; color: #b0b0a8;
+      text-transform: uppercase; letter-spacing: 0.09em;
+      padding: 0 8px 6px;
+    }
+    .nav-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 7px 8px; border-radius: 6px; cursor: pointer;
+      font-size: 13px; color: #555; user-select: none;
+    }
+    .nav-item:hover { background: #f5f5f0; color: #1a1a1a; }
+    .nav-item.active { background: #eeeee8; color: #1a1a1a; font-weight: 500; }
+    .nav-icon { width: 14px; height: 14px; flex-shrink: 0; opacity: 0.65; }
+    .nav-item.active .nav-icon { opacity: 1; }
+    .nav-badge {
+      margin-left: auto; background: #d94f3d; color: #fff;
+      font-size: 10px; font-weight: 700; border-radius: 10px;
+      padding: 1px 6px; min-width: 18px; text-align: center; line-height: 1.6;
+    }
+    .sidebar-footer {
+      margin-top: auto; padding: 12px 14px;
+      border-top: 1px solid #f0f0ec;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .avatar {
+      width: 30px; height: 30px; border-radius: 50%;
+      background: #2a5c24; color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; flex-shrink: 0;
+    }
+    .avatar-name { font-size: 12px; font-weight: 600; color: #1a1a1a; }
+    .avatar-role { font-size: 10.5px; color: #aaa; margin-top: 1px; }
+
+    /* ─── MAIN ─── */
+    .main { flex: 1; overflow-y: auto; padding: 28px 32px; }
+    .page-header { margin-bottom: 22px; }
+    .page-title { font-size: 19px; font-weight: 700; letter-spacing: -0.02em; }
+    .page-subtitle { font-size: 12px; color: #999; margin-top: 3px; }
+
+    /* ─── STATS ROW ─── */
+    .stats-row { display: flex; gap: 12px; margin-bottom: 20px; }
+    .stat-card {
+      background: #fff; border: 1px solid #e8e8e4;
+      border-radius: 8px; padding: 14px 18px; flex: 1;
+    }
+    .stat-value { font-size: 24px; font-weight: 700; line-height: 1.1; }
+    .stat-label { font-size: 11.5px; color: #888; margin-top: 3px; }
+    .stat-sublabel { font-size: 11px; color: #bbb; margin-top: 2px; }
+    .so-pill {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: #eaf3e8; color: #2a5c24;
+      font-size: 11px; font-weight: 700;
+      border-radius: 5px; padding: 3px 9px; margin-top: 4px;
+    }
+
+    /* ─── FILTER BAR ─── */
+    .filter-bar { display: flex; gap: 6px; margin-bottom: 16px; align-items: center; }
+    .filter-tab {
+      padding: 5px 13px; border-radius: 20px; font-size: 12px;
+      font-weight: 500; cursor: pointer; border: 1px solid #e0e0da;
+      color: #666; background: #fff; user-select: none;
+    }
+    .filter-tab:hover { background: #f5f5f0; }
+    .filter-tab.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+    .filter-tab .ct { margin-left: 3px; opacity: 0.65; }
+    .ml-auto { margin-left: auto; }
+
+    /* ─── TABLE ─── */
+    .table-card { background: #fff; border: 1px solid #e8e8e4; border-radius: 8px; overflow: hidden; }
+    .data-table { width: 100%; border-collapse: collapse; }
+    .data-table th {
+      font-size: 10.5px; font-weight: 600; color: #aaa;
+      text-align: left; padding: 9px 16px; border-bottom: 1px solid #f0f0ec;
+      background: #fafaf8; text-transform: uppercase; letter-spacing: 0.06em; white-space: nowrap;
+    }
+    .data-table td {
+      padding: 11px 16px; border-bottom: 1px solid #f5f5f2;
+      font-size: 13px; vertical-align: middle;
+    }
+    .data-table tbody tr:last-child td { border-bottom: none; }
+    .data-table tbody tr { cursor: pointer; transition: background 0.1s; }
+    .data-table tbody tr:hover { background: #fafaf8; }
+    .data-table tbody tr.row-flagged { background: #fff9f5; }
+    .data-table tbody tr.row-flagged:hover { background: #fff4ee; }
+    .member-name { font-weight: 600; }
+    .member-sub { font-size: 11px; color: #bbb; margin-top: 1px; }
+    .score-main { font-weight: 600; }
+    .delta { font-size: 11px; margin-left: 3px; }
+    .delta.neg { color: #c0392b; }
+    .delta.pos { color: #27ae60; }
+
+    /* ─── BADGES ─── */
+    .badge {
+      display: inline-flex; align-items: center;
+      padding: 3px 9px; border-radius: 12px;
+      font-size: 11px; font-weight: 600; white-space: nowrap;
+    }
+    .b-escalated { background: #fde8e2; color: #c0392b; }
+    .b-flagged   { background: #fef3e0; color: #d4890a; }
+    .b-routine   { background: #e6f0fc; color: #1a6fa8; }
+    .b-audit     { background: #f0f0ee; color: #777; }
+    .b-active    { background: #e8f5e8; color: #2a5c24; }
+    .b-archived  { background: #f0f0ee; color: #999; }
+    .b-flag-action     { background: #fef3e0; color: #d4890a; }
+    .b-escalate-action { background: #fde8e2; color: #c0392b; }
+    .b-alert-action    { background: #e6f0fc; color: #1a6fa8; }
+    .b-audit-action    { background: #f0f0ee; color: #777; }
+
+    /* ─── BUTTONS ─── */
+    .btn {
+      padding: 6px 14px; border-radius: 6px; font-size: 12px;
+      font-weight: 600; cursor: pointer; border: none;
+      font-family: inherit; transition: opacity 0.15s; white-space: nowrap;
+    }
+    .btn:hover { opacity: 0.82; }
+    .btn:active { opacity: 0.65; }
+    .btn-dark    { background: #1a1a1a; color: #fff; }
+    .btn-green   { background: #2a5c24; color: #fff; }
+    .btn-outline { background: #fff; color: #333; border: 1px solid #ddddd8; }
+    .btn-outline:hover { background: #f5f5f0; }
+    .btn-review  { background: #fff; color: #1a6fa8; border: 1px solid #90c0e8; font-size: 12px; }
+    .btn-approve { background: #edf7eb; color: #2a5c24; border: 1px solid #a8d8a4; font-size: 12px; }
+    .btn-danger  { background: #fde8e2; color: #c0392b; border: 1px solid #f5a898; }
+
+    /* ─── MODAL ─── */
+    .overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.32);
+      z-index: 100; display: flex; align-items: flex-start;
+      justify-content: center; padding: 36px 20px; overflow-y: auto;
+    }
+    .modal {
+      background: #fff; border-radius: 12px; width: 590px;
+      max-width: 100%; box-shadow: 0 24px 64px rgba(0,0,0,0.18); position: relative;
+    }
+    .modal-head { padding: 20px 24px 0; }
+    .modal-close {
+      position: absolute; top: 14px; right: 14px;
+      background: none; border: none; font-size: 17px; cursor: pointer;
+      color: #aaa; width: 28px; height: 28px;
+      display: flex; align-items: center; justify-content: center; border-radius: 4px;
+    }
+    .modal-close:hover { background: #f5f5f0; color: #333; }
+    .modal-patient-name { font-size: 18px; font-weight: 700; letter-spacing: -0.02em; }
+    .modal-patient-meta { font-size: 12px; color: #999; margin-top: 2px; }
+    .phase-chip {
+      display: inline-flex; align-items: center;
+      background: #e6f0fc; color: #1a6fa8;
+      font-size: 11px; font-weight: 600; border-radius: 4px; padding: 2px 8px; margin-left: 6px;
+    }
+    .modal-tabs {
+      display: flex; border-bottom: 1px solid #f0f0ec;
+      margin-top: 14px; padding: 0 24px;
+    }
+    .modal-tab {
+      padding: 8px 14px; font-size: 12px; font-weight: 500; color: #aaa;
+      cursor: pointer; border-bottom: 2px solid transparent;
+      margin-bottom: -1px; user-select: none; white-space: nowrap;
+    }
+    .modal-tab:hover { color: #444; }
+    .modal-tab.active { color: #1a1a1a; border-bottom-color: #1a1a1a; font-weight: 600; }
+    .modal-alert {
+      margin: 14px 24px 0; background: #fff8f0;
+      border: 1px solid #f0c878; border-left: 4px solid #e67e22;
+      border-radius: 6px; padding: 10px 14px;
+      font-size: 12px; color: #7a3f00; line-height: 1.55;
+    }
+    .modal-body { padding: 18px 24px; }
+    .modal-foot {
+      padding: 14px 24px; border-top: 1px solid #f0f0ec;
+      display: flex; justify-content: space-between; align-items: center; gap: 8px;
+    }
+
+    /* Patient profile */
+    .profile-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px 20px; margin-bottom: 20px; }
+    .pf-label { font-size: 10px; font-weight: 600; color: #bbb; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 3px; }
+    .pf-value { font-size: 13px; font-weight: 500; }
+    .section-head { font-size: 10.5px; font-weight: 700; color: #bbb; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
+    .phase-log-entry { display: flex; gap: 14px; font-size: 12px; padding: 9px 0; border-bottom: 1px solid #f5f5f2; }
+    .phase-log-entry:last-child { border-bottom: none; }
+    .log-date { color: #bbb; font-size: 11px; white-space: nowrap; min-width: 88px; padding-top: 1px; }
+    .log-text { color: #555; line-height: 1.45; }
+
+    /* Outcome table */
+    .outcome-tbl { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .outcome-tbl th {
+      font-size: 10px; font-weight: 600; color: #bbb; text-align: left;
+      padding: 6px 10px; border-bottom: 1px solid #f0f0ec;
+      text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .outcome-tbl td { padding: 9px 10px; border-bottom: 1px solid #f7f7f5; vertical-align: middle; }
+    .outcome-tbl tr:last-child td { border-bottom: none; }
+    .msr-name { font-weight: 600; font-size: 13px; }
+    .msr-sub  { font-size: 10px; color: #bbb; margin-top: 1px; }
+    .ch-pos { color: #27ae60; font-weight: 600; }
+    .ch-neg { color: #c0392b; font-weight: 600; }
+
+    /* Class history */
+    .class-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid #f5f5f2; font-size: 12.5px; }
+    .class-item:last-child { border-bottom: none; }
+    .c-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .c-dot.done { background: #2a5c24; }
+    .c-dot.skip { background: #ddd; }
+    .c-name { font-weight: 500; flex: 1; }
+    .c-type { color: #aaa; font-size: 11px; }
+    .c-date { color: #bbb; font-size: 11px; white-space: nowrap; }
+    .c-status { font-size: 10.5px; font-weight: 600; padding: 2px 7px; border-radius: 10px; }
+    .c-status.done { background: #e8f5e8; color: #2a5c24; }
+    .c-status.skip { background: #f5f5f2; color: #aaa; }
+
+    /* Actions */
+    .action-row { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f5f5f2; cursor: pointer; }
+    .action-row:last-child { border-bottom: none; }
+    .action-row:hover { opacity: 0.8; }
+    .action-row input[type=checkbox] { margin-top: 2px; flex-shrink: 0; width: 15px; height: 15px; accent-color: #1a1a1a; cursor: pointer; }
+    .action-title { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
+    .action-desc  { font-size: 11px; color: #aaa; }
+
+    /* ─── DRAWER ─── */
+    .drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.18); z-index: 200; display: flex; justify-content: flex-end; }
+    .drawer {
+      background: #fff; width: 480px; height: 100vh;
+      display: flex; flex-direction: column;
+      box-shadow: -4px 0 28px rgba(0,0,0,0.12);
+      animation: slideIn 0.2s ease;
+    }
+    @keyframes slideIn { from { transform: translateX(40px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    .drawer-head { padding: 20px 24px; border-bottom: 1px solid #f0f0ec; display: flex; justify-content: space-between; align-items: flex-start; }
+    .drawer-title    { font-size: 16px; font-weight: 700; }
+    .drawer-subtitle { font-size: 12px; color: #aaa; margin-top: 3px; }
+    .drawer-body { flex: 1; padding: 20px 24px; overflow-y: auto; }
+    .drawer-foot { padding: 14px 24px; border-top: 1px solid #f0f0ec; display: flex; gap: 8px; justify-content: flex-end; }
+    .form-group { margin-bottom: 15px; }
+    .form-label { display: block; font-size: 11px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 5px; }
+    .form-input, .form-select, .form-textarea {
+      width: 100%; padding: 8px 11px; border: 1px solid #ddddd8;
+      border-radius: 6px; font-size: 13px; color: #1a1a1a; background: #fff; font-family: inherit;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus { outline: none; border-color: #888; }
+    .form-input[readonly] { background: #fafaf8; color: #aaa; }
+    .form-textarea { height: 145px; resize: vertical; line-height: 1.55; }
+    .input-hint { font-size: 10.5px; color: #bbb; margin-top: 5px; }
+
+    /* ─── STANDING ORDERS ─── */
+    .so-cards { display: flex; gap: 14px; margin-bottom: 22px; }
+    .so-card { background: #fff; border: 1px solid #e8e8e4; border-radius: 8px; padding: 18px; flex: 1; }
+    .so-card-title { font-size: 14px; font-weight: 700; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+    .so-row { display: flex; justify-content: space-between; font-size: 12px; color: #888; margin-bottom: 9px; }
+    .so-row strong { color: #1a1a1a; }
+    .so-link { color: #1a6fa8; cursor: pointer; text-decoration: underline; font-size: 12px; }
+    .vh-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f5f5f2; font-size: 12.5px; }
+    .vh-item:last-child { border-bottom: none; }
+    .rules-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .rules-title { font-size: 15px; font-weight: 700; }
+    .rules-card { background: #fff; border: 1px solid #e8e8e4; border-radius: 8px; overflow: hidden; }
+    .rules-tbl { width: 100%; border-collapse: collapse; }
+    .rules-tbl th { font-size: 10px; font-weight: 600; color: #bbb; text-transform: uppercase; letter-spacing: 0.07em; padding: 9px 16px; background: #fafaf8; border-bottom: 1px solid #f0f0ec; text-align: left; }
+    .rules-tbl td { padding: 11px 16px; border-bottom: 1px solid #f5f5f2; font-size: 12.5px; }
+    .rules-tbl tr:last-child td { border-bottom: none; }
+    .rule-name { font-weight: 600; font-size: 13px; }
+    .rule-sub  { font-size: 10px; color: #bbb; margin-top: 1px; }
+    .clinical-rationale { background: #fafaf8; border: 1px solid #e8e8e4; border-radius: 6px; padding: 12px 16px; font-size: 12px; color: #888; font-style: italic; margin-top: 16px; line-height: 1.5; }
+    .so-drawer { width: 580px; }
+    .rules-editor-head { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 32px; gap: 8px; font-size: 10px; font-weight: 600; color: #bbb; text-transform: uppercase; letter-spacing: 0.07em; padding: 6px 0 8px; border-bottom: 1px solid #f0f0ec; margin-bottom: 4px; }
+    .rule-row { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 32px; gap: 8px; align-items: center; padding: 7px 0; border-bottom: 1px solid #f7f7f5; }
+    .rule-row input, .rule-row select { padding: 6px 8px; border: 1px solid #ddddd8; border-radius: 4px; font-size: 12px; font-family: inherit; width: 100%; }
+    .rule-row input:focus, .rule-row select:focus { outline: none; border-color: #888; }
+    .remove-rule-btn { background: none; border: none; color: #ccc; cursor: pointer; font-size: 17px; padding: 2px; line-height: 1; }
+    .remove-rule-btn:hover { color: #c0392b; }
+
+    /* ─── INSTRUMENTS LIST ─── */
+    .instruments-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .inst-card {
+      background: #fff; border: 1px solid #e8e8e4; border-radius: 8px;
+      padding: 18px; cursor: pointer; transition: box-shadow 0.15s, border-color 0.15s;
+      display: flex; flex-direction: column;
+    }
+    .inst-card:hover { box-shadow: 0 4px 14px rgba(0,0,0,0.08); border-color: #ccc; }
+    .inst-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px; }
+    .inst-abbr { font-size: 17px; font-weight: 800; letter-spacing: -0.02em; }
+    .bp-chip { font-size: 11px; font-weight: 600; border-radius: 5px; padding: 3px 9px; white-space: nowrap; flex-shrink: 0; }
+    .cadence-chip { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; background: #f0f0ee; color: #666; border-radius: 5px; padding: 3px 8px; }
+    .inst-fullname { font-size: 11.5px; color: #888; margin-bottom: 14px; line-height: 1.4; flex: 1; }
+    .inst-meta { margin-bottom: 12px; }
+    .inst-meta-row { display: flex; align-items: center; gap: 7px; font-size: 12px; color: #555; margin-bottom: 5px; }
+    .inst-meta-icon { font-size: 11px; width: 14px; text-align: center; flex-shrink: 0; }
+    .inst-card-footer { font-size: 12px; font-weight: 600; color: #1a6fa8; text-align: right; padding-top: 8px; border-top: 1px solid #f5f5f2; }
+
+    /* ─── INSTRUMENT DETAIL ─── */
+    .inst-detail-meta {
+      display: flex; gap: 20px; flex-wrap: wrap;
+      font-size: 12px; color: #888; margin-top: 10px;
+      padding: 12px 16px; background: #fff;
+      border: 1px solid #e8e8e4; border-radius: 8px; margin-bottom: 20px;
+    }
+    .inst-detail-meta span { display: flex; align-items: center; gap: 5px; }
+    .inst-detail-meta strong { color: #333; }
+
+    .q-section-divider {
+      font-size: 12px; font-weight: 700; color: #666;
+      background: #f0f0ed; border-radius: 6px;
+      padding: 9px 14px; margin: 18px 0 10px;
+      border-left: 4px solid #bbb;
+    }
+    .q-block {
+      background: #fff; border: 1px solid #e8e8e4; border-radius: 8px;
+      padding: 16px 18px; margin-bottom: 10px;
+    }
+    .q-header { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 14px; }
+    .q-num { font-size: 10px; font-weight: 700; color: #aaa; background: #f5f5f2; border-radius: 4px; padding: 3px 7px; white-space: nowrap; margin-top: 1px; flex-shrink: 0; }
+    .q-text { font-size: 13.5px; font-weight: 600; color: #1a1a1a; line-height: 1.4; }
+    .q-note { font-size: 11px; color: #bbb; margin-top: 3px; }
+
+    /* Distribution chart */
+    .dist-row { display: flex; align-items: center; gap: 10px; margin-bottom: 7px; }
+    .dist-row:last-child { margin-bottom: 0; }
+    .dist-label { font-size: 12px; color: #555; min-width: 210px; text-align: right; flex-shrink: 0; line-height: 1.3; }
+    .dist-track { flex: 1; height: 22px; background: #f0f0ee; border-radius: 5px; overflow: hidden; }
+    .dist-fill { height: 100%; border-radius: 5px; min-width: 3px; }
+    .dist-pct { font-size: 12px; font-weight: 700; color: #333; min-width: 34px; text-align: right; }
+    .dist-n { font-size: 11px; color: #bbb; min-width: 44px; }
+
+    /* ─── TOAST ─── */
+    .toast {
+      position: fixed; bottom: 22px; right: 22px;
+      background: #1a1a1a; color: #fff; padding: 11px 18px;
+      border-radius: 8px; font-size: 13px; font-weight: 500;
+      z-index: 999; display: flex; align-items: center; gap: 8px;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+      animation: fadeUp 0.2s ease;
+    }
+    @keyframes fadeUp { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    .toast.t-success { background: #2a5c24; }
+
+    .hidden { display: none !important; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #ddd; border-radius: 2px; }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════ SIDEBAR ═══════════ -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-dot"></div>
+    Bold — Medical Director
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Review</div>
+    <div class="nav-item active" id="nav-queue" onclick="navigate('queue')">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="1.5" y="1.5" width="13" height="13" rx="2"/><line x1="1.5" y1="6" x2="14.5" y2="6"/><line x1="6" y1="6" x2="6" y2="14.5"/></svg>
+      Review queue
+      <span class="nav-badge" id="queue-badge">12</span>
+    </div>
+    <div class="nav-item" id="nav-members" onclick="navigate('members')">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="5.5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg>
+      All members
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Check-ins</div>
+    <div class="nav-item" id="nav-instruments" onclick="navigate('instruments')">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="1" y="3" width="14" height="2" rx="1"/><rect x="1" y="7" width="10" height="2" rx="1"/><rect x="1" y="11" width="12" height="2" rx="1"/><circle cx="14" cy="12" r="2" fill="currentColor" stroke="none"/></svg>
+      Instruments
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Governance</div>
+    <div class="nav-item" id="nav-standing-orders" onclick="navigate('standing-orders')">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><line x1="2" y1="4" x2="14" y2="4"/><line x1="2" y1="8" x2="10" y2="8"/><line x1="2" y1="12" x2="12" y2="12"/></svg>
+      Standing orders
+    </div>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="avatar">DR</div>
+    <div>
+      <div class="avatar-name">Dr. Rivera, MD</div>
+      <div class="avatar-role">Medical Director</div>
+    </div>
+  </div>
+</aside>
+
+<!-- ═══════════ MAIN ═══════════ -->
+<main class="main" id="main"></main>
+
+<!-- ═══════════ PATIENT MODAL ═══════════ -->
+<div class="overlay hidden" id="patient-modal" onclick="onOverlayClick(event)">
+  <div class="modal" id="modal-inner">
+    <div class="modal-head">
+      <div class="modal-patient-name" id="m-name"></div>
+      <div class="modal-patient-meta" id="m-meta"></div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div class="modal-tabs">
+        <div class="modal-tab active"  onclick="switchTab('overview',this)">Overview</div>
+        <div class="modal-tab"         onclick="switchTab('outcomes',this)">Outcome measures</div>
+        <div class="modal-tab"         onclick="switchTab('classes',this)">Class history</div>
+        <div class="modal-tab"         onclick="switchTab('actions',this)">Actions &amp; approvals</div>
+      </div>
+    </div>
+    <div class="modal-alert hidden" id="m-alert"></div>
+    <div class="modal-body" id="m-body"></div>
+    <div class="modal-foot">
+      <button class="btn btn-outline" onclick="doExportCSV()">Export outcomes CSV</button>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-outline" onclick="openPCPDrawer()">Message PCP</button>
+        <button class="btn btn-green"   onclick="doApprove()">Approve &amp; send to external org</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ PCP DRAWER ═══════════ -->
+<div class="drawer-overlay hidden" id="pcp-drawer">
+  <div class="drawer">
+    <div class="drawer-head">
+      <div>
+        <div class="drawer-title">Message Patient's PCP</div>
+        <div class="drawer-subtitle" id="pcp-subtitle">Re: —</div>
+      </div>
+      <button class="btn btn-outline" onclick="closePCPDrawer()" style="padding:5px 10px;font-size:14px">✕</button>
+    </div>
+    <div class="drawer-body">
+      <div class="form-group">
+        <label class="form-label">To (PCP)</label>
+        <input class="form-input" readonly value="Primary Care Physician · via Bold Health Secure Messaging">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Subject</label>
+        <input class="form-input" id="pcp-subject">
+      </div>
+      <div class="form-group">
+        <label class="form-label">From</label>
+        <input class="form-input" readonly value="Dr. Rivera, MD — Medical Director, Bold MSK ACCESS Program">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Message body</label>
+        <textarea class="form-textarea" id="pcp-body"></textarea>
+      </div>
+      <div class="input-hint">This message will be logged in the patient's audit trail and sent via Bold's secure messaging system.</div>
+    </div>
+    <div class="drawer-foot">
+      <button class="btn btn-outline" onclick="closePCPDrawer()">Cancel</button>
+      <button class="btn btn-green"   onclick="sendPCP()">Send message</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ STANDING ORDER DRAWER ═══════════ -->
+<div class="drawer-overlay hidden" id="so-drawer">
+  <div class="drawer so-drawer">
+    <div class="drawer-head">
+      <div>
+        <div class="drawer-title" id="so-drawer-title">Edit / Create Draft</div>
+        <div class="drawer-subtitle">Rules take effect only after Medical Director approval</div>
+      </div>
+      <button class="btn btn-outline" onclick="closeSODrawer()" style="padding:5px 10px;font-size:14px">✕</button>
+    </div>
+    <div class="drawer-body">
+      <div class="form-group">
+        <label class="form-label">Clinical rationale</label>
+        <textarea class="form-textarea" id="so-rationale" style="height:76px" placeholder="Explain why these thresholds are appropriate for Bold's ACCESS MSK member population…"></textarea>
+      </div>
+      <div style="font-size:13px;font-weight:700;margin-bottom:10px">Screening rules</div>
+      <div class="rules-editor-head">
+        <span>Rule name</span><span>Instrument</span><span>Threshold</span><span>Action</span><span></span>
+      </div>
+      <div id="rules-editor"></div>
+      <button class="btn btn-outline" onclick="addDraftRule()" style="margin-top:10px;width:100%;font-size:12px">+ Add rule</button>
+      <div class="form-group" style="margin-top:16px">
+        <label class="form-label">Version notes</label>
+        <input class="form-input" id="so-notes" placeholder="What changed in this version?">
+      </div>
+    </div>
+    <div class="drawer-foot">
+      <button class="btn btn-outline" onclick="closeSODrawer()">Cancel</button>
+      <button class="btn btn-outline" onclick="saveDraft()">Save as draft</button>
+      <button class="btn btn-green"   onclick="deployOrder()">Approve &amp; deploy</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════
+// CHECK-IN INSTRUMENTS DATA
+// ═══════════════════════════════════════════════════
+const INSTRUMENTS = {
+  'KOOS JR': {
+    fullName: 'Knee injury and Osteoarthritis Outcome Score, Joint Replacement',
+    bodyPart: 'Knee',
+    cadence: 'Baseline, then every 3 months',
+    cadenceShort: 'Baseline + Q3M',
+    scoring: '0–100 · Higher score = better function',
+    nPatients: 142,
+    color: '#1a6fa8',
+    questions: [
+      { text:'How often do you experience knee pain?',             note:'Pain — frequency',          options:['Never','Monthly','Weekly','Daily','Always'],                        dist:[5,12,28,38,17] },
+      { text:'Twisting / pivoting on your knee',                   note:'Pain — difficulty',         options:['None','Mild','Moderate','Severe','Extreme'],                        dist:[4,11,27,35,23] },
+      { text:'Straightening your knee fully',                      note:'Pain — difficulty',         options:['None','Mild','Moderate','Severe','Extreme'],                        dist:[8,18,30,29,15] },
+      { text:'Going down stairs',                                  note:'Pain — difficulty',         options:['None','Mild','Moderate','Severe','Extreme'],                        dist:[3,9,24,38,26]  },
+      { text:'Standing up from sitting',                           note:'Function — difficulty',     options:['None','Mild','Moderate','Severe','Extreme'],                        dist:[5,14,29,34,18] },
+      { text:'Bending to the floor / picking up an object',        note:'Function — difficulty',     options:['None','Mild','Moderate','Severe','Extreme'],                        dist:[6,15,31,31,17] },
+      { text:'Going up or down stairs',                            note:'Function — difficulty',     options:['None','Mild','Moderate','Severe','Extreme'],                        dist:[4,10,26,38,22] },
+    ]
+  },
+  'HOOS JR': {
+    fullName: 'Hip disability and Osteoarthritis Outcome Score, Joint Replacement',
+    bodyPart: 'Hip',
+    cadence: 'Baseline, then every 3 months',
+    cadenceShort: 'Baseline + Q3M',
+    scoring: '0–100 · Higher score = better function',
+    nPatients: 98,
+    color: '#7b4fa8',
+    questions: [
+      { text:'How often do you experience hip pain?',              note:'Pain — frequency',          options:['Never','Monthly','Weekly','Daily','Always'],                        dist:[6,14,30,35,15] },
+      { text:'Going up or down stairs',                            note:'Pain — difficulty',         options:['None','Mild','Moderate','Severe','Extreme'],                        dist:[4,10,28,36,22] },
+      { text:'Straightening your hip fully',                       note:'Pain — difficulty',         options:['None','Mild','Moderate','Severe','Extreme'],                        dist:[7,16,31,30,16] },
+      { text:'Sitting down and rising from a seat',                note:'Function — difficulty',     options:['None','Mild','Moderate','Severe','Extreme'],                        dist:[5,12,26,37,20] },
+      { text:'Going down stairs',                                  note:'Function — difficulty',     options:['None','Mild','Moderate','Severe','Extreme'],                        dist:[3,9,25,40,23]  },
+      { text:'Putting on socks / stockings',                       note:'Function — difficulty',     options:['None','Mild','Moderate','Severe','Extreme'],                        dist:[6,13,24,34,23] },
+    ]
+  },
+  'ODI': {
+    fullName: 'Oswestry Disability Index',
+    bodyPart: 'Lower back',
+    cadence: 'Baseline, then every 3 months',
+    cadenceShort: 'Baseline + Q3M',
+    scoring: '0–100% · Lower = less disability',
+    nPatients: 76,
+    color: '#d4890a',
+    questions: [
+      { text:'Pain intensity',                                     note:'Section 1',  options:['No pain','Very mild','Moderate','Fairly severe','Very severe','Worst imaginable'],                   dist:[1,7,23,37,24,8]  },
+      { text:'Personal care (washing, dressing)',                   note:'Section 2',  options:['No difficulty','Some extra pain','Painful but manage','Significant help needed','Help most days','Cannot self-care'],dist:[5,12,28,30,18,7]  },
+      { text:'Lifting',                                            note:'Section 3',  options:['No difficulty','Extra pain lifting heavy','Pain prevents very heavy lifts','Light weights only','Very light only','Cannot lift'],dist:[4,10,25,32,21,8]  },
+      { text:'Walking',                                            note:'Section 4',  options:['No pain any distance','Some pain up to 1 mile','Under 1 mile','Under 0.5 mile','Under 100 m','Aid required / bed rest'],dist:[8,15,27,28,16,6]  },
+      { text:'Sitting',                                            note:'Section 5',  options:['Any chair as long as needed','Special chair required','Up to 1 hour','Up to 30 min','Up to 10 min','Cannot sit'],    dist:[6,14,29,31,14,6]  },
+      { text:'Standing',                                           note:'Section 6',  options:['No pain as long as needed','Some pain after 1 hour','Up to 1 hour','Up to 30 min','Up to 10 min','Cannot stand'],  dist:[7,13,26,30,17,7]  },
+      { text:'Sleeping',                                           note:'Section 7',  options:['No pain in bed','Some pain, not prevented','Full night with medication','Up to 6 hours','Up to 4 hours','Cannot sleep'], dist:[10,18,28,26,13,5] },
+      { text:'Social life',                                        note:'Section 8',  options:['Normal, no extra pain','Normal but extra pain','No major impact','Some activities restricted','Most activities restricted','Confined to home'],dist:[12,20,30,24,10,4] },
+      { text:'Travelling',                                         note:'Section 9',  options:['No extra pain','Some extra pain, manage','Under 2 hours','Under 30 min','Essential travel only','Cannot travel'],     dist:[9,16,28,28,14,5]  },
+      { text:'Employment / homemaking',                            note:'Section 10', options:['Normal, no extra pain','Normal with extra pain','Most activities limited','Light work only','Very light only','Cannot work'],dist:[8,14,26,30,15,7]  },
+    ]
+  },
+  'NDI': {
+    fullName: 'Neck Disability Index',
+    bodyPart: 'Neck',
+    cadence: 'Baseline, then every 3 months',
+    cadenceShort: 'Baseline + Q3M',
+    scoring: '0–50 points · Lower = less disability',
+    nPatients: 44,
+    color: '#1a9688',
+    questions: [
+      { text:'Pain intensity',                                     note:'Section 1',  options:['No pain','Very mild','Moderate','Fairly severe','Very severe','Worst imaginable'],                   dist:[2,9,26,35,22,6]  },
+      { text:'Personal care',                                      note:'Section 2',  options:['No difficulty','Some extra pain','Slow and careful','Significant help needed','Help every day','Cannot self-care'],dist:[8,15,30,28,14,5]  },
+      { text:'Lifting',                                            note:'Section 3',  options:['No difficulty','Extra pain lifting heavy','Medium weight with pain','Light weights only','Very light only','Cannot lift'],dist:[5,12,27,33,18,5]  },
+      { text:'Reading',                                            note:'Section 4',  options:['No pain, any duration','Slight pain, any duration','Moderate pain, any duration','Moderate pain limits duration','Severe pain, can hardly read','Cannot read'],dist:[10,18,28,27,13,4] },
+      { text:'Headaches',                                          note:'Section 5',  options:['None','Slight and infrequent','Moderate and infrequent','Moderate and frequent','Severe and frequent','Constant headaches'],dist:[7,14,26,30,17,6]  },
+      { text:'Concentration',                                      note:'Section 6',  options:['Full concentration, no difficulty','Slight difficulty','Moderate difficulty','Significant difficulty','Extreme difficulty','Cannot concentrate'],dist:[9,16,29,28,14,4]  },
+      { text:'Work',                                               note:'Section 7',  options:['Full workload, no extra pain','Full workload, some extra pain','Most usual work','Cannot do usual work','Hardly any work','Cannot work'],dist:[6,13,27,32,17,5]  },
+      { text:'Driving',                                            note:'Section 8',  options:['No pain while driving','Slight pain while driving','Moderate pain while driving','Cannot drive, moderate pain','Can hardly drive, severe pain','Cannot drive'],dist:[14,20,28,24,11,3]  },
+      { text:'Sleeping',                                           note:'Section 9',  options:['No trouble','Slight trouble','Under 6 hours due to pain','Under 4 hours due to pain','Under 2 hours due to pain','Cannot sleep'],dist:[8,16,30,28,14,4]  },
+      { text:'Recreation',                                         note:'Section 10', options:['All activities, no extra pain','Most activities, some extra pain','Some activities restricted','Few activities possible','Hardly any activities','No activities possible'],dist:[7,14,27,30,17,5]  },
+    ]
+  },
+  'QuickDASH': {
+    fullName: 'Quick Disabilities of the Arm, Shoulder and Hand',
+    bodyPart: 'Shoulder / Arm / Hand',
+    cadence: 'Baseline, then every 3 months',
+    cadenceShort: 'Baseline + Q3M',
+    scoring: '0–100 · Lower = less disability',
+    nPatients: 38,
+    color: '#2a7d4a',
+    questions: [
+      { text:'Open a tight or new jar',                            note:'Item 1 — Activity',        options:['No difficulty','Mild difficulty','Moderate difficulty','Severe difficulty','Unable'],   dist:[5,16,31,32,16]  },
+      { text:'Do heavy household chores (e.g., washing walls or floors)', note:'Item 2 — Activity', options:['No difficulty','Mild difficulty','Moderate difficulty','Severe difficulty','Unable'],   dist:[3,11,28,36,22]  },
+      { text:'Carry a shopping bag or briefcase',                  note:'Item 3 — Activity',        options:['No difficulty','Mild difficulty','Moderate difficulty','Severe difficulty','Unable'],   dist:[7,18,32,30,13]  },
+      { text:'Wash your back',                                     note:'Item 4 — Activity',        options:['No difficulty','Mild difficulty','Moderate difficulty','Severe difficulty','Unable'],   dist:[8,16,28,31,17]  },
+      { text:'Use a knife to cut food',                            note:'Item 5 — Activity',        options:['No difficulty','Mild difficulty','Moderate difficulty','Severe difficulty','Unable'],   dist:[10,20,30,27,13] },
+      { text:'Recreational activities requiring force or impact through your arm (e.g., golf, tennis)', note:'Item 6 — Activity', options:['No difficulty','Mild difficulty','Moderate difficulty','Severe difficulty','Unable'], dist:[4,12,26,34,24]  },
+      { text:'Interfered with your normal social activities with family, friends, or others', note:'Item 7 — Social', options:['Not at all','Slightly','Moderately','Quite a bit','Extremely'],      dist:[14,22,30,24,10] },
+      { text:'Limited in your work or other regular daily activities', note:'Item 8 — Social',      options:['Not at all','Slightly','Moderately','Quite a bit','Extremely'],                        dist:[8,18,32,28,14]  },
+      { text:'Arm, shoulder, or hand pain',                        note:'Item 9 — Symptom',         options:['None','Mild','Moderate','Severe','Extreme'],                                           dist:[4,12,28,34,22]  },
+      { text:'Tingling (pins and needles) in your arm, shoulder, or hand', note:'Item 10 — Symptom',options:['None','Mild','Moderate','Severe','Extreme'],                                           dist:[18,24,28,22,8]  },
+      { text:'Difficulty sleeping due to arm, shoulder, or hand pain', note:'Item 11 — Symptom',   options:['No difficulty','Mild difficulty','Moderate difficulty','Severe difficulty','Unable to sleep'],dist:[12,20,28,26,14] },
+    ]
+  },
+  'NPRS + PSFS': {
+    fullName: 'Numeric Pain Rating Scale + Patient-Specific Functional Scale',
+    bodyPart: 'Universal (all diagnoses)',
+    cadence: 'Baseline, then monthly',
+    cadenceShort: 'Baseline + Monthly',
+    scoring: 'NPRS 0–10 (lower = less pain) · PSFS 0–10 (higher = better function)',
+    nPatients: 284,
+    color: '#555',
+    questions: [
+      { section: 'NPRS — Numeric Pain Rating Scale  ·  0 = no pain, 10 = worst possible pain' },
+      { text:'Rate your current pain level right now',             note:'NPRS Item 1',               options:['0–2  No / Minimal','3–4  Mild','5–6  Moderate','7–8  Severe','9–10  Very severe'],    dist:[9,18,32,28,13]  },
+      { text:'Rate your worst pain level in the past week',        note:'NPRS Item 2',               options:['0–2  No / Minimal','3–4  Mild','5–6  Moderate','7–8  Severe','9–10  Very severe'],    dist:[5,12,28,34,21]  },
+      { text:'Rate your average pain level in the past week',      note:'NPRS Item 3',               options:['0–2  No / Minimal','3–4  Mild','5–6  Moderate','7–8  Severe','9–10  Very severe'],    dist:[8,16,31,29,16]  },
+      { section: 'PSFS — Patient-Specific Functional Scale  ·  0 = unable to perform, 10 = able to perform as before injury' },
+      { text:'Patient-identified Activity 1: rate your current difficulty performing it', note:'PSFS Activity 1', options:['0–2  Unable / Very limited','3–4  Severely limited','5–6  Moderately limited','7–8  Mildly limited','9–10  Near full / Full'], dist:[22,28,26,16,8]  },
+      { text:'Patient-identified Activity 2: rate your current difficulty performing it', note:'PSFS Activity 2', options:['0–2  Unable / Very limited','3–4  Severely limited','5–6  Moderately limited','7–8  Mildly limited','9–10  Near full / Full'], dist:[19,26,28,19,8]  },
+      { text:'Patient-identified Activity 3: rate your current difficulty performing it', note:'PSFS Activity 3', options:['0–2  Unable / Very limited','3–4  Severely limited','5–6  Moderately limited','7–8  Mildly limited','9–10  Near full / Full'], dist:[21,27,26,18,8]  },
+    ]
+  },
+  'PGIC': {
+    fullName: 'Patient Global Impression of Change',
+    bodyPart: 'Universal (all diagnoses)',
+    cadence: 'Once, at program completion',
+    cadenceShort: 'End of program',
+    scoring: '1 = Very much improved · 7 = Very much worse',
+    nPatients: 63,
+    color: '#555',
+    questions: [
+      { text:'Since starting the Bold program, how would you describe the overall change in your pain and physical function?',
+        note:'Single-item global rating',
+        options:['1 — Very much improved','2 — Much improved','3 — Minimally improved','4 — No change','5 — Minimally worse','6 — Much worse','7 — Very much worse'],
+        dist:[24,38,19,11,5,2,1],
+        pgic: true
+      }
+    ]
+  }
+};
+
+const PGIC_COLORS = ['#2a7d32','#4caf50','#8bc34a','#9e9e9e','#ff9800','#f44336','#c62828'];
+
+function bpColor(bodyPart) {
+  if (bodyPart.includes('Knee'))     return '#1a6fa8';
+  if (bodyPart.includes('Hip'))      return '#7b4fa8';
+  if (bodyPart.includes('Lower back') || bodyPart.includes('back')) return '#d4890a';
+  if (bodyPart.includes('Neck'))     return '#1a9688';
+  if (bodyPart.includes('Shoulder') || bodyPart.includes('Arm') || bodyPart.includes('Hand')) return '#2a7d4a';
+  return '#777';
+}
+
+// ═══════════════════════════════════════════════════
+// PATIENT DATA  (ASES / PROMIS PF / PROMIS PI removed; NRS → NPRS + PSFS)
+// ═══════════════════════════════════════════════════
+const PATIENTS = [
+  {
+    id:1, name:"May Johnson", age:72, sex:"F", mbi:"3L4-E71",
+    painSite:"Knee", quarter:"Q2 of care", phase:"Build", phaseWeek:5,
+    instrument:"KOOS JR / NPRS + PSFS", score:42, delta:-13,
+    screening:"escalated", daysLeft:6, position:"Seated",
+    dpw:3, classesCompleted:18, classesSkipped:4,
+    alert:"NRS jumped from 4 to 7 (+3), exceeding the >2 guardrail. KOOS JR dropped from 55 to 42 (−13), a statistical outlier. Consider phase shift: Build → Calm.",
+    outcomes:[
+      { name:"KOOS JR", sub:"Knee · 0–100 scale",              prev:55,  curr:42,  delta:-13, thr:"≥ −10", flag:true  },
+      { name:"NPRS",    sub:"Pain · 0–10 (lower = better)",    prev:4,   curr:7,   delta:3,   thr:"≤ +2",  flag:true  },
+      { name:"PSFS",    sub:"Function · 0–10 (higher = better)",prev:6.5,curr:4.8, delta:-1.7,thr:"≥ 0",   flag:false },
+      { name:"PGIC",    sub:"Program completion",               prev:null,curr:3,   delta:null,thr:"N/A",   flag:false },
+    ],
+    classes:[
+      { name:"Foundation First",    type:"Low-Impact & Mobility",       date:"Apr 10, 2026", done:true  },
+      { name:"Resilient Body",      type:"Strength-Based Recovery",     date:"Apr 8, 2026",  done:true  },
+      { name:"The Somatic Shift",   type:"Mind-Body & Tension Release", date:"Apr 6, 2026",  done:true  },
+      { name:"Hip & Heart",         type:"Targeted Relief",             date:"Apr 4, 2026",  done:false },
+      { name:"Structural Strength", type:"Strength-Based Recovery",     date:"Apr 3, 2026",  done:true  },
+      { name:"The Mobility Method", type:"Low-Impact & Mobility",       date:"Apr 1, 2026",  done:true  },
+      { name:"Bulletproof Back",    type:"Strength-Based Recovery",     date:"Mar 29, 2026", done:false },
+      { name:"Fluid Motion",        type:"Low-Impact & Mobility",       date:"Mar 27, 2026", done:true  },
+    ],
+    log:[
+      { date:"Mar 1, 2026",  text:"System auto-advance · Calm → Build · Auto-advanced: NPRS ≤2 and 4+ weeks engaged." },
+      { date:"Jan 15, 2026", text:"System auto-advance · Initial: Calm · Program enrollment — initial phase assignment." },
+    ]
+  },
+  {
+    id:2, name:"Winston Roe", age:68, sex:"M", mbi:"5K2-M89",
+    painSite:"Hip", quarter:"Q1 of care", phase:"Calm", phaseWeek:3,
+    instrument:"HOOS JR", score:51, delta:-21,
+    screening:"flagged", daysLeft:12, position:"Standing",
+    dpw:2, classesCompleted:8, classesSkipped:2,
+    alert:"HOOS JR dropped 21 points from baseline (72 → 51). Score decline exceeds the >10 pt guardrail. Recommend individual MD review.",
+    outcomes:[
+      { name:"HOOS JR", sub:"Hip · 0–100 scale",               prev:72,  curr:51,  delta:-21, thr:"≥ −10", flag:true  },
+      { name:"NPRS",    sub:"Pain · 0–10 (lower = better)",    prev:3,   curr:5,   delta:2,   thr:"≤ +2",  flag:false },
+      { name:"PSFS",    sub:"Function · 0–10 (higher = better)",prev:5.0,curr:3.8, delta:-1.2,thr:"≥ 0",   flag:false },
+    ],
+    classes:[
+      { name:"Foundation First",    type:"Low-Impact & Mobility",   date:"Apr 10, 2026", done:true  },
+      { name:"Resilient Body",      type:"Strength-Based Recovery", date:"Apr 8, 2026",  done:true  },
+      { name:"Hip & Heart",         type:"Targeted Relief",         date:"Apr 4, 2026",  done:false },
+      { name:"The Mobility Method", type:"Low-Impact & Mobility",   date:"Apr 1, 2026",  done:true  },
+      { name:"Core & Contour",      type:"Strength-Based Recovery", date:"Mar 25, 2026", done:false },
+    ],
+    log:[
+      { date:"Feb 1, 2026", text:"System auto-advance · Initial: Calm · Program enrollment — initial phase assignment." },
+    ]
+  },
+  {
+    id:3, name:"James H.", age:58, sex:"M", mbi:"2L4-E77",
+    painSite:"Lower back", quarter:"Q1 of care", phase:"Build", phaseWeek:2,
+    instrument:"ODI", score:24, delta:-12,
+    screening:"routine", daysLeft:11, position:"Reclined",
+    dpw:3, classesCompleted:12, classesSkipped:1,
+    alert:"",
+    outcomes:[
+      { name:"ODI",  sub:"Lower back · 0–100%",                 prev:36,  curr:24,  delta:-12, thr:"≥ −10", flag:false },
+      { name:"NPRS", sub:"Pain · 0–10 (lower = better)",        prev:6,   curr:4,   delta:-2,  thr:"≤ +2",  flag:false },
+      { name:"PSFS", sub:"Function · 0–10 (higher = better)",   prev:4.2, curr:6.5, delta:2.3, thr:"≥ 0",   flag:false },
+    ],
+    classes:[
+      { name:"Foundation First", type:"Low-Impact & Mobility",   date:"Apr 9, 2026", done:true },
+      { name:"Bulletproof Back", type:"Strength-Based Recovery", date:"Apr 7, 2026", done:true },
+      { name:"Core & Contour",   type:"Strength-Based Recovery", date:"Apr 4, 2026", done:true },
+    ],
+    log:[
+      { date:"Mar 10, 2026", text:"System auto-advance · Initial: Build · Program enrollment — initial phase assignment." },
+    ]
+  },
+  {
+    id:4, name:"Elena W.", age:64, sex:"F", mbi:"9B2-P1Q",
+    painSite:"Hip", quarter:"Q2 of care", phase:"Calm", phaseWeek:7,
+    instrument:"HOOS JR", score:68, delta:8,
+    screening:"audit", daysLeft:9, position:"Seated",
+    dpw:4, classesCompleted:22, classesSkipped:0,
+    alert:"",
+    outcomes:[
+      { name:"HOOS JR", sub:"Hip · 0–100 scale",                prev:60,   curr:68,   delta:8,   thr:"≥ +10", flag:false },
+      { name:"NPRS",    sub:"Pain · 0–10 (lower = better)",     prev:5,    curr:3,    delta:-2,  thr:"≤ +2",  flag:false },
+      { name:"PSFS",    sub:"Function · 0–10 (higher = better)", prev:5.5,  curr:7.2,  delta:1.7, thr:"≥ 0",   flag:false },
+    ],
+    classes:[
+      { name:"Foundation First",    type:"Low-Impact & Mobility",date:"Apr 10, 2026", done:true },
+      { name:"Hip & Heart",         type:"Targeted Relief",      date:"Apr 4, 2026",  done:true },
+      { name:"The Mobility Method", type:"Low-Impact & Mobility",date:"Apr 1, 2026",  done:true },
+    ],
+    log:[
+      { date:"Jan 20, 2026", text:"System auto-advance · Initial: Calm · Program enrollment — initial phase assignment." },
+    ]
+  },
+  {
+    id:5, name:"Robert K.", age:71, sex:"M", mbi:"7T9-X8Z",
+    painSite:"Knee", quarter:"Q3 of care", phase:"Build", phaseWeek:9,
+    instrument:"KOOS JR", score:67, delta:8,
+    screening:"routine", daysLeft:14, position:"Standing",
+    dpw:3, classesCompleted:28, classesSkipped:2,
+    alert:"",
+    outcomes:[
+      { name:"KOOS JR", sub:"Knee · 0–100 scale",               prev:59,  curr:67,  delta:8,   thr:"≥ +10", flag:false },
+      { name:"NPRS",    sub:"Pain · 0–10 (lower = better)",     prev:5,   curr:3,   delta:-2,  thr:"≤ +2",  flag:false },
+      { name:"PSFS",    sub:"Function · 0–10 (higher = better)", prev:4.8, curr:7.0, delta:2.2, thr:"≥ 0",   flag:false },
+    ],
+    classes:[
+      { name:"Foundation First",    type:"Low-Impact & Mobility",   date:"Apr 9, 2026", done:true },
+      { name:"Resilient Body",      type:"Strength-Based Recovery", date:"Apr 7, 2026", done:true },
+      { name:"Structural Strength", type:"Strength-Based Recovery", date:"Apr 3, 2026", done:true },
+      { name:"The Mobility Method", type:"Low-Impact & Mobility",   date:"Apr 1, 2026", done:true },
+    ],
+    log:[
+      { date:"Feb 15, 2026", text:"System auto-advance · Calm → Build · Consistent NPRS ≤3." },
+      { date:"Nov 10, 2025", text:"System auto-advance · Initial: Calm · Program enrollment — initial phase assignment." },
+    ]
+  },
+  {
+    id:6, name:"Sarah L.", age:42, sex:"F", mbi:"4R2-N10",
+    painSite:"Lower back", quarter:"Q2 of care", phase:"Calm", phaseWeek:6,
+    instrument:"ODI / NPRS + PSFS", score:38, delta:-4,
+    screening:"escalated", daysLeft:5, position:"Reclined",
+    dpw:2, classesCompleted:14, classesSkipped:3,
+    alert:"Member reported slipping on wet pavement ~2 weeks ago. NPRS increased to 7 (from 4). PSFS decreased by 1.8. Possible new acute injury — recommend PCP notification.",
+    outcomes:[
+      { name:"ODI",  sub:"Lower back · 0–100%",                 prev:42,  curr:38,  delta:-4,  thr:"≥ −10", flag:false },
+      { name:"NPRS", sub:"Pain · 0–10 (lower = better)",        prev:4,   curr:7,   delta:3,   thr:"≤ +2",  flag:true  },
+      { name:"PSFS", sub:"Function · 0–10 (higher = better)",   prev:6.0, curr:4.2, delta:-1.8,thr:"≥ 0",   flag:false },
+    ],
+    classes:[
+      { name:"Foundation First", type:"Low-Impact & Mobility",   date:"Apr 10, 2026", done:true  },
+      { name:"Hip & Heart",      type:"Targeted Relief",         date:"Apr 4, 2026",  done:false },
+      { name:"Bulletproof Back", type:"Strength-Based Recovery", date:"Mar 29, 2026", done:true  },
+    ],
+    log:[
+      { date:"Dec 1, 2025", text:"System auto-advance · Initial: Calm · Program enrollment — initial phase assignment." },
+    ]
+  },
+];
+
+// ═══════════════════════════════════════════════════
+// STANDING ORDERS DATA (updated instrument names)
+// ═══════════════════════════════════════════════════
+let SO = {
+  version:"v2.1", approvedBy:"Dr. Rivera, MD", approvedDate:"Apr 10, 2026", governed:312,
+  rationale:"Thresholds set based on Bold MSK member population (n=284). NPRS guardrail and outlier threshold reviewed with Clinical Lead Feb 2026.",
+  rules:[
+    { name:"Score validity bounds", sub:"Rule 1", instrument:"KOOS JR",      threshold:"0–100",                   action:"flag"     },
+    { name:"Score validity bounds", sub:"Rule 2", instrument:"NPRS",         threshold:"0–10",                    action:"flag"     },
+    { name:"Statistical outlier",   sub:"Rule 3", instrument:"All",          threshold:"Delta > 3 SD",            action:"escalate" },
+    { name:"NPRS worsening",        sub:"Rule 4", instrument:"NPRS",         threshold:"Increase > 2 pts",        action:"escalate" },
+    { name:"Validity window alert", sub:"Rule 5", instrument:"All",          threshold:"10 days post-collection", action:"alert"    },
+    { name:"Randomized audit",      sub:"Rule 6", instrument:"All",          threshold:"1 in 50 routine",         action:"audit"    },
+  ],
+  history:[
+    { version:"v2.1", active:true,  date:"Apr 10" },
+    { version:"v2.0", active:false, date:"Feb 28"  },
+    { version:"v1.0", active:false, date:"Dec 5"   },
+  ]
+};
+
+// ═══════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════
+let view = 'queue';
+let activeFilter = 'all';
+let currentPatient = null;
+let currentTab = 'overview';
+let draftRules = [];
+let selectedInstrument = null;
+
+// ═══════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════
+function navigate(v) {
+  view = v;
+  selectedInstrument = null;
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  const el = document.getElementById('nav-' + v);
+  if (el) el.classList.add('active');
+  renderMain();
+}
+
+function renderMain() {
+  const main = document.getElementById('main');
+  if      (view === 'queue')           main.innerHTML = renderQueue();
+  else if (view === 'members')         main.innerHTML = renderMembers();
+  else if (view === 'instruments')     main.innerHTML = selectedInstrument ? renderInstrumentDetail(selectedInstrument) : renderInstrumentsList();
+  else if (view === 'standing-orders') main.innerHTML = renderSO();
+}
+
+// ═══════════════════════════════════════════════════
+// REVIEW QUEUE
+// ═══════════════════════════════════════════════════
+function renderQueue() {
+  const all  = PATIENTS;
+  const esc  = all.filter(p => p.screening === 'escalated');
+  const rout = all.filter(p => p.screening === 'routine');
+  const urg  = all.filter(p => p.daysLeft <= 6);
+  const list = activeFilter==='escalated' ? esc : activeFilter==='routine' ? rout : activeFilter==='urgent' ? urg : all;
+
+  return `
+    <div class="page-header">
+      <div class="page-title">PROM review queue</div>
+      <div class="page-subtitle">${all.length} submissions pending MD approval · CMS gate active · 15-day validity window</div>
+    </div>
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-value">${all.length}</div><div class="stat-label">Awaiting review</div><div class="stat-sublabel">${rout.length} routine · ${esc.length} escalated</div></div>
+      <div class="stat-card"><div class="stat-value" style="color:#c0392b">${urg.length}</div><div class="stat-label">Expiring &lt;5 days</div><div class="stat-sublabel">validity window</div></div>
+      <div class="stat-card"><div class="stat-value">48</div><div class="stat-label">Approved this cycle</div><div class="stat-sublabel">last 14 days</div></div>
+      <div class="stat-card">
+        <div class="so-pill"><svg width="8" height="8" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3.5" fill="#2a5c24"/></svg>${SO.version} live</div>
+        <div class="stat-label" style="margin-top:6px">Standing order</div>
+        <div class="stat-sublabel">approved ${SO.approvedDate.split(',')[0]}</div>
+      </div>
+    </div>
+    <div class="filter-bar">
+      <div class="filter-tab ${activeFilter==='all'?'active':''}"       onclick="setFilter('all')">All <span class="ct">(${all.length})</span></div>
+      <div class="filter-tab ${activeFilter==='escalated'?'active':''}" onclick="setFilter('escalated')">Escalated <span class="ct">(${esc.length})</span></div>
+      <div class="filter-tab ${activeFilter==='routine'?'active':''}"   onclick="setFilter('routine')">Routine <span class="ct">(${rout.length})</span></div>
+      <div class="filter-tab ${activeFilter==='urgent'?'active':''}"    onclick="setFilter('urgent')">Urgent <span class="ct">(${urg.length})</span></div>
+      <button class="btn btn-outline ml-auto">Batch export</button>
+    </div>
+    <div class="table-card">
+      <table class="data-table">
+        <thead><tr>
+          <th style="width:36px"></th>
+          <th>Member</th><th>Instrument</th><th>Score / delta</th>
+          <th>Screening</th><th>Days left</th><th></th>
+        </tr></thead>
+        <tbody>${list.map(p => patientRow(p)).join('')}</tbody>
+      </table>
+    </div>`;
+}
+
+function patientRow(p) {
+  const hi = p.screening==='escalated'||p.screening==='flagged';
+  const ds = p.delta>0 ? `+${p.delta}` : `${p.delta}`;
+  const dc = p.delta<0 ? 'neg' : 'pos';
+  const scr = { escalated:'<span class="badge b-escalated">Escalated</span>', flagged:'<span class="badge b-flagged">Flagged</span>', routine:'<span class="badge b-routine">AI routine</span>', audit:'<span class="badge b-audit">Audit sample</span>' }[p.screening];
+  const dayStyle = p.daysLeft<=6 ? 'style="color:#c0392b;font-weight:700"' : '';
+  const btn = p.screening==='routine'
+    ? `<button class="btn btn-approve" onclick="event.stopPropagation();quickApprove(${p.id})">Approve</button>`
+    : `<button class="btn btn-review"  onclick="event.stopPropagation();openPatient(${p.id})">Review ↗</button>`;
+  return `<tr class="${hi?'row-flagged':''}" onclick="openPatient(${p.id})">
+    <td><input type="checkbox" onclick="event.stopPropagation()" style="accent-color:#1a1a1a;cursor:pointer"></td>
+    <td><div class="member-name">${p.name}</div><div class="member-sub">MBI ${p.mbi} · ${p.painSite}</div></td>
+    <td>${p.instrument}</td>
+    <td><span class="score-main">${p.score}</span><span class="delta ${dc}">${ds}</span></td>
+    <td>${scr}</td>
+    <td ${dayStyle}>${p.daysLeft} days</td>
+    <td>${btn}</td>
+  </tr>`;
+}
+
+function setFilter(f) { activeFilter=f; renderMain(); }
+function quickApprove() { toast('✓ Submission approved for CMS submission','success'); }
+
+// ═══════════════════════════════════════════════════
+// ALL MEMBERS
+// ═══════════════════════════════════════════════════
+function renderMembers() {
+  return `
+    <div class="page-header">
+      <div class="page-title">All members</div>
+      <div class="page-subtitle">${PATIENTS.length} members shown · 284 total aligned</div>
+    </div>
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-value">284</div><div class="stat-label">Total members</div><div class="stat-sublabel">across all pain sites</div></div>
+      <div class="stat-card"><div class="stat-value" style="color:#d4890a">18</div><div class="stat-label">Flagged</div><div class="stat-sublabel">require attention</div></div>
+      <div class="stat-card"><div class="stat-value" style="color:#c0392b">6</div><div class="stat-label">Expiring &lt;5 days</div><div class="stat-sublabel">validity window</div></div>
+      <div class="stat-card"><div class="stat-value" style="color:#2a5c24">204</div><div class="stat-label">On track</div><div class="stat-sublabel">no active flags</div></div>
+    </div>
+    <div class="table-card">
+      <table class="data-table">
+        <thead><tr><th>Member</th><th>Pain area</th><th>Instrument</th><th>Collection date</th><th>Days remaining</th><th>Status</th></tr></thead>
+        <tbody>${PATIENTS.map((p,i) => {
+          const scr = { escalated:'<span class="badge b-escalated">Escalated</span>', flagged:'<span class="badge b-flagged">Flagged</span>', routine:'<span class="badge b-routine">AI routine</span>', audit:'<span class="badge b-audit">Audit sample</span>' }[p.screening];
+          const ds = p.daysLeft<=6 ? 'style="color:#c0392b;font-weight:700"' : '';
+          return `<tr onclick="openPatient(${p.id})">
+            <td><div class="member-name">${p.name}</div><div class="member-sub">MBI ${p.mbi}</div></td>
+            <td>${p.painSite}</td><td>${p.instrument}</td>
+            <td>Apr ${10-i*2}, 2026</td>
+            <td ${ds}>${p.daysLeft} days</td>
+            <td>${scr}</td>
+          </tr>`;
+        }).join('')}</tbody>
+      </table>
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════════
+// CHECK-IN INSTRUMENTS — LIST VIEW
+// ═══════════════════════════════════════════════════
+function renderInstrumentsList() {
+  const keys = Object.keys(INSTRUMENTS);
+  return `
+    <div class="page-header">
+      <div class="page-title">Check-in instruments</div>
+      <div class="page-subtitle">${keys.length} standardized patient-reported outcome measures · click any instrument to view question-level response data</div>
+    </div>
+    <div class="instruments-grid">
+      ${keys.map(key => {
+        const inst = INSTRUMENTS[key];
+        const c = bpColor(inst.bodyPart);
+        const qCount = inst.questions.filter(q => !q.section).length;
+        return `
+          <div class="inst-card" onclick="openInstrumentDetail('${key}')">
+            <div class="inst-card-header">
+              <div class="inst-abbr">${key}</div>
+              <span class="bp-chip" style="background:${c}18;color:${c}">${inst.bodyPart}</span>
+            </div>
+            <div class="inst-fullname">${inst.fullName}</div>
+            <div class="inst-meta">
+              <div class="inst-meta-row">
+                <span class="inst-meta-icon">📅</span>
+                <span>${inst.cadence}</span>
+              </div>
+              <div class="inst-meta-row">
+                <span class="inst-meta-icon">❓</span>
+                <span>${qCount} question${qCount!==1?'s':''}</span>
+              </div>
+              <div class="inst-meta-row">
+                <span class="inst-meta-icon">👥</span>
+                <span>n = ${inst.nPatients.toLocaleString()} patients</span>
+              </div>
+            </div>
+            <div class="inst-card-footer">View questions &amp; responses →</div>
+          </div>`;
+      }).join('')}
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════════
+// CHECK-IN INSTRUMENTS — DETAIL VIEW
+// ═══════════════════════════════════════════════════
+function openInstrumentDetail(key) {
+  selectedInstrument = key;
+  const main = document.getElementById('main');
+  main.innerHTML = renderInstrumentDetail(key);
+  main.scrollTop = 0;
+}
+
+function backToInstruments() {
+  selectedInstrument = null;
+  renderMain();
+}
+
+function renderInstrumentDetail(key) {
+  const inst = INSTRUMENTS[key];
+  const c    = bpColor(inst.bodyPart);
+  const qCount = inst.questions.filter(q => !q.section).length;
+  let qIdx = 0;
+
+  const questionsHtml = inst.questions.map(q => {
+    if (q.section) {
+      return `<div class="q-section-divider">${q.section}</div>`;
+    }
+    qIdx++;
+    const barColor = q.pgic ? null : (inst.color !== '#555' ? inst.color : c !== '#777' ? c : '#888');
+
+    const barsHtml = q.options.map((opt, i) => {
+      const color  = q.pgic ? PGIC_COLORS[i] : barColor;
+      const n      = Math.round(q.dist[i] / 100 * inst.nPatients);
+      return `<div class="dist-row">
+        <div class="dist-label">${opt}</div>
+        <div class="dist-track"><div class="dist-fill" style="width:${q.dist[i]}%;background:${color}"></div></div>
+        <div class="dist-pct">${q.dist[i]}%</div>
+        <div class="dist-n">n=${n}</div>
+      </div>`;
+    }).join('');
+
+    return `<div class="q-block">
+      <div class="q-header">
+        <div class="q-num">Q${qIdx}</div>
+        <div>
+          <div class="q-text">${q.text}</div>
+          <div class="q-note">${q.note}</div>
+        </div>
+      </div>
+      <div>${barsHtml}</div>
+    </div>`;
+  }).join('');
+
+  return `
+    <div style="margin-bottom:18px">
+      <button class="btn btn-outline" onclick="backToInstruments()" style="font-size:12px">← All instruments</button>
+    </div>
+    <div class="page-header" style="margin-bottom:12px">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <div class="page-title">${key}</div>
+        <span class="bp-chip" style="background:${c}18;color:${c};font-size:12px">${inst.bodyPart}</span>
+        <span class="cadence-chip">📅 ${inst.cadence}</span>
+      </div>
+      <div class="page-subtitle" style="margin-top:5px">${inst.fullName}</div>
+    </div>
+    <div class="inst-detail-meta">
+      <span><strong>Scoring:</strong> ${inst.scoring}</span>
+      <span>·</span>
+      <span><strong>${qCount}</strong> question${qCount!==1?'s':''}</span>
+      <span>·</span>
+      <span><strong>n = ${inst.nPatients.toLocaleString()}</strong> patients</span>
+      <span>·</span>
+      <span style="font-style:italic;color:#bbb">Aggregate data shown at enrollment / baseline</span>
+    </div>
+    <div>${questionsHtml}</div>`;
+}
+
+// ═══════════════════════════════════════════════════
+// STANDING ORDERS
+// ═══════════════════════════════════════════════════
+function renderSO() {
+  const ab = a => ({ flag:'<span class="badge b-flag-action">Flag</span>', escalate:'<span class="badge b-escalate-action">Escalate</span>', alert:'<span class="badge b-alert-action">Alert</span>', audit:'<span class="badge b-audit-action">Audit</span>' }[a]||a);
+  return `
+    <div class="page-header">
+      <div class="page-title">Standing orders</div>
+      <div class="page-subtitle">${SO.version} active · approved ${SO.approvedDate} by ${SO.approvedBy}</div>
+    </div>
+    <div class="so-cards">
+      <div class="so-card">
+        <div class="so-card-title">Active version <span class="badge b-active" style="font-size:10px">${SO.version} live</span></div>
+        <div class="so-row"><span>Approved by</span><strong>${SO.approvedBy}</strong></div>
+        <div class="so-row"><span>Approved</span><strong>${SO.approvedDate}</strong></div>
+        <div class="so-row"><span>Submissions governed</span><strong>${SO.governed} to date</strong></div>
+        <div class="so-row"><span>Audit trail</span><span class="so-link" onclick="toast('Audit log opened','')">View log</span></div>
+      </div>
+      <div class="so-card">
+        <div class="so-card-title">Version history</div>
+        ${SO.history.map(v=>`<div class="vh-item"><div style="display:flex;align-items:center;gap:8px"><strong>${v.version}</strong><span class="badge ${v.active?'b-active':'b-archived'}" style="font-size:10px">${v.active?'Active':'Archived'}</span></div><span style="color:#bbb">${v.date}</span></div>`).join('')}
+      </div>
+    </div>
+    <div class="rules-bar">
+      <div class="rules-title">Screening rules — ${SO.version}</div>
+      <button class="btn btn-outline" onclick="openSODrawer()">Edit / create ${nextVersion()} draft</button>
+    </div>
+    <div class="rules-card">
+      <table class="rules-tbl">
+        <thead><tr><th>Rule</th><th>Instrument</th><th>Threshold</th><th>Action</th></tr></thead>
+        <tbody>${SO.rules.map(r=>`<tr><td><div class="rule-name">${r.name}</div><div class="rule-sub">${r.sub}</div></td><td>${r.instrument}</td><td>${r.threshold}</td><td>${ab(r.action)}</td></tr>`).join('')}</tbody>
+      </table>
+    </div>
+    <div class="clinical-rationale">"${SO.rationale}"</div>
+    <div style="display:flex;justify-content:flex-end;margin-top:16px">
+      <button class="btn btn-danger" onclick="archiveOrder()">Archive ${SO.version}</button>
+    </div>`;
+}
+
+function nextVersion() {
+  const m = SO.version.match(/v(\d+)\.(\d+)/);
+  return m ? `v${m[1]}.${parseInt(m[2])+1}` : 'v2.2';
+}
+
+// ═══════════════════════════════════════════════════
+// PATIENT MODAL
+// ═══════════════════════════════════════════════════
+function openPatient(id) {
+  currentPatient = PATIENTS.find(p => p.id===id);
+  if (!currentPatient) return;
+  const p = currentPatient;
+  document.getElementById('m-name').textContent = p.name;
+  document.getElementById('m-meta').innerHTML = `${p.age} y/o · ${p.sex} · ${p.painSite} · ${p.quarter} <span class="phase-chip">${p.phase} wk ${p.phaseWeek}</span>`;
+  const alertEl = document.getElementById('m-alert');
+  if (p.alert) { alertEl.classList.remove('hidden'); alertEl.innerHTML = `<strong>Clinical alert:</strong> ${p.alert}`; }
+  else { alertEl.classList.add('hidden'); }
+  currentTab = 'overview';
+  document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.modal-tab')[0].classList.add('active');
+  renderTab();
+  document.getElementById('patient-modal').classList.remove('hidden');
+}
+
+function closeModal() { document.getElementById('patient-modal').classList.add('hidden'); currentPatient = null; }
+function onOverlayClick(e) { if (e.target===document.getElementById('patient-modal')) closeModal(); }
+
+function switchTab(tab, el) {
+  currentTab = tab;
+  document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderTab();
+}
+
+function renderTab() {
+  const p = currentPatient;
+  const body = document.getElementById('m-body');
+
+  if (currentTab==='overview') {
+    body.innerHTML = `
+      <div class="section-head">Patient profile</div>
+      <div class="profile-grid">
+        <div><div class="pf-label">Age</div><div class="pf-value">${p.age}</div></div>
+        <div><div class="pf-label">Primary region</div><div class="pf-value">${p.painSite}</div></div>
+        <div><div class="pf-label">Preferred position</div><div class="pf-value">${p.position}</div></div>
+        <div><div class="pf-label">Current phase</div><div class="pf-value"><span class="phase-chip">${p.phase} (wk ${p.phaseWeek})</span></div></div>
+        <div><div class="pf-label">Days / week avg</div><div class="pf-value">${p.dpw}</div></div>
+        <div><div class="pf-label">Classes completed</div><div class="pf-value">${p.classesCompleted}</div></div>
+      </div>
+      <div style="margin-bottom:20px"><div class="pf-label">Classes skipped</div><div class="pf-value">${p.classesSkipped}</div></div>
+      <div class="section-head">Phase change log</div>
+      ${p.log.map(e=>`<div class="phase-log-entry"><div class="log-date">${e.date}</div><div class="log-text">${e.text}</div></div>`).join('')}`;
+  }
+  else if (currentTab==='outcomes') {
+    body.innerHTML = `
+      <div style="font-size:12px;color:#aaa;margin-bottom:12px">Quarterly outcomes — ${p.quarter.replace(' of care','')} <span style="font-size:11px">(★ = flagged)</span></div>
+      <table class="outcome-tbl">
+        <thead><tr><th>Measure</th><th>Previous</th><th>Current</th><th>Change</th><th>Threshold</th><th></th></tr></thead>
+        <tbody>${p.outcomes.map(o => {
+          const ch = o.delta!==null ? (o.delta>0?`+${o.delta}`:`${o.delta}`) : '—';
+          const cc = o.delta>0?'ch-pos':(o.delta<0?'ch-neg':'');
+          return `<tr>
+            <td><div class="msr-name">${o.name}${o.flag?' <span style="color:#c0392b">★</span>':''}</div><div class="msr-sub">${o.sub}</div></td>
+            <td>${o.prev!==null?o.prev:'—'}</td>
+            <td style="font-weight:600">${o.curr}</td>
+            <td class="${cc}">${ch}</td>
+            <td style="color:#bbb">${o.thr}</td>
+            <td>${o.flag?'<span class="badge b-escalated" style="font-size:10px">Flagged</span>':''}</td>
+          </tr>`;
+        }).join('')}</tbody>
+      </table>`;
+  }
+  else if (currentTab==='classes') {
+    body.innerHTML = `
+      <div class="stats-row" style="margin-bottom:16px">
+        <div class="stat-card" style="padding:10px 14px"><div class="stat-value" style="font-size:20px">${p.classesCompleted}</div><div class="stat-label">Completed</div></div>
+        <div class="stat-card" style="padding:10px 14px"><div class="stat-value" style="font-size:20px">${p.classesSkipped}</div><div class="stat-label">Skipped</div></div>
+        <div class="stat-card" style="padding:10px 14px"><div class="stat-value" style="font-size:20px">${p.dpw}</div><div class="stat-label">Days/week avg</div></div>
+      </div>
+      <div class="section-head">All classes — most recent first</div>
+      ${p.classes.map(c=>`<div class="class-item"><div class="c-dot ${c.done?'done':'skip'}"></div><div class="c-name">${c.name}</div><div class="c-type">${c.type}</div><div class="c-date">${c.date}</div><span class="c-status ${c.done?'done':'skip'}">${c.done?'Completed':'Skipped'}</span></div>`).join('')}`;
+  }
+  else if (currentTab==='actions') {
+    body.innerHTML = `
+      <div class="section-head">Actions for ${p.name.split(' ')[0]}</div>
+      <div class="action-row" onclick="toggleCb(this)"><input type="checkbox" onclick="event.stopPropagation()"><div><div class="action-title">Change phase</div><div class="action-desc">Manually override the patient's current program phase</div></div></div>
+      <div class="action-row" onclick="toggleCb(this)"><input type="checkbox" onclick="event.stopPropagation()"><div><div class="action-title">Send patient outreach note</div><div class="action-desc">Trigger a care team outreach message to the patient</div></div></div>
+      <div class="action-row" onclick="toggleCb(this)"><input type="checkbox" onclick="event.stopPropagation()"><div><div class="action-title">Surface red flag screening</div><div class="action-desc">Flag for red flag screening on patient's next program login</div></div></div>
+      <div class="action-row" onclick="toggleCb(this)"><input type="checkbox" onclick="event.stopPropagation()"><div><div class="action-title">Mark for standing order updates</div><div class="action-desc">Queue this patient for standing order review by the care team</div></div></div>
+      <div class="action-row" onclick="openPCPDrawer()"><input type="checkbox" onclick="event.stopPropagation()"><div><div class="action-title">Send note to PCP</div><div class="action-desc">Compose a note to be sent to the patient's primary care physician</div></div></div>`;
+  }
+}
+
+function toggleCb(row) { const cb=row.querySelector('input[type=checkbox]'); cb.checked=!cb.checked; }
+function doApprove() { toast('✓ Approved and sent to external org','success'); setTimeout(closeModal,300); }
+function doExportCSV() { toast('Exporting outcomes CSV…',''); }
+
+// ═══════════════════════════════════════════════════
+// PCP DRAWER
+// ═══════════════════════════════════════════════════
+function openPCPDrawer() {
+  const p = currentPatient; if (!p) return;
+  document.getElementById('pcp-subtitle').textContent = `Re: ${p.name}`;
+  document.getElementById('pcp-subject').value = `Care update: ${p.name} — Bold MSK ACCESS Program`;
+  document.getElementById('pcp-body').value =
+`Dear Primary Care Physician,
+
+I am writing regarding your patient ${p.name} (MBI: ${p.mbi}), currently enrolled in Bold's MSK ACCESS Program for ${p.painSite} pain management.
+
+${p.name.split(' ')[0]} is in the ${p.phase} phase (Week ${p.phaseWeek}) of care. ${p.alert ? `Please note: ${p.alert.replace(/<[^>]+>/g,'')}` : `PROM scores are within expected ranges (current score: ${p.score}).`}
+
+As Medical Director overseeing this patient's care under the CMS ACCESS program, I want to ensure you are informed of the patient's current status and invite any clinical input you wish to contribute.
+
+Please feel free to reach out to our clinical team at any time.
+
+Respectfully,
+Dr. Rivera, MD
+Medical Director, Bold MSK ACCESS Program`;
+  document.getElementById('pcp-drawer').classList.remove('hidden');
+}
+
+function closePCPDrawer() { document.getElementById('pcp-drawer').classList.add('hidden'); }
+function sendPCP() { closePCPDrawer(); toast('✓ Message sent to PCP and logged in audit trail','success'); }
+
+// ═══════════════════════════════════════════════════
+// STANDING ORDER DRAWER
+// ═══════════════════════════════════════════════════
+const SO_INSTRUMENTS = ['All','KOOS JR','HOOS JR','NPRS','PSFS','NPRS + PSFS','ODI','NDI','QuickDASH','PGIC'];
+const SO_ACTIONS     = ['flag','escalate','alert','audit'];
+
+function openSODrawer() {
+  draftRules = SO.rules.map(r=>({...r}));
+  document.getElementById('so-rationale').value = SO.rationale;
+  document.getElementById('so-notes').value = '';
+  document.getElementById('so-drawer-title').textContent = `Edit / Create ${nextVersion()} Draft`;
+  renderRulesEditor();
+  document.getElementById('so-drawer').classList.remove('hidden');
+}
+
+function closeSODrawer() { document.getElementById('so-drawer').classList.add('hidden'); }
+
+function renderRulesEditor() {
+  document.getElementById('rules-editor').innerHTML = draftRules.map((r,i)=>`
+    <div class="rule-row">
+      <input type="text" value="${r.name}" placeholder="Rule name" oninput="draftRules[${i}].name=this.value">
+      <select oninput="draftRules[${i}].instrument=this.value">
+        ${SO_INSTRUMENTS.map(o=>`<option ${r.instrument===o?'selected':''}>${o}</option>`).join('')}
+      </select>
+      <input type="text" value="${r.threshold}" placeholder="Threshold" oninput="draftRules[${i}].threshold=this.value">
+      <select oninput="draftRules[${i}].action=this.value">
+        ${SO_ACTIONS.map(o=>`<option ${r.action===o?'selected':''}>${o}</option>`).join('')}
+      </select>
+      <button class="remove-rule-btn" onclick="removeRule(${i})">×</button>
+    </div>`).join('');
+}
+
+function addDraftRule() { draftRules.push({name:'New rule',sub:`Rule ${draftRules.length+1}`,instrument:'All',threshold:'',action:'flag'}); renderRulesEditor(); }
+function removeRule(i)  { draftRules.splice(i,1); renderRulesEditor(); }
+function saveDraft()    { closeSODrawer(); toast(`Draft ${nextVersion()} saved — not yet active`,''); }
+
+function deployOrder() {
+  const nv = nextVersion();
+  SO.history = [{version:nv,active:true,date:'May 1'}, ...SO.history.map(h=>({...h,active:false}))];
+  SO.version = nv; SO.approvedDate = 'May 1, 2026';
+  SO.rules = draftRules.map((r,i)=>({...r,sub:`Rule ${i+1}`}));
+  SO.rationale = document.getElementById('so-rationale').value;
+  closeSODrawer();
+  toast(`✓ Standing order ${nv} approved and deployed`,'success');
+  renderMain();
+}
+
+function archiveOrder() {
+  if (!confirm(`Archive ${SO.version}? AI screening will pause until a new version is approved.`)) return;
+  SO.history[0].active = false;
+  toast(`${SO.version} archived. AI screening paused.`,'');
+  renderMain();
+}
+
+// ═══════════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════════
+function toast(msg, type) {
+  document.querySelectorAll('.toast').forEach(t=>t.remove());
+  const el = document.createElement('div');
+  el.className = `toast${type==='success'?' t-success':''}`;
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(), 3200);
+}
+
+// ═══════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════
+renderMain();
+</script>
+</body>
+</html>
