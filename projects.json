@@ -37,6 +37,15 @@
       "category": "Prototypes"
     },
     {
+      "path": "MSK-ACCESS-patient-portal",
+      "href": "MSK-ACCESS-patient-portal/medical-director-oversight.html",
+      "name": "MSK ACCESS — Patient Portal",
+      "desc": "Medical director oversight dashboard for the MSK ACCESS program",
+      "icon": "🏥",
+      "author": "Monica",
+      "category": "Prototypes"
+    },
+    {
       "path": "care_plan",
       "href": "care_plan/care-plan.html",
       "name": "Care Plan",
