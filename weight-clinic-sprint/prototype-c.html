@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vitalshift — Make it stick</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary:       #6B2D72;
+      --primary-dark:  #4F1E54;
+      --primary-deep:  #2A0F30;
+      --accent:        #C882CC;
+      --accent-soft:   #E4BDE6;
+      --bg:            #F5EAF7;
+      --bg-soft:       #FBF4FC;
+      --surface:       #FFFFFF;
+      --ink:           #2A0F30;
+      --ink-muted:     #594062;
+      --border:        #EAD6ED;
+      --warm:          #F8E8D3;
+      --warm-ink:      #7A4515;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Nunito', system-ui, -apple-system, sans-serif;
+      background: var(--surface);
+      color: var(--ink);
+      font-size: 17px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; }
+
+    /* ── NAV ─────────────────────────────────────────────────── */
+    nav.site-nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 40px;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      background: var(--primary);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .brand-mark::after {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 18px;
+      border: 2px dashed var(--accent);
+      opacity: 0.5;
+    }
+    .brand-mark svg { color: #fff; position: relative; z-index: 1; }
+    .brand-name {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: 22px;
+      color: var(--ink);
+      letter-spacing: -0.01em;
+    }
+    .nav-cta {
+      background: var(--primary);
+      color: #fff;
+      font-family: 'Nunito', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      padding: 0 22px;
+      height: 48px;
+      min-width: 44px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.18s ease, transform 0.15s ease;
+    }
+    .nav-cta:hover { background: var(--primary-dark); }
+    .nav-cta:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+
+    /* ── HERO ─────────────────────────────────────────────────── */
+    .hero {
+      background: var(--bg);
+      color: var(--ink);
+      padding: 80px 40px 0;
+      overflow: hidden;
+      position: relative;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -80px; left: -80px;
+      width: 320px; height: 320px;
+      background: radial-gradient(circle, var(--accent-soft), transparent 70%);
+      pointer-events: none;
+      opacity: 0.5;
+    }
+    .hero-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 72px;
+      align-items: end;
+      position: relative;
+    }
+    .hero-text { padding-bottom: 88px; }
+    .hero-eyebrow {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--surface);
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+    }
+    .hero-eyebrow::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+    }
+    .hero-headline {
+      font-family: 'Nunito', sans-serif;
+      font-size: clamp(34px, 4.2vw, 56px);
+      font-weight: 800;
+      line-height: 1.12;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      margin-bottom: 24px;
+      text-wrap: balance;
+    }
+    .hero-headline .accent {
+      color: var(--primary);
+      position: relative;
+      white-space: nowrap;
+    }
+    .hero-headline .accent::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0; bottom: 4px;
+      height: 10px;
+      background: var(--accent-soft);
+      z-index: -1;
+      border-radius: 999px;
+      opacity: 0.8;
+    }
+    .hero-subhead {
+      font-size: 19px;
+      line-height: 1.6;
+      color: var(--ink-muted);
+      margin-bottom: 36px;
+      max-width: 560px;
+    }
+    .hero-ctas {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+      font-family: 'Nunito', sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      padding: 0 32px;
+      height: 56px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.18s ease, transform 0.15s ease;
+    }
+    .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
+    .btn-primary:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+    .btn-ghost {
+      color: var(--primary);
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 12px 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-ghost:hover { color: var(--primary-dark); }
+    .btn-ghost:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; border-radius: 4px; }
+    .hero-image { align-self: end; position: relative; }
+    .hero-photo {
+      width: 100%;
+      aspect-ratio: 4/5;
+      max-height: 540px;
+      border-radius: 28px 28px 0 0;
+      overflow: hidden;
+      background: var(--primary-deep);
+    }
+    .hero-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* habit chip overlay */
+    .habit-chip {
+      position: absolute;
+      background: var(--surface);
+      border-radius: 16px;
+      padding: 14px 18px;
+      box-shadow: 0 16px 36px -12px rgba(42,15,48,0.25);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border: 1px solid var(--border);
+    }
+    .habit-chip-emoji {
+      font-size: 24px;
+      line-height: 1;
+    }
+    .habit-chip-label {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .habit-chip-meta {
+      font-size: 12px;
+      color: var(--ink-muted);
+      margin-top: 2px;
+    }
+    .habit-chip.one { top: 48px; left: -24px; }
+    .habit-chip.two { bottom: 48px; left: -30px; }
+
+    /* ── TRUST STRIP ─────────────────────────────────────────── */
+    .trust-strip { background: var(--primary); color: #fff; }
+    .trust-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 18px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 28px;
+      flex-wrap: wrap;
+    }
+    .trust-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.95);
+    }
+    .trust-item svg { color: var(--accent-soft); flex-shrink: 0; }
+    .trust-dot { width: 4px; height: 4px; border-radius: 50%; background: rgba(255,255,255,0.35); }
+
+    /* ── VALUE PROPS ─────────────────────────────────────────── */
+    .props-section { background: var(--bg-soft); padding: 104px 40px; }
+    .props-inner { max-width: 1280px; margin: 0 auto; }
+    .section-eyebrow {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 16px;
+      text-align: center;
+    }
+    .section-heading {
+      font-family: 'Nunito', sans-serif;
+      font-size: clamp(30px, 3.6vw, 44px);
+      font-weight: 800;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      text-align: center;
+      max-width: 720px;
+      margin: 0 auto 64px;
+      text-wrap: balance;
+    }
+    .props-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .prop-card {
+      background: var(--surface);
+      border-radius: 24px;
+      border: 1px solid var(--border);
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .prop-card:hover { transform: translateY(-2px); box-shadow: 0 20px 40px -20px rgba(107,45,114,0.25); }
+    .prop-image-wrap {
+      border-radius: 18px;
+      overflow: hidden;
+      aspect-ratio: 5/4;
+      margin-bottom: 24px;
+      background: var(--bg);
+    }
+    .prop-image-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .prop-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--primary);
+      background: var(--bg);
+      padding: 5px 12px;
+      border-radius: 999px;
+      margin-bottom: 14px;
+      align-self: flex-start;
+    }
+    .prop-pill::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+    }
+    .prop-title {
+      font-family: 'Nunito', sans-serif;
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--ink);
+      line-height: 1.2;
+      letter-spacing: -0.01em;
+      margin-bottom: 14px;
+      text-wrap: balance;
+    }
+    .prop-body {
+      font-size: 17px;
+      line-height: 1.65;
+      color: var(--ink-muted);
+    }
+    .prop-card.no-photo {
+      background: linear-gradient(160deg, var(--warm) 0%, #FDEFDB 100%);
+      border-color: transparent;
+    }
+    .prop-card.no-photo .prop-pill { background: rgba(255,255,255,0.7); color: var(--warm-ink); }
+    .prop-card.no-photo .prop-pill::before { background: var(--warm-ink); }
+    .prop-icon-wrap {
+      width: 60px;
+      height: 60px;
+      border-radius: 16px;
+      background: var(--surface);
+      color: var(--warm-ink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+      font-size: 30px;
+    }
+
+    /* ── GLP-1 BLOCK ─────────────────────────────────────────── */
+    .glp-section { background: var(--bg); padding: 104px 40px; }
+    .glp-inner {
+      max-width: 1040px;
+      margin: 0 auto;
+      background: var(--surface);
+      border-radius: 28px;
+      padding: 64px 56px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .glp-inner::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 200px; height: 200px;
+      background: radial-gradient(circle, var(--accent-soft), transparent 70%);
+      opacity: 0.6;
+      pointer-events: none;
+    }
+    .glp-label {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: 18px;
+      display: inline-block;
+      background: var(--bg);
+      padding: 6px 12px;
+      border-radius: 999px;
+    }
+    .glp-headline {
+      font-family: 'Nunito', sans-serif;
+      font-size: clamp(28px, 3.2vw, 38px);
+      font-weight: 800;
+      line-height: 1.2;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+      margin-bottom: 20px;
+      max-width: 680px;
+      text-wrap: balance;
+    }
+    .glp-body {
+      font-size: 18px;
+      line-height: 1.65;
+      color: var(--ink-muted);
+      max-width: 720px;
+    }
+    .glp-disclaimer {
+      margin-top: 24px;
+      font-size: 14px;
+      color: var(--ink-muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      background: var(--bg);
+      border-radius: 10px;
+    }
+    .glp-disclaimer svg { color: var(--primary); flex-shrink: 0; }
+
+    /* day routine strip */
+    .routine-strip {
+      margin-top: 40px;
+      padding-top: 32px;
+      border-top: 1px dashed var(--border);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+    .routine-item {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+    }
+    .routine-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+    .routine-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .routine-meta {
+      font-size: 12px;
+      color: var(--ink-muted);
+    }
+
+    /* ── TESTIMONIAL ─────────────────────────────────────────── */
+    .testimonial-section { background: var(--surface); padding: 96px 40px; }
+    .testimonial-inner {
+      max-width: 820px;
+      margin: 0 auto;
+    }
+    .testimonial-bubble {
+      position: relative;
+      background: var(--bg);
+      border-radius: 28px;
+      padding: 48px 56px;
+    }
+    .testimonial-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -16px;
+      left: 60px;
+      width: 32px;
+      height: 32px;
+      background: var(--bg);
+      transform: rotate(45deg);
+      border-radius: 4px;
+    }
+    .testimonial-quote {
+      font-family: 'Nunito', sans-serif;
+      font-size: clamp(20px, 2.6vw, 28px);
+      font-weight: 600;
+      line-height: 1.45;
+      color: var(--ink);
+      letter-spacing: -0.01em;
+      text-wrap: balance;
+    }
+    .testimonial-meta {
+      margin-top: 48px;
+      padding-left: 56px;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .testimonial-meta span {
+      color: var(--ink-muted);
+      font-weight: 500;
+    }
+    .testimonial-disclaimer {
+      margin-top: 16px;
+      padding-left: 56px;
+      font-size: 13px;
+      color: var(--ink-muted);
+      opacity: 0.7;
+    }
+
+    /* ── FOOTER CTA ──────────────────────────────────────────── */
+    .footer-cta { background: var(--primary); color: #fff; padding: 104px 40px; text-align: center; position: relative; overflow: hidden; }
+    .footer-cta::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at top, rgba(200,130,204,0.3), transparent 60%);
+      pointer-events: none;
+    }
+    .footer-cta-inner { max-width: 720px; margin: 0 auto; position: relative; }
+    .footer-cta h2 {
+      font-family: 'Nunito', sans-serif;
+      font-size: clamp(30px, 3.6vw, 44px);
+      font-weight: 800;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 28px;
+      text-wrap: balance;
+    }
+    .footer-cta .btn-primary {
+      background: #fff;
+      color: var(--primary);
+      margin-bottom: 20px;
+    }
+    .footer-cta .btn-primary:hover { background: var(--bg); color: var(--primary-dark); }
+    .footer-cta .coverage-line {
+      font-size: 15px;
+      color: rgba(255,255,255,0.85);
+    }
+
+    /* ── SITE FOOTER ─────────────────────────────────────────── */
+    footer.site-footer {
+      background: var(--primary-deep);
+      padding: 32px 40px;
+    }
+    .footer-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .footer-brand {
+      font-family: 'Nunito', sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+      color: rgba(255,255,255,0.9);
+    }
+    .footer-tagline {
+      font-size: 13px;
+      color: rgba(255,255,255,0.5);
+      margin-top: 2px;
+    }
+    .footer-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .footer-links a {
+      font-size: 14px;
+      color: rgba(255,255,255,0.6);
+      text-decoration: none;
+    }
+    .footer-links a:hover { color: #fff; }
+    .footer-links a:focus-visible { outline: 2px solid rgba(255,255,255,0.5); outline-offset: 3px; border-radius: 3px; }
+
+    /* ── MOBILE ──────────────────────────────────────────────── */
+    @media (max-width: 820px) {
+      body { font-size: 16px; }
+      .nav-inner, .trust-inner, .props-inner, .footer-inner { padding-left: 20px; padding-right: 20px; }
+      .hero { padding: 48px 20px 0; }
+      .hero-inner { grid-template-columns: 1fr; gap: 32px; }
+      .hero-text { padding-bottom: 28px; }
+      .hero-subhead { font-size: 17px; }
+      .habit-chip { display: none; }
+      .trust-inner { gap: 14px; padding: 16px 20px; }
+      .props-section, .glp-section, .testimonial-section, .footer-cta { padding: 64px 20px; }
+      .props-grid { grid-template-columns: 1fr; gap: 20px; }
+      .glp-inner { padding: 40px 28px; border-radius: 20px; }
+      .routine-strip { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+      .testimonial-bubble { padding: 32px 28px; }
+      .testimonial-meta, .testimonial-disclaimer { padding-left: 28px; }
+      .footer-inner { flex-direction: column; align-items: flex-start; }
+      .hero-photo { border-radius: 24px; max-height: 440px; }
+    }
+    @media (min-width: 821px) and (max-width: 1120px) {
+      .props-grid { grid-template-columns: repeat(2, 1fr); }
+      .habit-chip.two { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="site-nav" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="#" class="brand" aria-label="Vitalshift — home">
+        <div class="brand-mark" aria-hidden="true">
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 12a8 8 0 0116 0M12 4v4M20 12l-3 3M4 12l3 3"/>
+          </svg>
+        </div>
+        <span class="brand-name">Vitalshift</span>
+      </a>
+      <a href="#start" class="nav-cta">
+        Get started
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" aria-labelledby="hero-headline">
+    <div class="hero-inner">
+      <div class="hero-text">
+        <div class="hero-eyebrow">Daily coaching for adults 65+</div>
+        <h1 class="hero-headline" id="hero-headline">
+          The problem isn&rsquo;t knowing what to do. It&rsquo;s <span class="accent">making it stick.</span>
+        </h1>
+        <p class="hero-subhead">
+          Most weight programs tell you what to eat and leave you to figure out the rest. We help you build the habits, routines, and understanding that make results last &mdash; whether or not you use medication.
+        </p>
+        <div class="hero-ctas">
+          <a href="#start" class="btn-primary">
+            Get started
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <a href="#how" class="btn-ghost">How coaching works</a>
+        </div>
+      </div>
+      <div class="hero-image">
+        <div class="hero-photo">
+          <img src="assets/imgs/vitalshift-hero.png" alt="Older adults gathered in a daily-life setting, chatting and enjoying a calm moment together." />
+        </div>
+        <div class="habit-chip one" role="img" aria-label="Daily habit card: morning walk, 12 minutes done today.">
+          <span class="habit-chip-emoji" aria-hidden="true">&#9728;</span>
+          <div>
+            <div class="habit-chip-label">Morning walk</div>
+            <div class="habit-chip-meta">12 min &middot; done today</div>
+          </div>
+        </div>
+        <div class="habit-chip two" role="img" aria-label="Daily habit card: eight hours of sleep tracked for five nights in a row.">
+          <span class="habit-chip-emoji" aria-hidden="true">&#127764;</span>
+          <div>
+            <div class="habit-chip-label">Sleep 8h</div>
+            <div class="habit-chip-meta">5 nights in a row</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST STRIP -->
+  <div class="trust-strip" aria-label="What's included">
+    <div class="trust-inner">
+      <div class="trust-item">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M9 12l2 2 4-4M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        Covered by Medicare
+      </div>
+      <span class="trust-dot" aria-hidden="true"></span>
+      <div class="trust-item">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M9 12l2 2 4-4M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        Daily coaching support
+      </div>
+      <span class="trust-dot" aria-hidden="true"></span>
+      <div class="trust-item">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M9 12l2 2 4-4M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        No rigid meal plans
+      </div>
+    </div>
+  </div>
+
+  <!-- VALUE PROPS -->
+  <section class="props-section" id="how" aria-labelledby="props-heading">
+    <div class="props-inner">
+      <div class="section-eyebrow">How we help</div>
+      <h2 class="section-heading" id="props-heading">
+        A coach, a plan that flexes, and small wins that add up.
+      </h2>
+
+      <div class="props-grid">
+
+        <article class="prop-card" aria-labelledby="vp1-title">
+          <div class="prop-image-wrap">
+            <img src="assets/imgs/vitalshift-vp1.png" alt="Older woman doing gentle seated tai chi at home in a calm morning light." />
+          </div>
+          <div class="prop-pill">Coaching</div>
+          <h3 class="prop-title" id="vp1-title">Guidance that adapts to your life.</h3>
+          <p class="prop-body">
+            Daily check-ins on sleep, stress, and eating patterns. Small prompts and adjustments &mdash; not a rigid plan you have to follow perfectly. &lsquo;Try this tomorrow&rsquo; instead of &lsquo;start over.&rsquo;
+          </p>
+        </article>
+
+        <article class="prop-card" aria-labelledby="vp2-title">
+          <div class="prop-image-wrap">
+            <img src="assets/imgs/vitalshift-vp2.png" alt="Group of older adults sharing a meal together in a lifestyle setting." />
+          </div>
+          <div class="prop-pill">Nutrition</div>
+          <h3 class="prop-title" id="vp2-title">Feel full. Not restricted.</h3>
+          <p class="prop-body">
+            Learn how to eat in a way that satisfies you without counting every calorie. Low-calorie-density foods, practical swaps, and strategies for reducing cravings that actually fit your life.
+          </p>
+        </article>
+
+        <article class="prop-card no-photo" aria-labelledby="vp3-title">
+          <div class="prop-icon-wrap" aria-hidden="true">
+            <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="9"/>
+              <path d="M12 7v5l3 2"/>
+            </svg>
+          </div>
+          <div class="prop-pill">Sustainability</div>
+          <h3 class="prop-title" id="vp3-title">Results that last &mdash; with or without medication.</h3>
+          <p class="prop-body">
+            Whether you use GLP-1 medication or not, we focus on building the habits that keep the weight off long term. The goal is a lifestyle that just works &mdash; not a program you finish and then fall off.
+          </p>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- GLP-1 FRAMING -->
+  <section class="glp-section" aria-labelledby="glp-heading">
+    <div class="glp-inner">
+      <span class="glp-label">On GLP-1 medications</span>
+      <h2 class="glp-headline" id="glp-heading">
+        If you use medication, we help you make the most of it &mdash; and plan for life after.
+      </h2>
+      <p class="glp-body">
+        GLP-1 medications can help you lose weight in the short term. But many people regain it when they stop. Where clinically appropriate, we use the 12&ndash;18 months on medication to build the habits, routines, and understanding that keep results lasting &mdash; so you&rsquo;re not dependent on medication forever.
+      </p>
+      <div class="glp-disclaimer">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+        Prescribed only if recommended by your provider.
+      </div>
+
+      <div class="routine-strip" aria-label="A typical day supported by coaching">
+        <div class="routine-item">
+          <div class="routine-icon" aria-hidden="true">&#9728;</div>
+          <div class="routine-label">Morning</div>
+          <div class="routine-meta">Protein &amp; a short walk</div>
+        </div>
+        <div class="routine-item">
+          <div class="routine-icon" aria-hidden="true">&#9749;</div>
+          <div class="routine-label">Midday</div>
+          <div class="routine-meta">Check-in &amp; easy swaps</div>
+        </div>
+        <div class="routine-item">
+          <div class="routine-icon" aria-hidden="true">&#127869;</div>
+          <div class="routine-label">Evening</div>
+          <div class="routine-meta">Balanced dinner, no rules</div>
+        </div>
+        <div class="routine-item">
+          <div class="routine-icon" aria-hidden="true">&#127764;</div>
+          <div class="routine-label">Night</div>
+          <div class="routine-meta">Wind down &amp; real sleep</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIAL -->
+  <section class="testimonial-section" aria-labelledby="testimonial-heading">
+    <div class="testimonial-inner">
+      <blockquote>
+        <div class="testimonial-bubble">
+          <p class="testimonial-quote" id="testimonial-heading">
+            &ldquo;I&rsquo;ve lost weight before. I just couldn&rsquo;t keep it off. This is the first time someone helped me figure out why &mdash; and what to actually do about it.&rdquo;
+          </p>
+        </div>
+        <footer class="testimonial-meta">
+          Carol &middot; <span>73, Illinois</span>
+        </footer>
+      </blockquote>
+      <p class="testimonial-disclaimer">Illustrative quote for research purposes.</p>
+    </div>
+  </section>
+
+  <!-- FOOTER CTA -->
+  <section class="footer-cta" id="start" aria-labelledby="footer-cta-heading">
+    <div class="footer-cta-inner">
+      <h2 id="footer-cta-heading">Build a lifestyle that works for the long term.</h2>
+      <a href="#" class="btn-primary">
+        Get started
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <div class="coverage-line">Covered by Medicare. Most patients pay $0.</div>
+    </div>
+  </section>
+
+  <!-- SITE FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand">Vitalshift</div>
+        <div class="footer-tagline">Daily coaching for adults 65+</div>
+      </div>
+      <nav class="footer-links" aria-label="Footer links">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Contact</a>
+      </nav>
+    </div>
+  </footer>
+
+</body>
+</html>
