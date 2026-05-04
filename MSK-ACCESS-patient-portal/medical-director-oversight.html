@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bold — Medical Director Oversight</title>
+  <title>Bold — MSK Patient Management</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
@@ -88,16 +88,13 @@
     }
     .sidebar-logo {
       padding: 16px 20px;
-      font-weight: var(--font-weight-bold);
-      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-semibold);
+      font-size: var(--font-size-md);
       color: var(--color-gray-950);
       border-bottom: 1px solid var(--color-gray-100);
       display: flex;
       align-items: center;
-      gap: 8px;
-      letter-spacing: var(--letter-spacing-snug);
     }
-    .logo-dot { width: 8px; height: 8px; background: var(--color-purple-600); border-radius: 50%; flex-shrink: 0; }
     .sidebar-section { padding: 16px 8px 4px; }
     .sidebar-section-label {
       font-size: var(--font-size-2xs); font-weight: var(--font-weight-semibold); color: var(--color-gray-400);
@@ -163,7 +160,7 @@
       color: #666; background: #fff; user-select: none;
     }
     .filter-tab:hover { background: #f5f5f0; }
-    .filter-tab.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+    .filter-tab.active { background: #5200D4; color: #fff; border-color: #5200D4; }
     .filter-tab .ct { margin-left: 3px; opacity: 0.65; }
     .ml-auto { margin-left: auto; }
 
@@ -182,8 +179,8 @@
     .data-table tbody tr:last-child td { border-bottom: none; }
     .data-table tbody tr { cursor: pointer; transition: background 0.1s; }
     .data-table tbody tr:hover { background: #fafaf8; }
-    .data-table tbody tr.row-flagged { background: #fff9f5; }
-    .data-table tbody tr.row-flagged:hover { background: #fff4ee; }
+    .data-table tbody tr.row-flagged { background: #f4f4f4; }
+    .data-table tbody tr.row-flagged:hover { background: #eeeeee; }
     .member-name { font-weight: 600; }
     .member-sub { font-size: 11px; color: #bbb; margin-top: 1px; }
     .score-main { font-weight: 600; }
@@ -195,7 +192,7 @@
     .badge {
       display: inline-flex; align-items: center;
       padding: 3px 9px; border-radius: 12px;
-      font-size: 11px; font-weight: 600; white-space: nowrap;
+      font-size: 10px; font-weight: 600; white-space: nowrap; text-transform: uppercase;
     }
     .b-escalated { background: #fde8e2; color: #c0392b; }
     .b-flagged   { background: #fef3e0; color: #d4890a; }
@@ -231,8 +228,8 @@
       justify-content: center; padding: 36px 20px; overflow-y: auto;
     }
     .modal {
-      background: #fff; border-radius: 12px; width: 590px;
-      max-width: 100%; box-shadow: 0 24px 64px rgba(0,0,0,0.18); position: relative;
+      background: var(--color-white); border-radius: var(--radius-xl); width: 820px;
+      max-width: 96vw; box-shadow: var(--shadow-lg); position: relative;
     }
     .modal-head { padding: 20px 24px 0; }
     .modal-close {
@@ -433,6 +430,49 @@
     @keyframes fadeUp { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     .toast.t-success { background: #2a5c24; }
 
+    /* ─── CONTROL BAR (group by / sort by) ─── */
+    .ctrl-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .ctrl-dropdown { position: relative; display: inline-block; }
+    .ctrl-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 12px; border: 1px solid var(--color-gray-200);
+      border-radius: var(--radius-sm); background: var(--color-white);
+      font-size: var(--font-size-xs); font-weight: var(--font-weight-medium);
+      color: var(--color-gray-700); cursor: pointer; font-family: var(--font-family);
+      white-space: nowrap; user-select: none; transition: var(--transition-fast);
+    }
+    .ctrl-btn:hover { background: var(--color-gray-75); }
+    .ctrl-btn.active { background: var(--color-purple-50); border-color: var(--color-purple-600); color: var(--color-purple-600); }
+    .ctrl-btn-arrow { font-size: 9px; opacity: 0.6; }
+    .ctrl-menu {
+      display: none; position: absolute; top: calc(100% + 4px); left: 0;
+      background: var(--color-white); border: 1px solid var(--color-gray-200);
+      border-radius: var(--radius-sm); box-shadow: var(--shadow-md);
+      z-index: 50; min-width: 200px; overflow: hidden;
+    }
+    .ctrl-dropdown.open .ctrl-menu { display: block; }
+    .ctrl-menu-label {
+      font-size: var(--font-size-2xs); font-weight: var(--font-weight-semibold);
+      color: var(--color-gray-400); text-transform: uppercase;
+      letter-spacing: var(--letter-spacing-caps); padding: 10px 14px 4px;
+    }
+    .ctrl-menu-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 9px 14px; font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-medium); color: var(--color-gray-700);
+      cursor: pointer; transition: var(--transition-fast);
+    }
+    .ctrl-menu-item:hover { background: var(--color-gray-75); }
+    .ctrl-menu-item.selected { color: var(--color-purple-600); font-weight: var(--font-weight-semibold); }
+    .ctrl-menu-check { font-size: 11px; opacity: 0; }
+    .ctrl-menu-item.selected .ctrl-menu-check { opacity: 1; }
+
+    /* ─── GROUP HEADER ROW ─── */
+    .group-header-row td { padding: 10px 16px 6px; background: var(--color-gray-50); border-bottom: 1px solid var(--color-gray-150); }
+    .group-header-row:not(:first-child) td { border-top: 2px solid var(--color-gray-150); }
+    .group-header { display: flex; align-items: center; gap: 8px; font-size: var(--font-size-2xs); font-weight: var(--font-weight-bold); color: var(--color-gray-500); text-transform: uppercase; letter-spacing: var(--letter-spacing-caps); }
+    .group-count { display: inline-flex; align-items: center; justify-content: center; background: var(--color-gray-200); color: var(--color-gray-600); font-size: var(--font-size-2xs); font-weight: var(--font-weight-semibold); min-width: 20px; height: 18px; border-radius: var(--radius-full); padding: 0 6px; }
+
     .hidden { display: none !important; }
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: transparent; }
@@ -445,7 +485,7 @@
 <aside class="sidebar">
   <div class="sidebar-logo">
     <div class="logo-dot"></div>
-    Bold — Medical Director
+     MSK Patient Management
   </div>
 
   <div class="sidebar-section">
@@ -478,10 +518,10 @@
   </div>
 
   <div class="sidebar-footer">
-    <div class="avatar">DR</div>
+    <div class="avatar">CH</div>
     <div>
-      <div class="avatar-name">Dr. Rivera, MD</div>
-      <div class="avatar-role">Medical Director</div>
+      <div class="avatar-name">Claire Hsing, PT</div>
+      <div class="avatar-role">Admin</div>
     </div>
   </div>
 </aside>
@@ -692,20 +732,33 @@ const INSTRUMENTS = {
   'NPRS + PSFS': {
     fullName: 'Numeric Pain Rating Scale + Patient-Specific Functional Scale',
     bodyPart: 'Universal (all diagnoses)',
-    cadence: 'Baseline, then monthly',
+    cadence: 'Baseline (3 Qs), then monthly (2 Qs)',
     cadenceShort: 'Baseline + Monthly',
     scoring: 'NPRS 0–10 (lower = less pain) · PSFS 0–10 (higher = better function)',
     nPatients: 284,
-    color: '#555',
+    color: '#5200d4',
     questions: [
-      { section: 'NPRS — Numeric Pain Rating Scale  ·  0 = no pain, 10 = worst possible pain' },
-      { text:'Rate your current pain level right now',             note:'NPRS Item 1',               options:['0–2  No / Minimal','3–4  Mild','5–6  Moderate','7–8  Severe','9–10  Very severe'],    dist:[9,18,32,28,13]  },
-      { text:'Rate your worst pain level in the past week',        note:'NPRS Item 2',               options:['0–2  No / Minimal','3–4  Mild','5–6  Moderate','7–8  Severe','9–10  Very severe'],    dist:[5,12,28,34,21]  },
-      { text:'Rate your average pain level in the past week',      note:'NPRS Item 3',               options:['0–2  No / Minimal','3–4  Mild','5–6  Moderate','7–8  Severe','9–10  Very severe'],    dist:[8,16,31,29,16]  },
-      { section: 'PSFS — Patient-Specific Functional Scale  ·  0 = unable to perform, 10 = able to perform as before injury' },
-      { text:'Patient-identified Activity 1: rate your current difficulty performing it', note:'PSFS Activity 1', options:['0–2  Unable / Very limited','3–4  Severely limited','5–6  Moderately limited','7–8  Mildly limited','9–10  Near full / Full'], dist:[22,28,26,16,8]  },
-      { text:'Patient-identified Activity 2: rate your current difficulty performing it', note:'PSFS Activity 2', options:['0–2  Unable / Very limited','3–4  Severely limited','5–6  Moderately limited','7–8  Mildly limited','9–10  Near full / Full'], dist:[19,26,28,19,8]  },
-      { text:'Patient-identified Activity 3: rate your current difficulty performing it', note:'PSFS Activity 3', options:['0–2  Unable / Very limited','3–4  Severely limited','5–6  Moderately limited','7–8  Mildly limited','9–10  Near full / Full'], dist:[21,27,26,18,8]  },
+      { section: 'NPRS — Numeric Pain Rating Scale  ·  0 = no pain, 10 = worst pain  ·  Administered monthly' },
+      {
+        text: 'How would you rate your [body region] pain on average over the last 7 days?',
+        note: 'NPRS · Monthly',
+        options: ['0 — No pain','1','2','3','4','5','6','7','8','9','10 — Worst pain'],
+        dist: [2, 3, 8, 12, 18, 22, 16, 10, 5, 3, 1]
+      },
+      { section: 'PSFS — Patient-Specific Functional Scale  ·  Activity selection captured at baseline only; ability rating captured monthly' },
+      {
+        text: 'Please select the activity you find the most difficult or cannot do because of your [body region] pain.',
+        note: 'PSFS Activity Selection · Baseline only',
+        baselineOnly: true,
+        options: ['Walking','Climbing stairs','Getting up and down from the floor','Getting up and down from a seat','Housework','Exercise','Providing care for family members'],
+        dist: [26, 20, 18, 14, 9, 9, 4]
+      },
+      {
+        text: 'How would you rate your current ability to perform this activity?',
+        note: 'PSFS Ability Rating · Baseline + Monthly',
+        options: ['0 — Unable','1','2','3','4','5','6','7','8','9','10 — Fully able'],
+        dist: [6, 10, 14, 19, 18, 14, 10, 6, 2, 1, 0]
+      },
     ]
   },
   'PGIC': {
@@ -745,15 +798,15 @@ const PATIENTS = [
   {
     id:1, name:"May Johnson", age:72, sex:"F", mbi:"3L4-E71",
     painSite:"Knee", quarter:"Q2 of care", phase:"Build", phaseWeek:5,
-    instrument:"KOOS JR / NPRS + PSFS", score:42, delta:-13,
+    instrument:"KOOS JR", score:42, delta:-13,
     screening:"escalated", daysLeft:6, position:"Seated",
     dpw:3, classesCompleted:18, classesSkipped:4,
     alert:"NRS jumped from 4 to 7 (+3), exceeding the >2 guardrail. KOOS JR dropped from 55 to 42 (−13), a statistical outlier. Consider phase shift: Build → Calm.",
     outcomes:[
-      { name:"KOOS JR", sub:"Knee · 0–100 scale",              prev:55,  curr:42,  delta:-13, thr:"≥ −10", flag:true  },
-      { name:"NPRS",    sub:"Pain · 0–10 (lower = better)",    prev:4,   curr:7,   delta:3,   thr:"≤ +2",  flag:true  },
-      { name:"PSFS",    sub:"Function · 0–10 (higher = better)",prev:6.5,curr:4.8, delta:-1.7,thr:"≥ 0",   flag:false },
-      { name:"PGIC",    sub:"Program completion",               prev:null,curr:3,   delta:null,thr:"N/A",   flag:false },
+      { name:"KOOS JR", sub:"Knee · 0–100 scale",               prev:55,  curr:42,  delta:-13, thr:"≥ −10", flag:true,  dateBaseline:"Jan 18, 2026", dateCurr:"Apr 10, 2026" },
+      { name:"NPRS",    sub:"Pain · 0–10 (lower = better)",    prev:4,   curr:7,   delta:3,   thr:"≤ +2",  flag:true,  dateBaseline:"Jan 15, 2026", dateCurr:"Apr 10, 2026" },
+      { name:"PSFS",    sub:"Function · 0–10 (higher = better)",prev:6.5,curr:4.8, delta:-1.7,thr:"≥ 0",   flag:false, dateBaseline:"Jan 15, 2026", dateCurr:"Apr 10, 2026" },
+      { name:"PGIC",    sub:"Program completion",               prev:null,curr:3,   delta:null,thr:"N/A",   flag:false, dateBaseline:null,           dateCurr:"Apr 10, 2026" },
     ],
     classes:[
       { name:"Foundation First",    type:"Low-Impact & Mobility",       date:"Apr 10, 2026", done:true  },
@@ -778,9 +831,9 @@ const PATIENTS = [
     dpw:2, classesCompleted:8, classesSkipped:2,
     alert:"HOOS JR dropped 21 points from baseline (72 → 51). Score decline exceeds the >10 pt guardrail. Recommend individual MD review.",
     outcomes:[
-      { name:"HOOS JR", sub:"Hip · 0–100 scale",               prev:72,  curr:51,  delta:-21, thr:"≥ −10", flag:true  },
-      { name:"NPRS",    sub:"Pain · 0–10 (lower = better)",    prev:3,   curr:5,   delta:2,   thr:"≤ +2",  flag:false },
-      { name:"PSFS",    sub:"Function · 0–10 (higher = better)",prev:5.0,curr:3.8, delta:-1.2,thr:"≥ 0",   flag:false },
+      { name:"HOOS JR", sub:"Hip · 0–100 scale",                prev:72,  curr:51,  delta:-21, thr:"≥ −10", flag:true,  dateBaseline:"Feb 4, 2026",  dateCurr:"Apr 10, 2026" },
+      { name:"NPRS",    sub:"Pain · 0–10 (lower = better)",    prev:3,   curr:5,   delta:2,   thr:"≤ +2",  flag:false, dateBaseline:"Feb 1, 2026",  dateCurr:"Apr 10, 2026" },
+      { name:"PSFS",    sub:"Function · 0–10 (higher = better)",prev:5.0,curr:3.8, delta:-1.2,thr:"≥ 0",   flag:false, dateBaseline:"Feb 1, 2026",  dateCurr:"Apr 10, 2026" },
     ],
     classes:[
       { name:"Foundation First",    type:"Low-Impact & Mobility",   date:"Apr 10, 2026", done:true  },
@@ -801,9 +854,9 @@ const PATIENTS = [
     dpw:3, classesCompleted:12, classesSkipped:1,
     alert:"",
     outcomes:[
-      { name:"ODI",  sub:"Lower back · 0–100%",                 prev:36,  curr:24,  delta:-12, thr:"≥ −10", flag:false },
-      { name:"NPRS", sub:"Pain · 0–10 (lower = better)",        prev:6,   curr:4,   delta:-2,  thr:"≤ +2",  flag:false },
-      { name:"PSFS", sub:"Function · 0–10 (higher = better)",   prev:4.2, curr:6.5, delta:2.3, thr:"≥ 0",   flag:false },
+      { name:"ODI",  sub:"Lower back · 0–100%",                  prev:36,  curr:24,  delta:-12, thr:"≥ −10", flag:false, dateBaseline:"Mar 13, 2026", dateCurr:"Apr 9, 2026"  },
+      { name:"NPRS", sub:"Pain · 0–10 (lower = better)",        prev:6,   curr:4,   delta:-2,  thr:"≤ +2",  flag:false, dateBaseline:"Mar 10, 2026", dateCurr:"Apr 9, 2026"  },
+      { name:"PSFS", sub:"Function · 0–10 (higher = better)",   prev:4.2, curr:6.5, delta:2.3, thr:"≥ 0",   flag:false, dateBaseline:"Mar 10, 2026", dateCurr:"Apr 9, 2026"  },
     ],
     classes:[
       { name:"Foundation First", type:"Low-Impact & Mobility",   date:"Apr 9, 2026", done:true },
@@ -822,9 +875,9 @@ const PATIENTS = [
     dpw:4, classesCompleted:22, classesSkipped:0,
     alert:"",
     outcomes:[
-      { name:"HOOS JR", sub:"Hip · 0–100 scale",                prev:60,   curr:68,   delta:8,   thr:"≥ +10", flag:false },
-      { name:"NPRS",    sub:"Pain · 0–10 (lower = better)",     prev:5,    curr:3,    delta:-2,  thr:"≤ +2",  flag:false },
-      { name:"PSFS",    sub:"Function · 0–10 (higher = better)", prev:5.5,  curr:7.2,  delta:1.7, thr:"≥ 0",   flag:false },
+      { name:"HOOS JR", sub:"Hip · 0–100 scale",                 prev:60,  curr:68,  delta:8,   thr:"≥ +10", flag:false, dateBaseline:"Jan 23, 2026", dateCurr:"Apr 10, 2026" },
+      { name:"NPRS",    sub:"Pain · 0–10 (lower = better)",     prev:5,   curr:3,   delta:-2,  thr:"≤ +2",  flag:false, dateBaseline:"Jan 20, 2026", dateCurr:"Apr 10, 2026" },
+      { name:"PSFS",    sub:"Function · 0–10 (higher = better)", prev:5.5, curr:7.2, delta:1.7, thr:"≥ 0",   flag:false, dateBaseline:"Jan 20, 2026", dateCurr:"Apr 10, 2026" },
     ],
     classes:[
       { name:"Foundation First",    type:"Low-Impact & Mobility",date:"Apr 10, 2026", done:true },
@@ -843,9 +896,9 @@ const PATIENTS = [
     dpw:3, classesCompleted:28, classesSkipped:2,
     alert:"",
     outcomes:[
-      { name:"KOOS JR", sub:"Knee · 0–100 scale",               prev:59,  curr:67,  delta:8,   thr:"≥ +10", flag:false },
-      { name:"NPRS",    sub:"Pain · 0–10 (lower = better)",     prev:5,   curr:3,   delta:-2,  thr:"≤ +2",  flag:false },
-      { name:"PSFS",    sub:"Function · 0–10 (higher = better)", prev:4.8, curr:7.0, delta:2.2, thr:"≥ 0",   flag:false },
+      { name:"KOOS JR", sub:"Knee · 0–100 scale",                prev:59,  curr:67,  delta:8,   thr:"≥ +10", flag:false, dateBaseline:"Nov 13, 2025", dateCurr:"Apr 9, 2026"  },
+      { name:"NPRS",    sub:"Pain · 0–10 (lower = better)",     prev:5,   curr:3,   delta:-2,  thr:"≤ +2",  flag:false, dateBaseline:"Nov 10, 2025", dateCurr:"Apr 9, 2026"  },
+      { name:"PSFS",    sub:"Function · 0–10 (higher = better)", prev:4.8, curr:7.0, delta:2.2, thr:"≥ 0",   flag:false, dateBaseline:"Nov 10, 2025", dateCurr:"Apr 9, 2026"  },
     ],
     classes:[
       { name:"Foundation First",    type:"Low-Impact & Mobility",   date:"Apr 9, 2026", done:true },
@@ -861,14 +914,14 @@ const PATIENTS = [
   {
     id:6, name:"Sarah L.", age:42, sex:"F", mbi:"4R2-N10",
     painSite:"Lower back", quarter:"Q2 of care", phase:"Calm", phaseWeek:6,
-    instrument:"ODI / NPRS + PSFS", score:38, delta:-4,
+    instrument:"ODI", score:38, delta:-4,
     screening:"escalated", daysLeft:5, position:"Reclined",
     dpw:2, classesCompleted:14, classesSkipped:3,
     alert:"Member reported slipping on wet pavement ~2 weeks ago. NPRS increased to 7 (from 4). PSFS decreased by 1.8. Possible new acute injury — recommend PCP notification.",
     outcomes:[
-      { name:"ODI",  sub:"Lower back · 0–100%",                 prev:42,  curr:38,  delta:-4,  thr:"≥ −10", flag:false },
-      { name:"NPRS", sub:"Pain · 0–10 (lower = better)",        prev:4,   curr:7,   delta:3,   thr:"≤ +2",  flag:true  },
-      { name:"PSFS", sub:"Function · 0–10 (higher = better)",   prev:6.0, curr:4.2, delta:-1.8,thr:"≥ 0",   flag:false },
+      { name:"ODI",  sub:"Lower back · 0–100%",                  prev:42,  curr:38,  delta:-4,  thr:"≥ −10", flag:false, dateBaseline:"Dec 4, 2025",  dateCurr:"Apr 10, 2026" },
+      { name:"NPRS", sub:"Pain · 0–10 (lower = better)",        prev:4,   curr:7,   delta:3,   thr:"≤ +2",  flag:true,  dateBaseline:"Dec 1, 2025",  dateCurr:"Apr 10, 2026" },
+      { name:"PSFS", sub:"Function · 0–10 (higher = better)",   prev:6.0, curr:4.2, delta:-1.8,thr:"≥ 0",   flag:false, dateBaseline:"Dec 1, 2025",  dateCurr:"Apr 10, 2026" },
     ],
     classes:[
       { name:"Foundation First", type:"Low-Impact & Mobility",   date:"Apr 10, 2026", done:true  },
@@ -907,6 +960,8 @@ let SO = {
 // ═══════════════════════════════════════════════════
 let view = 'queue';
 let activeFilter = 'all';
+let activeGroupBy = 'none'; // 'none' | 'pain-region' | 'flagged-status'
+let activeSortBy  = 'updated-new'; // 'updated-new' | 'updated-old' | 'days-remaining'
 let currentPatient = null;
 let currentTab = 'overview';
 let draftRules = [];
@@ -964,6 +1019,7 @@ function renderQueue() {
       <div class="filter-tab ${activeFilter==='urgent'?'active':''}"    onclick="setFilter('urgent')">Urgent <span class="ct">(${urg.length})</span></div>
       <button class="btn btn-outline ml-auto">Batch export</button>
     </div>
+    ${ctrlBar()}
     <div class="table-card">
       <table class="data-table">
         <thead><tr>
@@ -971,7 +1027,7 @@ function renderQueue() {
           <th>Member</th><th>Instrument</th><th>Score / delta</th>
           <th>Screening</th><th>Days left</th><th></th>
         </tr></thead>
-        <tbody>${list.map(p => patientRow(p)).join('')}</tbody>
+        <tbody>${buildTableBody(list, 7)}</tbody>
       </table>
     </div>`;
 }
@@ -986,9 +1042,9 @@ function patientRow(p) {
     ? `<button class="btn btn-approve" onclick="event.stopPropagation();quickApprove(${p.id})">Approve</button>`
     : `<button class="btn btn-review"  onclick="event.stopPropagation();openPatient(${p.id})">Review ↗</button>`;
   return `<tr class="${hi?'row-flagged':''}" onclick="openPatient(${p.id})">
-    <td><input type="checkbox" onclick="event.stopPropagation()" style="accent-color:#1a1a1a;cursor:pointer"></td>
-    <td><div class="member-name">${p.name}</div><div class="member-sub">MBI ${p.mbi} · ${p.painSite}</div></td>
-    <td>${p.instrument}</td>
+    <td><input type="checkbox" onclick="event.stopPropagation()" style="accent-color:var(--color-purple-600);cursor:pointer"></td>
+    <td><div class="member-name">${p.name}</div><div class="member-sub">MBI ${p.mbi}</div></td>
+    <td>${instrumentCell(p)}</td>
     <td><span class="score-main">${p.score}</span><span class="delta ${dc}">${ds}</span></td>
     <td>${scr}</td>
     <td ${dayStyle}>${p.daysLeft} days</td>
@@ -998,6 +1054,132 @@ function patientRow(p) {
 
 function setFilter(f) { activeFilter=f; renderMain(); }
 function quickApprove() { toast('✓ Submission approved for CMS submission','success'); }
+
+const PAIN_REGION_ORDER = ['Knee','Hip','Lower back','Neck','Shoulder / Arm / Hand'];
+const FLAG_ORDER  = ['escalated','flagged','routine','audit'];
+const FLAG_LABELS = { escalated:'Escalated', flagged:'Flagged', routine:'AI Routine', audit:'Audit Sample' };
+const SORT_LABELS = { 'updated-new':'Last updated: new to old', 'updated-old':'Last updated: old to new', 'days-remaining':'Days remaining' };
+const GROUP_LABELS = { 'none':'None', 'pain-region':'Pain region', 'flagged-status':'Flagged status' };
+
+function sortedPatients(patients) {
+  return [...patients].sort((a, b) => {
+    if (activeSortBy === 'updated-new')    return a.daysLeft - b.daysLeft;
+    if (activeSortBy === 'updated-old')    return b.daysLeft - a.daysLeft;
+    if (activeSortBy === 'days-remaining') return a.daysLeft - b.daysLeft;
+    return 0;
+  });
+}
+
+function buildTableBody(patients, colSpan, rowFn) {
+  const sorted = sortedPatients(patients);
+  if (activeGroupBy === 'pain-region')    return groupedRows(sorted, colSpan, rowFn);
+  if (activeGroupBy === 'flagged-status') return groupedRowsByFlag(sorted, colSpan, rowFn);
+  return sorted.map(p => (rowFn || patientRow)(p)).join('');
+}
+
+function groupedRowsByFlag(patients, colSpan, rowFn) {
+  rowFn = rowFn || patientRow;
+  const groups = {};
+  patients.forEach(p => {
+    if (!groups[p.screening]) groups[p.screening] = [];
+    groups[p.screening].push(p);
+  });
+  let html = '';
+  FLAG_ORDER.forEach(status => {
+    const grp = groups[status];
+    if (!grp) return;
+    html += `<tr class="group-header-row"><td colspan="${colSpan}"><div class="group-header">${FLAG_LABELS[status]} <span class="group-count">${grp.length}</span></div></td></tr>`;
+    html += grp.map(p => rowFn(p)).join('');
+  });
+  return html;
+}
+
+function ctrlBar() {
+  return `
+    <div class="ctrl-bar">
+      <div class="ctrl-dropdown" id="dd-group">
+        <button class="ctrl-btn ${activeGroupBy!=='none'?'active':''}" onclick="toggleDropdown('dd-group')">
+          Group by: <strong>${GROUP_LABELS[activeGroupBy]}</strong>
+          <span class="ctrl-btn-arrow">▾</span>
+        </button>
+        <div class="ctrl-menu">
+          <div class="ctrl-menu-label">Group by</div>
+          ${Object.entries(GROUP_LABELS).map(([k,v]) => `
+            <div class="ctrl-menu-item ${activeGroupBy===k?'selected':''}" onclick="setGroupBy('${k}')">
+              ${v} <span class="ctrl-menu-check">✓</span>
+            </div>`).join('')}
+        </div>
+      </div>
+      <div class="ctrl-dropdown" id="dd-sort">
+        <button class="ctrl-btn ${activeSortBy!=='updated-new'?'active':''}" onclick="toggleDropdown('dd-sort')">
+          Sort by: <strong>${SORT_LABELS[activeSortBy]}</strong>
+          <span class="ctrl-btn-arrow">▾</span>
+        </button>
+        <div class="ctrl-menu">
+          <div class="ctrl-menu-label">Sort by</div>
+          ${Object.entries(SORT_LABELS).map(([k,v]) => `
+            <div class="ctrl-menu-item ${activeSortBy===k?'selected':''}" onclick="setSortBy('${k}')">
+              ${v} <span class="ctrl-menu-check">✓</span>
+            </div>`).join('')}
+        </div>
+      </div>
+    </div>`;
+}
+
+function toggleDropdown(id) {
+  const el = document.getElementById(id);
+  const isOpen = el.classList.contains('open');
+  document.querySelectorAll('.ctrl-dropdown').forEach(d => d.classList.remove('open'));
+  if (!isOpen) el.classList.add('open');
+}
+
+function setGroupBy(val) { activeGroupBy = val; document.querySelectorAll('.ctrl-dropdown').forEach(d => d.classList.remove('open')); renderMain(); }
+function setSortBy(val)  { activeSortBy  = val; document.querySelectorAll('.ctrl-dropdown').forEach(d => d.classList.remove('open')); renderMain(); }
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.ctrl-dropdown')) {
+    document.querySelectorAll('.ctrl-dropdown').forEach(d => d.classList.remove('open'));
+  }
+});
+
+function groupedRows(patients, colSpan, rowFn) {
+  rowFn = rowFn || patientRow;
+  const groups = {};
+  patients.forEach(p => {
+    if (!groups[p.painSite]) groups[p.painSite] = [];
+    groups[p.painSite].push(p);
+  });
+  let html = '';
+  PAIN_REGION_ORDER.forEach(site => {
+    const grp = groups[site];
+    if (!grp) return;
+    html += `<tr class="group-header-row"><td colspan="${colSpan}"><div class="group-header">${site} <span class="group-count">${grp.length}</span></div></td></tr>`;
+    html += grp.map(p => rowFn(p)).join('');
+  });
+  Object.keys(groups).forEach(site => {
+    if (!PAIN_REGION_ORDER.includes(site)) {
+      html += `<tr class="group-header-row"><td colspan="${colSpan}"><div class="group-header">${site} <span class="group-count">${groups[site].length}</span></div></td></tr>`;
+      html += groups[site].map(p => rowFn(p)).join('');
+    }
+  });
+  return html;
+}
+
+function memberRow(p) {
+  const scr = { escalated:'<span class="badge b-escalated">Escalated</span>', flagged:'<span class="badge b-flagged">Flagged</span>', routine:'<span class="badge b-routine">AI routine</span>', audit:'<span class="badge b-audit">Audit sample</span>' }[p.screening];
+  const ds = p.daysLeft<=6 ? 'style="color:var(--color-red-600);font-weight:700"' : '';
+  return `<tr onclick="openPatient(${p.id})">
+    <td><div class="member-name">${p.name}</div><div class="member-sub">MBI ${p.mbi}</div></td>
+    <td>${instrumentCell(p)}</td>
+    <td>${p._collDate || '—'}</td>
+    <td ${ds}>${p.daysLeft} days</td>
+    <td>${scr}</td>
+  </tr>`;
+}
+
+function instrumentCell(p) {
+  return `<div style="font-weight:var(--font-weight-medium)">${p.instrument}</div><div style="font-size:11px;color:var(--color-gray-400);margin-top:2px">NPRS + PSFS</div>`;
+}
 
 // ═══════════════════════════════════════════════════
 // ALL MEMBERS
@@ -1014,20 +1196,11 @@ function renderMembers() {
       <div class="stat-card"><div class="stat-value" style="color:#c0392b">6</div><div class="stat-label">Expiring &lt;5 days</div><div class="stat-sublabel">validity window</div></div>
       <div class="stat-card"><div class="stat-value" style="color:#2a5c24">204</div><div class="stat-label">On track</div><div class="stat-sublabel">no active flags</div></div>
     </div>
+    ${ctrlBar()}
     <div class="table-card">
       <table class="data-table">
-        <thead><tr><th>Member</th><th>Pain area</th><th>Instrument</th><th>Collection date</th><th>Days remaining</th><th>Status</th></tr></thead>
-        <tbody>${PATIENTS.map((p,i) => {
-          const scr = { escalated:'<span class="badge b-escalated">Escalated</span>', flagged:'<span class="badge b-flagged">Flagged</span>', routine:'<span class="badge b-routine">AI routine</span>', audit:'<span class="badge b-audit">Audit sample</span>' }[p.screening];
-          const ds = p.daysLeft<=6 ? 'style="color:#c0392b;font-weight:700"' : '';
-          return `<tr onclick="openPatient(${p.id})">
-            <td><div class="member-name">${p.name}</div><div class="member-sub">MBI ${p.mbi}</div></td>
-            <td>${p.painSite}</td><td>${p.instrument}</td>
-            <td>Apr ${10-i*2}, 2026</td>
-            <td ${ds}>${p.daysLeft} days</td>
-            <td>${scr}</td>
-          </tr>`;
-        }).join('')}</tbody>
+        <thead><tr><th>Member</th><th>Instrument</th><th>Collection date</th><th>Days remaining</th><th>Status</th></tr></thead>
+        <tbody>${buildTableBody(PATIENTS.map((p,i) => ({...p, _collDate:`Apr ${10-i*2}, 2026`})), 5, memberRow)}</tbody>
       </table>
     </div>`;
 }
@@ -1118,7 +1291,10 @@ function renderInstrumentDetail(key) {
         <div class="q-num">Q${qIdx}</div>
         <div>
           <div class="q-text">${q.text}</div>
-          <div class="q-note">${q.note}</div>
+          <div class="q-note" style="display:flex;align-items:center;gap:8px">
+            ${q.note}
+            ${q.baselineOnly ? `<span style="display:inline-flex;align-items:center;gap:3px;background:#fef3e0;color:#d4890a;font-size:10px;font-weight:600;padding:2px 7px;border-radius:var(--radius-full)">Baseline only</span>` : ''}
+          </div>
         </div>
       </div>
       <div>${barsHtml}</div>
@@ -1245,16 +1421,17 @@ function renderTab() {
     body.innerHTML = `
       <div style="font-size:12px;color:#aaa;margin-bottom:12px">Quarterly outcomes — ${p.quarter.replace(' of care','')} <span style="font-size:11px">(★ = flagged)</span></div>
       <table class="outcome-tbl">
-        <thead><tr><th>Measure</th><th>Previous</th><th>Current</th><th>Change</th><th>Threshold</th><th></th></tr></thead>
+        <thead><tr><th>Measure</th><th>Baseline</th><th>Most recent</th><th>Change</th><th>Threshold</th><th></th></tr></thead>
         <tbody>${p.outcomes.map(o => {
           const ch = o.delta!==null ? (o.delta>0?`+${o.delta}`:`${o.delta}`) : '—';
           const cc = o.delta>0?'ch-pos':(o.delta<0?'ch-neg':'');
+          const dateStyle = `display:block;font-size:10px;color:var(--color-gray-400);font-weight:400;margin-top:2px`;
           return `<tr>
-            <td><div class="msr-name">${o.name}${o.flag?' <span style="color:#c0392b">★</span>':''}</div><div class="msr-sub">${o.sub}</div></td>
-            <td>${o.prev!==null?o.prev:'—'}</td>
-            <td style="font-weight:600">${o.curr}</td>
+            <td><div class="msr-name">${o.name}${o.flag?' <span style="color:var(--color-red-600)">★</span>':''}</div><div class="msr-sub">${o.sub}</div></td>
+            <td>${o.prev!==null?`<strong>${o.prev}</strong>`:'—'}${o.dateBaseline?`<span style="${dateStyle}">${o.dateBaseline}</span>`:''}</td>
+            <td><strong>${o.curr}</strong>${o.dateCurr?`<span style="${dateStyle}">${o.dateCurr}</span>`:''}</td>
             <td class="${cc}">${ch}</td>
-            <td style="color:#bbb">${o.thr}</td>
+            <td style="color:var(--color-gray-300)">${o.thr}</td>
             <td>${o.flag?'<span class="badge b-escalated" style="font-size:10px">Flagged</span>':''}</td>
           </tr>`;
         }).join('')}</tbody>
