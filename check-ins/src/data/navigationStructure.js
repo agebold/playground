@@ -6,6 +6,7 @@ export const navigationStructure = [
       { id: 'session-based-v1', label: 'Exploration 1', viewType: 'mobile' },
       { id: 'session-based-v2', label: 'Exploration 2', viewType: 'mobile' },
       { id: 'session-based-v3', label: 'Exploration 3', viewType: 'mobile' },
+      { id: 'session-based-v4', label: 'Exploration 4', viewType: 'mobile' },
     ]
   },
   {

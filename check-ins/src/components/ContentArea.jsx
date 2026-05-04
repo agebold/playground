@@ -4,12 +4,14 @@ import { C, PhoneFrame, SafariBrowserChrome } from './content/shared.jsx'
 import Exploration1 from './content/Exploration1.jsx'
 import Exploration2 from './content/Exploration2.jsx'
 import Exploration3 from './content/Exploration3.jsx'
+import Exploration4 from './content/Exploration4.jsx'
 import MonthlyV1 from './content/MonthlyV1.jsx'
 
 const contentMap = {
   'session-based-v1': Exploration1,
   'session-based-v2': Exploration2,
   'session-based-v3': Exploration3,
+  'session-based-v4': Exploration4,
   'monthly-v1': MonthlyV1,
 }
 
@@ -51,7 +53,7 @@ const pillBtn = {
   transition: 'opacity 0.15s',
 }
 
-const MOBILE_ONLY = new Set(['session-based-v3'])
+const MOBILE_ONLY = new Set(['session-based-v3', 'session-based-v4'])
 
 export default function ContentArea({ step, onNext, onBack, onNavigate }) {
   const [replayKey, setReplayKey] = useState(0)
@@ -90,7 +92,11 @@ export default function ContentArea({ step, onNext, onBack, onNavigate }) {
             </SafariBrowserChrome>
           ) : (
             <div style={{ transform: 'scale(0.82)', transformOrigin: 'center center' }}>
-              <PhoneFrame showSafariBar={!mobileOnly}>
+              <PhoneFrame
+              showSafariBar={!mobileOnly}
+              statusBarBg={step.id === 'session-based-v3' ? 'rgba(242,242,247,0.92)' : undefined}
+              homeIndicatorBg={step.id === 'session-based-v3' ? 'rgba(242,242,247,0.92)' : undefined}
+            >
                 {Component
                   ? <Component key={replayKey} viewMode="mobile" onNext={onNext} onBack={onBack} onNavigate={onNavigate} />
                   : <div style={{ padding: 40, color: '#999' }}>No content</div>}

@@ -50,7 +50,7 @@ export function SafariBottomBar({ url = 'agebold.com' }) {
 }
 
 // ─── Phone frame ─────────────────────────────────────────────────────────────
-export function PhoneFrame({ children, statusBarBg, showSafariBar = true }) {
+export function PhoneFrame({ children, statusBarBg, homeIndicatorBg, showSafariBar = true }) {
   return (
     <div style={{
       width: 390,
@@ -74,7 +74,7 @@ export function PhoneFrame({ children, statusBarBg, showSafariBar = true }) {
         {children}
       </div>
       {showSafariBar && <SafariBottomBar />}
-      <div style={{ height: 34, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f9f9f9', flexShrink: 0 }}>
+      <div style={{ height: 34, display: 'flex', alignItems: 'center', justifyContent: 'center', background: homeIndicatorBg ?? '#f9f9f9', flexShrink: 0 }}>
         <div style={{ width: 134, height: 5, background: '#000', borderRadius: 3, opacity: 1 }} />
       </div>
     </div>

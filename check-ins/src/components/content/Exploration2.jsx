@@ -3,10 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { C } from './shared.jsx'
 import boldLogomark from '../../assets/bold-logomark.png'
 import amorphousBlob from '../../assets/amorphous-blob.png'
+import imgTrainer from '../../assets/alicia_headshot.jpg'
+import imgClassThumbnail from '../../assets/class-thumbnail.jpg'
 
-const imgTrainer = "https://www.figma.com/api/mcp/asset/185dd8c3-4293-418c-9d0c-6460783ab128"
-const imgClassThumbnail = "https://www.figma.com/api/mcp/asset/840daf89-98b2-4c8b-ad14-8d73ddc642ce"
-const imgTrainerAvatar = "https://www.figma.com/api/mcp/asset/94dff583-5442-427e-adce-4e1429a417a2"
+const imgTrainerAvatar = imgTrainer
 
 const ease = [0.16, 1, 0.3, 1]
 const slideUp = (delay = 0) => ({
