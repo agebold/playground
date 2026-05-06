@@ -19,6 +19,15 @@
       "category": "Prototypes"
     },
     {
+      "path": "pain-scale",
+      "href": "pain-scale/",
+      "name": "Pain Scale",
+      "desc": "4 check-in variations exploring how patients report knee pain",
+      "icon": "🦵",
+      "author": "Monica",
+      "category": "Prototypes"
+    },
+    {
       "path": "dynamic-header",
       "href": "dynamic-header/",
       "name": "App Prototype",
