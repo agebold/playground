@@ -15,7 +15,7 @@ const contentMap = {
 
 function ReplayIcon() {
   return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+    <svg width="16" height="16" viewBox="0 0 14 14" fill="none">
       <path d="M11.5 7A4.5 4.5 0 1 1 7 2.5a4.48 4.48 0 0 1 3.18 1.32L11.5 5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
       <path d="M11.5 2V5H8.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
@@ -24,7 +24,7 @@ function ReplayIcon() {
 
 function PhoneIcon() {
   return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+    <svg width="16" height="16" viewBox="0 0 14 14" fill="none">
       <rect x="3" y="1" width="8" height="12" rx="1.5" stroke="currentColor" strokeWidth="1.3"/>
       <circle cx="7" cy="10.5" r="0.75" fill="currentColor"/>
     </svg>
@@ -33,7 +33,7 @@ function PhoneIcon() {
 
 function MonitorIcon() {
   return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+    <svg width="16" height="16" viewBox="0 0 14 14" fill="none">
       <rect x="1" y="2" width="12" height="8" rx="1.2" stroke="currentColor" strokeWidth="1.3"/>
       <path d="M5 10v2M9 10v2M3.5 12h7" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
     </svg>
@@ -41,13 +41,13 @@ function MonitorIcon() {
 }
 
 const pillBtn = {
-  display: 'flex', alignItems: 'center', gap: 6,
-  padding: '7px 12px',
+  display: 'flex', alignItems: 'center', gap: 7,
+  padding: '10px 16px',
   background: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(8px)',
-  border: '1px solid rgba(0,0,0,0.1)', borderRadius: 8,
+  border: '1px solid rgba(0,0,0,0.1)', borderRadius: 10,
   boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
   cursor: 'pointer', fontFamily: 'Inter, sans-serif',
-  fontSize: 12, fontWeight: 500, color: '#525252',
+  fontSize: 14, fontWeight: 500, color: '#525252',
   transition: 'opacity 0.15s',
 }
 
@@ -108,9 +108,9 @@ export default function ContentArea({ step, onNext, onBack, onNavigate }) {
         position: 'absolute', bottom: 20, right: 20,
         display: 'flex',
         background: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(8px)',
-        border: '1px solid rgba(0,0,0,0.1)', borderRadius: 10,
+        border: '1px solid rgba(0,0,0,0.1)', borderRadius: 12,
         boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
-        padding: 3, gap: 2,
+        padding: 4, gap: 2,
         opacity: 1,
         pointerEvents: 'auto',
         transition: 'opacity 0.2s',
@@ -125,13 +125,13 @@ export default function ContentArea({ step, onNext, onBack, onNavigate }) {
               key={mode}
               onClick={() => { if (!active) handleToggle() }}
               style={{
-                display: 'flex', alignItems: 'center', gap: 5,
-                padding: '5px 10px', borderRadius: 7, border: 'none',
+                display: 'flex', alignItems: 'center', gap: 7,
+                padding: '8px 14px', borderRadius: 9, border: 'none',
                 background: active ? C.white : 'transparent',
                 boxShadow: active ? '0 1px 2px rgba(0,0,0,0.1)' : 'none',
                 cursor: active ? 'default' : 'pointer',
                 fontFamily: 'Inter, sans-serif',
-                fontSize: 12, fontWeight: active ? 600 : 400,
+                fontSize: 14, fontWeight: active ? 600 : 400,
                 color: active ? '#171717' : '#8a8693',
                 transition: 'all 0.15s',
               }}
