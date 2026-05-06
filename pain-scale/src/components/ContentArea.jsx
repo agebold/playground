@@ -43,11 +43,11 @@ function MonitorIcon() {
 const pillBtn = {
   display: 'flex', alignItems: 'center', gap: 7,
   padding: '10px 16px',
-  background: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(8px)',
-  border: '1px solid rgba(0,0,0,0.1)', borderRadius: 10,
-  boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+  background: '#5200D4',
+  border: 'none', borderRadius: 10,
+  boxShadow: '0 1px 3px rgba(0,0,0,0.18)',
   cursor: 'pointer', fontFamily: 'Inter, sans-serif',
-  fontSize: 14, fontWeight: 500, color: '#525252',
+  fontSize: 14, fontWeight: 500, color: '#ffffff',
   transition: 'opacity 0.15s',
 }
 
