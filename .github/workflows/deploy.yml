@@ -39,6 +39,7 @@ jobs:
           cache-dependency-path: |
             MSK-ACCESS/package-lock.json
             _main/check-ins/package-lock.json
+            _main/pain-scale/package-lock.json
 
       - name: Install MSK-ACCESS dependencies
         if: hashFiles('MSK-ACCESS/package-lock.json') != ''
@@ -54,10 +55,17 @@ jobs:
       - name: Build check-ins
         run: cd _main/check-ins && npm run build
 
+      - name: Install pain-scale dependencies
+        run: cd _main/pain-scale && npm install
+
+      - name: Build pain-scale
+        run: cd _main/pain-scale && npm run build
+
       - name: Assemble deployment folder
         run: |
           mkdir -p _deploy/MSK-ACCESS
           mkdir -p _deploy/check-ins
+          mkdir -p _deploy/pain-scale
           # Always copy static content from main
           cp -r _main/dynamic-header _deploy/ 2>/dev/null || true
           cp -r _main/vision _deploy/ 2>/dev/null || true
@@ -71,6 +79,7 @@ jobs:
           # Copy built React apps
           cp -r MSK-ACCESS/dist/. _deploy/MSK-ACCESS/ 2>/dev/null || true
           cp -r _main/check-ins/dist/. _deploy/check-ins/ 2>/dev/null || true
+          cp -r _main/pain-scale/dist/. _deploy/pain-scale/ 2>/dev/null || true
 
       - name: Generate index from projects.json
         run: cd _main && node scripts/generate-index.js > ../_deploy/index.html
