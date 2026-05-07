@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Appointment Confirmed – Bold Care</title>
+  <link rel="stylesheet" href="funnel.css" />
+</head>
+<body>
+<div class="cf-page">
+
+  <!-- Nav (no back button — end of funnel) -->
+  <nav class="cf-nav" role="navigation">
+    <div class="cf-nav-btn is-hidden" aria-hidden="true"></div>
+    <div class="cf-logo" aria-label="Bold">
+      <div class="logo-lines"><img src="../../Fitness/dynamic-header/assets/logos/nav-logo-lines.svg" alt="" /></div>
+      <div class="logo-text"><img src="../../Fitness/dynamic-header/assets/logos/nav-logo-text.svg" alt="Bold" /></div>
+    </div>
+    <div class="cf-nav-btn is-hidden" aria-hidden="true"></div>
+  </nav>
+
+  <!-- ── Greeting + Appointment card ── -->
+  <section class="cf-confirmation-section" aria-label="Appointment confirmed">
+
+    <!-- Greeting -->
+    <div class="cf-greeting">
+      <div class="cf-greeting-icon" aria-hidden="true">
+        <!-- Shield check icon -->
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M24 4L8 11V23C8 32.5 15 41.3 24 44C33 41.3 40 32.5 40 23V11L24 4Z" fill="#00b5a3" opacity="0.8"/>
+          <path d="M16 24L21 29L32 18" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h1 class="cf-greeting-title">You are all set!</h1>
+      <p class="cf-greeting-sub" id="appt-greeting">Dr. Desai looks forward to meeting you.</p>
+    </div>
+
+    <!-- Appointment card -->
+    <div class="cf-appointment-outer" role="region" aria-label="Appointment details">
+      <div class="cf-appointment-badge">Appointment confirmed</div>
+      <div class="cf-appointment-inner">
+
+        <!-- Top: photo + title + date/time -->
+        <div class="cf-appointment-top">
+          <div class="cf-appointment-photo" id="appt-photo-wrap">
+            <img
+              id="appt-photo"
+              src="https://www.figma.com/api/mcp/asset/9afcb382-1a37-478e-a3d6-92715e00081a"
+              alt="Dr. Mitul S. Desai, MD"
+              onerror="this.style.display='none';"
+            />
+            <div id="appt-initials" style="display:none;width:100%;height:100%;align-items:center;justify-content:center;font-size:28px;font-weight:600;font-family:var(--font-family);"></div>
+          </div>
+          <p class="cf-appointment-call-title" id="appt-call-title">45-min Zoom video call with<br>Dr. Mitul S. Desai, MD</p>
+          <div class="cf-appointment-dates">
+            <div class="cf-appointment-date-row">
+              <!-- Calendar icon -->
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <rect x="2" y="4" width="16" height="14" rx="2" stroke="#171717" stroke-width="1.5"/>
+                <path d="M2 8H18" stroke="#171717" stroke-width="1.5"/>
+                <path d="M6 2V5M14 2V5" stroke="#171717" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+              Monday, November 3
+            </div>
+            <div class="cf-appointment-date-row">
+              <!-- Clock icon -->
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <circle cx="10" cy="10" r="8.5" stroke="#171717" stroke-width="1.5"/>
+                <path d="M10 5.5V10L13 12.5" stroke="#171717" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+              9:00am – 9:45am (PT)
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom: actions + zoom + coverage -->
+        <div class="cf-appointment-bottom">
+
+          <!-- Add / Cancel -->
+          <div class="cf-action-row">
+            <button class="cf-action-btn" type="button" aria-label="Add to calendar">
+              <div class="cf-action-icon-btn" aria-hidden="true">
+                <!-- Calendar + icon -->
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <rect x="2" y="4" width="16" height="14" rx="2" stroke="#171717" stroke-width="1.5"/>
+                  <path d="M2 8H18" stroke="#171717" stroke-width="1.5"/>
+                  <path d="M6 2V5M14 2V5" stroke="#171717" stroke-width="1.5" stroke-linecap="round"/>
+                  <path d="M10 11V15M8 13H12" stroke="#171717" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <span class="cf-action-label">Add to<br>calendar</span>
+            </button>
+            <button class="cf-action-btn" type="button" aria-label="Cancel appointment">
+              <div class="cf-action-icon-btn" aria-hidden="true">
+                <!-- X circle -->
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <circle cx="10" cy="10" r="8.5" stroke="#171717" stroke-width="1.5"/>
+                  <path d="M7 7L13 13M13 7L7 13" stroke="#171717" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <span class="cf-action-label">Cancel<br>appointment</span>
+            </button>
+          </div>
+
+          <!-- Zoom section -->
+          <div class="cf-zoom-section">
+            <div class="cf-zoom-row">
+              <div class="cf-zoom-left">
+                <img src="https://www.figma.com/api/mcp/asset/71443961-b723-4956-ada6-d862480b0b6c" alt="Zoom" class="cf-zoom-logo-img" />
+                <span class="cf-zoom-label">Virtual Zoom visit</span>
+              </div>
+              <a href="#" class="cf-join-btn" aria-label="Join Zoom meeting">
+                <!-- Video camera icon -->
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                  <path d="M1 3.5H8.5C9.05 3.5 9.5 3.95 9.5 4.5V9.5C9.5 10.05 9.05 10.5 8.5 10.5H1C0.45 10.5 0 10.05 0 9.5V4.5C0 3.95 0.45 3.5 1 3.5Z" fill="white"/>
+                  <path d="M9.5 5.5L13.5 3.5V10.5L9.5 8.5V5.5Z" fill="white"/>
+                </svg>
+                Join Zoom
+              </a>
+            </div>
+            <p class="cf-zoom-note">We'll send you a Zoom link by email and text before your visit.</p>
+          </div>
+
+          <!-- Coverage -->
+          <div class="cf-coverage-row">
+            <div class="cf-coverage-title-row">
+              <!-- Shield check -->
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 2L4 5.5V12C4 16.8 7.5 21.1 12 22C16.5 21.1 20 16.8 20 12V5.5L12 2Z" fill="#00b5a3"/>
+                <path d="M8 12L10.5 14.5L16 9" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span class="cf-coverage-title">Fully covered by UnitedHealthcare</span>
+            </div>
+            <p class="cf-coverage-body">
+              <strong>Your UnitedHealthcare plan offers $0 copay visits</strong>
+              for virtual appointments with in-network providers, like Bold.
+              <a href="#" class="cf-link">Learn more</a>
+            </p>
+          </div>
+
+        </div><!-- /appointment bottom -->
+      </div><!-- /appointment inner -->
+    </div><!-- /appointment card -->
+
+  </section>
+
+  <!-- ── Before Your Visit ── -->
+  <section class="cf-before-section">
+
+    <h2 class="cf-section-title">Before your visit</h2>
+
+    <!-- Video card -->
+    <div class="cf-video-card" role="button" tabindex="0" aria-label="Play video: What to expect in your first visit">
+      <div class="cf-video-overlay" aria-hidden="true"></div>
+      <div class="cf-play-btn" aria-hidden="true">
+        <!-- Play icon -->
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="white" aria-hidden="true">
+          <path d="M8 5L19 12L8 19V5Z"/>
+        </svg>
+      </div>
+      <div class="cf-video-meta">
+        <div class="cf-video-duration" aria-label="Duration: 1 minute 10 seconds">
+          <!-- Clock icon -->
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <circle cx="8" cy="8" r="6.5" stroke="white" stroke-width="1.3"/>
+            <path d="M8 4.5V8L10.5 10" stroke="white" stroke-width="1.3" stroke-linecap="round"/>
+          </svg>
+          1:10
+        </div>
+        <p class="cf-video-title">What to expect in your first visit</p>
+        <p class="cf-video-doctor">Dr. Sandeep Palakodeti, M.D., M.P.H.</p>
+        <p class="cf-video-role">Chief Medical Officer at Bold Care</p>
+      </div>
+    </div>
+
+    <!-- Intake callout -->
+    <div class="cf-intake-outer">
+      <div class="cf-intake-badge">
+        <!-- Caret circle right -->
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <circle cx="8" cy="8" r="7" stroke="#171717" stroke-width="1.3"/>
+          <path d="M6.5 5.5L9.5 8L6.5 10.5" stroke="#171717" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Your next step
+      </div>
+      <div class="cf-intake-inner">
+        <div class="cf-intake-body">
+          <div>
+            <p class="cf-intake-title">Intake form (~5 min)</p>
+            <p class="cf-intake-text" style="margin-top:8px;">
+              Filling out your intake form now helps your Bold provider understand your goals and health.
+            </p>
+          </div>
+          <a href="#" class="cf-intake-cta">
+            Complete intake form
+            <!-- Arrow up right -->
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M5 15L15 5M15 5H7M15 5V13" stroke="#171717" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Care coordinator card -->
+    <div class="cf-coordinator-card">
+      <div class="cf-coordinator-badge">
+        <!-- Headset icon -->
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M3 8C3 5.2 5.2 3 8 3C10.8 3 13 5.2 13 8" stroke="#171717" stroke-width="1.3" stroke-linecap="round"/>
+          <rect x="1.5" y="8" width="2.5" height="4" rx="1" stroke="#171717" stroke-width="1.3"/>
+          <rect x="12" y="8" width="2.5" height="4" rx="1" stroke="#171717" stroke-width="1.3"/>
+        </svg>
+        We are here to help
+      </div>
+      <div class="cf-coordinator-body">
+        <div class="cf-coordinator-row">
+          <!-- Avatar stack placeholder -->
+          <div class="cf-avatar-stack" aria-hidden="true">
+            <div style="position:absolute; left:0; top:8px; width:44px; height:44px; border-radius:50%; background:#e5e5e5; border:2.2px solid #fafafa; overflow:hidden; display:flex; align-items:center; justify-content:center; font-weight:600; color:#737373;">CC</div>
+            <div style="position:absolute; left:25px; top:8px; width:44px; height:44px; border-radius:50%; border:1.7px solid white; overflow:hidden; background:#c7d2fe; display:flex; align-items:center; justify-content:center;">
+              <img src="https://www.figma.com/api/mcp/asset/6a41cdc7-59b5-4ac6-a0df-e9f64c5faa6f" alt="" style="width:120%; height:auto; object-fit:cover; margin-left:-6px;" onerror="this.style.display='none';">
+            </div>
+          </div>
+          <div>
+            <p class="cf-coordinator-name">Bold Care Coordinator</p>
+          </div>
+        </div>
+        <p class="cf-coordinator-desc">
+          Your Care Coordinator is here for any questions – before, during, or after your visit.
+        </p>
+        <a href="tel:4245775266" class="cf-btn-outline">
+          Call (424) 577-5266
+        </a>
+      </div>
+    </div>
+
+    <!-- Learn more -->
+    <div>
+      <h3 class="cf-subsection-title" style="margin-bottom:16px;">Learn more</h3>
+      <div class="cf-resource-scroll" role="list">
+
+        <div class="cf-resource-card" role="listitem">
+          <div class="cf-resource-img" aria-hidden="true">
+            <img src="https://www.figma.com/api/mcp/asset/0509e780-0222-4663-924a-d94ec1e1af85" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" />
+          </div>
+          <div class="cf-resource-footer">
+            <div class="cf-resource-type">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                <rect x="1" y="2" width="12" height="10" rx="1" stroke="#171717" stroke-width="1.2"/>
+                <path d="M1 5H13" stroke="#171717" stroke-width="1.2"/>
+                <path d="M4 8H10M4 10H8" stroke="#171717" stroke-width="1.2" stroke-linecap="round"/>
+              </svg>
+              Resources
+            </div>
+            <p class="cf-resource-title">Weight management for seniors: What you need to know</p>
+          </div>
+        </div>
+
+        <div class="cf-resource-card" role="listitem">
+          <div class="cf-resource-img" aria-hidden="true">
+            <img src="https://www.figma.com/api/mcp/asset/23bc021d-52e5-4b32-a6b8-7d0068691cae" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" />
+          </div>
+          <div class="cf-resource-footer">
+            <div class="cf-resource-type">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                <rect x="1" y="2" width="12" height="10" rx="1" stroke="#171717" stroke-width="1.2"/>
+                <path d="M1 5H13" stroke="#171717" stroke-width="1.2"/>
+                <path d="M4 8H10M4 10H8" stroke="#171717" stroke-width="1.2" stroke-linecap="round"/>
+              </svg>
+              Resources
+            </div>
+            <p class="cf-resource-title">How Bold Care helps you manage chronic conditions</p>
+          </div>
+        </div>
+
+        <div class="cf-resource-card" role="listitem">
+          <div class="cf-resource-img" aria-hidden="true">
+            <img src="https://www.figma.com/api/mcp/asset/49a60b53-4e53-4e9c-bf8c-fa0852746fb1" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" />
+          </div>
+          <div class="cf-resource-footer">
+            <div class="cf-resource-type">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                <rect x="1" y="2" width="12" height="10" rx="1" stroke="#171717" stroke-width="1.2"/>
+                <path d="M1 5H13" stroke="#171717" stroke-width="1.2"/>
+                <path d="M4 8H10M4 10H8" stroke="#171717" stroke-width="1.2" stroke-linecap="round"/>
+              </svg>
+              Resources
+            </div>
+            <p class="cf-resource-title">What to expect at your Bold Care healthy aging appointment</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <div>
+      <h3 class="cf-subsection-title" style="margin-bottom:16px;">FAQ</h3>
+      <div class="cf-faq-list" role="list">
+
+        <div class="cf-faq-item" role="listitem">
+          <button class="cf-faq-btn" aria-expanded="false" type="button">
+            <span class="cf-faq-question">What to expect in the appointment</span>
+            <svg class="cf-faq-caret" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M7.5 4L13.5 10L7.5 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <div class="cf-faq-answer">
+            Your first visit is a 45-minute video call. Dr. Desai will review your health history, discuss your goals, and outline a personalized care plan. Come prepared with any medications you're taking and questions you want to address.
+          </div>
+        </div>
+
+        <div class="cf-faq-item" role="listitem">
+          <button class="cf-faq-btn" aria-expanded="false" type="button">
+            <span class="cf-faq-question">What is included in my personalized Care Plan?</span>
+            <svg class="cf-faq-caret" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M7.5 4L13.5 10L7.5 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <div class="cf-faq-answer">
+            Your Care Plan includes personalized health goals, recommended lifestyle changes, follow-up visit scheduling, and access to Bold's care team. Your provider updates it after each visit based on your progress.
+          </div>
+        </div>
+
+        <div class="cf-faq-item" role="listitem">
+          <button class="cf-faq-btn" aria-expanded="false" type="button">
+            <span class="cf-faq-question">Will I have any co-pay or co-insurance fees associated with my appointments?</span>
+            <svg class="cf-faq-caret" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M7.5 4L13.5 10L7.5 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <div class="cf-faq-answer">
+            Your UnitedHealthcare plan covers Bold Care virtual appointments with $0 copay. If you have questions about your specific plan coverage, contact your insurance provider or our Care Coordinator.
+          </div>
+        </div>
+
+        <div class="cf-faq-item" role="listitem">
+          <button class="cf-faq-btn" aria-expanded="false" type="button">
+            <span class="cf-faq-question">Does Bold Care offer primary care?</span>
+            <svg class="cf-faq-caret" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M7.5 4L13.5 10L7.5 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <div class="cf-faq-answer">
+            Bold Care focuses on preventive and wellness medicine, including weight management and chronic condition support. For primary care services, we recommend maintaining your existing primary care relationship alongside Bold Care.
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Additional links -->
+    <div class="cf-additional-links">
+      <a href="#" class="cf-additional-link">
+        Access your secure patient portal
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path d="M5 15L15 5M15 5H7M15 5V13" stroke="#171717" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </div>
+
+  </section>
+
+  <!-- ── Site Footer ── -->
+  <footer class="cf-site-footer">
+    <div class="cf-footer-logo" aria-label="Bold">
+      <div class="logo-lines"><img src="../../Fitness/dynamic-header/assets/logos/footer-logo-lines.svg" alt="" /></div>
+      <div class="logo-text"><img src="../../Fitness/dynamic-header/assets/logos/footer-logo-text.svg" alt="Bold" /></div>
+    </div>
+    <div class="cf-footer-cols">
+      <div>
+        <p class="cf-footer-col-title">Connect</p>
+        <div class="cf-footer-links">
+          <a href="#" class="cf-footer-link">Facebook</a>
+          <a href="#" class="cf-footer-link">Instagram</a>
+          <a href="#" class="cf-footer-link">LinkedIn</a>
+        </div>
+      </div>
+      <!-- HIPAA badge -->
+      <div style="width:80px; height:80px; border:2px solid #e5e5e5; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size: 14px; font-weight:700; color:#a3a3a3; text-align:center; line-height:1.3; padding:4px;" aria-label="HIPAA Compliant">
+        HIPAA<br>COMPLIANT
+      </div>
+    </div>
+    <div class="cf-footer-bottom">
+      <div class="cf-footer-legal-links">
+        <a href="#" class="cf-footer-legal-link">Terms</a>
+        <a href="#" class="cf-footer-legal-link">Privacy</a>
+        <a href="#" class="cf-footer-legal-link">Disclaimers</a>
+      </div>
+      <p class="cf-footer-copy">© 2026 Age Bold Inc.</p>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  // Populate provider from sessionStorage
+  (function () {
+    var raw = sessionStorage.getItem('boldSelectedProvider');
+    if (!raw) return;
+    var p;
+    try { p = JSON.parse(raw); } catch (e) { return; }
+
+    var photoEl    = document.getElementById('appt-photo');
+    var initialsEl = document.getElementById('appt-initials');
+    var titleEl    = document.getElementById('appt-call-title');
+    var greetEl    = document.getElementById('appt-greeting');
+
+    if (p.photo) {
+      photoEl.src = p.photo;
+      photoEl.alt = p.name;
+      photoEl.style.display = '';
+      initialsEl.style.display = 'none';
+    } else {
+      photoEl.style.display = 'none';
+      initialsEl.textContent = p.initials || '';
+      initialsEl.style.background = p.initialsBg || '#e5e5e5';
+      initialsEl.style.color = p.initialsColor || '#525252';
+      initialsEl.style.display = 'flex';
+    }
+
+    titleEl.innerHTML = '45-min Zoom video call with<br>' + p.name;
+    greetEl.textContent = p.greeting + ' looks forward to meeting you.';
+  })();
+
+  // FAQ accordion
+  (function () {
+    var faqItems = document.querySelectorAll('.cf-faq-item');
+    faqItems.forEach(function (item) {
+      var btn = item.querySelector('.cf-faq-btn');
+      btn.addEventListener('click', function () {
+        var isOpen = item.classList.toggle('is-open');
+        btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      });
+    });
+  })();
+</script>
+</body>
+</html>
