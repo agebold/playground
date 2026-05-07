@@ -55,6 +55,15 @@
       "category": "Prototypes"
     },
     {
+      "path": "PrevMed/Clinic funnel",
+      "href": "PrevMed/Clinic%20funnel/",
+      "name": "Clinic Funnel",
+      "desc": "Bold Care booking funnel — eligibility, provider matching, and appointment scheduling",
+      "icon": "🏥",
+      "author": "Tzu-Yi",
+      "category": "Prototypes"
+    },
+    {
       "path": "care_plan",
       "href": "care_plan/care-plan.html",
       "name": "Care Plan",
