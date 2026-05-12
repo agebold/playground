@@ -7,8 +7,8 @@ export const navigationStructure = [
         id: 'round-3',
         label: 'Round 3 (Final)',
         items: [
-          { id: 'round3-a', label: 'A - Unlocked', viewType: 'mobile' },
-          { id: 'round3-b', label: 'B - Locked',   viewType: 'mobile' },
+          { id: 'round3-a', label: 'A - Locked',   viewType: 'mobile' },
+          { id: 'round3-b', label: 'B - Unlocked', viewType: 'mobile' },
         ]
       },
       {

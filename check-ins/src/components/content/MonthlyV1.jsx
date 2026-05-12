@@ -99,7 +99,7 @@ export default function MonthlyV1({ viewMode = 'mobile' }) {
   const [questionIndex, setQuestionIndex] = useState(0)
   const [selectedValue, setSelectedValue] = useState(null)
 
-  const cardRef = useRef(null)
+  const step2Ref = useRef(null)
 
   useEffect(() => {
     const t1 = setTimeout(() => setShowAvatar(true),   300)
@@ -110,13 +110,14 @@ export default function MonthlyV1({ viewMode = 'mobile' }) {
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); clearTimeout(t5) }
   }, [])
 
+  // After returning from check-in, scroll Step 2 into view
   useEffect(() => {
-    if (!showPlan || viewMode !== 'desktop') return
+    if (response !== 'completed') return
     const timer = setTimeout(() => {
-      cardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' })
-    }, 650)
+      step2Ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, 450) // wait for overlay slide-out to finish
     return () => clearTimeout(timer)
-  }, [showPlan, viewMode])
+  }, [response])
 
   const handleBeginCheckin = () => {
     setPage('checkin')
@@ -533,12 +534,12 @@ export default function MonthlyV1({ viewMode = 'mobile' }) {
                       <div style={{ fontSize: 16, fontWeight: 600, color: '#171717', lineHeight: '24px' }}>Let's check in on your knee</div>
                     </div>
                   </div>
-                  {entryCard(true)}
+                  {!response && entryCard(true)}
                 </div>
 
                 <AnimatePresence>
                   {showStep2 && (
-                    <motion.div ref={cardRef} {...fadeIn(0)} style={{ display: 'flex', flexDirection: 'column', gap: 16, position: 'relative', zIndex: 1 }}>
+                    <motion.div ref={step2Ref} {...fadeIn(0)} style={{ display: 'flex', flexDirection: 'column', gap: 16, position: 'relative', zIndex: 1 }}>
                       <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
                         {step2Bubble()}
                         <div style={{ paddingTop: 2 }}>
@@ -644,13 +645,13 @@ export default function MonthlyV1({ viewMode = 'mobile' }) {
                     <div style={{ fontSize: 16, fontWeight: 600, color: '#171717', lineHeight: '24px' }}>Let's check in on your knee</div>
                   </div>
                 </div>
-                {entryCard(false)}
+                {!response && entryCard(false)}
               </div>
 
               {/* Step 2 */}
               <AnimatePresence>
                 {showStep2 && (
-                  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, ease }} style={{ display: 'flex', flexDirection: 'column', gap: 16, position: 'relative', zIndex: 1 }}>
+                  <motion.div ref={step2Ref} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, ease }} style={{ display: 'flex', flexDirection: 'column', gap: 16, position: 'relative', zIndex: 1 }}>
                     <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
                       {step2Bubble()}
                       <div style={{ flex: 1, paddingTop: 2 }}>

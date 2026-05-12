@@ -23,8 +23,8 @@ const contentMap = {
   'round2-v2': Version2,
   'round2-v3': Version3,
   'round2-v4': Version4,
-  'round3-a': Round3A,
-  'round3-b': Round3B,
+  'round3-a': Round3B,
+  'round3-b': Round3A,
 }
 
 function ReplayIcon() {

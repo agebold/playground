@@ -109,7 +109,7 @@ function SubsectionGroup({ sub, activeStep, onSelect, collapsed, toggle }) {
 }
 
 export default function Sidebar({ activeStep, onSelect }) {
-  const [collapsed, setCollapsed] = useState({})
+  const [collapsed, setCollapsed] = useState({ 'round-1': true, 'round-2': true })
   const toggle = (id) => setCollapsed(p => ({ ...p, [id]: !p[id] }))
 
   return (
