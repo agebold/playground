@@ -6,7 +6,7 @@ import { getAllSteps, getNextStep, getPrevStep } from './data/navigationStructur
 const allSteps = getAllSteps()
 
 export default function App() {
-  const [currentStep, setCurrentStep] = useState(allSteps[0])
+  const [currentStep, setCurrentStep] = useState(allSteps.find(s => s.id === 'regular-day') ?? allSteps[0])
 
   const handleNext = () => {
     const next = getNextStep(currentStep.id)

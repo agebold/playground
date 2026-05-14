@@ -1,63 +1,91 @@
 import { useState } from 'react'
 import boldLogo from '../../assets/bold-logo@2x.png'
-import { C, OnboardingHeader, OnboardingScreen, PurpleButton, OutlineButton, RadioOption, AppHeader } from './shared.jsx'
+import imgTrainer from '../../assets/alicia_headshot.jpg'
+import { C, PurpleButton, OutlineButton, RadioOption } from './shared.jsx'
+
+// ─── Shared header with back button + logo + progress bar ─────────────────────
+
+function KoosHeader({ onBack, step = 0, totalSteps = 7 }) {
+  // step 0 = primer (show 1/7 filled), 1–7 = question number
+  const filled = step === 0 ? 1 : step
+  return (
+    <div style={{ flexShrink: 0 }}>
+      <div style={{
+        display: 'flex', alignItems: 'center',
+        padding: '12px 16px', background: C.white,
+      }}>
+        <button
+          onClick={onBack}
+          style={{
+            width: 36, height: 36, borderRadius: 10,
+            background: C.bg, border: 'none', cursor: 'pointer',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            flexShrink: 0,
+          }}
+        >
+          <svg width="9" height="15" viewBox="0 0 9 15" fill="none">
+            <path d="M8 1L1 7.5L8 14" stroke={C.text} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </button>
+        <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
+          <img src={boldLogo} alt="Bold" style={{ height: 28, width: 'auto' }} />
+        </div>
+        <div style={{ width: 36 }} />
+      </div>
+      {/* Progress bar */}
+      <div style={{ height: 3, background: C.border }}>
+        <div style={{ width: `${(filled / totalSteps) * 100}%`, height: '100%', background: C.purple, transition: 'width 0.3s ease' }} />
+      </div>
+    </div>
+  )
+}
 
 // ─── Step 0: Instructions ─────────────────────────────────────────────────────
+
 function KoosPrimer({ onNext, onBack }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: C.white }}>
-      <OnboardingHeader showBack logoSrc={boldLogo} onBack={onBack} />
-      <OnboardingScreen cta={<PurpleButton onClick={onNext}>Continue</PurpleButton>}>
-        <h2 style={{ fontSize: 22, fontWeight: 800, color: C.text, marginBottom: 10, lineHeight: 1.3 }}>
-          Knee Injury and Osteoarthritis Outcome Score (KOOS JR)
+      <KoosHeader onBack={onBack} step={0} />
+
+      <div style={{ flex: 1, overflowY: 'auto', padding: '24px 20px 16px' }}>
+        <h2 style={{ fontSize: 22, fontWeight: 700, color: C.text, marginBottom: 24, lineHeight: 1.3, letterSpacing: -0.3 }}>
+          Knee injury and Osteoarthritis Outcome Score for Joint Replacement (KOOS, JR)
         </h2>
 
-        <p style={{ fontSize: 14, color: C.textSec, lineHeight: 1.6, marginBottom: 20 }}>
-          This short questionnaire helps us understand how your knee affects your daily life. Your answers create a baseline score we'll track over time.
+        <div style={{ marginBottom: 12 }}>
+          <span style={{ fontSize: 15, color: C.textSec, fontWeight: 500 }}>Instructions</span>
+        </div>
+        <p style={{ fontSize: 17, color: C.text, lineHeight: 1.65, marginBottom: 28 }}>
+          This survey asks for your view about your knee. This information will help us keep track of how you feel about your knee and how well you are able to do your usual activities. Answer every question by ticking the appropriate box, only one box for each question. If you are unsure about how to answer a question, please give the best answer you can.
         </p>
 
-        <div style={{ background: C.bg, borderRadius: 12, padding: '14px 16px', marginBottom: 16 }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            {[
-              { icon: '📝', text: '7 quick questions' },
-              { icon: '⏱', text: 'Takes about 3 minutes' },
-              { icon: '📈', text: 'We\'ll resurvey you in 3 months to measure improvement' },
-            ].map((item, i) => (
-              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <span style={{ fontSize: 18, flexShrink: 0 }}>{item.icon}</span>
-                <span style={{ fontSize: 14, color: C.text, lineHeight: 1.4 }}>{item.text}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
+        {/* Tip card */}
         <div style={{
-          background: '#f8f4ff', borderRadius: 12, padding: '12px 14px',
-          display: 'flex', gap: 10,
+          background: '#ebf0ff', borderRadius: 12,
+          padding: '14px 16px',
+          display: 'flex', alignItems: 'flex-start', gap: 10,
         }}>
-          <div style={{
-            width: 28, height: 28, borderRadius: '50%',
-            background: `linear-gradient(135deg, #a78bfa, #7c3aed)`,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            flexShrink: 0,
-          }}>
-            <span style={{ fontSize: 12 }}>👩</span>
-          </div>
+          <img src={imgTrainer} alt="Alicia" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover', objectPosition: 'center top', flexShrink: 0 }} />
           <div>
-            <div style={{ fontSize: 13, fontWeight: 600, color: C.text, marginBottom: 3 }}>
-              A tip from Amanda
+            <div style={{ fontSize: 15, fontWeight: 600, color: C.text, marginBottom: 4 }}>
+              A Tip from Alicia
             </div>
-            <div style={{ fontSize: 13, color: C.textSec, lineHeight: 1.5 }}>
-              Think about the <strong>past week</strong> when answering. Be honest — there are no right or wrong answers.
+            <div style={{ fontSize: 15, color: C.text, lineHeight: 1.5 }}>
+              Try not to overthink your responses—trust your gut!
             </div>
           </div>
         </div>
-      </OnboardingScreen>
+      </div>
+
+      <div style={{ flexShrink: 0, padding: '12px 16px 8px' }}>
+        <PurpleButton onClick={onNext}>Continue</PurpleButton>
+      </div>
     </div>
   )
 }
 
 // ─── Question data ────────────────────────────────────────────────────────────
+
 const QUESTIONS = [
   {
     preamble: <>The following question concerns the amount of joint stiffness you have experienced during the <strong>last week</strong> in your knee. Stiffness is a sensation of restriction or slowness in the ease of which you move your knee joint.</>,
@@ -92,6 +120,7 @@ const QUESTIONS = [
 const OPTIONS = ['None', 'Mild', 'Moderate', 'Severe', 'Extreme']
 
 // ─── Step 1: Questions ────────────────────────────────────────────────────────
+
 function KoosQuestions({ onNext, onBack }) {
   const [qIndex, setQIndex] = useState(0)
   const [answer, setAnswer] = useState(null)
@@ -119,20 +148,20 @@ function KoosQuestions({ onNext, onBack }) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: C.white }}>
-      <OnboardingHeader showBack progress={qIndex + 1} totalSteps={7} logoSrc={boldLogo} onBack={handleBack} />
-      <OnboardingScreen cta={<PurpleButton onClick={handleSubmit} disabled={!answer}>Submit</PurpleButton>}>
-        <p style={{ fontSize: 16, color: C.textSec, lineHeight: 1.4, marginBottom: 16 }}>
+      <KoosHeader onBack={handleBack} step={qIndex + 1} />
+
+      <div style={{ flex: 1, overflowY: 'auto', padding: '24px 20px 16px' }}>
+        <div style={{ marginBottom: 12 }}>
+          <span style={{ fontSize: 13, fontWeight: 600, color: C.textSec, letterSpacing: '0.04em', textTransform: 'uppercase' }}>
+            Question {qIndex + 1} of {QUESTIONS.length}
+          </span>
+        </div>
+
+        <p style={{ fontSize: 16, color: C.textSec, lineHeight: 1.6, marginBottom: 20 }}>
           {current.preamble}
         </p>
 
-        <div style={{
-          fontSize: 11, fontWeight: 700,
-          letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 6,
-        }}>
-          Question {qIndex + 1}
-        </div>
-
-        <h2 style={{ fontSize: 20, fontWeight: 600, color: C.text, marginBottom: 20, lineHeight: 1.35 }}>
+        <h2 style={{ fontSize: 20, fontWeight: 700, color: C.text, marginBottom: 20, lineHeight: 1.35, letterSpacing: -0.2 }}>
           {current.question}
         </h2>
 
@@ -144,55 +173,74 @@ function KoosQuestions({ onNext, onBack }) {
             onSelect={() => setAnswer(opt)}
           />
         ))}
-      </OnboardingScreen>
+      </div>
+
+      <div style={{ flexShrink: 0, padding: '12px 16px 8px' }}>
+        <PurpleButton onClick={handleSubmit} disabled={!answer}>
+          {isLast ? 'Submit' : 'Continue'}
+        </PurpleButton>
+      </div>
     </div>
   )
 }
 
 // ─── Step 2: Complete ─────────────────────────────────────────────────────────
+
 function KoosOutro({ onNext }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: C.white }}>
-      <AppHeader streak={1} />
+      {/* Reuse header style — full progress, no back */}
+      <div style={{ flexShrink: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', padding: '12px 16px', background: C.white }}>
+          <div style={{ width: 36 }} />
+          <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
+            <img src={boldLogo} alt="Bold" style={{ height: 28, width: 'auto' }} />
+          </div>
+          <div style={{ width: 36 }} />
+        </div>
+        <div style={{ height: 3, background: C.purple }} />
+      </div>
 
-      <div style={{ flex: 1, overflowY: 'auto', padding: '40px 16px 24px', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+      <div style={{ flex: 1, overflowY: 'auto', padding: '40px 20px 24px', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
         <div style={{
-          width: 88, height: 88, borderRadius: '50%',
-          background: '#d1fae5',
-          border: '4px solid #34c759',
+          width: 80, height: 80, borderRadius: '50%',
+          background: '#d1fae5', border: '3px solid #22c55e',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           marginBottom: 24,
         }}>
-          <svg width="36" height="30" viewBox="0 0 36 30" fill="none">
-            <path d="M2 15L12 25L34 2" stroke="#34c759" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"/>
+          <svg width="32" height="26" viewBox="0 0 32 26" fill="none">
+            <path d="M2 13l8.5 9.5L30 2" stroke="#22c55e" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </div>
 
-        <h2 style={{ fontSize: 24, fontWeight: 800, color: C.text, marginBottom: 12, lineHeight: 1.2 }}>
+        <h2 style={{ fontSize: 24, fontWeight: 700, color: C.text, marginBottom: 12, lineHeight: 1.2, letterSpacing: -0.3 }}>
           Thank you, Carol!
         </h2>
 
-        <p style={{ fontSize: 15, color: C.textSec, lineHeight: 1.6, maxWidth: 300, marginBottom: 28 }}>
+        <p style={{ fontSize: 16, color: C.textSec, lineHeight: 1.6, maxWidth: 300, marginBottom: 28 }}>
           Your baseline has been recorded. We'll check in again in 3 months to see how much you've improved.
         </p>
 
-        <div style={{ width: '100%', background: C.purpleLight, borderRadius: 12, padding: '14px 16px', textAlign: 'left' }}>
-          <div style={{ fontSize: 14, fontWeight: 600, color: C.text, marginBottom: 4 }}>What happens next?</div>
-          <div style={{ fontSize: 13, color: C.textSec, lineHeight: 1.5 }}>
-            Keep taking your classes and Bold will track your progress. Your first follow-up check-in is in 3 months.
+        <div style={{ width: '100%', background: '#ebf0ff', borderRadius: 12, padding: '14px 16px', textAlign: 'left', display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+          <img src={imgTrainer} alt="Alicia" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover', objectPosition: 'center top', flexShrink: 0 }} />
+          <div>
+            <div style={{ fontSize: 15, fontWeight: 600, color: C.text, marginBottom: 4 }}>What happens next?</div>
+            <div style={{ fontSize: 15, color: C.text, lineHeight: 1.5 }}>
+              Keep taking your classes and Bold will track your progress. Your first follow-up check-in is in 3 months.
+            </div>
           </div>
         </div>
       </div>
 
-      <div style={{ flexShrink: 0, padding: '12px 16px 8px', borderTop: `1px solid ${C.border}` }}>
-        <PurpleButton onClick={onNext}>Start class</PurpleButton>
-        <OutlineButton onClick={onNext}>Return to Today's Plan</OutlineButton>
+      <div style={{ flexShrink: 0, padding: '12px 16px 8px' }}>
+        <PurpleButton onClick={onNext}>Continue</PurpleButton>
       </div>
     </div>
   )
 }
 
 // ─── Combined flow ────────────────────────────────────────────────────────────
+
 export default function KoosJr({ onNext, onBack }) {
   const [step, setStep] = useState(0)
   const advance = () => setStep(s => s + 1)
