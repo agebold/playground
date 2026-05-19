@@ -48,31 +48,25 @@ function KoosPrimer({ onNext, onBack }) {
       <KoosHeader onBack={onBack} step={0} />
 
       <div style={{ flex: 1, overflowY: 'auto', padding: '24px 20px 16px' }}>
-        <h2 style={{ fontSize: 22, fontWeight: 700, color: C.text, marginBottom: 24, lineHeight: 1.3, letterSpacing: -0.3 }}>
+        <h2 style={{ fontSize: 20, fontWeight: 600, color: C.text, marginBottom: 16, lineHeight: 1.3, letterSpacing: -0.3 }}>
           Knee injury and Osteoarthritis Outcome Score for Joint Replacement (KOOS, JR)
         </h2>
 
-        <div style={{ marginBottom: 12 }}>
-          <span style={{ fontSize: 15, color: C.textSec, fontWeight: 500 }}>Instructions</span>
+        <div style={{ marginBottom: 4 }}>
+          <span style={{ fontSize: 16, color: C.textSec, fontWeight: 600 }}>Instructions</span>
         </div>
-        <p style={{ fontSize: 17, color: C.text, lineHeight: 1.65, marginBottom: 28 }}>
+        <p style={{ fontSize: 16, color: C.text, lineHeight: 1.4, marginBottom: 28 }}>
           This survey asks for your view about your knee. This information will help us keep track of how you feel about your knee and how well you are able to do your usual activities. Answer every question by ticking the appropriate box, only one box for each question. If you are unsure about how to answer a question, please give the best answer you can.
         </p>
 
         {/* Tip card */}
-        <div style={{
-          background: '#ebf0ff', borderRadius: 12,
-          padding: '14px 16px',
-          display: 'flex', alignItems: 'flex-start', gap: 10,
-        }}>
-          <img src={imgTrainer} alt="Alicia" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover', objectPosition: 'center top', flexShrink: 0 }} />
-          <div>
-            <div style={{ fontSize: 15, fontWeight: 600, color: C.text, marginBottom: 4 }}>
-              A Tip from Alicia
-            </div>
-            <div style={{ fontSize: 15, color: C.text, lineHeight: 1.5 }}>
-              Try not to overthink your responses—trust your gut!
-            </div>
+        <div style={{ background: '#ebf0ff', borderRadius: 12, padding: 12, display: 'flex', flexDirection: 'column', gap: 4 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <img src={imgTrainer} alt="Alicia" style={{ width: 22, height: 22, borderRadius: '50%', objectFit: 'cover', objectPosition: 'center top' }} />
+            <span style={{ fontSize: 16, fontWeight: 600, color: C.text }}>A Tip from Alicia</span>
+          </div>
+          <div style={{ fontSize: 16, color: C.text, lineHeight: 1.4 }}>
+            Try not to overthink your responses—trust your gut!
           </div>
         </div>
       </div>
@@ -150,18 +144,18 @@ function KoosQuestions({ onNext, onBack }) {
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: C.white }}>
       <KoosHeader onBack={handleBack} step={qIndex + 1} />
 
-      <div style={{ flex: 1, overflowY: 'auto', padding: '24px 20px 16px' }}>
-        <div style={{ marginBottom: 12 }}>
-          <span style={{ fontSize: 13, fontWeight: 600, color: C.textSec, letterSpacing: '0.04em', textTransform: 'uppercase' }}>
-            Question {qIndex + 1} of {QUESTIONS.length}
-          </span>
-        </div>
-
-        <p style={{ fontSize: 16, color: C.textSec, lineHeight: 1.6, marginBottom: 20 }}>
+      <div style={{ flex: 1, overflowY: 'auto', padding: '16px 16px 16px' }}>
+        <p style={{ fontSize: 16, color: C.textSec, lineHeight: 1.4, marginBottom: 16 }}>
           {current.preamble}
         </p>
 
-        <h2 style={{ fontSize: 20, fontWeight: 700, color: C.text, marginBottom: 20, lineHeight: 1.35, letterSpacing: -0.2 }}>
+        <div style={{ marginBottom: 4 }}>
+          <span style={{ fontSize: 14, fontWeight: 600, color: C.text }}>
+            Question {qIndex + 1}
+          </span>
+        </div>
+
+        <h2 style={{ fontSize: 20, fontWeight: 400, color: C.text, marginBottom: 20, lineHeight: 1.2 }}>
           {current.question}
         </h2>
 
@@ -221,13 +215,13 @@ function KoosOutro({ onNext }) {
           Your baseline has been recorded. We'll check in again in 3 months to see how much you've improved.
         </p>
 
-        <div style={{ width: '100%', background: '#ebf0ff', borderRadius: 12, padding: '14px 16px', textAlign: 'left', display: 'flex', gap: 10, alignItems: 'flex-start' }}>
-          <img src={imgTrainer} alt="Alicia" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover', objectPosition: 'center top', flexShrink: 0 }} />
-          <div>
-            <div style={{ fontSize: 15, fontWeight: 600, color: C.text, marginBottom: 4 }}>What happens next?</div>
-            <div style={{ fontSize: 15, color: C.text, lineHeight: 1.5 }}>
-              Keep taking your classes and Bold will track your progress. Your first follow-up check-in is in 3 months.
-            </div>
+        <div style={{ width: '100%', background: '#ebf0ff', borderRadius: 12, padding: 12, display: 'flex', flexDirection: 'column', gap: 4 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <img src={imgTrainer} alt="Alicia" style={{ width: 22, height: 22, borderRadius: '50%', objectFit: 'cover', objectPosition: 'center top' }} />
+            <span style={{ fontSize: 15, fontWeight: 600, color: C.text }}>What happens next?</span>
+          </div>
+          <div style={{ fontSize: 15, color: C.text, lineHeight: '22px' }}>
+            Keep taking your classes and Bold will track your progress. Your first follow-up check-in is in 3 months.
           </div>
         </div>
       </div>

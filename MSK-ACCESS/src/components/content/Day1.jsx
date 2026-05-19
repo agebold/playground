@@ -110,20 +110,7 @@ export default function Day1({ onNext }) {
       }}>
         <img src={boldLogomark} alt="Bold" style={{ height: 32, width: 'auto' }} />
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <button style={{
-            background: C.yellow, border: 'none', borderRadius: 20,
-            padding: '7px 14px', fontSize: 14, fontWeight: 600,
-            color: '#000', cursor: 'pointer', fontFamily: 'Inter, sans-serif',
-          }}>
-            Use app
-          </button>
-          <div style={{
-            width: 34, height: 34, borderRadius: '50%',
-            background: '#fff3e0', border: `1px solid ${C.border}`,
-            display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17,
-          }}>
-            🔥
-          </div>
+          
           <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
             <div style={{ width: 34, height: 34, borderRadius: '50%', background: C.purple, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.white, fontSize: 13, fontWeight: 600 }}>CS</div>
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">

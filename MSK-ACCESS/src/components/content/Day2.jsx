@@ -99,7 +99,7 @@ export default function Day2({ onNext }) {
           <AnimatePresence>
             {showIntro && (
               <motion.div {...slideUp()} style={{ textAlign: 'center', padding: '8px 12px 0' }}>
-                <p style={{ fontSize: 16, color: '#171717', lineHeight: '24px', margin: 0 }}>
+                <p style={{ fontSize: 16, color: '#171717', lineHeight: 1.4, margin: 0 }}>
                   It's time for your next CMS check-in. Complete it to continue using Bold at no cost.
                 </p>
               </motion.div>
@@ -150,14 +150,14 @@ export default function Day2({ onNext }) {
                   </div>
 
                   {/* Why we're asking */}
-                  <div style={{ background: '#ebf0ff', display: 'flex', alignItems: 'flex-start', gap: 10, padding: '14px 16px' }}>
-                    <img src={imgTrainer} alt="" style={{ width: 24, height: 24, borderRadius: '50%', objectFit: 'cover', objectPosition: 'center top', flexShrink: 0, marginTop: 1 }} />
-                    <div>
-                      <div style={{ fontSize: 15, fontWeight: 600, color: '#171717', marginBottom: 4 }}>Why are we asking this</div>
-                      <p style={{ fontSize: 15, color: '#171717', lineHeight: '22px', margin: 0 }}>
-                        Every 3 months, we'll ask you to complete this same check-in. Your response is required by CMS to participate in the ACCESS program and continue using Bold free of charge.
-                      </p>
+                  <div style={{ background: '#ebf0ff', borderRadius: 12, padding: 12, display: 'flex', flexDirection: 'column', gap: 4 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <img src={imgTrainer} alt="" style={{ width: 22, height: 22, borderRadius: '50%', objectFit: 'cover', objectPosition: 'center top' }} />
+                      <span style={{ fontSize: 15, fontWeight: 600, color: '#171717' }}>Why are we asking this</span>
                     </div>
+                    <p style={{ fontSize: 15, color: '#171717', lineHeight: '22px', margin: 0 }}>
+                      Every 3 months, we'll ask you to complete this same check-in. Your response is required by CMS to participate in the ACCESS program and continue using Bold free of charge.
+                    </p>
                   </div>
                 </div>
               </div>

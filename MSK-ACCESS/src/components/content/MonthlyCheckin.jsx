@@ -7,8 +7,15 @@ import amorphousBlob from '../../assets/amorphous-blob.png'
 import psfsWalking from '../../assets/PSFS-activity-walking.jpg'
 import imgTrainer from '../../assets/alicia_headshot.jpg'
 import imgClassThumbnail from '../../assets/class-thumbnail.jpg'
+import GaugeIcon     from '../../assets/Gauge.svg'
+import TrendUpIcon   from '../../assets/TrendUp.svg'
+import TrendDownIcon from '../../assets/TrendDown.svg'
 
 const ease = [0.16, 1, 0.3, 1]
+const TEAL    = '#0d9488'
+const TEAL_BG = '#f0fdfa'
+const BLUE    = '#1A3380'
+const BLUE_BG = '#ebf0ff'
 const slideUp = () => ({
   initial: { opacity: 0, y: 36 },
   animate: { opacity: 1, y: 0, transition: { duration: 0.7, ease } },
@@ -89,6 +96,7 @@ export default function MonthlyCheckin({ onNext }) {
 
   // Check-in overlay state
   const [page,          setPage]          = useState('home') // 'home' | 'checkin' | 'complete'
+  const [completePage,  setCompletePage]  = useState(0)      // 0=loading 1=progress 2=graduation
   const [questionIndex, setQuestionIndex] = useState(0)
   const [selectedValue, setSelectedValue] = useState(null)
 
@@ -102,6 +110,13 @@ export default function MonthlyCheckin({ onNext }) {
     const t5 = setTimeout(() => setShowStep2(true),    4500)
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); clearTimeout(t5) }
   }, [])
+
+  // Auto-advance from loading screen (completePage 0 → 1)
+  useEffect(() => {
+    if (page !== 'complete' || completePage !== 0) return
+    const t = setTimeout(() => setCompletePage(1), 2600)
+    return () => clearTimeout(t)
+  }, [page, completePage])
 
   // After returning from check-in, scroll Step 2 into view
   useEffect(() => {
@@ -133,6 +148,7 @@ export default function MonthlyCheckin({ onNext }) {
       setSelectedValue(null)
       setQuestionIndex(1)
     } else {
+      setCompletePage(0)
       setPage('complete')
     }
   }
@@ -358,59 +374,171 @@ export default function MonthlyCheckin({ onNext }) {
     </div>
   )
 
-  // ── Complete overlay ───────────────────────────────────────────────────────
+  // ── Complete overlay (3-page sub-flow) ────────────────────────────────────
 
   const completeOverlay = (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: C.white }}>
-      {overlayHeader(false)}
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden', background: C.white }}>
 
-      <div style={{ flex: 1, overflowY: 'auto', padding: '32px 20px 16px' }}>
-        <motion.div
-          initial={{ scale: 0.6, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.45, ease }}
-          style={{
-            width: 48, height: 48, borderRadius: '50%', background: '#22c55e',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 24,
-          }}
-        >
-          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-            <path d="M5.5 14.5l6 6 11-12" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease, delay: 0.2 }}
-        >
-          <div style={{ fontSize: 22, fontWeight: 700, color: '#140d26', lineHeight: '30px', marginBottom: 8 }}>
-            Thanks for checking in, Carol.
-          </div>
-          <div style={{ fontSize: 16, color: '#525252', lineHeight: '24px' }}>
-            Based on your responses, we've updated your move class for today.
-          </div>
-        </motion.div>
-      </div>
+        {/* ── Page 0: Loading ─────────────────────────────────────────────── */}
+        {completePage === 0 && (
+          <motion.div
+            key="loading"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+            style={{ display: 'flex', flexDirection: 'column', height: '100%', background: '#fafafa', alignItems: 'center', justifyContent: 'center', padding: '32px 24px' }}
+          >
+            <style>{`@keyframes mcBounce { 0%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-12px); } }`}</style>
+            <div style={{ display: 'flex', gap: 12, marginBottom: 40 }}>
+              {[C.purple, '#3b82f6', '#facc15', '#14b8a6'].map((color, i) => (
+                <div key={i} style={{ width: 16, height: 16, borderRadius: '50%', background: color, animation: `mcBounce 1.4s ease-in-out ${i * 0.2}s infinite` }} />
+              ))}
+            </div>
+            <h2 style={{ fontSize: 22, fontWeight: 700, color: C.text, marginBottom: 10, textAlign: 'center', letterSpacing: -0.3, lineHeight: 1.25 }}>
+              Great job checking in, Carol!
+            </h2>
+            <p style={{ fontSize: 16, color: C.textSec, textAlign: 'center', lineHeight: 1.5, margin: 0 }}>
+              Give us a second to compile your data
+            </p>
+          </motion.div>
+        )}
 
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease, delay: 0.35 }}
-        style={{ flexShrink: 0, padding: '12px 16px 8px', display: 'flex', flexDirection: 'column', gap: 10 }}
-      >
-        <button
-          onClick={handleReturnHome}
-          style={{ width: '100%', padding: '14px 16px', background: C.purple, color: C.white, border: 'none', borderRadius: 12, fontSize: 15, fontWeight: 600, cursor: 'pointer', fontFamily: 'Inter, sans-serif' }}
-        >
-          Begin move class
-        </button>
-        <button
-          onClick={handleReturnHome}
-          style={{ width: '100%', padding: '14px 16px', background: C.white, border: `1.5px solid ${C.border}`, borderRadius: 12, fontSize: 15, fontWeight: 500, color: C.text, cursor: 'pointer', fontFamily: 'Inter, sans-serif' }}
-        >
-          Return to today's plan
-        </button>
-      </motion.div>
+        {/* ── Page 1: Progress summary ─────────────────────────────────────── */}
+        {completePage === 1 && (
+          <motion.div
+            key="progress"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, ease }}
+            style={{ display: 'flex', flexDirection: 'column', height: '100%', background: C.white }}
+          >
+            {overlayHeader(false)}
+            <div style={{ flex: 1, overflowY: 'auto', padding: '24px 20px 16px' }}>
+              {/* Teal checkmark */}
+              <div style={{ width: 44, height: 44, borderRadius: '50%', background: TEAL, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20 }}>
+                <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                  <path d="M5 11.5l4.5 4.5 8-9" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+
+              <h2 style={{ fontSize: 20, fontWeight: 600, color: '#140d26', lineHeight: 1.25, letterSpacing: -0.3, marginBottom: 24 }}>
+                Thanks for checking in, Carol. You're making steady progress!
+              </h2>
+
+              {/* Metric cards */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                {/* Card 1 — Pain */}
+                <div style={{ background: C.white, border: `1px solid ${C.border}`, borderRadius: 12, padding: 16 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+                    <div style={{ width: 32, height: 32, borderRadius: '50%', background: TEAL_BG, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      <img src={TrendDownIcon} alt="" style={{ width: 18, height: 18 }} />
+                    </div>
+                    <span style={{ fontSize: 18, fontWeight: 600, color: '#140d26' }}>Decreasing pain</span>
+                  </div>
+                  <p style={{ fontSize: 16, color: '#525252', lineHeight: '22px', margin: 0 }}>
+                    Since one month ago on June 17, your pain has decreased by{' '}
+                    <strong style={{ color: TEAL }}>2 points</strong>.
+                  </p>
+                </div>
+
+                {/* Card 2 — Functional ability */}
+                <div style={{ background: C.white, border: `1px solid ${C.border}`, borderRadius: 12, padding: 16 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+                    <div style={{ width: 32, height: 32, borderRadius: '50%', background: TEAL_BG, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      <img src={TrendUpIcon} alt="" style={{ width: 18, height: 18 }} />
+                    </div>
+                    <span style={{ fontSize: 18, fontWeight: 600, color: '#140d26' }}>Increasing functional ability</span>
+                  </div>
+                  <p style={{ fontSize: 16, color: '#525252', lineHeight: '22px', margin: 0 }}>
+                    Since one month ago on June 17, your functional ability has increased by{' '}
+                    <strong style={{ color: TEAL }}>2 points</strong>.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div style={{ flexShrink: 0, padding: '12px 16px 8px' }}>
+              <button
+                onClick={() => setCompletePage(2)}
+                style={{ width: '100%', padding: '14px 16px', background: C.purple, color: C.white, border: 'none', borderRadius: 12, fontSize: 15, fontWeight: 600, cursor: 'pointer', fontFamily: 'Inter, sans-serif' }}
+              >
+                Continue
+              </button>
+            </div>
+          </motion.div>
+        )}
+
+        {/* ── Page 2: Phase graduation ─────────────────────────────────────── */}
+        {completePage === 2 && (
+          <motion.div
+            key="graduation"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, ease }}
+            style={{ display: 'flex', flexDirection: 'column', height: '100%', background: C.white }}
+          >
+            {overlayHeader(false)}
+            <div style={{ flex: 1, overflowY: 'auto', padding: '24px 20px 16px' }}>
+              <h2 style={{ fontSize: 20, fontWeight: 600, color: '#140d26', lineHeight: 1.25, letterSpacing: -0.3, marginBottom: 24 }}>
+                Because of your improvement, you'll move from the Calm phase into the Build phase
+              </h2>
+
+              {/* Build phase card */}
+              <div style={{ background: C.white, border: `1.5px solid ${BLUE}`, borderRadius: 14, padding: 16, marginBottom: 16 }}>
+                <div style={{ fontSize: 20, fontWeight: 600, color: BLUE, marginBottom: 4, letterSpacing: -0.2 }}>
+                  Build
+                </div>
+                <p style={{ fontSize: 16, color: C.textSec, lineHeight: 1.4, margin: '0 0 12px' }}>
+                  Classes gradually increase intensity and duration as you rebuild strength and endurance. You'll learn to identify and respect your body's new limits.
+                </p>
+                <div style={{ background: BLUE_BG, borderRadius: 10, padding: '10px 14px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <img src={GaugeIcon} alt="" style={{ width: 20, height: 20, flexShrink: 0 }} />
+                    <span style={{ fontSize: 16, fontWeight: 500, color: BLUE, lineHeight: 1.3 }}>Gradual loading</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <img src={TrendUpIcon} alt="" style={{ width: 20, height: 20, flexShrink: 0 }} />
+                    <span style={{ fontSize: 16, fontWeight: 500, color: BLUE, lineHeight: 1.3 }}>Build strength and endurance</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom CTA with animated toast */}
+            <div style={{ flexShrink: 0, padding: '0 16px 8px', position: 'relative' }}>
+              {/* Toast — CSS keyframe slides it up from behind the button on mount */}
+              <style>{`@keyframes toastUp { from { transform: translateY(64px); } to { transform: translateY(0); } }`}</style>
+              <div
+                style={{
+                  background: '#ede9fe', borderRadius: 12,
+                  padding: '12px 16px', marginBottom: 10,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+                  position: 'relative', zIndex: 0,
+                  animation: 'toastUp 0.48s cubic-bezier(0.32, 0.72, 0, 1) 0.2s both',
+                }}
+              >
+                <span style={{ fontSize: 14, fontWeight: 500, color: C.purple }}>Move class updated based on your responses</span>
+              </div>
+
+              {/* Buttons — sit in front of the toast so it peeks up from behind */}
+              <div style={{ position: 'relative', zIndex: 1, background: C.white, display: 'flex', flexDirection: 'column', gap: 10 }}>
+                <button
+                  onClick={handleReturnHome}
+                  style={{ width: '100%', padding: '14px 16px', background: C.purple, color: C.white, border: 'none', borderRadius: 12, fontSize: 15, fontWeight: 600, cursor: 'pointer', fontFamily: 'Inter, sans-serif' }}
+                >
+                  Start class
+                </button>
+                <button
+                  onClick={handleReturnHome}
+                  style={{ width: '100%', padding: '14px 16px', background: C.white, border: `1.5px solid ${C.border}`, borderRadius: 12, fontSize: 15, fontWeight: 500, color: C.text, cursor: 'pointer', fontFamily: 'Inter, sans-serif' }}
+                >
+                  Return to today's plan
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
     </div>
   )
 
