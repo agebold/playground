@@ -6,11 +6,11 @@ export default function KoosPrimer({ onNext }) {
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: C.white }}>
       <OnboardingHeader showBack={false} logoSrc={boldLogo} />
       <OnboardingScreen cta={<PurpleButton onClick={onNext}>Continue</PurpleButton>}>
-        <h2 style={{ fontSize: 22, fontWeight: 800, color: C.text, marginBottom: 10, lineHeight: 1.3 }}>
+        <h2 style={{ fontSize: 22, fontWeight: 800, color: C.text, marginBottom: 8, lineHeight: 1.3 }}>
           Knee Injury and Osteoarthritis Outcome Score (KOOS JR)
         </h2>
 
-        <p style={{ fontSize: 14, color: C.textSec, lineHeight: 1.6, marginBottom: 20 }}>
+        <p style={{ fontSize: 14, color: C.textSec, lineHeight: 1.4, marginBottom: 20 }}>
           This short questionnaire helps us understand how your knee affects your daily life. Your answers create a baseline score we'll track over time.
         </p>
 

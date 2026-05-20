@@ -1,74 +1,125 @@
-import boldLogomark from '../../assets/bold-logomark.png'
 import { C, PurpleButton } from './shared.jsx'
+import boldWordmark from '../../assets/bold-logo@2x.png'
+import WindIcon    from '../../assets/Wind.svg'
+import LightbulbIcon from '../../assets/Lightbulb.svg'
+import GaugeIcon   from '../../assets/Gauge.svg'
+import TrendUpIcon from '../../assets/TrendUp.svg'
+import PlantIcon   from '../../assets/Plant.svg'
+import HeartbeatIcon from '../../assets/Heartbeat.svg'
 
-const bullets = [
-  { icon: '✓', bold: 'Goal:', text: 'Reduce knee pain' },
-  { icon: '✓', bold: 'First focus:', text: 'Build core stability and hip mobility through low-intensity seated exercises' },
-  { icon: '✓', bold: 'Movements:', text: 'Exercises to strengthen surrounding muscles to support your knees. All seated work, no floor movements required.' },
+const BLUE = '#1A3380'
+const BLUE_BG = '#ebf0ff'
+
+const phases = [
+  {
+    name: 'Calm',
+    active: true,
+    description: 'Manage daily symptoms with non-strenuous techniques. Learn to identify your "safe zone" for movement and integrate recovery moments.',
+    items: [
+      { icon: WindIcon,     label: 'Gentle mobility and breathing' },
+      { icon: LightbulbIcon, label: 'Pain education' },
+    ],
+  },
+  {
+    name: 'Build',
+    active: false,
+    description: "Gradually increase intensity and duration as you rebuild strength and endurance. Learn to identify and respect your body's new limits.",
+    items: [
+      { icon: GaugeIcon,   label: 'Gradual loading' },
+      { icon: TrendUpIcon, label: 'Build strength and endurance' },
+    ],
+  },
+  {
+    name: 'Maintain',
+    active: false,
+    description: 'Expand your fitness and prevent future flare ups.',
+    items: [
+      { icon: PlantIcon,     label: 'Lifestyle integration' },
+      { icon: HeartbeatIcon, label: 'Locking in healthy habits' },
+    ],
+  },
 ]
 
 export default function PlanResults({ onNext }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: C.white }}>
+
       {/* Top bar */}
       <div style={{
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         padding: '12px 16px', borderBottom: `1px solid ${C.border}`, flexShrink: 0,
       }}>
-        <img src={boldLogomark} alt="Bold" style={{ height: 26, width: 'auto' }} />
-        <span style={{ fontSize: 14, fontWeight: 600, color: '#000000' }}>Your results</span>
+        <img src={boldWordmark} alt="Bold" style={{ height: 28, width: 'auto' }} />
+        <span style={{ fontSize: 14, fontWeight: 600, color: '#16a34a' }}>Your plan</span>
       </div>
 
-      <div style={{ flex: 1, overflowY: 'auto' }}>
-        {/* Photo collage */}
-        <div style={{
-          height: 180, background: '#2d2d2d',
-          display: 'grid', gridTemplateColumns: '1fr 1fr 1fr',
-          gap: 2, padding: 2,
+      {/* Scrollable content */}
+      <div style={{ flex: 1, overflowY: 'auto', padding: '24px 16px 16px' }}>
+
+        <h2 style={{
+          fontSize: 22, fontWeight: 600, color: C.text,
+          lineHeight: 1.25, letterSpacing: -0.3, marginBottom: 8,
         }}>
-          {[
-            '#4a5568', '#2d3748', '#1a202c',
-            '#2d3748', '#374151', '#4b5563',
-          ].map((bg, i) => (
-            <div key={i} style={{
-              background: bg, display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: 20,
-            }}>
-              {['🧑‍💼','👩','👴','👵','🧍','👨'][i]}
-            </div>
-          ))}
-        </div>
+          Here's how your Bold plan is formatted
+        </h2>
 
-        <div style={{ padding: '20px 16px' }}>
-          <h2 style={{ fontSize: 22, fontWeight: 600, color: C.text, marginBottom: 4, lineHeight: 1.2, letterSpacing: -0.3 }}>
-            Your plan is ready, Carol
-          </h2>
-          <p style={{ fontSize: 16, color: C.textSec, marginBottom: 20, lineHeight: 1.4 }}>
-            Simple clear daily actions that adapt to your feedback.
-          </p>
+        <p style={{ fontSize: 16, color: C.textSec, lineHeight: 1.4, marginBottom: 24 }}>
+          You'll move through three phases <em>at your pace</em>, beginning with Calm.
+        </p>
 
-          {bullets.map((b, i) => (
-            <div key={i} style={{ display: 'flex', gap: 10, marginBottom: 14, alignItems: 'flex-start' }}>
+        {/* Phase cards */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          {phases.map(phase => (
+            <div
+              key={phase.name}
+              style={{
+                background: C.white,
+                border: `${phase.active ? '1.5px' : '1px'} solid ${phase.active ? BLUE : C.border}`,
+                borderRadius: 14,
+                padding: 16,
+              }}
+            >
+              {/* Phase name */}
               <div style={{
-                width: 22, height: 22, borderRadius: '50%', background: C.purple,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                flexShrink: 0, marginTop: 1,
+                fontSize: 20, fontWeight: 600, color: BLUE,
+                marginBottom: 4, letterSpacing: -0.2,
               }}>
-                <svg width="11" height="9" viewBox="0 0 11 9" fill="none">
-                  <path d="M1 4l3 3.5L10 1" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
+                {phase.name}
               </div>
-              <p style={{ fontSize: 16, color: C.text, lineHeight: 1.4, margin: 0 }}>
-                <strong>{b.bold}</strong> {b.text}
+
+              {/* Description */}
+              <p style={{
+                fontSize: 16, color: C.textSec, lineHeight: 1.4,
+                margin: '0 0 12px',
+              }}>
+                {phase.description}
               </p>
+
+              {/* Sub-items */}
+              <div style={{
+                background: BLUE_BG, borderRadius: 10, padding: '10px 14px',
+                display: 'flex', flexDirection: 'column', gap: 10,
+              }}>
+                {phase.items.map(item => (
+                  <div key={item.label} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <img src={item.icon} alt="" style={{ width: 20, height: 20, flexShrink: 0 }} />
+                    <span style={{ fontSize: 16, fontWeight: 500, color: BLUE, lineHeight: 1.3 }}>
+                      {item.label}
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
           ))}
         </div>
+
       </div>
 
-      <div style={{ flexShrink: 0, padding: '12px 16px 8px', }}>
-        <PurpleButton onClick={onNext}>See today's plan</PurpleButton>
+      {/* Continue button */}
+      <div style={{ flexShrink: 0, padding: '12px 16px 8px' }}>
+        <PurpleButton onClick={onNext}>Continue</PurpleButton>
       </div>
+
     </div>
   )
 }

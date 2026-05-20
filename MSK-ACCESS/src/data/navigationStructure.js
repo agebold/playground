@@ -63,6 +63,14 @@ export const navigationStructure = [
       { id: 'baseline-captured', label: 'Baseline captured', viewType: 'mobile', canToggle: false },
     ]
   },
+  {
+    id: 'engagement',
+    category: 'Engagement',
+    items: [
+      { id: 'regular-day', label: 'Regular day', viewType: 'mobile', canToggle: false },
+      { id: 'monthly-checkin', label: 'Monthly check-in', viewType: 'mobile', canToggle: false },
+    ]
+  },
 ]
 
 export const getAllSteps = () => navigationStructure.flatMap(s => s.items)

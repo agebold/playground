@@ -4,7 +4,9 @@ import { navigationStructure } from '../data/navigationStructure.js'
 import { C } from './content/shared.jsx'
 
 export default function Sidebar({ activeStep, onSelect }) {
-  const [collapsed, setCollapsed] = useState({})
+  const [collapsed, setCollapsed] = useState(
+    Object.fromEntries(navigationStructure.map(s => [s.id, s.id !== 'engagement']))
+  )
   const toggle = (id) => setCollapsed(p => ({ ...p, [id]: !p[id] }))
 
   return (
