@@ -64,8 +64,8 @@
       "category": "Prototypes"
     },
     {
-      "path": "care_plan",
-      "href": "care_plan/care-plan.html",
+      "path": "PrevMed/care_plan",
+      "href": "PrevMed/care_plan/care-plan.html",
       "name": "Care Plan",
       "desc": "Care plan screens, MSK progress tracking and program views",
       "icon": "🩺",

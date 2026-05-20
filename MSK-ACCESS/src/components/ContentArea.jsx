@@ -29,6 +29,8 @@ import WeeklyGoalDone from './content/WeeklyGoalDone.jsx'
 import Day2 from './content/Day2.jsx'
 import KoosJr from './content/KoosJr.jsx'
 import BaselineCaptured from './content/BaselineCaptured.jsx'
+import RegularDay from './content/RegularDay.jsx'
+import MonthlyCheckin from './content/MonthlyCheckin.jsx'
 import RedFlagQuestions from './content/RedFlagQuestions.jsx'
 
 const contentMap = {
@@ -59,6 +61,8 @@ const contentMap = {
   'day-2': Day2,
   'koos-jr': KoosJr,
   'baseline-captured': BaselineCaptured,
+  'regular-day': RegularDay,
+  'monthly-checkin': MonthlyCheckin,
   'red-flag-questions': RedFlagQuestions,
 }
 

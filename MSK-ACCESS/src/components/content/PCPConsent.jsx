@@ -11,12 +11,28 @@ const baseInput = {
   outline: 'none', boxSizing: 'border-box', background: C.white,
 }
 
-function LogoBar() {
+function LogoBar({ onBack }) {
   return (
     <div style={{
       padding: '14px 20px', borderBottom: `1px solid ${C.border}`,
-      display: 'flex', justifyContent: 'center', flexShrink: 0,
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      position: 'relative', flexShrink: 0,
     }}>
+      {onBack && (
+        <button
+          onClick={onBack}
+          style={{
+            position: 'absolute', left: 16,
+            width: 36, height: 36, borderRadius: 10,
+            background: C.bg, border: 'none', cursor: 'pointer',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}
+        >
+          <svg width="9" height="15" viewBox="0 0 9 15" fill="none">
+            <path d="M8 1L1 7.5L8 14" stroke={C.text} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </button>
+      )}
       <img src={boldLogo} alt="Bold" style={{ height: 28, width: 'auto' }} />
     </div>
   )
@@ -72,7 +88,7 @@ function PhysicianCard({ physician, selected, onSelect }) {
 
 // ─── Screen 1: Share updates yes/no ──────────────────────────────────────────
 
-function PcpShareQuestion({ onYes, onNo }) {
+function PcpShareQuestion({ onYes, onNo, onBack }) {
   const [answer, setAnswer] = useState(null)
 
   const handleContinue = () => {
@@ -82,7 +98,7 @@ function PcpShareQuestion({ onYes, onNo }) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: C.white }}>
-      <LogoBar />
+      <LogoBar onBack={onBack} />
       <div style={{ flex: 1, overflowY: 'auto', padding: '28px 20px 8px' }}>
         <h2 style={{ fontSize: 22, fontWeight: 600, color: C.text, marginBottom: 4, lineHeight: 1.25, letterSpacing: -0.3 }}>
           Would you like to share your updates with your current primary care physician?
@@ -93,7 +109,7 @@ function PcpShareQuestion({ onYes, onNo }) {
         <RadioOption label="Yes" selected={answer === 'yes'} onSelect={() => setAnswer('yes')} />
         <RadioOption label="No"  selected={answer === 'no'}  onSelect={() => setAnswer('no')} />
       </div>
-      <div style={{ flexShrink: 0, padding: '12px 20px 16px', borderTop: `1px solid ${C.border}` }}>
+      <div style={{ flexShrink: 0, padding: '12px 16px 8px' }}>
         <PurpleButton onClick={handleContinue} disabled={!answer}>Continue</PurpleButton>
       </div>
     </div>
@@ -102,7 +118,7 @@ function PcpShareQuestion({ onYes, onNo }) {
 
 // ─── Screen 2: Enter PCP name + location ─────────────────────────────────────
 
-function PcpNameEntry({ onSubmit }) {
+function PcpNameEntry({ onSubmit, onBack }) {
   const [form, setForm] = useState({ firstName: '', lastName: '', cityState: '' })
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }))
 
@@ -122,7 +138,7 @@ function PcpNameEntry({ onSubmit }) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: C.white }}>
-      <LogoBar />
+      <LogoBar onBack={onBack} />
       <div style={{ flex: 1, overflowY: 'auto', padding: '28px 20px 8px' }}>
         <h2 style={{ fontSize: 22, fontWeight: 600, color: C.text, marginBottom: 28, lineHeight: 1.25, letterSpacing: -0.3 }}>
           Enter the name and location of your primary care physician.
@@ -131,7 +147,7 @@ function PcpNameEntry({ onSubmit }) {
         <Field label="Last name"  k="lastName" />
         <Field label="City, State" k="cityState" />
       </div>
-      <div style={{ flexShrink: 0, padding: '12px 20px 16px', borderTop: `1px solid ${C.border}` }}>
+      <div style={{ flexShrink: 0, padding: '12px 16px 8px' }}>
         <PurpleButton onClick={() => onSubmit(form)}>Submit</PurpleButton>
       </div>
     </div>
@@ -145,12 +161,12 @@ const PHYSICIANS = [
   { id: 2, name: 'Claire Hsing', address: '44817 SOUTH AIRPORT ROAD', cityState: 'HAMMOND, LA 70403',      npi: '1144640889' },
 ]
 
-function PcpSelect({ onSelect }) {
+function PcpSelect({ onSelect, onBack }) {
   const [selected, setSelected] = useState(null)
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: C.white }}>
-      <LogoBar />
+      <LogoBar onBack={onBack} />
       <div style={{ flex: 1, overflowY: 'auto', padding: '28px 20px 8px' }}>
         <h2 style={{ fontSize: 22, fontWeight: 600, color: C.text, marginBottom: 24, lineHeight: 1.25, letterSpacing: -0.3 }}>
           Please select your primary care physician from this list.
@@ -164,7 +180,7 @@ function PcpSelect({ onSelect }) {
           />
         ))}
       </div>
-      <div style={{ flexShrink: 0, padding: '12px 20px 16px', borderTop: `1px solid ${C.border}` }}>
+      <div style={{ flexShrink: 0, padding: '12px 16px 8px' }}>
         <PurpleButton onClick={() => onSelect(selected)} disabled={!selected}>Continue</PurpleButton>
       </div>
     </div>
@@ -188,7 +204,7 @@ function PcpConfirmation({ physician, onNext }) {
           <div style={{ fontSize: 13, color: C.textSec, lineHeight: 1.6 }}>NPI: {physician.npi}</div>
         </div>
       </div>
-      <div style={{ flexShrink: 0, padding: '12px 20px 16px', borderTop: `1px solid ${C.border}` }}>
+      <div style={{ flexShrink: 0, padding: '12px 16px 8px' }}>
         <PurpleButton onClick={onNext}>Continue</PurpleButton>
       </div>
     </div>
@@ -197,18 +213,18 @@ function PcpConfirmation({ physician, onNext }) {
 
 // ─── Root ─────────────────────────────────────────────────────────────────────
 
-export default function PCPConsent({ onNext }) {
-  const [step, setStep]         = useState('question')
+export default function PCPConsent({ onNext, onBack }) {
+  const [step, setStep]           = useState('question')
   const [physician, setPhysician] = useState(null)
 
   if (step === 'question') {
-    return <PcpShareQuestion onYes={() => setStep('entry')} onNo={onNext} />
+    return <PcpShareQuestion onYes={() => setStep('entry')} onNo={onNext} onBack={onBack} />
   }
   if (step === 'entry') {
-    return <PcpNameEntry onSubmit={() => setStep('select')} />
+    return <PcpNameEntry onSubmit={() => setStep('select')} onBack={() => setStep('question')} />
   }
   if (step === 'select') {
-    return <PcpSelect onSelect={p => { setPhysician(p); setStep('confirm') }} />
+    return <PcpSelect onSelect={p => { setPhysician(p); setStep('confirm') }} onBack={() => setStep('entry')} />
   }
   return <PcpConfirmation physician={physician} onNext={onNext} />
 }

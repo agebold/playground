@@ -6,6 +6,12 @@ import Exploration2 from './content/Exploration2.jsx'
 import Exploration3 from './content/Exploration3.jsx'
 import Exploration4 from './content/Exploration4.jsx'
 import MonthlyV1 from './content/MonthlyV1.jsx'
+import Version1 from './content/Version1.jsx'
+import Version2 from './content/Version2.jsx'
+import Version3 from './content/Version3.jsx'
+import Version4 from './content/Version4.jsx'
+import Round3A from './content/Round3A.jsx'
+import Round3B from './content/Round3B.jsx'
 
 const contentMap = {
   'session-based-v1': Exploration1,
@@ -13,6 +19,12 @@ const contentMap = {
   'session-based-v3': Exploration3,
   'session-based-v4': Exploration4,
   'monthly-v1': MonthlyV1,
+  'round2-v1': Version1,
+  'round2-v2': Version2,
+  'round2-v3': Version3,
+  'round2-v4': Version4,
+  'round3-a': Round3B,
+  'round3-b': Round3A,
 }
 
 function ReplayIcon() {

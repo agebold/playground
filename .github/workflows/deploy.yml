@@ -70,7 +70,7 @@ jobs:
           cp -r _main/dynamic-header _deploy/ 2>/dev/null || true
           cp -r _main/vision _deploy/ 2>/dev/null || true
           cp -r _main/user-research _deploy/ 2>/dev/null || true
-          cp -r _main/care_plan _deploy/ 2>/dev/null || true
+          cp -r _main/PrevMed/care_plan _deploy/PrevMed/ 2>/dev/null || true
           cp -r _main/design-system _deploy/ 2>/dev/null || true
           cp -r _main/telehealth _deploy/ 2>/dev/null || true
           cp -r _main/weight-clinic-sprint _deploy/ 2>/dev/null || true

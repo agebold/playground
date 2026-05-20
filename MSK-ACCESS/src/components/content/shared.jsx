@@ -100,7 +100,7 @@ export function PhoneFrame({ children, statusBarBg }) {
       <div style={{
         height: 44, flexShrink: 0, display: 'flex',
         alignItems: 'center', justifyContent: 'space-between',
-        padding: '12px 36px 0px 36px', background: statusBarBg ?? C.white,
+        padding: '0 20px', background: statusBarBg ?? C.white,
       }}>
       </div>
       {/* Content */}
@@ -111,7 +111,7 @@ export function PhoneFrame({ children, statusBarBg }) {
       <SafariBottomBar />
       {/* Home indicator */}
       <div style={{ height: 34, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f9f9f9', flexShrink: 0 }}>
-        <div style={{ width: 134, height: 5, background: '#000', borderRadius: 3, opacity: 1 }} />
+        <div style={{ width: 134, height: 5, background: '#000', borderRadius: 3, opacity: 0.18 }} />
       </div>
     </div>
   )
