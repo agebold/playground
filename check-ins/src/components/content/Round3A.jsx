@@ -7,6 +7,7 @@ import imgTrainer from '../../assets/alicia_headshot.jpg'
 import imgClassThumbnail from '../../assets/class-thumbnail.jpg'
 import classAlt1 from '../../assets/Class Alternative 1.jpg'
 import classAlt2 from '../../assets/Class Alternative 2.jpg'
+import learnThumbnail from '../../assets/learn-class-thumbnail.jpg'
 
 const imgTrainerAvatar = imgTrainer
 
@@ -26,11 +27,6 @@ const PAIN_OPTIONS = [
   { type: 'good',      color: '#22c55e', label: "I'm feeling good, no pain" },
 ]
 
-const RESPONSE_COPY = {
-  flare:     "Sorry to hear that — we've swapped your class for a seated, low-impact option that's easier on your knee. Take it at your own pace today.",
-  tolerable: "Got it — we've adjusted your class to something manageable. Listen to your body and go at your own pace.",
-  good:      "Love to hear it! We've lined up a great class for you. Let's make the most of your pain-free day.",
-}
 
 const STEP2_COPY = {
   locked:    "Here's your move class for today.",
@@ -102,6 +98,8 @@ export default function Round3A({ viewMode = 'mobile' }) {
   const [showPlan,     setShowPlan]     = useState(false)
 
   const cardRef = useRef(null)
+  const [moveCompleted, setMoveCompleted] = useState(false)
+  const [classLoading,  setClassLoading]  = useState(false)
 
   useEffect(() => {
     const t1 = setTimeout(() => setShowAvatar(true),   300)
@@ -124,7 +122,8 @@ export default function Round3A({ viewMode = 'mobile' }) {
 
   const handleResponse = (type) => {
     setResponse(type)
-    setTimeout(() => setShowPlan(true), 600)
+    setClassLoading(true)
+    setTimeout(() => setClassLoading(false), 1400)
   }
 
   const classInfo = CLASS_CONTENT[response] ?? {
@@ -190,9 +189,6 @@ export default function Round3A({ viewMode = 'mobile' }) {
                 </span>
                 <CheckIcon />
               </div>
-              <p style={{ fontSize: 15, color: '#09112a', lineHeight: '24px', margin: 0 }}>
-                {RESPONSE_COPY[response]}
-              </p>
             </motion.div>
           )}
         </AnimatePresence>
@@ -252,7 +248,7 @@ export default function Round3A({ viewMode = 'mobile' }) {
           </p>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10, alignItems: 'center' }}>
-          <button style={{ width: '100%', padding: '12px 16px', background: C.purple, color: C.white, border: 'none', borderRadius: 12, fontSize: 15, fontWeight: 600, cursor: 'pointer', fontFamily: 'Inter, sans-serif' }}>
+          <button onClick={() => setMoveCompleted(true)} style={{ width: '100%', padding: '12px 16px', background: C.purple, color: C.white, border: 'none', borderRadius: 12, fontSize: 15, fontWeight: 600, cursor: 'pointer', fontFamily: 'Inter, sans-serif' }}>
             Start class
           </button>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -307,7 +303,7 @@ export default function Round3A({ viewMode = 'mobile' }) {
           </p>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10, alignItems: 'center' }}>
-          <button style={{ width: '100%', padding: '12px 16px', background: C.purple, color: C.white, border: 'none', borderRadius: 12, fontSize: 15, fontWeight: 600, cursor: 'pointer', fontFamily: 'Inter, sans-serif' }}>
+          <button onClick={() => setMoveCompleted(true)} style={{ width: '100%', padding: '12px 16px', background: C.purple, color: C.white, border: 'none', borderRadius: 12, fontSize: 15, fontWeight: 600, cursor: 'pointer', fontFamily: 'Inter, sans-serif' }}>
             Start class
           </button>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -322,10 +318,102 @@ export default function Round3A({ viewMode = 'mobile' }) {
     </div>
   )
 
+  const shimmer = {
+    background: 'linear-gradient(90deg, #f0f0f0 25%, #e6e6e6 50%, #f0f0f0 75%)',
+    backgroundSize: '200% 100%',
+    animation: 'shimmer 1.4s ease-in-out infinite',
+  }
+
+  const skeletonCard = (desktop = false) => desktop ? (
+    <div style={{ background: C.white, border: `1px solid ${C.border}`, borderRadius: 12, overflow: 'hidden', display: 'flex' }}>
+      <div style={{ flex: 1, padding: 20, display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <div style={{ width: 82, height: 20, borderRadius: 4, ...shimmer }} />
+          <div style={{ width: '85%', height: 22, borderRadius: 4, ...shimmer }} />
+          <div style={{ width: '40%', height: 18, borderRadius: 4, ...shimmer }} />
+        </div>
+        <div style={{ height: 90, borderRadius: 12, ...shimmer }} />
+        <div style={{ height: 44, borderRadius: 12, ...shimmer }} />
+        <div style={{ width: '55%', height: 16, borderRadius: 4, alignSelf: 'center', ...shimmer }} />
+      </div>
+      <div style={{ width: 340, flexShrink: 0, ...shimmer, borderRadius: 0 }} />
+    </div>
+  ) : (
+    <div style={{ background: C.white, border: `1px solid ${C.border}`, borderRadius: 12, overflow: 'hidden' }}>
+      <div style={{ height: 140, ...shimmer, borderRadius: 0 }} />
+      <div style={{ padding: 14, display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <div style={{ width: 82, height: 20, borderRadius: 4, ...shimmer }} />
+        <div style={{ width: '90%', height: 20, borderRadius: 4, ...shimmer }} />
+        <div style={{ width: '55%', height: 16, borderRadius: 4, ...shimmer }} />
+        <div style={{ height: 82, borderRadius: 12, ...shimmer }} />
+        <div style={{ height: 44, borderRadius: 12, ...shimmer }} />
+        <div style={{ width: '55%', height: 14, borderRadius: 4, alignSelf: 'center', ...shimmer }} />
+      </div>
+    </div>
+  )
+
+  const learnCard = (desktop = false) => desktop ? (
+    /* ── Horizontal desktop layout ── */
+    <div style={{ background: C.white, border: `1px solid ${C.border}`, borderRadius: 12, overflow: 'hidden', display: 'flex' }}>
+      <div style={{ flex: 1, padding: 20, display: 'flex', flexDirection: 'column', gap: 14 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          <div style={{ background: '#f0fdf4', borderRadius: 4, padding: '3px 8px', display: 'inline-flex', alignItems: 'center', gap: 4, alignSelf: 'flex-start' }}>
+            <span style={{ fontSize: 12, fontWeight: 600, color: '#16a34a' }}>Learn</span>
+            <InfoIcon />
+          </div>
+          <div style={{ fontSize: 17, fontWeight: 600, color: '#140d26', lineHeight: '24px' }}>
+            12 min Education: Exercise for Pain Management
+          </div>
+          <div style={{ fontSize: 15, color: '#140d26' }}>Chris Litten</div>
+        </div>
+        <button style={{ width: '100%', padding: '12px 16px', background: C.purple, color: C.white, border: 'none', borderRadius: 12, fontSize: 15, fontWeight: 600, cursor: 'pointer', fontFamily: 'Inter, sans-serif' }}>
+          Start class
+        </button>
+      </div>
+      <div style={{ width: 340, flexShrink: 0, position: 'relative' }}>
+        <img src={learnThumbnail} alt="Learn class" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        <div style={{ position: 'absolute', top: 12, right: 12, background: 'rgba(255,255,255,0.88)', borderRadius: 10, padding: '5px 10px', display: 'flex', alignItems: 'center', gap: 4, fontSize: 13, fontWeight: 600, color: '#070101', border: `1px solid ${C.border}` }}>
+          <svg width="13" height="15" viewBox="0 0 13 15" fill="none">
+            <path d="M2 2h9v11l-4.5-3L2 13V2Z" stroke="#070101" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          Save
+        </div>
+      </div>
+    </div>
+  ) : (
+    /* ── Vertical mobile layout ── */
+    <div style={{ background: C.white, border: `1px solid ${C.border}`, borderRadius: 12, overflow: 'hidden' }}>
+      <div style={{ position: 'relative', height: 140, overflow: 'hidden' }}>
+        <img src={learnThumbnail} alt="Learn class" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        <div style={{ position: 'absolute', top: 10, right: 10, background: 'rgba(255,255,255,0.88)', borderRadius: 10, padding: '5px 10px', display: 'flex', alignItems: 'center', gap: 4, fontSize: 13, fontWeight: 600, color: '#070101', border: `1px solid ${C.border}` }}>
+          <svg width="13" height="15" viewBox="0 0 13 15" fill="none">
+            <path d="M2 2h9v11l-4.5-3L2 13V2Z" stroke="#070101" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          Save
+        </div>
+      </div>
+      <div style={{ padding: 14, display: 'flex', flexDirection: 'column', gap: 14 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          <div style={{ background: '#f0fdf4', borderRadius: 4, padding: '3px 8px', display: 'inline-flex', alignItems: 'center', gap: 4, alignSelf: 'flex-start' }}>
+            <span style={{ fontSize: 12, fontWeight: 600, color: '#16a34a' }}>Learn</span>
+          </div>
+          <div style={{ fontSize: 17, fontWeight: 600, color: '#140d26', lineHeight: '23px' }}>
+            12 min Education: Exercise for Pain Management
+          </div>
+          <div style={{ fontSize: 15, color: '#140d26' }}>Chris Litten</div>
+        </div>
+        <button style={{ width: '100%', padding: '12px 16px', background: C.purple, color: C.white, border: 'none', borderRadius: 12, fontSize: 15, fontWeight: 600, cursor: 'pointer', fontFamily: 'Inter, sans-serif' }}>
+          Start class
+        </button>
+      </div>
+    </div>
+  )
+
   /* ─── Desktop layout ─────────────────────────────────────────────────────── */
   if (viewMode === 'desktop') {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#fafafa', minHeight: 560 }}>
+        <style>{`@keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }`}</style>
 
         <div style={{
           background: C.white, borderBottom: `1px solid ${C.border}`,
@@ -403,7 +491,7 @@ export default function Round3A({ viewMode = 'mobile' }) {
 
             {showStep1 && (
               <motion.div {...slideUp(0)} style={{ marginTop: 32, display: 'flex', flexDirection: 'column', gap: 20, position: 'relative' }}>
-                <div style={{ position: 'absolute', left: 19, top: 42, bottom: 56, width: 1, borderLeft: '1.5px dashed #e5e5e5', zIndex: 0 }} />
+                <div style={{ position: 'absolute', left: 19, top: 42, bottom: 8, width: 1, borderLeft: '1.5px dashed #e5e5e5', zIndex: 0 }} />
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 16, position: 'relative', zIndex: 1 }}>
                   <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
@@ -428,9 +516,15 @@ export default function Round3A({ viewMode = 'mobile' }) {
                   {showStep2 && (
                     <motion.div ref={cardRef} {...fadeIn(0)} style={{ display: 'flex', flexDirection: 'column', gap: 16, position: 'relative', zIndex: 1 }}>
                       <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
-                        <div style={{ width: 40, height: 40, borderRadius: '50%', flexShrink: 0, background: C.white, border: `2px solid ${C.purple}`, boxShadow: `0 0 0 4px rgba(82,0,212,0.1)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                          <div style={{ width: 8, height: 8, borderRadius: '50%', background: C.purple }} />
-                        </div>
+                        {moveCompleted ? (
+                          <div style={{ width: 40, height: 40, borderRadius: '50%', flexShrink: 0, background: '#22c55e', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.5 3.5 6.5-7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                          </div>
+                        ) : (
+                          <div style={{ width: 40, height: 40, borderRadius: '50%', flexShrink: 0, background: C.white, border: `2px solid ${C.purple}`, boxShadow: `0 0 0 4px rgba(82,0,212,0.1)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <div style={{ width: 8, height: 8, borderRadius: '50%', background: C.purple }} />
+                          </div>
+                        )}
                         <div style={{ paddingTop: 2 }}>
                           <div style={{ fontSize: 14, color: '#171717', lineHeight: '22px' }}>Step 2</div>
                           <div style={{ fontSize: 16, fontWeight: 600, color: '#171717', lineHeight: '24px' }}>
@@ -438,10 +532,47 @@ export default function Round3A({ viewMode = 'mobile' }) {
                           </div>
                         </div>
                       </div>
-                      <AnimatePresence>
-                        {showPlan && (
-                          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease }}>
+                      <AnimatePresence mode="wait">
+                        {showPlan && classLoading && (
+                          <motion.div key="skeleton" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }}>
+                            {skeletonCard(true)}
+                          </motion.div>
+                        )}
+                        {showPlan && !classLoading && !moveCompleted && (
+                          <motion.div key="card" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.6, ease }}>
                             {classCard(true)}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {/* Step 3 */}
+                <AnimatePresence>
+                  {showPlan && (
+                    <motion.div {...fadeIn(0)} style={{ display: 'flex', flexDirection: 'column', gap: 16, position: 'relative', zIndex: 1 }}>
+                      <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+                        {moveCompleted ? (
+                          <div style={{ width: 40, height: 40, borderRadius: '50%', flexShrink: 0, background: C.white, border: `2px solid ${C.purple}`, boxShadow: `0 0 0 4px rgba(82,0,212,0.1)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <div style={{ width: 8, height: 8, borderRadius: '50%', background: C.purple }} />
+                          </div>
+                        ) : (
+                          <div style={{ width: 40, height: 40, borderRadius: '50%', flexShrink: 0, background: C.white, border: `1.5px solid ${C.purple}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 5l4 4 4-4" stroke={C.purple} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                          </div>
+                        )}
+                        <div style={{ paddingTop: 2 }}>
+                          <div style={{ fontSize: 14, color: '#171717', lineHeight: '22px' }}>Step 3</div>
+                          <div style={{ fontSize: 16, fontWeight: 600, color: '#171717', lineHeight: '24px' }}>
+                            Understand the neuroscience behind your knee pain
+                          </div>
+                        </div>
+                      </div>
+                      <AnimatePresence>
+                        {moveCompleted && (
+                          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease }}>
+                            {learnCard(true)}
                           </motion.div>
                         )}
                       </AnimatePresence>
@@ -459,6 +590,7 @@ export default function Round3A({ viewMode = 'mobile' }) {
   /* ─── Mobile layout ──────────────────────────────────────────────────────── */
   return (
     <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', background: '#fafafa' }}>
+      <style>{`@keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }`}</style>
 
       <div style={{
         background: C.white, borderBottom: `1px solid ${C.border}`,
@@ -524,7 +656,7 @@ export default function Round3A({ viewMode = 'mobile' }) {
               style={{ padding: '24px 16px 8px', display: 'flex', flexDirection: 'column', gap: 24, position: 'relative' }}
             >
               {/* Dashed connector */}
-              <div style={{ position: 'absolute', left: 35, top: 64, bottom: 68, width: 1, borderLeft: '1.5px dashed #e5e5e5', zIndex: 0 }} />
+              <div style={{ position: 'absolute', left: 35, top: 64, bottom: 8, width: 1, borderLeft: '1.5px dashed #e5e5e5', zIndex: 0 }} />
 
               {/* Step 1 */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: 16, position: 'relative', zIndex: 1 }}>
@@ -555,9 +687,15 @@ export default function Round3A({ viewMode = 'mobile' }) {
                     style={{ display: 'flex', flexDirection: 'column', gap: 16, position: 'relative', zIndex: 1 }}
                   >
                     <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
-                      <div style={{ width: 40, height: 40, borderRadius: '50%', flexShrink: 0, background: C.white, border: `2px solid ${C.purple}`, boxShadow: `0 0 0 4px rgba(82,0,212,0.1)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <div style={{ width: 8, height: 8, borderRadius: '50%', background: C.purple }} />
-                      </div>
+                      {moveCompleted ? (
+                        <div style={{ width: 40, height: 40, borderRadius: '50%', flexShrink: 0, background: '#22c55e', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.5 3.5 6.5-7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                        </div>
+                      ) : (
+                        <div style={{ width: 40, height: 40, borderRadius: '50%', flexShrink: 0, background: C.white, border: `2px solid ${C.purple}`, boxShadow: `0 0 0 4px rgba(82,0,212,0.1)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <div style={{ width: 8, height: 8, borderRadius: '50%', background: C.purple }} />
+                        </div>
+                      )}
                       <div style={{ flex: 1, paddingTop: 2 }}>
                         <div style={{ fontSize: 14, color: '#171717', lineHeight: '22px' }}>Step 2</div>
                         <div style={{ fontSize: 16, fontWeight: 600, color: '#171717', lineHeight: '24px' }}>
@@ -565,10 +703,47 @@ export default function Round3A({ viewMode = 'mobile' }) {
                         </div>
                       </div>
                     </div>
-                    <AnimatePresence>
-                      {showPlan && (
-                        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease }}>
+                    <AnimatePresence mode="wait">
+                      {showPlan && classLoading && (
+                        <motion.div key="skeleton" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }}>
+                          {skeletonCard()}
+                        </motion.div>
+                      )}
+                      {showPlan && !classLoading && !moveCompleted && (
+                        <motion.div key="card" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.4, ease }}>
                           {classCard()}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Step 3 */}
+              <AnimatePresence>
+                {showPlan && (
+                  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, ease }} style={{ display: 'flex', flexDirection: 'column', gap: 16, position: 'relative', zIndex: 1 }}>
+                    <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+                      {moveCompleted ? (
+                        <div style={{ width: 40, height: 40, borderRadius: '50%', flexShrink: 0, background: C.white, border: `2px solid ${C.purple}`, boxShadow: `0 0 0 4px rgba(82,0,212,0.1)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <div style={{ width: 8, height: 8, borderRadius: '50%', background: C.purple }} />
+                        </div>
+                      ) : (
+                        <div style={{ width: 40, height: 40, borderRadius: '50%', flexShrink: 0, background: C.white, border: `1.5px solid ${C.purple}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 5l4 4 4-4" stroke={C.purple} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                        </div>
+                      )}
+                      <div style={{ flex: 1, paddingTop: 2 }}>
+                        <div style={{ fontSize: 14, color: '#171717', lineHeight: '22px' }}>Step 3</div>
+                        <div style={{ fontSize: 16, fontWeight: 600, color: '#171717', lineHeight: '24px' }}>
+                          Understand the neuroscience behind your knee pain
+                        </div>
+                      </div>
+                    </div>
+                    <AnimatePresence>
+                      {moveCompleted && (
+                        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease }}>
+                          {learnCard()}
                         </motion.div>
                       )}
                     </AnimatePresence>
