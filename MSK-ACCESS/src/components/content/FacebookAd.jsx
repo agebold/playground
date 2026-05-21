@@ -1,4 +1,5 @@
 import { C } from './shared.jsx'
+import facebookAdImg from '../../assets/Facebook-Ad.png'
 
 export default function FacebookAd({ onNext }) {
   return (
@@ -26,18 +27,8 @@ export default function FacebookAd({ onNext }) {
       </div>
 
       {/* Ad image area */}
-      <div style={{
-        height: '100%', background: '#e5e5ea',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-      }}>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 22, color: '#8e8e93', fontWeight: 400, letterSpacing: -0.3 }}>
-            MSK-specific
-          </div>
-          <div style={{ fontSize: 22, color: '#8e8e93', fontWeight: 400, letterSpacing: -0.3 }}>
-            ACCESS ad
-          </div>
-        </div>
+      <div style={{ flex: 1, overflow: 'hidden' }}>
+        <img src={facebookAdImg} alt="Age Bold ACCESS ad" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
       </div>
 
       {/* CTA row */}

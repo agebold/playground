@@ -150,7 +150,7 @@ export default function Day2({ onNext }) {
                   </div>
 
                   {/* Why we're asking */}
-                  <div style={{ background: '#ebf0ff', borderRadius: 12, padding: 12, display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  <div style={{ background: '#ebf0ff', borderRadius: 8, padding: 12, margin: '0px 16px 16px 16px', display: 'flex', flexDirection: 'column', gap: 4 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                       <img src={imgTrainer} alt="" style={{ width: 22, height: 22, borderRadius: '50%', objectFit: 'cover', objectPosition: 'center top' }} />
                       <span style={{ fontSize: 15, fontWeight: 600, color: '#171717' }}>Why are we asking this</span>

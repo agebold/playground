@@ -1,42 +1,37 @@
 import { C, PurpleButton } from './shared.jsx'
 import boldWordmark from '../../assets/bold-logo@2x.png'
-import WindIcon    from '../../assets/Wind.svg'
-import LightbulbIcon from '../../assets/Lightbulb.svg'
-import GaugeIcon   from '../../assets/Gauge.svg'
-import TrendUpIcon from '../../assets/TrendUp.svg'
-import PlantIcon   from '../../assets/Plant.svg'
-import HeartbeatIcon from '../../assets/Heartbeat.svg'
-
-const BLUE = '#1A3380'
-const BLUE_BG = '#ebf0ff'
+import PottedPlantIcon    from '../../assets/PottedPlant.svg'
+import MountainsIcon      from '../../assets/Mountains.svg'
+import PersonWalkIcon     from '../../assets/PersonSimpleWalk.svg'
 
 const phases = [
   {
     name: 'Calm',
-    active: true,
-    description: 'Manage daily symptoms with non-strenuous techniques. Learn to identify your "safe zone" for movement and integrate recovery moments.',
-    items: [
-      { icon: WindIcon,     label: 'Gentle mobility and breathing' },
-      { icon: LightbulbIcon, label: 'Pain education' },
-    ],
+    icon: PottedPlantIcon,
+    description: 'Clear a path. Find movement that feels safe and manageable.',
+    border:  '#93c5fd',
+    bg:      '#eff6ff',
+    iconBg:  '#dbeafe',
+    nameColor: '#1e40af',
+    descColor: '#1e40af',
   },
   {
     name: 'Build',
-    active: false,
-    description: "Gradually increase intensity and duration as you rebuild strength and endurance. Learn to identify and respect your body's new limits.",
-    items: [
-      { icon: GaugeIcon,   label: 'Gradual loading' },
-      { icon: TrendUpIcon, label: 'Build strength and endurance' },
-    ],
+    icon: MountainsIcon,
+    description: 'Gain strength and confidence as your body adapts.',
+    bg:      '#f0fdf4',
+    iconBg:  '#bbf7d0',
+    nameColor: '#166534',
+    descColor: '#166534',
   },
   {
     name: 'Maintain',
-    active: false,
-    description: 'Expand your fitness and prevent future flare ups.',
-    items: [
-      { icon: PlantIcon,     label: 'Lifestyle integration' },
-      { icon: HeartbeatIcon, label: 'Locking in healthy habits' },
-    ],
+    icon: PersonWalkIcon,
+    description: 'Keep going—on your own terms, at your own pace.',
+    bg:      '#f0f9ff',
+    iconBg:  '#bae6fd',
+    nameColor: '#075985',
+    descColor: '#075985',
   },
 ]
 
@@ -58,13 +53,13 @@ export default function PlanResults({ onNext }) {
 
         <h2 style={{
           fontSize: 22, fontWeight: 600, color: C.text,
-          lineHeight: 1.25, letterSpacing: -0.3, marginBottom: 8,
+          lineHeight: 1.2, letterSpacing: -0.4, marginBottom: 10,
         }}>
-          Here's how your Bold plan is formatted
+          Here's how your plan is built
         </h2>
 
         <p style={{ fontSize: 16, color: C.textSec, lineHeight: 1.4, marginBottom: 24 }}>
-          You'll move through three phases <em>at your pace</em>, beginning with Calm.
+          Every journey is unique. You'll move through three phases at your pace, beginning with Calm.
         </p>
 
         {/* Phase cards */}
@@ -73,41 +68,39 @@ export default function PlanResults({ onNext }) {
             <div
               key={phase.name}
               style={{
-                background: C.white,
-                border: `${phase.active ? '1.5px' : '1px'} solid ${phase.active ? BLUE : C.border}`,
-                borderRadius: 14,
-                padding: 16,
+                background: phase.bg,
+                border: `1.5px solid ${phase.border}`,
+                borderRadius: 16,
+                padding: '16px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 14,
               }}
             >
-              {/* Phase name */}
+              {/* Icon circle */}
               <div style={{
-                fontSize: 20, fontWeight: 600, color: BLUE,
-                marginBottom: 4, letterSpacing: -0.2,
+                width: 52, height: 52, borderRadius: '50%',
+                background: phase.iconBg,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                flexShrink: 0,
               }}>
-                {phase.name}
+                <img src={phase.icon} alt="" style={{ width: 26, height: 26 }} />
               </div>
 
-              {/* Description */}
-              <p style={{
-                fontSize: 16, color: C.textSec, lineHeight: 1.4,
-                margin: '0 0 12px',
-              }}>
-                {phase.description}
-              </p>
-
-              {/* Sub-items */}
-              <div style={{
-                background: BLUE_BG, borderRadius: 10, padding: '10px 14px',
-                display: 'flex', flexDirection: 'column', gap: 10,
-              }}>
-                {phase.items.map(item => (
-                  <div key={item.label} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                    <img src={item.icon} alt="" style={{ width: 20, height: 20, flexShrink: 0 }} />
-                    <span style={{ fontSize: 16, fontWeight: 500, color: BLUE, lineHeight: 1.3 }}>
-                      {item.label}
-                    </span>
-                  </div>
-                ))}
+              {/* Text */}
+              <div style={{ flex: 1 }}>
+                <div style={{
+                  fontSize: 18, fontWeight: 600, color: phase.nameColor,
+                  marginBottom: 0, letterSpacing: -0.2,
+                }}>
+                  {phase.name}
+                </div>
+                <p style={{
+                  fontSize: 16, color: phase.descColor, lineHeight: 1.4,
+                  margin: 0, opacity: 0.85,
+                }}>
+                  {phase.description}
+                </p>
               </div>
             </div>
           ))}
@@ -115,9 +108,9 @@ export default function PlanResults({ onNext }) {
 
       </div>
 
-      {/* Continue button */}
+      {/* CTA button */}
       <div style={{ flexShrink: 0, padding: '12px 16px 8px' }}>
-        <PurpleButton onClick={onNext}>Continue</PurpleButton>
+        <PurpleButton onClick={onNext}>See today's plan</PurpleButton>
       </div>
 
     </div>

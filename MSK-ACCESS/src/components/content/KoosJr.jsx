@@ -207,11 +207,11 @@ function KoosOutro({ onNext }) {
           </svg>
         </div>
 
-        <h2 style={{ fontSize: 24, fontWeight: 700, color: C.text, marginBottom: 12, lineHeight: 1.2, letterSpacing: -0.3 }}>
+        <h2 style={{ fontSize: 22, fontWeight: 600, color: C.text, marginBottom: 12, lineHeight: 1.2, letterSpacing: -0.3 }}>
           Thank you, Carol!
         </h2>
 
-        <p style={{ fontSize: 16, color: C.textSec, lineHeight: 1.6, maxWidth: 300, marginBottom: 28 }}>
+        <p style={{ fontSize: 16, color: C.textSec, lineHeight: 1.4, maxWidth: 300, marginBottom: 28 }}>
           Your baseline has been recorded. We'll check in again in 3 months to see how much you've improved.
         </p>
 
@@ -220,7 +220,7 @@ function KoosOutro({ onNext }) {
             <img src={imgTrainer} alt="Alicia" style={{ width: 22, height: 22, borderRadius: '50%', objectFit: 'cover', objectPosition: 'center top' }} />
             <span style={{ fontSize: 15, fontWeight: 600, color: C.text }}>What happens next?</span>
           </div>
-          <div style={{ fontSize: 15, color: C.text, lineHeight: '22px' }}>
+          <div style={{ fontSize: 16, color: C.text, lineHeight: '22px', textAlign: 'left'  }}>
             Keep taking your classes and Bold will track your progress. Your first follow-up check-in is in 3 months.
           </div>
         </div>
