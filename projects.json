@@ -55,8 +55,8 @@
       "category": "Prototypes"
     },
     {
-      "path": "PrevMed/Clinic funnel",
-      "href": "PrevMed/Clinic%20funnel/",
+      "path": "PrevMed/clinic_funnel",
+      "href": "PrevMed/clinic_funnel/",
       "name": "Clinic Funnel",
       "desc": "Bold Care booking funnel — eligibility, provider matching, and appointment scheduling",
       "icon": "🏥",
@@ -71,6 +71,33 @@
       "icon": "🩺",
       "author": "Tzu-Yi",
       "category": "Prototypes"
+    },
+    {
+      "path": "PrevMed/weight_management_app",
+      "href": "PrevMed/weight_management_app/prototype.html",
+      "name": "Weight Management App",
+      "desc": "GLP-1 companion app prototype for 65+ Medicare members — personas, IA, and user journey",
+      "icon": "⚖️",
+      "author": "Tzu-Yi",
+      "category": "Prototypes"
+    },
+    {
+      "path": "PrevMed/protein_guide",
+      "href": "PrevMed/protein_guide/",
+      "name": "Protein Guide",
+      "desc": "Educational guide on protein intake for adults 60+",
+      "icon": "🥚",
+      "author": "Tzu-Yi",
+      "category": "Prototypes"
+    },
+    {
+      "path": "PrevMed/research",
+      "href": "PrevMed/research/Senior-Onboarding-Best-Practices.html",
+      "name": "Senior Onboarding Research",
+      "desc": "Best practices and Bold opportunities for senior healthcare onboarding",
+      "icon": "🔬",
+      "author": "Tzu-Yi",
+      "category": "User Research"
     },
     {
       "path": "telehealth",

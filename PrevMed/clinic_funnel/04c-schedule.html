@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Schedule Your Appointment – Prototype C – Bold Care</title>
+  <link rel="stylesheet" href="funnel.css" />
+  <style>
+    .cf-alt-view-profile-link {
+      background: none;
+      border: none;
+      padding: 0;
+      margin: 0;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-purple-600, #5200d4);
+      cursor: pointer;
+      font-family: var(--font-family);
+      text-align: left;
+      line-height: 22px;
+    }
+    .cf-alt-view-more-btn {
+      width: 100%;
+      background: #fff;
+      border: 1.5px solid var(--color-gray-200, #e5e5e5);
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-gray-900, #140d26);
+      cursor: pointer;
+      font-family: var(--font-family);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+<div class="cf-page">
+
+  <!-- Nav -->
+  <nav class="cf-nav" role="navigation">
+    <a href="03b-provider-multi.html" class="cf-nav-btn" aria-label="Go back">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M10 12L6 8L10 4" stroke="#140d26" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+    <div class="cf-logo" aria-label="Bold">
+      <div class="logo-lines"><img src="../../Fitness/dynamic-header/assets/logos/nav-logo-lines.svg" alt="" /></div>
+      <div class="logo-text"><img src="../../Fitness/dynamic-header/assets/logos/nav-logo-text.svg" alt="Bold" /></div>
+    </div>
+    <div class="cf-nav-btn is-hidden" aria-hidden="true"></div>
+  </nav>
+
+  <!-- Content -->
+  <main class="cf-content">
+
+    <!-- Heading -->
+    <div class="cf-content-group">
+      <h1 class="cf-heading">Choose a time that works best for your schedule</h1>
+
+      <!-- Appointment callout -->
+      <div class="cf-appt-callout" role="region" aria-label="Your appointment">
+        <div class="cf-callout-badge">Your appointment</div>
+        <div class="cf-appt-callout-inner">
+          <div class="cf-callout-body">
+            <div class="cf-appt-avatar" id="sched-avatar" aria-hidden="true">
+              <img
+                id="sched-photo"
+                src="https://www.figma.com/api/mcp/asset/6a41cdc7-59b5-4ac6-a0df-e9f64c5faa6f"
+                alt=""
+                onerror="this.style.display='none';"
+              />
+            </div>
+            <div class="cf-appt-info">
+              <p class="cf-appt-name" id="sched-name">Dr. Mitul S. Desai, MD</p>
+              <div class="cf-appt-meta">
+                <div class="cf-appt-row">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                    <circle cx="10" cy="10" r="8.5" stroke="#000" stroke-width="1.5"/>
+                    <path d="M10 5.5V10L13 12.5" stroke="#000" stroke-width="1.5" stroke-linecap="round"/>
+                  </svg>
+                  45 min Zoom video call
+                </div>
+                <div class="cf-appt-row">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                    <path d="M10 1.5L12.1 4.3L15.7 3.2L16.6 6.9L20 8.7L18.3 12L19.7 15.4L16.3 16L15.1 19.5L11.7 18.1L10 20L8.3 18.1L4.9 19.5L3.7 16L0.3 15.4L1.7 12L0 8.7L3.4 6.9L4.3 3.2L7.9 4.3L10 1.5Z" fill="#00887a"/>
+                    <path d="M6.5 10L9 12.5L14 8" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  In-network
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Switch to phone call -->
+      <button class="cf-switch-link" type="button" aria-label="Switch to phone call instead of Zoom">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path d="M3 3.5C3 3.5 4 8 7.5 11.5C11 15 16 16 16 16L17.5 13L14.5 11.5L13 13C13 13 11 12.5 9 10.5C7 8.5 6.5 6.5 6.5 6.5L8 5L6.5 2L3 3.5Z" stroke="#5200d4" stroke-width="1.5" stroke-linejoin="round"/>
+        </svg>
+        Switch to phone call
+      </button>
+    </div>
+
+    <!-- Time slots -->
+    <div class="cf-time-slots-all" role="group" aria-label="Available time slots">
+
+      <!-- Tue, Jan 12 -->
+      <div class="cf-time-section">
+        <h2 class="cf-time-section-label">Tue, Jan 12</h2>
+        <div class="cf-time-grid">
+          <button class="cf-time-slot" data-time="8:00am" aria-pressed="false">
+            <span class="cf-time-slot-hour">8:00am</span>
+            <span class="cf-time-slot-tz">PT</span>
+          </button>
+          <button class="cf-time-slot" data-time="8:45am" aria-pressed="false">
+            <span class="cf-time-slot-hour">8:45am</span>
+            <span class="cf-time-slot-tz">PT</span>
+          </button>
+          <button class="cf-time-slot" data-time="9:30am" aria-pressed="false">
+            <span class="cf-time-slot-hour">9:30am</span>
+            <span class="cf-time-slot-tz">PT</span>
+          </button>
+          <button class="cf-time-slot" data-time="10:15am" aria-pressed="false">
+            <span class="cf-time-slot-hour">10:15am</span>
+            <span class="cf-time-slot-tz">PT</span>
+          </button>
+          <button class="cf-time-slot" data-time="11:00am" aria-pressed="false">
+            <span class="cf-time-slot-hour">11:00am</span>
+            <span class="cf-time-slot-tz">PT</span>
+          </button>
+          <button class="cf-time-slot" data-time="11:45am" aria-pressed="false">
+            <span class="cf-time-slot-hour">11:45am</span>
+            <span class="cf-time-slot-tz">PT</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Wed, Jan 13 -->
+      <div class="cf-time-section">
+        <h2 class="cf-time-section-label">Wed, Jan 13</h2>
+        <div class="cf-time-grid">
+          <button class="cf-time-slot" data-time="12:00pm" aria-pressed="false">
+            <span class="cf-time-slot-hour">12:00pm</span>
+            <span class="cf-time-slot-tz">PT</span>
+          </button>
+          <button class="cf-time-slot" data-time="12:45pm" aria-pressed="false">
+            <span class="cf-time-slot-hour">12:45pm</span>
+            <span class="cf-time-slot-tz">PT</span>
+          </button>
+          <button class="cf-time-slot" data-time="1:30pm" aria-pressed="false">
+            <span class="cf-time-slot-hour">1:30pm</span>
+            <span class="cf-time-slot-tz">PT</span>
+          </button>
+          <button class="cf-time-slot" data-time="2:15pm" aria-pressed="false">
+            <span class="cf-time-slot-hour">2:15pm</span>
+            <span class="cf-time-slot-tz">PT</span>
+          </button>
+          <button class="cf-time-slot" data-time="3:00pm" aria-pressed="false">
+            <span class="cf-time-slot-hour">3:00pm</span>
+            <span class="cf-time-slot-tz">PT</span>
+          </button>
+          <button class="cf-time-slot" data-time="3:45pm" aria-pressed="false">
+            <span class="cf-time-slot-hour">3:45pm</span>
+            <span class="cf-time-slot-tz">PT</span>
+          </button>
+          <button class="cf-time-slot" data-time="5:00pm" aria-pressed="false">
+            <span class="cf-time-slot-hour">5:00pm</span>
+            <span class="cf-time-slot-tz">PT</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Thu, Jan 14 -->
+      <div class="cf-time-section">
+        <h2 class="cf-time-section-label">Thu, Jan 14</h2>
+        <div class="cf-time-grid">
+          <button class="cf-time-slot" data-time="6:00am" aria-pressed="false">
+            <span class="cf-time-slot-hour">6:00am</span>
+            <span class="cf-time-slot-tz">PT</span>
+          </button>
+          <button class="cf-time-slot" data-time="6:45am" aria-pressed="false">
+            <span class="cf-time-slot-hour">6:45am</span>
+            <span class="cf-time-slot-tz">PT</span>
+          </button>
+        </div>
+      </div>
+
+    </div><!-- /time slots -->
+
+    <!-- Can't find a time? accordion -->
+    <button class="cf-see-others-trigger" id="other-providers-btn"
+      aria-expanded="false" aria-controls="other-providers-panel"
+      style="color:var(--color-gray-475); font-size:20px;">
+      Can't find a time? Schedule with other available provider
+      <svg class="cf-see-others-caret" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+        <path d="M7.5 5L12.5 10L7.5 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+
+    <div class="cf-see-others-panel" id="other-providers-panel" role="region" aria-label="Other available providers">
+      <!-- Two alt provider cards built by JS -->
+    </div><!-- /other-providers-panel -->
+
+  </main>
+
+  <!-- Sticky CTA -->
+  <div class="cf-footer-cta">
+    <a
+      href="05-confirmation.html"
+      id="schedule-btn"
+      class="bold-btn bold-btn-primary bold-btn-full"
+      role="button"
+      aria-disabled="true"
+      style="pointer-events:none; opacity:0.4;"
+    >
+      Schedule appointment
+    </a>
+    <div class="cf-home-bar" aria-hidden="true"></div>
+  </div>
+
+</div>
+<script>
+  (function () {
+    var PROVIDERS = {
+      desai: {
+        name: 'Dr. Mitul S. Desai, MD', greeting: 'Dr. Desai',
+        photo: 'https://www.figma.com/api/mcp/asset/6a41cdc7-59b5-4ac6-a0df-e9f64c5faa6f',
+        initials: null, initialsBg: null, initialsColor: null,
+        displaySpecialty: 'Internal Medicine',
+        displayYears: '21 years of experience',
+        bio: 'Dr. Mitul S. Desai is a board-certified internist and obesity medicine specialist with over 21 years of clinical experience. He takes a whole-person approach, combining lifestyle medicine with evidence-based treatments tailored to each patient\'s goals.',
+        specialty: 'Internal Medicine · Obesity Medicine',
+        languages: 'English, Gujarati',
+        altSlots: [
+          { label: '8:00am',  day: 'Wed' },
+          { label: '9:30am',  day: 'Wed' },
+          { label: '11:00am', day: 'Wed' }
+        ],
+        altMoreSlots: [
+          { label: '6:00am', day: 'Thu' },
+          { label: '6:45am', day: 'Thu' }
+        ]
+      },
+      chen: {
+        name: 'Dr. Sarah Chen, MD', greeting: 'Dr. Chen',
+        photo: null, initials: 'SC', initialsBg: '#ebf0ff', initialsColor: '#264dbf',
+        displaySpecialty: 'Internal Medicine',
+        displayYears: '14 years of experience',
+        bio: 'Dr. Sarah Chen is a board-certified internist with 14 years of experience specializing in metabolic health and weight management. She combines evidence-based medicine with personalized lifestyle plans.',
+        specialty: 'Internal Medicine · Obesity Medicine',
+        languages: 'English, Mandarin',
+        altSlots: [
+          { label: '10:15am', day: 'Wed' },
+          { label: '2:15pm',  day: 'Wed' },
+          { label: '9:30am',  day: 'Thu' }
+        ],
+        altMoreSlots: [
+          { label: '11:45am', day: 'Thu' },
+          { label: '3:00pm',  day: 'Thu' }
+        ]
+      },
+      patel: {
+        name: 'Dr. James Patel, DO', greeting: 'Dr. Patel',
+        photo: null, initials: 'JP', initialsBg: '#e6f8f6', initialsColor: '#00887a',
+        displaySpecialty: 'Obesity Medicine',
+        displayYears: '9 years of experience',
+        bio: 'Dr. James Patel is a board-certified obesity medicine specialist with 9 years of practice focused on comprehensive weight management through medical treatment and sustainable lifestyle strategies.',
+        specialty: 'Obesity Medicine · Internal Medicine',
+        languages: 'English, Hindi',
+        altSlots: [
+          { label: '12:45pm', day: 'Wed' },
+          { label: '8:45am',  day: 'Thu' },
+          { label: '11:45am', day: 'Thu' }
+        ],
+        altMoreSlots: [
+          { label: '3:00pm', day: 'Thu' },
+          { label: '3:45pm', day: 'Thu' }
+        ]
+      }
+    };
+
+    // ── Determine page provider from sessionStorage ──
+    var raw = sessionStorage.getItem('boldSelectedProvider');
+    var savedProvider = null;
+    try { if (raw) savedProvider = JSON.parse(raw); } catch (e) {}
+
+    var pageProviderKey = 'desai';
+    if (savedProvider && savedProvider.name === PROVIDERS.chen.name) pageProviderKey = 'chen';
+    else if (savedProvider && savedProvider.name === PROVIDERS.patel.name) pageProviderKey = 'patel';
+    var pageProvider = PROVIDERS[pageProviderKey];
+
+    // Alt providers: the other two (in consistent order)
+    var allKeys = ['desai', 'chen', 'patel'];
+    var otherProviderKeys = allKeys.filter(function (k) { return k !== pageProviderKey; });
+
+    // ── Populate "Your appointment" callout ──
+    var avatarEl = document.getElementById('sched-avatar');
+    var photoEl  = document.getElementById('sched-photo');
+    var nameEl   = document.getElementById('sched-name');
+    nameEl.textContent = pageProvider.name;
+    if (pageProvider.photo) {
+      photoEl.src = pageProvider.photo;
+      photoEl.style.display = '';
+    } else {
+      photoEl.style.display = 'none';
+      avatarEl.style.background = pageProvider.initialsBg || '#ebf0ff';
+      avatarEl.style.color = pageProvider.initialsColor || '#264dbf';
+      avatarEl.appendChild(document.createTextNode(pageProvider.initials || ''));
+    }
+
+    // ── Global slot selection ──
+    var scheduleBtn  = document.getElementById('schedule-btn');
+    var selectedSlot = null;
+
+    function selectSlot(slot) {
+      if (selectedSlot) {
+        selectedSlot.classList.remove('is-selected');
+        selectedSlot.setAttribute('aria-pressed', 'false');
+      }
+      slot.classList.add('is-selected');
+      slot.setAttribute('aria-pressed', 'true');
+      selectedSlot = slot;
+      scheduleBtn.removeAttribute('aria-disabled');
+      scheduleBtn.style.pointerEvents = '';
+      scheduleBtn.style.opacity = '';
+    }
+
+    // Attach to main provider slots
+    document.querySelectorAll('.cf-time-slot').forEach(function (slot) {
+      slot.addEventListener('click', function () { selectSlot(slot); });
+    });
+
+    // Save correct provider on schedule click
+    scheduleBtn.addEventListener('click', function () {
+      if (!selectedSlot) return;
+      var providerKeyAttr = selectedSlot.getAttribute('data-provider-key');
+      var saveProvider = providerKeyAttr ? PROVIDERS[providerKeyAttr] : pageProvider;
+      sessionStorage.setItem('boldSelectedProvider', JSON.stringify(saveProvider));
+    });
+
+    // ── Build alt provider cards ──
+    var panel = document.getElementById('other-providers-panel');
+
+    function buildAltCard(providerKey, cardIndex) {
+      var p = PROVIDERS[providerKey];
+      var prefix = 'alt' + cardIndex + '-';
+      var expandId = prefix + 'expand';
+      var moreId   = prefix + 'more';
+
+      var card = document.createElement('div');
+      card.className = 'cf-provider-avail-card';
+
+      // ── Meta row ──
+      var metaDiv = document.createElement('div');
+      metaDiv.className = 'cf-provider-meta';
+      metaDiv.style.padding = '0';
+
+      var avatarDiv = document.createElement('div');
+      avatarDiv.className = 'cf-avatar';
+      if (p.photo) {
+        var img = document.createElement('img');
+        img.src = p.photo;
+        img.alt = p.name;
+        img.onerror = function () { this.style.display = 'none'; };
+        avatarDiv.appendChild(img);
+      } else {
+        avatarDiv.style.background = p.initialsBg || '#ebf0ff';
+        avatarDiv.style.color = p.initialsColor || '#264dbf';
+        var fallback = document.createElement('span');
+        fallback.className = 'cf-avatar-fallback';
+        fallback.style.display = 'flex';
+        fallback.textContent = p.initials || '';
+        avatarDiv.appendChild(fallback);
+      }
+      metaDiv.appendChild(avatarDiv);
+
+      var infoDiv = document.createElement('div');
+      infoDiv.className = 'cf-provider-info';
+
+      var nameEl2 = document.createElement('p');
+      nameEl2.className = 'cf-provider-name';
+      nameEl2.textContent = p.name;
+
+      var specEl = document.createElement('p');
+      specEl.className = 'cf-provider-specialty';
+      specEl.textContent = p.displaySpecialty;
+
+      var yearsEl = document.createElement('p');
+      yearsEl.className = 'cf-provider-years';
+      yearsEl.textContent = p.displayYears;
+
+      var viewProfileBtn = document.createElement('button');
+      viewProfileBtn.className = 'cf-alt-view-profile-link';
+      viewProfileBtn.setAttribute('aria-expanded', 'false');
+      viewProfileBtn.setAttribute('aria-controls', expandId);
+      viewProfileBtn.textContent = 'View profile';
+
+      infoDiv.appendChild(nameEl2);
+      infoDiv.appendChild(specEl);
+      infoDiv.appendChild(yearsEl);
+      infoDiv.appendChild(viewProfileBtn);
+      metaDiv.appendChild(infoDiv);
+      card.appendChild(metaDiv);
+
+      // ── Profile expand (hidden) ──
+      var expandDiv = document.createElement('div');
+      expandDiv.className = 'cf-profile-expand';
+      expandDiv.id = expandId;
+      expandDiv.innerHTML =
+        '<p class="cf-profile-section-title">About ' + p.greeting + '</p>' +
+        '<p class="cf-profile-bio">' + p.bio + '</p>' +
+        '<div class="cf-profile-detail-row"><span class="cf-profile-detail-label">Specialty</span><span class="cf-profile-detail-val">' + p.specialty + '</span></div>' +
+        '<div class="cf-profile-detail-row"><span class="cf-profile-detail-label">Languages</span><span class="cf-profile-detail-val">' + p.languages + '</span></div>' +
+        '<div class="cf-profile-detail-row"><span class="cf-profile-detail-label">Network</span><span class="cf-profile-detail-val">In-network with UnitedHealthcare</span></div>';
+      card.appendChild(expandDiv);
+
+      // ── 3 shown slots ──
+      var slotGrid = document.createElement('div');
+      slotGrid.className = 'cf-time-grid';
+      p.altSlots.forEach(function (s, i) {
+        var btn = document.createElement('button');
+        btn.className = 'cf-time-slot';
+        btn.setAttribute('data-time', prefix + 'slot' + i);
+        btn.setAttribute('data-provider-key', providerKey);
+        btn.setAttribute('aria-pressed', 'false');
+        btn.innerHTML = '<span class="cf-time-slot-hour">' + s.label + '</span><span class="cf-time-slot-tz">' + s.day + '</span>';
+        btn.addEventListener('click', function () { selectSlot(btn); });
+        slotGrid.appendChild(btn);
+      });
+      card.appendChild(slotGrid);
+
+      // ── Ghost "View more" button ──
+      var viewMoreBtn = document.createElement('button');
+      viewMoreBtn.className = 'cf-alt-view-more-btn';
+      viewMoreBtn.setAttribute('aria-expanded', 'false');
+      viewMoreBtn.setAttribute('aria-controls', moreId);
+      viewMoreBtn.textContent = 'View more';
+      card.appendChild(viewMoreBtn);
+
+      // ── More slots (hidden) ──
+      var moreDiv = document.createElement('div');
+      moreDiv.className = 'cf-profile-expand';
+      moreDiv.id = moreId;
+      var moreGrid = document.createElement('div');
+      moreGrid.className = 'cf-time-grid';
+      p.altMoreSlots.forEach(function (s, i) {
+        var btn = document.createElement('button');
+        btn.className = 'cf-time-slot';
+        btn.setAttribute('data-time', prefix + 'more' + i);
+        btn.setAttribute('data-provider-key', providerKey);
+        btn.setAttribute('aria-pressed', 'false');
+        btn.innerHTML = '<span class="cf-time-slot-hour">' + s.label + '</span><span class="cf-time-slot-tz">' + s.day + '</span>';
+        btn.addEventListener('click', function () { selectSlot(btn); });
+        moreGrid.appendChild(btn);
+      });
+      moreDiv.appendChild(moreGrid);
+      card.appendChild(moreDiv);
+
+      // View more toggle
+      viewMoreBtn.addEventListener('click', function () {
+        var open = moreDiv.classList.toggle('is-open');
+        viewMoreBtn.textContent = open ? 'View less' : 'View more';
+        viewMoreBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+
+      // View profile toggle
+      viewProfileBtn.addEventListener('click', function () {
+        var open = expandDiv.classList.toggle('is-open');
+        viewProfileBtn.textContent = open ? 'Hide profile' : 'View profile';
+        viewProfileBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+
+      return card;
+    }
+
+    otherProviderKeys.forEach(function (key, i) {
+      panel.appendChild(buildAltCard(key, i + 1));
+    });
+
+    // ── "Can't find a time?" accordion ──
+    var otherBtn   = document.getElementById('other-providers-btn');
+    var otherPanel = document.getElementById('other-providers-panel');
+    otherBtn.addEventListener('click', function () {
+      var open = otherPanel.classList.toggle('is-open');
+      otherBtn.classList.toggle('is-open', open);
+      otherBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+  })();
+</script>
+</body>
+</html>

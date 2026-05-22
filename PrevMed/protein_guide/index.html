@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Protein Guide for Adults 60+ — Bold Care</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: #f5f5f5;
+    color: #140d26;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* ────────────────────────────────────────────
+     8px-GRID SPACING SCALE
+     --space-1: 8px   --space-2: 16px
+     --space-3: 24px  --space-4: 32px
+     --space-5: 40px  --space-6: 48px
+  ──────────────────────────────────────────── */
+
+  /* A4 page — 210mm × 297mm */
+  .page {
+    width: 210mm;
+    height: 297mm;
+    background: #ffffff;
+    margin: 16px auto;
+    padding: 14mm 14mm;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(16,24,40,0.10), 0 1px 2px rgba(16,24,40,0.06);
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Page header */
+  .page-header { margin-bottom: 16px; }
+  .page-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #3f00a8;
+    letter-spacing: -0.4px;
+    line-height: 1.25;
+    margin-bottom: 6px;
+  }
+  .page-subtitle {
+    font-size: 14px;
+    font-weight: 400;
+    color: #525252;
+    line-height: 1.5;
+  }
+  .page-intro {
+    font-size: 14px;
+    color: #525252;
+    line-height: 1.4;
+    margin-top: 8px;
+    padding: 8px 16px;
+    background: #ffffff;
+    border: 1px solid #e5e5e5;
+    border-radius: 12px;
+  }
+  .page-intro strong { color: #140d26; font-weight: 600; }
+
+  /* Section with number tag */
+  .section { margin-bottom: 12px; }
+  .section:last-child { margin-bottom: 0; }
+  .section-head {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 8px;
+  }
+  .num-tag {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: #5200d4;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .num-tag.purple,
+  .num-tag.blue,
+  .num-tag.cyan,
+  .num-tag.navy { background: #5200d4; }
+
+  .section-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #140d26;
+    line-height: 1.4;
+  }
+  /* Compact variant — matches in-table day-row size */
+  .section-head-sm { margin-bottom: 8px; gap: 8px; }
+  .num-tag-sm {
+    width: 24px; height: 24px;
+    font-size: 14px;
+  }
+  .section-title-sm {
+    font-size: 16px;
+    font-weight: 600;
+    color: #140d26;
+    line-height: 1.4;
+  }
+  .section-grocery { margin-top: 0; }
+  .section-sub {
+    font-size: 14px;
+    color: #737373;
+    font-weight: 400;
+    margin-left: 8px;
+  }
+
+  /* Table — wrapped in a soft light-grey box */
+  table.protein-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    background: #f5f5f5;
+    border: 1px solid #e5e5e5;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  table.protein-table th {
+    text-align: left;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #140d26;
+    background: #f5f5f5;
+    border-bottom: 1px solid #e5e5e5;
+  }
+  table.protein-table td {
+    padding: 5px 16px;
+    font-size: 14px;
+    line-height: 1.35;
+    color: #171717;
+    border-bottom: 1px solid #ebebeb;
+    vertical-align: top;
+    background: #f5f5f5;
+  }
+  /* Day-group sub-header inside combined table */
+  table.protein-table tr.day-row td {
+    background: #f5f5f5;
+    color: #140d26;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 12px 16px 6px;
+    border-bottom: none;
+  }
+  table.protein-table tr.day-row:first-child td { padding-top: 6px; }
+  table.protein-table tr.day-row td .day-meta {
+    font-size: 14px;
+    font-weight: 400;
+    color: #737373;
+    margin-left: 8px;
+  }
+  table.protein-table tr:last-child td { border-bottom: none; }
+  table.protein-table td.protein-col {
+    font-weight: 600;
+    color: #5200d4;
+    white-space: nowrap;
+    width: 96px;
+    text-align: right;
+  }
+  table.protein-table th.protein-col {
+    text-align: right;
+    width: 96px;
+  }
+  table.protein-table td.food-col {
+    font-weight: 500;
+    color: #140d26;
+    width: 36%;
+  }
+  table.protein-table td.serving-col {
+    color: #525252;
+  }
+
+  /* Highlight / formula box */
+  .highlight {
+    border: 1px solid #e5e5e5;
+    border-radius: 12px;
+    background: #ffffff;
+    padding: 10px 16px;
+    margin-top: 0;
+  }
+  .highlight-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #140d26;
+    margin-bottom: 4px;
+  }
+  .highlight-body {
+    font-size: 14px;
+    color: #525252;
+    line-height: 1.45;
+  }
+  .highlight-body strong { color: #140d26; font-weight: 600; }
+
+  /* Three-column grid (grocery, pantry) */
+  .col-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .col-card {
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    background: #ffffff;
+    padding: 12px 16px;
+  }
+  .col-card-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #140d26;
+    margin-bottom: 8px;
+  }
+  .col-card ul { list-style: none; }
+  .col-card li {
+    font-size: 14px;
+    color: #171717;
+    line-height: 1.4;
+    padding-left: 24px;
+    position: relative;
+    margin-bottom: 2px;
+  }
+  .col-card li::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 4px;
+    width: 14px; height: 14px;
+    border: 1.5px solid #d4d4d4;
+    border-radius: 4px;
+  }
+  .col-card li small {
+    display: block;
+    font-size: 14px;
+    color: #737373;
+    font-weight: 400;
+    line-height: 1.4;
+    padding-left: 0;
+  }
+
+  /* Checklist */
+  ul.checklist {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  ul.checklist li {
+    font-size: 14px;
+    line-height: 1.4;
+    color: #171717;
+    padding-left: 24px;
+    position: relative;
+  }
+  ul.checklist li::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 4px;
+    width: 14px; height: 14px;
+    border: 1.5px solid #d4d4d4;
+    border-radius: 4px;
+  }
+
+  /* Bullet list */
+  ul.bullets {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  ul.bullets li {
+    font-size: 14px;
+    line-height: 1.45;
+    color: #171717;
+    padding-left: 16px;
+    position: relative;
+  }
+  ul.bullets li::before {
+    content: "";
+    position: absolute;
+    left: 2px; top: 8px;
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: #5200d4;
+  }
+  ul.bullets li strong { font-weight: 600; color: #140d26; }
+
+  /* Two-column row container */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  /* Footer */
+  .page-footer {
+    margin-top: auto;
+    padding-top: 6px;
+    border-top: 1px solid #e5e5e5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .footer-brand {
+    font-size: 14px;
+    color: #525252;
+    font-weight: 500;
+  }
+  .footer-page-num {
+    font-size: 14px;
+    color: #737373;
+    font-weight: 500;
+  }
+
+  /* Bold mark stripes */
+  .bold-mark {
+    width: 26px;
+    height: 26px;
+    flex-shrink: 0;
+  }
+
+  /* ────────────────────────────────────────────
+     PAGE 2 (.page-dense) — combined day table +
+     3-col grocery list. Extra-tight spacing to
+     fit A4 while preserving the 8-grid family.
+  ──────────────────────────────────────────── */
+  .page-dense { padding: 14mm 14mm; }
+  .page-dense .page-header { margin-bottom: 8px; }
+  .page-dense .section { margin-bottom: 16px; }
+  .page-dense table.protein-table th,
+  .page-dense table.protein-table td { padding: 4px 16px; line-height: 1.35; }
+  .page-dense table.protein-table tr.day-row td { padding: 8px 16px 2px; }
+  .page-dense table.protein-table tr.day-row:first-child td { padding-top: 2px; }
+  .page-dense .col-card { padding: 8px 12px; }
+  .page-dense .col-card-title { margin-bottom: 4px; }
+  .page-dense .col-card li { line-height: 1.3; margin-bottom: 0; }
+  .page-dense .col-card li::before { top: 3px; }
+  .page-dense .col-grid { gap: 12px; }
+
+  /* Print */
+  @page { size: A4; margin: 0; }
+  @media print {
+    html, body { background: #ffffff; }
+    .page {
+      margin: 0;
+      box-shadow: none;
+      page-break-after: always;
+    }
+    .page:last-child { page-break-after: auto; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════ PAGE 1 — Protein Cheat Sheet ════════════════════ -->
+<section class="page">
+  <div class="page-header">
+    <h1 class="page-title">The Protein Cheat Sheet</h1>
+    <p class="page-subtitle">Quick, protein-rich meal and snack options, organized by prep time.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <div class="num-tag purple">1</div>
+      <div class="section-title">Zero prep</div>
+    </div>
+    <table class="protein-table">
+      <thead>
+        <tr>
+          <th>Food</th>
+          <th>Serving size</th>
+          <th class="protein-col">Protein</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="food-col">Greek yogurt</td><td class="serving-col">1 cup</td><td class="protein-col">20g</td></tr>
+        <tr><td class="food-col">String cheese</td><td class="serving-col">1 stick</td><td class="protein-col">7g</td></tr>
+        <tr><td class="food-col">Deli turkey slices</td><td class="serving-col">3 oz</td><td class="protein-col">10g</td></tr>
+        <tr><td class="food-col">Handful of almonds</td><td class="serving-col">1 oz</td><td class="protein-col">6g</td></tr>
+        <tr><td class="food-col">Glass of milk</td><td class="serving-col">8 oz</td><td class="protein-col">8g</td></tr>
+        <tr><td class="food-col">Hard-boiled egg (homemade or store-bought)</td><td class="serving-col">1 egg</td><td class="protein-col">6g</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <div class="num-tag blue">2</div>
+      <div class="section-title">Minimal prep <span class="section-sub">under 5 minutes</span></div>
+    </div>
+    <table class="protein-table">
+      <thead>
+        <tr>
+          <th>Food</th>
+          <th>Serving size</th>
+          <th class="protein-col">Protein</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="food-col">Canned tuna or salmon on whole grain crackers</td><td class="serving-col">1 can (5 oz, drained) with 6–8 whole grain crackers</td><td class="protein-col">20–25g</td></tr>
+        <tr><td class="food-col">Cottage cheese with fruit</td><td class="serving-col">½ cup cottage cheese with ½ cup fresh or frozen fruit</td><td class="protein-col">14g</td></tr>
+        <tr><td class="food-col">Peanut butter on whole grain toast</td><td class="serving-col">2 tbsp peanut butter on 1 slice whole grain toast</td><td class="protein-col">10g</td></tr>
+        <tr><td class="food-col">Protein shake</td><td class="serving-col">1 shake (per brand directions)</td><td class="protein-col">15–30g</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <div class="num-tag cyan">3</div>
+      <div class="section-title">Simple cooking <span class="section-sub">under 15 minutes</span></div>
+    </div>
+    <table class="protein-table">
+      <thead>
+        <tr>
+          <th>Food</th>
+          <th>Serving size</th>
+          <th class="protein-col">Protein</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="food-col">Veggie and cheese omelet</td><td class="serving-col">2 large eggs, 1 oz cheese, ½ cup veggies</td><td class="protein-col">18g</td></tr>
+        <tr><td class="food-col">Chicken thigh with salsa over rice</td><td class="serving-col">1 large thigh (~5 oz raw), ¼ cup salsa, ½ cup rice</td><td class="protein-col">28g</td></tr>
+        <tr><td class="food-col">Shrimp or fish stir-fry with veggies</td><td class="serving-col">4 oz shrimp or fish, 1–1.5 cups veggies with sauce</td><td class="protein-col">22g</td></tr>
+        <tr><td class="food-col">Tex-Mex bowl (beans, cheese, salsa, rice, Greek yogurt)</td><td class="serving-col">½ cup beans, ¼ cup cheese, ¼ cup salsa, ½ cup rice, 2 tbsp Greek yogurt</td><td class="protein-col">20g</td></tr>
+        <tr><td class="food-col">Turkey and cheese melt</td><td class="serving-col">3 oz turkey, 1 oz cheese, 2 slices whole grain bread</td><td class="protein-col">18g</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="highlight">
+    <div class="highlight-title">Your protein formula</div>
+    <div class="highlight-body">
+      (Body weight in lbs ÷ 2.2) × 1.0 to 1.2 = daily protein target in grams.
+      Most older adults should aim for <strong>80–100g per day.</strong>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════ PAGE 2 — Meal Plans ════════════════════ -->
+<section class="page page-dense">
+  <div class="page-header">
+    <h1 class="page-title">Protein-Rich Meal Plans</h1>
+    <p class="page-subtitle">Quick and easy protein-rich meal and snack ideas.</p>
+  </div>
+
+  <div class="section">
+    <table class="protein-table">
+      <thead>
+        <tr><th style="width:110px">Meal</th><th>What to eat</th><th class="protein-col">Protein</th></tr>
+      </thead>
+      <tbody>
+        <tr class="day-row"><td colspan="3"><span style="display:inline-flex;align-items:center;gap:8px"><span class="num-tag purple" style="width:24px;height:24px;font-size:14px">1</span>Day 1 · The no-cook day<span class="day-meta">total ~85g</span></span></td></tr>
+        <tr><td class="food-col">Breakfast</td><td>Greek yogurt + handful of blueberries + handful of walnuts</td><td class="protein-col">~24g</td></tr>
+        <tr><td class="food-col">Lunch</td><td>Deli turkey and cheese on whole grain bread + apple</td><td class="protein-col">~20g</td></tr>
+        <tr><td class="food-col">Snack</td><td>String cheese + almonds</td><td class="protein-col">~13g</td></tr>
+        <tr><td class="food-col">Dinner</td><td>Rotisserie chicken (store-bought) + bagged salad + whole grain roll</td><td class="protein-col">~28g</td></tr>
+
+        <tr class="day-row"><td colspan="3"><span style="display:inline-flex;align-items:center;gap:8px"><span class="num-tag blue" style="width:24px;height:24px;font-size:14px">2</span>Day 2 · The five-minute day<span class="day-meta">total ~90g</span></span></td></tr>
+        <tr><td class="food-col">Breakfast</td><td>2 scrambled eggs + whole grain toast + glass of milk</td><td class="protein-col">~22g</td></tr>
+        <tr><td class="food-col">Lunch</td><td>Canned salmon on whole grain crackers + cottage cheese with fruit</td><td class="protein-col">~30g</td></tr>
+        <tr><td class="food-col">Snack</td><td>Protein shake (or cottage cheese with fruit)</td><td class="protein-col">~20g</td></tr>
+        <tr><td class="food-col">Dinner</td><td>Bean and cheese quesadilla (tortilla + canned beans + cheese, microwaved) + salsa</td><td class="protein-col">~18g</td></tr>
+
+        <tr class="day-row"><td colspan="3"><span style="display:inline-flex;align-items:center;gap:8px"><span class="num-tag cyan" style="width:24px;height:24px;font-size:14px">3</span>Day 3 · The mix-and-match day<span class="day-meta">total ~84g</span></span></td></tr>
+        <tr><td class="food-col">Breakfast</td><td>Oatmeal made with milk + peanut butter stirred in + berries</td><td class="protein-col">~16g</td></tr>
+        <tr><td class="food-col">Lunch</td><td>Leftover chicken over pre-washed greens + nuts + dressing</td><td class="protein-col">~28g</td></tr>
+        <tr><td class="food-col">Snack</td><td>1 hard-boiled egg + handful of pistachios</td><td class="protein-col">~12g</td></tr>
+        <tr><td class="food-col">Dinner</td><td>Frozen salmon fillet baked with stir-fry veggies + brown rice</td><td class="protein-col">~28g</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section section-grocery">
+    <div class="section-head section-head-sm">
+      <div class="num-tag purple num-tag-sm">4</div>
+      <div class="section-title-sm">Combined grocery list</div>
+    </div>
+    <div class="col-grid">
+      <div class="col-card">
+        <div class="col-card-title">Protein</div>
+        <ul>
+          <li>Rotisserie chicken (1)</li>
+          <li>Deli turkey (3 oz)</li>
+          <li>Canned salmon (1 can)</li>
+          <li>Eggs (4)</li>
+          <li>Frozen salmon fillet (1)</li>
+        </ul>
+      </div>
+      <div class="col-card">
+        <div class="col-card-title">Produce &amp; dairy</div>
+        <ul>
+          <li>Greek yogurt (1 cup)</li>
+          <li>Cottage cheese (small)</li>
+          <li>String cheese (1 stick)</li>
+          <li>Sliced cheese (2 slices)</li>
+          <li>Shredded cheese (small)</li>
+          <li>Milk (half gallon)</li>
+          <li>Blueberries</li>
+          <li>Apple (1)</li>
+          <li>Berries (1 cup)</li>
+          <li>Bagged salad (1)</li>
+        </ul>
+      </div>
+      <div class="col-card">
+        <div class="col-card-title">Pantry &amp; frozen</div>
+        <ul>
+          <li>Whole grain bread</li>
+          <li>Whole grain crackers</li>
+          <li>Whole grain roll (1)</li>
+          <li>Tortillas (1 pkg)</li>
+          <li>Oatmeal</li>
+          <li>Peanut butter</li>
+          <li>Almonds</li>
+          <li>Walnuts</li>
+          <li>Pistachios</li>
+          <li>Canned beans (1 can)</li>
+          <li>Protein shake (1)</li>
+          <li>Salad dressing</li>
+          <li>Salsa</li>
+          <li>Frozen stir-fry veggies</li>
+          <li>Brown rice (microwave)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ════════════════════ PAGE 3 — Eating Out ════════════════════ -->
+<section class="page">
+  <div class="page-header">
+    <h1 class="page-title">Your Eating Out Protein Checklist</h1>
+    <p class="page-subtitle">A quick reference for restaurants, takeout, and prepared meals.</p>
+    <p class="page-intro"><strong>The protein scan:</strong> Look at any menu and find the protein first, then build your meal around it.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <div class="num-tag purple">1</div>
+      <div class="section-title">Restaurant ordering</div>
+    </div>
+    <ul class="checklist">
+      <li>Start with a protein: grilled chicken or fish entrée, shrimp cocktail, Greek salad with chicken, egg-based breakfast, or soup with beans/lentils.</li>
+      <li>Easy upgrades: side of cottage cheese instead of fries; add grilled chicken to any salad; order salmon instead of pasta.</li>
+      <li>Watch out for breaded/fried proteins (high saturated fat and sodium) and cream-based sauces (calories without much protein).</li>
+      <li>Mostly bread, pasta, or rice on the plate? Add a protein — side of grilled chicken or a cup of lentil soup.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <div class="num-tag blue">2</div>
+      <div class="section-title">Best bets by cuisine</div>
+    </div>
+    <table class="protein-table">
+      <thead>
+        <tr><th>Cuisine</th><th>Protein-smart picks</th><th class="protein-col">Protein est.</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="food-col">Rotisserie chicken</td><td>Whole chicken, get 3–4 meals from one. Watch sodium if on a low-sodium diet.</td><td class="protein-col">28g+</td></tr>
+        <tr><td class="food-col">Mexican</td><td>Chicken or steak burrito bowl with beans, cheese, and salsa. Don't skip the beans.</td><td class="protein-col">40g+</td></tr>
+        <tr><td class="food-col">Japanese</td><td>Sashimi, chicken/salmon/tofu teriyaki, edamame (11g/cup), miso soup with tofu.</td><td class="protein-col">25–35g</td></tr>
+        <tr><td class="food-col">Mediterranean</td><td>Grilled chicken or fish plate, yogurt dips, hummus with pita, lentil soup, chicken shawarma.</td><td class="protein-col">35g+</td></tr>
+        <tr><td class="food-col">Diner / breakfast</td><td>Omelet with cheese, scrambled eggs with sausage, classic eggs-and-toast.</td><td class="protein-col">20–25g</td></tr>
+        <tr><td class="food-col">Chinese</td><td>Chicken or shrimp with veggies (steamed over fried), egg drop soup, tofu dishes.</td><td class="protein-col">20–30g</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <div class="num-tag cyan">3</div>
+      <div class="section-title">Takeout &amp; prepared meals</div>
+    </div>
+    <ul class="checklist">
+      <li>Make sure there's at least one dedicated protein source on the plate. If not, add one — most places will add grilled chicken or shrimp for a few dollars.</li>
+      <li>For meal kits: look for at least 25g protein per serving, clear nutrition labels, and dietary restriction options.</li>
+      <li>For grocery store "heat and eat" meals: check protein per serving, watch sodium, make sure ingredients are recognizable.</li>
+      <li>Add a glass of milk (dairy, lactose-free, or soy) to any takeout or prepared meal for an easy protein and calcium boost.</li>
+    </ul>
+  </div>
+
+  <p class="page-intro" style="margin-top:12px">
+    <strong>Rule of thumb:</strong> If you can't spot the protein on the plate, add one. These are tools, not rules — food should bring joy. On special occasions, enjoy the pasta and the bread basket; no guilt required.
+  </p>
+
+</section>
+
+<!-- ════════════════════ PAGE 4 — Pantry Checklist ════════════════════ -->
+<section class="page">
+  <div class="page-header">
+    <h1 class="page-title">The Protein Pantry Checklist</h1>
+    <p class="page-subtitle">Stock these items and you'll never be more than a few minutes from a protein-rich meal.</p>
+  </div>
+
+  <div class="section">
+    <div class="col-grid">
+      <div class="col-card">
+        <div class="section-head" style="margin-bottom:10px">
+          <div class="num-tag purple">1</div>
+          <div class="col-card-title" style="margin-bottom:0">Pantry · shelf-stable</div>
+        </div>
+        <ul>
+          <li>Canned tuna</li>
+          <li>Canned salmon</li>
+          <li>Canned chicken</li>
+          <li>Canned black beans</li>
+          <li>Canned chickpeas</li>
+          <li>Canned white beans</li>
+          <li>Peanut butter or almond butter</li>
+          <li>Almonds</li>
+          <li>Walnuts</li>
+          <li>Pistachios</li>
+          <li>Low-sodium jerky</li>
+          <li>Shelf-stable protein shakes</li>
+          <li>Whole grain crackers</li>
+        </ul>
+      </div>
+      <div class="col-card">
+        <div class="section-head" style="margin-bottom:10px">
+          <div class="num-tag blue">2</div>
+          <div class="col-card-title" style="margin-bottom:0">Fridge · grab-and-go</div>
+        </div>
+        <ul>
+          <li>Greek yogurt</li>
+          <li>Cottage cheese</li>
+          <li>String cheese</li>
+          <li>Hard-boiled eggs (homemade or pre-made)</li>
+          <li>Deli turkey or chicken</li>
+          <li>Hummus</li>
+          <li>Milk</li>
+        </ul>
+      </div>
+      <div class="col-card">
+        <div class="section-head" style="margin-bottom:10px">
+          <div class="num-tag cyan">3</div>
+          <div class="col-card-title" style="margin-bottom:0">Freezer · minimal prep</div>
+        </div>
+        <ul>
+          <li>Frozen salmon fillets<small>Bake from frozen in 15 min or thaw overnight.</small></li>
+          <li>Frozen shrimp<small>Thaws in 5 min, cooks in 3–4.</small></li>
+          <li>Frozen edamame<small>Microwave, done in 3 min.</small></li>
+          <li>Frozen chicken breasts or boneless, skinless thighs</li>
+          <li>Frozen bean burgers</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <div class="num-tag navy">4</div>
+      <div class="section-title">Quick pairing ideas</div>
+    </div>
+    <ul class="bullets">
+      <li>Canned tuna or salmon + whole grain crackers = <strong>20–25g protein</strong> in under 5 minutes.</li>
+      <li>Greek yogurt + handful of nuts = <strong>24–26g protein,</strong> zero cooking.</li>
+      <li>Frozen shrimp + pre-cut veggies + teriyaki sauce = <strong>22g protein</strong> in under 15 minutes.</li>
+      <li>Canned beans + shredded cheese + salsa + rice + Greek yogurt = <strong>20g Tex-Mex bowl.</strong></li>
+      <li>Hard-boiled eggs + string cheese + almonds = <strong>19g protein snack,</strong> no prep.</li>
+      <li>Frozen salmon fillet + frozen stir-fry veggies + microwave rice = <strong>28g hands-off dinner.</strong></li>
+    </ul>
+  </div>
+
+  <div class="highlight">
+    <div class="highlight-title">Tip</div>
+    <div class="highlight-body">
+      If you stock even half of this list, you'll always have a protein-rich option within arm's reach.
+      Daily target for most adults 60+: <strong>80–100 grams of protein per day.</strong>
+    </div>
+  </div>
+
+</section>
+
+</body>
+</html>

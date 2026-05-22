@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Weight Management App — End-to-End User Journey</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --purple: #5200d4;
+    --purple-soft: #ede5fb;
+    --purple-tint: #faf7ff;
+    --ink: #161617;
+    --body: #2a2a2c;
+    --muted: #6b6b72;
+    --rule: #e4e2ea;
+    --rule-strong: #c6c0d4;
+    --bg: #ffffff;
+    --accent-2: #b04a2a;
+    --accent-2-soft: #fbeee6;
+    --accent-2-tint: #fdf6f1;
+    --success: #1f6b3a;
+    --warning: #b07a00;
+  }
+
+  @page { size: letter; margin: 0.5in 0.55in; }
+  @page strip { size: letter landscape; margin: 0.4in 0.4in; }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--bg);
+    color: var(--body);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+    font-size: 9.5pt;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "ss01", "cv11";
+  }
+
+  .page {
+    page-break-after: always;
+    break-after: page;
+    padding: 0;
+    position: relative;
+  }
+  .page:last-child { page-break-after: auto; break-after: auto; }
+  .page.landscape { page: strip; }
+
+  /* ---------- Type primitives ---------- */
+  .eyebrow {
+    font-size: 9pt;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--purple);
+  }
+  .eyebrow.muted { color: var(--muted); }
+  h1, h2, h3, h4 { color: var(--ink); font-family: 'Inter', sans-serif; }
+  .display {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-weight: 500;
+    letter-spacing: -0.015em;
+    color: var(--ink);
+    line-height: 1.02;
+  }
+  .h-section {
+    font-size: 9pt;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin-bottom: 6pt;
+    padding-bottom: 3pt;
+    border-bottom: 1px solid var(--rule);
+  }
+  p { color: var(--body); }
+  strong { color: var(--ink); font-weight: 600; }
+  em { font-style: italic; }
+
+  /* ---------- Cover ---------- */
+  .cover {
+    padding-top: 0.4in;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 9.7in;
+  }
+  .cover-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 22pt;
+    margin-bottom: 50pt;
+    border-bottom: 1.5px solid var(--ink);
+  }
+  .cover-bar .brand {
+    font-size: 10pt;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  .cover-bar .meta { font-size: 9pt; color: var(--muted); letter-spacing: 0.04em; }
+  .cover-eyebrow {
+    font-size: 9pt;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--purple);
+    margin-bottom: 14pt;
+  }
+  .cover-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 58pt;
+    font-weight: 800;
+    line-height: 0.96;
+    letter-spacing: -0.035em;
+    margin-bottom: 22pt;
+    color: var(--ink);
+  }
+  .cover-sub {
+    font-size: 14pt;
+    font-weight: 400;
+    line-height: 1.4;
+    color: var(--body);
+    max-width: 5.6in;
+    margin-bottom: 24pt;
+    letter-spacing: -0.005em;
+  }
+  .cover-meta-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18pt;
+    padding-top: 18pt;
+    border-top: 1px solid var(--rule);
+    margin-top: 22pt;
+  }
+  .cover-meta-grid .label {
+    font-size: 9pt;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 4pt;
+  }
+  .cover-meta-grid .value { font-size: 10.5pt; color: var(--ink); font-weight: 500; }
+
+  .read-first {
+    background: var(--purple-tint);
+    border-left: 3px solid var(--purple);
+    padding: 14pt 18pt;
+    margin-top: 28pt;
+    border-radius: 0 4px 4px 0;
+  }
+  .read-first .label {
+    font-size: 9pt;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--purple);
+    margin-bottom: 6pt;
+  }
+  .read-first p { font-size: 10pt; line-height: 1.5; color: var(--body); }
+
+  /* ---------- Mini-header & section header ---------- */
+  .mini-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 6pt;
+    margin-bottom: 10pt;
+    border-bottom: 0.5px solid var(--rule);
+    font-size: 9pt;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .mini-header .left { font-weight: 600; color: var(--ink); }
+
+  .section-header {
+    margin-bottom: 22pt;
+    padding-bottom: 12pt;
+    border-bottom: 1.5px solid var(--ink);
+  }
+  .section-header .eyebrow { margin-bottom: 8pt; display: block; }
+  .section-header .title {
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 28pt;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+  }
+  .section-header .lede {
+    font-size: 11pt;
+    color: var(--muted);
+    margin-top: 8pt;
+    max-width: 5.2in;
+  }
+
+  /* ---------- How-to-read page ---------- */
+  .legend {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16pt;
+    margin-bottom: 18pt;
+  }
+  .legend-card {
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 12pt 14pt;
+  }
+  .legend-card .num {
+    display: inline-block;
+    font-weight: 700;
+    font-size: 9pt;
+    color: var(--purple);
+    background: var(--purple-soft);
+    padding: 2pt 7pt;
+    border-radius: 99px;
+    letter-spacing: 0.06em;
+    margin-bottom: 6pt;
+  }
+  .legend-card h3 {
+    font-size: 12pt;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 4pt;
+    letter-spacing: -0.01em;
+  }
+  .legend-card p { font-size: 9.5pt; line-height: 1.45; color: var(--body); }
+
+  .persona-key {
+    display: flex;
+    gap: 18pt;
+    margin-top: 8pt;
+    margin-bottom: 16pt;
+    padding: 10pt 14pt;
+    background: var(--purple-tint);
+    border-radius: 6px;
+  }
+  .persona-key .item {
+    display: flex;
+    align-items: center;
+    gap: 6pt;
+    font-size: 9pt;
+  }
+  .persona-key .dot {
+    width: 10pt;
+    height: 10pt;
+    border-radius: 99px;
+    display: inline-block;
+  }
+  .persona-key .dot.p1 { background: var(--purple); }
+  .persona-key .dot.p2 { background: var(--accent-2); }
+
+  /* ---------- Journey strip (landscape) ---------- */
+  .strip-wrap {
+    /* on screen: allow horizontal scroll if needed */
+    overflow-x: auto;
+    padding-bottom: 8pt;
+  }
+  .strip {
+    display: grid;
+    grid-template-columns: repeat(8, minmax(2in, 1fr));
+    gap: 10pt;
+    align-items: stretch;
+    min-width: 1100pt; /* keep 8 readable columns */
+  }
+  .stage {
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 10pt 11pt;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  .stage.branch-host { background: var(--purple-tint); border-color: var(--rule-strong); }
+  .stage-num {
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 26pt;
+    line-height: 0.9;
+    color: var(--purple-soft);
+    letter-spacing: -0.04em;
+    margin-bottom: 2pt;
+  }
+  .stage.branch-host .stage-num { color: #d8c8f4; }
+  .stage-name {
+    font-size: 11pt;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    margin-bottom: 8pt;
+  }
+  .stage-vp {
+    font-size: 9pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--purple);
+    margin-bottom: 8pt;
+  }
+  .stage .label {
+    font-size: 9pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    margin-bottom: 3pt;
+    margin-top: 6pt;
+  }
+  .stage .trigger-pair { display: flex; flex-direction: column; gap: 5pt; margin-bottom: 6pt; }
+  .stage .trigger {
+    font-size: 9pt;
+    line-height: 1.35;
+    color: var(--ink);
+    padding: 6pt 8pt;
+    border-radius: 5px;
+    position: relative;
+    padding-left: 18pt;
+  }
+  .stage .trigger::before {
+    content: "P1";
+    position: absolute;
+    left: 5pt;
+    top: 5pt;
+    font-size: 9pt;
+    font-weight: 700;
+    color: var(--purple);
+    background: #fff;
+    padding: 1pt 3pt;
+    border-radius: 3px;
+    letter-spacing: 0.06em;
+  }
+  .stage .trigger.p1 { background: var(--purple-tint); border-left: 2px solid var(--purple); }
+  .stage .trigger.p2 { background: var(--accent-2-tint); border-left: 2px solid var(--accent-2); }
+  .stage .trigger.p2::before { content: "P2"; color: var(--accent-2); }
+  .stage .feature {
+    font-size: 9pt;
+    line-height: 1.4;
+    color: var(--body);
+    margin-bottom: 6pt;
+  }
+  .stage .feature strong { color: var(--ink); }
+  .stage .action {
+    font-size: 9pt;
+    line-height: 1.4;
+    color: var(--body);
+    padding: 5pt 8pt;
+    background: #f6f3fc;
+    border-radius: 4px;
+    margin-bottom: 6pt;
+  }
+  .stage .anti {
+    margin-top: auto;
+    font-size: 9pt;
+    line-height: 1.4;
+    color: var(--accent-2);
+    padding: 5pt 8pt;
+    background: var(--accent-2-tint);
+    border-left: 2px solid var(--accent-2);
+    border-radius: 0 4px 4px 0;
+  }
+  .stage .anti b {
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--accent-2);
+    font-size: 9pt;
+    display: block;
+    margin-bottom: 2pt;
+  }
+
+  /* Branch container under Stage 5 */
+  .branches-strip {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10pt;
+    margin-top: 14pt;
+    min-width: 1100pt;
+  }
+  .branch {
+    border: 1px solid var(--rule-strong);
+    border-radius: 8px;
+    padding: 10pt 11pt;
+    background: var(--bg);
+    page-break-inside: avoid;
+    break-inside: avoid;
+    border-top: 4px solid var(--purple);
+  }
+  .branch-tag {
+    display: inline-block;
+    font-size: 9pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--purple);
+    background: var(--purple-soft);
+    padding: 2pt 7pt;
+    border-radius: 99px;
+    margin-bottom: 6pt;
+  }
+  .branch-name {
+    font-size: 12.5pt;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    margin-bottom: 4pt;
+  }
+  .branch-vp {
+    font-size: 9pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--purple);
+    margin-bottom: 8pt;
+  }
+  .branch .label {
+    font-size: 9pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    margin-bottom: 3pt;
+    margin-top: 6pt;
+  }
+  .branch .trigger {
+    font-size: 9pt;
+    line-height: 1.35;
+    color: var(--ink);
+    padding: 6pt 8pt 6pt 18pt;
+    border-radius: 5px;
+    position: relative;
+    margin-bottom: 5pt;
+  }
+  .branch .trigger::before {
+    content: "P1";
+    position: absolute;
+    left: 5pt;
+    top: 5pt;
+    font-size: 9pt;
+    font-weight: 700;
+    color: var(--purple);
+    background: #fff;
+    padding: 1pt 3pt;
+    border-radius: 3px;
+    letter-spacing: 0.06em;
+  }
+  .branch .trigger.p1 { background: var(--purple-tint); border-left: 2px solid var(--purple); }
+  .branch .trigger.p2 { background: var(--accent-2-tint); border-left: 2px solid var(--accent-2); }
+  .branch .trigger.p2::before { content: "P2"; color: var(--accent-2); }
+  .branch .feature {
+    font-size: 9pt;
+    line-height: 1.4;
+    color: var(--body);
+    margin-bottom: 6pt;
+  }
+  .branch .privacy {
+    display: block;
+    margin-top: 6pt;
+    padding: 6pt 8pt;
+    background: #eaf3ec;
+    border-left: 2px solid var(--success);
+    border-radius: 0 4px 4px 0;
+    font-size: 9pt;
+    line-height: 1.4;
+    color: #145024;
+    font-weight: 500;
+  }
+  .branch .privacy b {
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--success);
+    font-size: 9pt;
+    display: block;
+    margin-bottom: 2pt;
+  }
+  .branch .info-callout {
+    display: block;
+    margin-top: 6pt;
+    padding: 6pt 8pt;
+    background: #f5f1ff;
+    border: 1px dashed var(--rule-strong);
+    border-radius: 4px;
+    font-size: 9pt;
+    line-height: 1.4;
+    color: var(--body);
+  }
+  .branch .info-callout b {
+    color: var(--purple);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 9pt;
+    display: block;
+    margin-bottom: 2pt;
+  }
+  .branch .anti {
+    margin-top: 8pt;
+    font-size: 9pt;
+    line-height: 1.4;
+    color: var(--accent-2);
+    padding: 5pt 8pt;
+    background: var(--accent-2-tint);
+    border-left: 2px solid var(--accent-2);
+    border-radius: 0 4px 4px 0;
+  }
+  .branch .anti b {
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--accent-2);
+    font-size: 9pt;
+    display: block;
+    margin-bottom: 2pt;
+  }
+
+  .branch-label {
+    font-size: 9pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--ink);
+    margin-top: 22pt;
+    margin-bottom: 10pt;
+    display: flex;
+    align-items: center;
+    gap: 8pt;
+  }
+  .branch-label::before {
+    content: "↓";
+    font-size: 14pt;
+    color: var(--purple);
+  }
+
+  /* ---------- Coverage matrix ---------- */
+  table.matrix {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 8pt;
+  }
+  table.matrix th, table.matrix td {
+    padding: 9pt 11pt;
+    vertical-align: top;
+    text-align: left;
+    font-size: 9pt;
+    line-height: 1.45;
+    border-bottom: 1px solid var(--rule);
+  }
+  table.matrix thead th {
+    font-size: 9pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    border-bottom: 1.5px solid var(--ink);
+  }
+  table.matrix .stage-cell {
+    font-weight: 600;
+    color: var(--ink);
+    width: 1.7in;
+  }
+  table.matrix tr:nth-child(even) td { background: var(--purple-tint); }
+  table.matrix .col-p1 { color: var(--purple); }
+  table.matrix .col-p2 { color: var(--accent-2); }
+
+  /* ---------- Anti-pattern checklist ---------- */
+  .checklist ul { list-style: none; padding: 0; }
+  .checklist li {
+    padding: 8pt 12pt;
+    border-bottom: 1px solid var(--rule);
+    font-size: 10pt;
+    line-height: 1.5;
+    color: var(--body);
+    position: relative;
+    padding-left: 30pt;
+  }
+  .checklist li::before {
+    content: "";
+    position: absolute;
+    left: 10pt;
+    top: 11pt;
+    width: 11pt;
+    height: 11pt;
+    border: 1.5px solid var(--rule-strong);
+    border-radius: 3px;
+    background: #fff;
+  }
+  .checklist li strong { color: var(--ink); }
+  .checklist li code {
+    background: var(--purple-tint);
+    color: var(--purple);
+    padding: 1pt 5pt;
+    border-radius: 3px;
+    font-family: 'Inter', sans-serif;
+    font-size: 9pt;
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+
+<!-- ====================== COVER ====================== -->
+<section class="page cover">
+  <div class="cover-top">
+    <div class="cover-bar">
+      <div class="brand">Bold · Weight Management App</div>
+      <div class="meta">User journey · 2026-05-20</div>
+    </div>
+
+    <div class="cover-eyebrow">End-to-end user journey</div>
+    <h1 class="display cover-title">From <em style="font-style: italic;">"is this safe for me?"</em><br>to a quarterly check-in.</h1>
+    <p class="cover-sub">An eight-stage journey for both Bold GLP-1 companion personas. Each stage names the trigger that brings users in, the feature that resolves it, and the action they take next. Built so every feature solves a real need from <strong>both</strong> personas.</p>
+  </div>
+
+  <div class="cover-bottom">
+    <div class="cover-meta-grid">
+      <div>
+        <div class="label">Source</div>
+        <div class="value">Bullseye research<br>(n=4, 2026-05-05)</div>
+      </div>
+      <div>
+        <div class="label">Status</div>
+        <div class="value">Working journey<br>v1</div>
+      </div>
+      <div>
+        <div class="label">Audience</div>
+        <div class="value">65+ · US ·<br>Medicare-eligible</div>
+      </div>
+      <div>
+        <div class="label">Launch</div>
+        <div class="value">Q3 2026<br>GLP-1 companion</div>
+      </div>
+    </div>
+
+    <div class="read-first">
+      <div class="label">Read this first</div>
+      <p>Both personas — <strong>Tried-and-Burned</strong> (skeptical, has a bad GLP-1 history) and <strong>Curious-but-Wary</strong> (cautious, new to GLP-1s) — are confirmed adults age 65+, living in the US, Medicare-eligible. Every feature on this journey was designed against needs from <strong>both</strong> personas. If a feature only serves one, it doesn't belong here. The coverage matrix at the end proves both columns are filled.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ====================== HOW TO READ ====================== -->
+<section class="page">
+  <div class="mini-header">
+    <span class="left">Section 01</span>
+    <span>User Journey · Weight Management App</span>
+  </div>
+
+  <header class="section-header">
+    <span class="eyebrow">How to read this journey</span>
+    <h2 class="title">Three questions per stage,<br>side-by-side for both personas.</h2>
+    <p class="lede">Each stage of the journey answers what the user walks in needing, what the product gives them in response, and what they do next. Read left-to-right.</p>
+  </header>
+
+  <div class="legend">
+    <div class="legend-card">
+      <span class="num">01</span>
+      <h3>Trigger</h3>
+      <p>The problem or need the persona walks into this stage with, in their own voice. Pulled verbatim from the 2026-05-05 transcript where possible.</p>
+    </div>
+    <div class="legend-card">
+      <span class="num">02</span>
+      <h3>Feature</h3>
+      <p>The in-product capability that resolves the trigger. Cites which of the six value props and which design principle it embodies.</p>
+    </div>
+    <div class="legend-card">
+      <span class="num">03</span>
+      <h3>Action</h3>
+      <p>The concrete thing the user does on the stage's primary surface. Short, observable, the same for both personas.</p>
+    </div>
+  </div>
+
+  <div class="persona-key">
+    <div class="item"><span class="dot p1"></span><strong>P1 · Tried-and-Burned</strong> &nbsp;— skeptical, has direct GLP-1 history that went poorly.</div>
+    <div class="item"><span class="dot p2"></span><strong>P2 · Curious-but-Wary</strong> &nbsp;— cautious, has never tried a GLP-1.</div>
+  </div>
+
+  <p style="font-size: 10pt; color: var(--body); line-height: 1.5; max-width: 6in;">
+    Stage 5 (Care plan reveal) fans out into three parallel modules — <strong>5a Nutrition</strong>, <strong>5b Strength & Balance</strong>, <strong>5c Body Composition</strong> — that converge into stage 6 (Chat with provider) and stage 7 (Ongoing care). Each module is detailed on the page after the main strip.
+  </p>
+
+  <p style="font-size: 9pt; color: var(--muted); margin-top: 18pt; line-height: 1.5;">
+    Every stage carries an <strong style="color: var(--accent-2);">anti-pattern guard</strong> — a one-line "what we will not do here" drawn from the research's anti-patterns list and the "We're not" positioning. If the design drifts into one of these, it gets sent back.
+  </p>
+</section>
+
+<!-- ====================== JOURNEY STRIP (landscape) ====================== -->
+<section class="page landscape">
+  <div class="mini-header">
+    <span class="left">Section 02 · Stages 0 – 7</span>
+    <span>End-to-End Journey · Both personas, every stage</span>
+  </div>
+
+  <header style="margin-bottom: 14pt;">
+    <span class="eyebrow">The eight stages</span>
+    <h2 style="font-size: 22pt; font-weight: 800; letter-spacing: -0.025em; margin-top: 6pt; color: var(--ink);">From earning first trust to quarterly milestones.</h2>
+  </header>
+
+  <div class="strip-wrap">
+    <div class="strip">
+
+      <!-- Stage 0 -->
+      <div class="stage">
+        <div class="stage-num">00</div>
+        <div class="stage-name">Discover &amp; earn first trust</div>
+        <div class="stage-vp">VP #1 · VP #2</div>
+
+        <div class="label">Trigger</div>
+        <div class="trigger-pair">
+          <div class="trigger p1">"Why would this time be any different? Last GLP-1 cost me $400 to lose seven pounds."</div>
+          <div class="trigger p2">"I want this to work — but is it safe for me? Is this even safe at my age?"</div>
+        </div>
+
+        <div class="label">Feature</div>
+        <div class="feature"><strong>Trust-scaffolded hero.</strong> <em>"Lose fat. Stay strong. Covered by Medicare."</em> Pill is the default visual frame. FDA + 86% pay $0 + clinician-in-the-loop all visible above the fold. Acknowledgment line for past GLP-1 failure.</div>
+
+        <div class="label">Action</div>
+        <div class="action">See what's different, then click "See if Bold is right for me."</div>
+
+        <div class="anti"><b>Won't do</b>No vial, syringe, or compounded medication. No "% body weight loss" headline. No "GLP-1 access" without cost/coverage attached.</div>
+      </div>
+
+      <!-- Stage 1 -->
+      <div class="stage">
+        <div class="stage-num">01</div>
+        <div class="stage-name">Check coverage &amp; form factor</div>
+        <div class="stage-vp">VP #1 (full)</div>
+
+        <div class="label">Trigger</div>
+        <div class="trigger-pair">
+          <div class="trigger p1">"I don't want a surprise bill again."</div>
+          <div class="trigger p2">"Will Medicare cover this? And do I have to take a shot?"</div>
+        </div>
+
+        <div class="label">Feature</div>
+        <div class="feature"><strong>Coverage + form-factor preview.</strong> Real-dollar number ($50/mo · 86% pay $0) paired with a pill-first form-factor preview. Pen offered as secondary. Needle/vial deliberately absent.</div>
+
+        <div class="label">Action</div>
+        <div class="action">Enter Medicare info; see pill option pre-selected.</div>
+
+        <div class="anti"><b>Won't do</b>Never show "FDA-approved" without a coverage signal in the same view.</div>
+      </div>
+
+      <!-- Stage 2 -->
+      <div class="stage">
+        <div class="stage-num">02</div>
+        <div class="stage-name">Schedule visit</div>
+        <div class="stage-vp">VP #6</div>
+
+        <div class="label">Trigger</div>
+        <div class="trigger-pair">
+          <div class="trigger p1">"I need to know a real provider's involved this time — not a chatbot."</div>
+          <div class="trigger p2">"I want a real clinician. Someone I can call when something feels off."</div>
+        </div>
+
+        <div class="label">Feature</div>
+        <div class="feature"><strong>Schedule with a real clinician.</strong> Framed as <em>"Your clinician will check whether a GLP-1 is right for you and stay with you through side effects and dosage."</em> Safety-net language, never coach.</div>
+
+        <div class="label">Action</div>
+        <div class="action">Pick an appointment slot with a Bold clinician.</div>
+
+        <div class="anti"><b>Won't do</b>No "Chat with your coach!" framing. No promise of daily check-ins.</div>
+      </div>
+
+      <!-- Stage 3 -->
+      <div class="stage">
+        <div class="stage-num">03</div>
+        <div class="stage-name">Provider intake visit</div>
+        <div class="stage-vp">VP #6 · VP #1</div>
+
+        <div class="label">Trigger</div>
+        <div class="trigger-pair">
+          <div class="trigger p1">"I want them to know what went wrong last time so it doesn't happen again."</div>
+          <div class="trigger p2">"As you get older you have to worry about bone density. Will they take that seriously?"</div>
+        </div>
+
+        <div class="label">Feature</div>
+        <div class="feature"><strong>Clinician intake with two acknowledgments.</strong> Captures prior GLP-1 history (P1) and age-specific priorities — bone density, strength, balance (P2). Clinician returns a starting plan, side-effect playbook, and body-comp baseline.</div>
+
+        <div class="label">Action</div>
+        <div class="action">Complete intake; agree on a starting plan.</div>
+
+        <div class="anti"><b>Won't do</b>Not a generic health questionnaire. No "metabolic health score" labs duplication.</div>
+      </div>
+
+      <!-- Stage 4 -->
+      <div class="stage">
+        <div class="stage-num">04</div>
+        <div class="stage-name">Prescription &amp; delivery</div>
+        <div class="stage-vp">VP #1 (full)</div>
+
+        <div class="label">Trigger</div>
+        <div class="trigger-pair">
+          <div class="trigger p1">"I don't want the vial nightmare again. If I could do a pill, that'd be great."</div>
+          <div class="trigger p2">"I'm definitely afraid of shots."</div>
+        </div>
+
+        <div class="label">Feature</div>
+        <div class="feature"><strong>Pill-first prescription with no-surprise cost.</strong> Confirmation states the FDA-approved brand name, pill form factor, $50/mo (86% pay $0), and the side-effect playbook from intake. Welcome kit on the way.</div>
+
+        <div class="label">Action</div>
+        <div class="action">Confirm prescription; receive welcome kit and delivery date.</div>
+
+        <div class="anti"><b>Won't do</b>No vial/syringe in confirmation, kit, or delivery email. No compounded medication.</div>
+      </div>
+
+      <!-- Stage 5 -->
+      <div class="stage branch-host">
+        <div class="stage-num">05</div>
+        <div class="stage-name">Care plan reveal</div>
+        <div class="stage-vp">VP #2 wraps VP #3 · #4 · #5</div>
+
+        <div class="label">Trigger</div>
+        <div class="trigger-pair">
+          <div class="trigger p1">"Just tell me what to do — I don't want to figure it out from scratch again."</div>
+          <div class="trigger p2">"Don't make me figure it out from scratch."</div>
+        </div>
+
+        <div class="label">Feature</div>
+        <div class="feature"><strong>Personalized care plan as the spine.</strong> One dashboard combining today's nutrition (5a), this week's strength &amp; balance (5b), the body-comp baseline (5c), and the cadence of clinician check-ins (stage 6).</div>
+
+        <div class="label">Action</div>
+        <div class="action">Review the plan; see today's next step. Branches into 5a · 5b · 5c ⬇</div>
+
+        <div class="anti"><b>Won't do</b>No daily-streak gamification. No habit checkboxes. The plan is guidance, not a tracker.</div>
+      </div>
+
+      <!-- Stage 6 -->
+      <div class="stage">
+        <div class="stage-num">06</div>
+        <div class="stage-name">Chat with provider &amp; check-ins</div>
+        <div class="stage-vp">VP #6</div>
+
+        <div class="label">Trigger</div>
+        <div class="trigger-pair">
+          <div class="trigger p1">"Last time the nausea ended it for me — I quit at six weeks."</div>
+          <div class="trigger p2">"What if something feels off? I want a person, not a bot."</div>
+        </div>
+
+        <div class="label">Feature</div>
+        <div class="feature"><strong>Async patient-initiated chat with the clinician.</strong> Send a message about how they feel; log a clinical weight value shared <em>with the clinician</em> for safety (not the user's progress hero — that's 5c); upload an outside lab result. Stated SLA, no chatbot.</div>
+
+        <div class="label">Action</div>
+        <div class="action">Message clinician; log clinical weight; upload a lab if needed.</div>
+
+        <div class="anti"><b>Won't do</b>Provider as safety net, not coach. No daily prompts. No "Your provider is online!" framing. Weight here is clinical, not progress.</div>
+      </div>
+
+      <!-- Stage 7 -->
+      <div class="stage">
+        <div class="stage-num">07</div>
+        <div class="stage-name">Ongoing care &amp; milestones</div>
+        <div class="stage-vp">VP #6 · VP #2 · VP #3</div>
+
+        <div class="label">Trigger</div>
+        <div class="trigger-pair">
+          <div class="trigger p1">"I want to know I'm protecting muscle and bone — and that cost stays stable."</div>
+          <div class="trigger p2">"Is this still safe for me long-term? Will my clinician adjust the dose if I need it?"</div>
+        </div>
+
+        <div class="label">Feature</div>
+        <div class="feature"><strong>Quarterly review + body-comp milestone.</strong> Clinician reviews body-comp trajectory (5c), side-effect history (stage 6), and adherence summaries (5a, 5b). Together they decide dose / taper / continue and renew the prescription. Milestones celebrate the <em>kind</em> of weight protected.</div>
+
+        <div class="label">Action</div>
+        <div class="action">Review milestone with clinician; renew prescription.</div>
+
+        <div class="anti"><b>Won't do</b>No "you've lost X% of body weight!" milestone. No surprise renewal pricing. The $50/mo line holds.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="branch-label">Stage 05 branches into three parallel modules</div>
+
+  <div class="strip-wrap">
+    <div class="branches-strip">
+
+      <!-- 5a -->
+      <div class="branch">
+        <span class="branch-tag">05a · Nutrition</span>
+        <div class="branch-name">AI meal-prep assistant</div>
+        <div class="branch-vp">VP #5 · "Don't make me log every bite"</div>
+
+        <div class="label">Trigger</div>
+        <div class="trigger p1">"I'm tired of restrictive diets. And I cook less than I used to."</div>
+        <div class="trigger p2">"I want help eating well without logging every bite."</div>
+
+        <div class="label">Feature</div>
+        <div class="feature"><strong>Conversational AI that talks to you before the meal, not after.</strong> Inputs: a photo of what's in the fridge (or a short text list), your mood/energy today, your stored preferences. Outputs: 1–3 recipe options tuned to dietary preferences, portion size, protein-forward nutrition goals, restrictions, and time available — with takeout/prepared-food fallbacks and on-demand menu reading when cooking is off the table.</div>
+
+        <div class="anti"><b>Won't do</b>"We don't log every bite." Photo is for personalization, not a food diary. No calorie counting. No restrictive-diet framing.</div>
+      </div>
+
+      <!-- 5b -->
+      <div class="branch">
+        <span class="branch-tag">05b · Strength &amp; Balance</span>
+        <div class="branch-name">Older-adult strength &amp; balance plan</div>
+        <div class="branch-vp">VP #4 · "Make the exercise feel doable"</div>
+
+        <div class="label">Trigger</div>
+        <div class="trigger p1">"Show me I'm protecting muscle, not just dropping scale weight."</div>
+        <div class="trigger p2">"I can't stand for more than five or seven minutes."</div>
+
+        <div class="label">Feature</div>
+        <div class="feature"><strong>Routines that read as accessible for a 65+ body.</strong> Seated by default, balance-safe, joint-friendly. Progress on a strength + bone-support axis. Standing tolerance assumed under 5 minutes. No equipment beyond what's already at home. Every illustration and demo is older-adult-specific, never generic-fitness.</div>
+
+        <div class="anti"><b>Won't do</b>No generic-fitness imagery. No step counters. No wearable references. If it could be mistaken for a generic fitness app, redo it.</div>
+      </div>
+
+      <!-- 5c -->
+      <div class="branch">
+        <span class="branch-tag">05c · Body Composition</span>
+        <div class="branch-name">DEXA-grade body composition <span style="font-size: 9pt; color: var(--purple); font-weight: 700;">ⓘ</span></div>
+        <div class="branch-vp">VP #3 · "Show me progress that means something"</div>
+
+        <div class="label">Trigger</div>
+        <div class="trigger p1">"Last time I was just bouncing on the scale. I want to see I'm losing fat, not muscle."</div>
+        <div class="trigger p2">"Body composition stands out more than the rest. Bone density matters as you age."</div>
+
+        <div class="label">Feature</div>
+        <div class="feature"><strong>"DEXA-grade body composition · No clinic visit needed."</strong> Phone-camera scan once a month. Shows lean-mass preserved, fat-mass change, fat distribution, and bone-density indicators. Scale weight is never the hero — this is the user's progress story.</div>
+
+        <span class="info-callout">
+          <b>ⓘ &nbsp;What "DEXA-grade" means</b>
+          DEXA is the gold-standard scan clinicians use to measure how much of your weight is fat, muscle, and bone. Bold uses your phone's camera to deliver the same level of insight — no clinic visit, no machine, no needles. Your clinician sees the same numbers they'd see from a hospital DEXA scan.
+        </span>
+
+        <span class="privacy">
+          <b>Privacy callout</b>
+          Scan fully clothed · Your data stays private.
+        </span>
+
+        <div class="anti"><b>Won't do</b>No scale-weight headline. No wearable required. No before/after photos shown without explicit consent. No PCP-labs duplication.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ====================== COVERAGE MATRIX ====================== -->
+<section class="page">
+  <div class="mini-header">
+    <span class="left">Section 03</span>
+    <span>User Journey · Weight Management App</span>
+  </div>
+
+  <header class="section-header">
+    <span class="eyebrow">Coverage matrix</span>
+    <h2 class="title">Every feature solves a need from <em style="font-style: italic;">both</em> personas.</h2>
+    <p class="lede">If a row only fills one column, the feature doesn't belong on the journey. This is the load-bearing check.</p>
+  </header>
+
+  <table class="matrix">
+    <thead>
+      <tr>
+        <th>Stage</th>
+        <th class="col-p1">Persona 01 · Tried-and-Burned</th>
+        <th class="col-p2">Persona 02 · Curious-but-Wary</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="stage-cell">00 · Discover &amp; trust</td><td>"Show me what's different"</td><td>"Earn first trust"</td></tr>
+      <tr><td class="stage-cell">01 · Coverage &amp; form factor</td><td>"No surprise bills"</td><td>"Will Medicare cover this? Can I avoid a shot?"</td></tr>
+      <tr><td class="stage-cell">02 · Schedule visit</td><td>"Real provider this time"</td><td>"Real clinician, not a chatbot"</td></tr>
+      <tr><td class="stage-cell">03 · Provider intake</td><td>"Acknowledge what went wrong before"</td><td>"Take my age and bone density seriously"</td></tr>
+      <tr><td class="stage-cell">04 · Prescription &amp; delivery</td><td>"Pill, not vial; no surprise cost"</td><td>"Pill, not shot; cost as promised"</td></tr>
+      <tr><td class="stage-cell">05 · Care plan reveal</td><td>"Don't make me figure it out again"</td><td>"Don't make me figure it out from scratch"</td></tr>
+      <tr><td class="stage-cell">05a · AI meal-prep</td><td>"No more restrictive diets, I cook less"</td><td>"Help me eat well without logging"</td></tr>
+      <tr><td class="stage-cell">05b · Strength &amp; balance</td><td>"Protect my muscle"</td><td>"Routines I can actually do at my age"</td></tr>
+      <tr><td class="stage-cell">05c · DEXA-grade body comp</td><td>"Prove it's the right kind of weight loss"</td><td>"Protect bone density and strength"</td></tr>
+      <tr><td class="stage-cell">06 · Chat with provider</td><td>"If side effects hit, I want a person"</td><td>"Someone to call when something feels off"</td></tr>
+      <tr><td class="stage-cell">07 · Ongoing care</td><td>"Stable cost, real progress"</td><td>"Long-term safety, clinician-led adjustments"</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ====================== ANTI-PATTERN CHECKLIST ====================== -->
+<section class="page">
+  <div class="mini-header">
+    <span class="left">Section 04</span>
+    <span>User Journey · Weight Management App</span>
+  </div>
+
+  <header class="section-header">
+    <span class="eyebrow muted" style="color: var(--accent-2);">Anti-pattern checklist</span>
+    <h2 class="title">Run this before declaring done.</h2>
+    <p class="lede">Drawn from the research's anti-pattern list and "We're not" positioning. If the journey violates one of these on any surface, it gets sent back.</p>
+  </header>
+
+  <div class="checklist">
+    <ul>
+      <li>No needle, syringe, or vial imagery anywhere. <code>principles #4</code></li>
+      <li>Pill-first appears in stage 1 visual treatment, not just stage 4.</li>
+      <li>FDA + Medicare / $50 mentioned together at least once in stage 0 or 1. <code>principles #5</code></li>
+      <li>No "% body weight loss" language anywhere on the journey. <code>findings #18</code></li>
+      <li>No meal logging, habit checkboxes, or wearable references in 5a / 5b / 5c. <code>principles #1, #8</code></li>
+      <li>Provider stages (2, 3, 6, 7) use "safety net" language, never "coach" or "daily check-in." <code>principles #6</code></li>
+      <li>Exercise references explicitly call out seated / balance / joint-friendly options. <code>principles #7</code></li>
+      <li>AI meal-prep is framed as <strong>before-the-meal</strong> guidance, never as logging. Photo-of-fridge is input to recommendations, not a food diary. <code>findings #10, #11</code></li>
+      <li>Phone-camera body-comp card carries the privacy callout <strong>"Scan fully clothed · Your data stays private"</strong> verbatim, under the feature description.</li>
+      <li>"DEXA-grade" claim has an ⓘ explainer next to it. Wording reviewed with the clinical team before external publishing.</li>
+      <li>Weight in the provider chat is framed as clinical safety data shared with the clinician — <strong>never</strong> as the user's progress hero. The user-facing progress story stays in 5c. <code>principles #3</code></li>
+      <li>Provider chat is patient-initiated, asynchronous, with a stated SLA. No daily prompts, no chatbot, no "Chat with your coach!" framing. <code>principles #6</code></li>
+    </ul>
+  </div>
+</section>
+
+</body>
+</html>
