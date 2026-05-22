@@ -91,15 +91,6 @@
       "category": "Prototypes"
     },
     {
-      "path": "PrevMed/research",
-      "href": "PrevMed/research/Senior-Onboarding-Best-Practices.html",
-      "name": "Senior Onboarding Research",
-      "desc": "Best practices and Bold opportunities for senior healthcare onboarding",
-      "icon": "🔬",
-      "author": "Tzu-Yi",
-      "category": "User Research"
-    },
-    {
       "path": "telehealth",
       "href": "telehealth/",
       "name": "Telehealth",
