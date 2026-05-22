@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Weight Management App — Personas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --purple: #5200d4;
+    --purple-soft: #ede5fb;
+    --purple-tint: #faf7ff;
+    --ink: #161617;
+    --body: #2a2a2c;
+    --muted: #6b6b72;
+    --rule: #e4e2ea;
+    --rule-strong: #c6c0d4;
+    --bg: #ffffff;
+    --accent-2: #b04a2a;
+    --accent-2-soft: #fbeee6;
+  }
+
+  @page {
+    size: letter;
+    margin: 0.5in 0.55in;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--bg);
+    color: var(--body);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+    font-size: 9.5pt;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "ss01", "cv11";
+  }
+
+  .page {
+    page-break-after: always;
+    break-after: page;
+    padding: 0;
+    position: relative;
+  }
+  .page:last-child {
+    page-break-after: auto;
+    break-after: auto;
+  }
+
+  /* ---------- Type primitives ---------- */
+  .eyebrow {
+    font-size: 9pt;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--purple);
+  }
+  .eyebrow.muted { color: var(--muted); }
+  h1, h2, h3, h4 { color: var(--ink); font-family: 'Inter', sans-serif; }
+  .display {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-weight: 500;
+    letter-spacing: -0.015em;
+    color: var(--ink);
+    line-height: 1.02;
+  }
+  .h-section {
+    font-size: 9pt;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin-bottom: 8pt;
+    padding-bottom: 4pt;
+    border-bottom: 1px solid var(--rule);
+  }
+  p { color: var(--body); }
+  strong { color: var(--ink); font-weight: 600; }
+  em { font-style: italic; }
+  a { color: var(--purple); text-decoration: none; }
+
+  ul, ol { padding-left: 1.1em; }
+  li { margin-bottom: 4pt; line-height: 1.5; }
+  li::marker { color: var(--purple); }
+
+  /* ---------- Cover page ---------- */
+  .cover {
+    padding-top: 0.4in;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 9.7in;
+  }
+  .cover-top { padding-bottom: 0; }
+  .cover-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 22pt;
+    margin-bottom: 50pt;
+    border-bottom: 1.5px solid var(--ink);
+  }
+  .cover-bar .brand {
+    font-size: 10pt;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  .cover-bar .meta {
+    font-size: 9pt;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+  .cover-eyebrow {
+    font-size: 9pt;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--purple);
+    margin-bottom: 14pt;
+  }
+  .cover-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 58pt;
+    font-weight: 800;
+    line-height: 0.96;
+    letter-spacing: -0.035em;
+    margin-bottom: 22pt;
+    color: var(--ink);
+  }
+  .cover-sub {
+    font-size: 14pt;
+    font-weight: 400;
+    line-height: 1.4;
+    color: var(--body);
+    max-width: 5.4in;
+    margin-bottom: 24pt;
+    font-family: 'Inter', sans-serif;
+    letter-spacing: -0.005em;
+  }
+  .cover-meta-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18pt;
+    padding-top: 18pt;
+    border-top: 1px solid var(--rule);
+    margin-top: 22pt;
+  }
+  .cover-meta-grid .label {
+    font-size: 9pt;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 4pt;
+  }
+  .cover-meta-grid .value {
+    font-size: 10.5pt;
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .read-first {
+    background: var(--purple-tint);
+    border-left: 3px solid var(--purple);
+    padding: 14pt 18pt;
+    margin-top: 28pt;
+    border-radius: 0 4px 4px 0;
+  }
+  .read-first .label {
+    font-size: 9pt;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--purple);
+    margin-bottom: 6pt;
+  }
+  .read-first p {
+    font-size: 10pt;
+    line-height: 1.5;
+    color: var(--body);
+  }
+
+  /* ---------- At a glance ---------- */
+  .section-header {
+    margin-bottom: 22pt;
+    padding-bottom: 12pt;
+    border-bottom: 1.5px solid var(--ink);
+  }
+  .section-header .eyebrow { margin-bottom: 8pt; display: block; }
+  .section-header .title {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-weight: 800;
+    font-size: 28pt;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+  }
+  .section-header .lede {
+    font-size: 11pt;
+    color: var(--muted);
+    margin-top: 8pt;
+    max-width: 5in;
+  }
+
+  table.glance {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 6pt;
+  }
+  table.glance th, table.glance td {
+    padding: 11pt 12pt;
+    vertical-align: top;
+    text-align: left;
+    border-bottom: 1px solid var(--rule);
+    font-size: 10pt;
+  }
+  table.glance thead th {
+    font-size: 9pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    background: transparent;
+    border-bottom: 1.5px solid var(--ink);
+    padding-bottom: 10pt;
+  }
+  table.glance .row-label {
+    font-size: 9pt;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    width: 1.4in;
+  }
+  table.glance .col-1 { color: var(--purple); font-weight: 600; }
+  table.glance .col-2 { color: var(--accent-2); font-weight: 600; }
+  table.glance .persona-name {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 16pt;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  table.glance .persona-name.col-1 { color: var(--purple); }
+  table.glance .persona-name.col-2 { color: var(--accent-2); }
+  table.glance tr:last-child td { border-bottom: none; }
+
+  /* ---------- Persona spread ---------- */
+  .persona { position: relative; }
+  .persona-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16pt;
+    padding-bottom: 10pt;
+    border-bottom: 1.5px solid var(--ink);
+    margin-bottom: 14pt;
+  }
+  .persona-header .left { flex: 1; }
+  .persona-numeral {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 52pt;
+    line-height: 0.85;
+    font-weight: 800;
+    color: var(--purple-soft);
+    margin-left: 12pt;
+    letter-spacing: -0.05em;
+  }
+  .persona-2 .persona-numeral { color: var(--accent-2-soft); }
+  .persona-eyebrow {
+    font-size: 9pt;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--purple);
+    margin-bottom: 6pt;
+  }
+  .persona-2 .persona-eyebrow { color: var(--accent-2); }
+  .persona-name {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-weight: 800;
+    font-size: 30pt;
+    line-height: 1.0;
+    letter-spacing: -0.035em;
+    color: var(--ink);
+    margin-bottom: 8pt;
+  }
+  .persona-tag {
+    font-size: 10.5pt;
+    color: var(--body);
+    line-height: 1.4;
+    max-width: 4.5in;
+  }
+  .persona-tag em { color: var(--ink); }
+
+  .snapshot {
+    font-size: 10pt;
+    line-height: 1.5;
+    color: var(--body);
+    margin-bottom: 12pt;
+    max-width: 6.8in;
+  }
+
+  .pullquote {
+    margin: 0 0 14pt 0;
+    padding: 12pt 18pt 12pt 22pt;
+    background: var(--purple-tint);
+    border-left: 3px solid var(--purple);
+    border-radius: 0 4px 4px 0;
+    position: relative;
+  }
+  .persona-2 .pullquote {
+    background: var(--accent-2-soft);
+    border-left-color: var(--accent-2);
+  }
+  .pullquote .mark {
+    position: absolute;
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 48pt;
+    line-height: 1;
+    color: var(--purple);
+    opacity: 0.22;
+    top: -2pt;
+    left: 10pt;
+    font-weight: 800;
+  }
+  .persona-2 .pullquote .mark { color: var(--accent-2); }
+  .pullquote p {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 11pt;
+    line-height: 1.45;
+    color: var(--ink);
+    font-style: italic;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  .pullquote .attr {
+    margin-top: 6pt;
+    font-family: 'Inter', sans-serif;
+    font-size: 9pt;
+    font-style: normal;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .meta-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16pt;
+    margin-bottom: 10pt;
+    padding: 7pt 0;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+  .meta-row .cell .label {
+    font-size: 9pt;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 3pt;
+  }
+  .meta-row .cell .value {
+    font-size: 10pt;
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .meta-row .cell .value em {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-weight: 400;
+    color: var(--purple);
+  }
+  .persona-2 .meta-row .cell .value em { color: var(--accent-2); }
+
+  .h-section {
+    font-size: 9pt;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin-bottom: 6pt;
+    padding-bottom: 3pt;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .blocks {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18pt;
+    margin-bottom: 10pt;
+  }
+  .block .h-section { color: var(--ink); margin-bottom: 4pt; padding-bottom: 2pt; }
+  .block ul { padding-left: 14pt; }
+  .block li { font-size: 9.3pt; line-height: 1.38; color: var(--body); margin-bottom: 2pt; }
+
+  .success-block { margin-bottom: 10pt; }
+  .success-block .h-section { margin-bottom: 4pt; padding-bottom: 2pt; }
+  .success-block p { font-size: 9.5pt; line-height: 1.45; }
+
+  .implications-block .h-section { margin-bottom: 4pt; padding-bottom: 2pt; }
+  .implications-block ol { padding-left: 14pt; }
+  .implications-block ol li {
+    font-size: 9.3pt;
+    line-height: 1.38;
+    margin-bottom: 3pt;
+  }
+  .implications-block ol li strong {
+    display: inline;
+    margin-bottom: 0;
+  }
+
+  .evidence-strip {
+    margin-top: 10pt;
+    padding-top: 6pt;
+    border-top: 1px solid var(--rule);
+    font-size: 9pt;
+    color: var(--muted);
+    line-height: 1.45;
+  }
+  .evidence-strip .label {
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin-right: 8pt;
+  }
+
+  /* ---------- Constants page ---------- */
+  table.constants {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 8pt;
+  }
+  table.constants th, table.constants td {
+    padding: 12pt 14pt;
+    vertical-align: top;
+    text-align: left;
+    font-size: 10pt;
+  }
+  table.constants thead th {
+    font-size: 9pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    border-bottom: 1.5px solid var(--ink);
+  }
+  table.constants tbody tr {
+    border-bottom: 1px solid var(--rule);
+  }
+  table.constants tbody tr:nth-child(even) {
+    background: var(--purple-tint);
+  }
+  table.constants .constant-text {
+    color: var(--ink);
+    font-weight: 500;
+  }
+  table.constants .source-cell {
+    color: var(--muted);
+    font-family: 'Inter', sans-serif;
+    font-size: 9pt;
+    white-space: nowrap;
+    width: 2.2in;
+  }
+
+  /* ---------- Honesty page ---------- */
+  table.honesty {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 8pt;
+  }
+  table.honesty th, table.honesty td {
+    padding: 9pt 12pt;
+    vertical-align: top;
+    text-align: left;
+    font-size: 9.5pt;
+    line-height: 1.45;
+    border-bottom: 1px solid var(--rule);
+  }
+  table.honesty thead th {
+    font-size: 9pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    border-bottom: 1.5px solid var(--ink);
+  }
+  table.honesty .gap-cell {
+    font-weight: 600;
+    color: var(--ink);
+    width: 1.8in;
+  }
+  table.honesty .resolved-cell {
+    color: var(--purple);
+    font-weight: 500;
+    width: 1.8in;
+  }
+
+  .bottom-line {
+    margin-top: 16pt;
+    padding: 12pt 18pt;
+    background: var(--purple-tint);
+    border-left: 3px solid var(--purple);
+    border-radius: 0 4px 4px 0;
+  }
+  .bottom-line .label {
+    font-size: 9pt;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--purple);
+    margin-bottom: 4pt;
+  }
+  .bottom-line p {
+    font-size: 10pt;
+    line-height: 1.5;
+    color: var(--ink);
+  }
+
+  .sources-block {
+    margin-top: 14pt;
+    padding-top: 8pt;
+    border-top: 1.5px solid var(--ink);
+  }
+  .sources-block .h-section { border: none; padding: 0; margin-bottom: 6pt; }
+  .sources-block ul { list-style: none; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 6pt 18pt; }
+  .sources-block li {
+    font-size: 9pt;
+    color: var(--body);
+    padding: 0;
+    line-height: 1.4;
+  }
+  .sources-block li strong { display: block; color: var(--ink); margin-bottom: 1pt; font-size: 9pt; }
+
+  /* ---------- Page footer / mini header (visual only, since Chrome handles real headers) ---------- */
+  .mini-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 6pt;
+    margin-bottom: 10pt;
+    border-bottom: 0.5px solid var(--rule);
+    font-size: 9pt;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .mini-header .left { font-weight: 600; color: var(--ink); }
+</style>
+</head>
+<body>
+
+<!-- ====================== COVER ====================== -->
+<section class="page cover">
+  <div class="cover-top">
+    <div class="cover-bar">
+      <div class="brand">Bold · Weight Management App</div>
+    </div>
+
+    <div class="cover-eyebrow">Personas</div>
+    <h1 class="display cover-title">Tried-and-Burned<br>&amp;&nbsp;Curious-but-Wary</h1>
+    <p class="cover-sub">Two working-hypothesis personas for the Bold GLP-1 companion product.</p>
+  </div>
+
+  <div class="cover-bottom">
+    <div class="cover-meta-grid">
+      <div>
+        <div class="label">Source</div>
+        <div class="value">2026-05-05 readout (n=4)</div>
+      </div>
+      <div>
+        <div class="label">Status</div>
+        <div class="value">Working hypotheses</div>
+      </div>
+      <div>
+        <div class="label">Audience</div>
+        <div class="value">Medicare-eligible, 65+</div>
+      </div>
+      <div>
+        <div class="label">Launch</div>
+        <div class="value">Q3 2026 · GLP-1 companion</div>
+      </div>
+    </div>
+
+    <div class="read-first">
+      <div class="label">Read this first</div>
+      <p>All participants are <strong>confirmed adults age 65+, living in the United States, and Medicare-eligible.</strong> That is the audience frame for both personas. Within it, these are needs-based archetypes built from a 4-person sample — good enough to target prototypes, <strong>not</strong> demographically validated beyond the 65+ US Medicare-eligible cohort. The next research wave — a larger GLP-1 survey plus screener redesign — is the prerequisite to graduate them further. The "Honesty" page at the end is non-negotiable reading.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ====================== AT A GLANCE ====================== -->
+<section class="page glance-page">
+  <div class="mini-header">
+    <span class="left">Section 01</span>
+    <span>Personas · Weight Management App</span>
+  </div>
+  <header class="section-header">
+    <span class="eyebrow">At a glance</span>
+    <h2 class="title">Two starting trust levels,<br>one shared destination.</h2>
+    <p class="lede">Both personas converge on the same value props — pill-first GLP-1, guidance over tracking, body composition over scale. What differs is the trust they walk in with.</p>
+  </header>
+
+  <table class="glance">
+    <thead>
+      <tr>
+        <th></th>
+        <th class="col-1">Persona 01 · Tried-and-Burned</th>
+        <th class="col-2">Persona 02 · Curious-but-Wary</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="row-label">Audience frame</td>
+        <td>65+, US, Medicare-eligible</td>
+        <td>65+, US, Medicare-eligible</td>
+      </tr>
+      <tr>
+        <td class="row-label">GLP-1 stage</td>
+        <td>Has tried — had a bad experience</td>
+        <td>Has never tried — has heard the stories</td>
+      </tr>
+      <tr>
+        <td class="row-label">Dominant emotion</td>
+        <td><span class="col-1">Skepticism</span></td>
+        <td><span class="col-2">Caution</span></td>
+      </tr>
+      <tr>
+        <td class="row-label">Internal question</td>
+        <td><em>"Why would this time be any different?"</em></td>
+        <td><em>"I want this to work — but is it safe for me?"</em></td>
+      </tr>
+      <tr>
+        <td class="row-label">Top fear</td>
+        <td>Side effects + cost returning</td>
+        <td>Needles + the horror stories they've heard</td>
+      </tr>
+      <tr>
+        <td class="row-label">First-screen need</td>
+        <td>Proof this is a <em>different</em> path</td>
+        <td>Trust scaffolding (FDA, Medicare, provider)</td>
+      </tr>
+      <tr>
+        <td class="row-label">What unlocks them</td>
+        <td>Pill option · side-effect management · body-comp proof</td>
+        <td>Pill option · name brands · provider as safety net</td>
+      </tr>
+      <tr>
+        <td class="row-label">Share of sample</td>
+        <td>~3 of 4 (not generalizable)</td>
+        <td>~1 of 4 (not generalizable)</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ====================== PERSONA 1 ====================== -->
+<section class="page persona persona-1">
+  <div class="mini-header">
+    <span class="left">Persona 01</span>
+    <span>Personas · Weight Management App</span>
+  </div>
+
+  <header class="persona-header">
+    <div class="left">
+      <div class="persona-eyebrow">Persona 01 · Skeptic</div>
+      <h2 class="persona-name">Tried-and-Burned</h2>
+      <p class="persona-tag">Has direct GLP-1 experience that went poorly. Walked away skeptical. Looking for a credibly <em>different</em> path back.</p>
+    </div>
+    <div class="persona-numeral">01</div>
+  </header>
+
+  <div class="pullquote">
+    <span class="mark">"</span>
+    <p>Last year I did GLP1 uh semicluide for like six weeks. It was the worst experience of my life. Cost me $400 to lose seven pounds and I felt effects… If it's okay, if I could do a pill, that'd be great. Pills easy. Pen second. Compounded with a vial like that. No way. Definitely no.</p>
+    <div class="attr">Participant · 2026-05-05 transcript, 00:12:29</div>
+  </div>
+
+  <div class="meta-row">
+    <div class="cell">
+      <div class="label">Dominant emotion</div>
+      <div class="value"><em>Skepticism.</em> "Why would this time be any different?"</div>
+    </div>
+    <div class="cell">
+      <div class="label">First-30-seconds bar</div>
+      <div class="value">Show what is <em>different</em> — or they bounce.</div>
+    </div>
+  </div>
+
+  <div class="blocks">
+    <div class="block">
+      <h3 class="h-section">Top fears</h3>
+      <ul>
+        <li>Side effects (nausea, constipation, headaches) returning.</li>
+        <li>Paying again and getting weak results — <em>"$400 to lose seven pounds."</em></li>
+        <li>Being put back on a shot, pen, or compounded vial.</li>
+      </ul>
+    </div>
+    <div class="block">
+      <h3 class="h-section">Top needs</h3>
+      <ul>
+        <li>A credibly different path — pill-first form factor.</li>
+        <li>Active side-effect management with a provider as safety net.</li>
+        <li>Cost certainty up front — no surprise bills.</li>
+        <li>Proof they're protecting muscle and bone, not just dropping scale weight.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="success-block">
+    <h3 class="h-section">What success looks like for them</h3>
+    <p>They stay on the medication past the 6-week mark where they quit last time, because <strong>the side effects are actively managed</strong>, they can <strong>see they're protecting strength</strong> (not just scale weight), and the <strong>cost is stable and explained</strong>.</p>
+  </div>
+
+  <div class="implications-block">
+    <h3 class="h-section">Implications for design</h3>
+    <ol>
+      <li><strong>Lead with side-effect management and form-factor choice.</strong> Don't bury either behind feature-led copy.</li>
+      <li><strong>Never</strong> show a vial, syringe, or compounded medication in hero imagery.</li>
+      <li><strong>Pair every safety signal</strong> (FDA, name brand) with a coverage/cost signal in the same view.</li>
+      <li><strong>Body-composition proof has to feel low-effort.</strong> A burdensome measurement strategy collapses the value prop.</li>
+      <li><strong>Acknowledge the prior experience.</strong> "If a GLP-1 didn't work for you before, here's what we do differently" will land harder than a generic welcome.</li>
+    </ol>
+  </div>
+
+  <div class="evidence-strip">
+    <span class="label">Evidence</span>
+    Bad-side-effects + bad-results frame: 2026-05-05 transcript, 00:12:29 · Form-factor preference (pill &gt; pen &gt;&gt; injection &gt;&gt; vial): findings.md #2 · $50/mo against the $300–$700 anchor: findings.md #19 · Body composition as differentiator over scale weight: findings.md #6.
+  </div>
+</section>
+
+<!-- ====================== PERSONA 2 ====================== -->
+<section class="page persona persona-2">
+  <div class="mini-header">
+    <span class="left">Persona 02</span>
+    <span>Personas · Weight Management App</span>
+  </div>
+
+  <header class="persona-header">
+    <div class="left">
+      <div class="persona-eyebrow">Persona 02 · Cautious</div>
+      <h2 class="persona-name">Curious-but-Wary</h2>
+      <p class="persona-tag">Has never tried a GLP-1. Has heard both the success stories and the horror stories. Considering it for the first time as Medicare coverage opens.</p>
+    </div>
+    <div class="persona-numeral">02</div>
+  </header>
+
+  <div class="pullquote">
+    <span class="mark">"</span>
+    <p>I mean, much easier to do the pill for me because I'm definitely afraid of shots. … As you get older you have to worry about bone density and stuff, but body composition — it stands out more than the rest of the other ones here.</p>
+    <div class="attr">Participants · 2026-05-05 transcript, 00:13:23 &amp; 00:15:42</div>
+  </div>
+
+  <div class="meta-row">
+    <div class="cell">
+      <div class="label">Dominant emotion</div>
+      <div class="value"><em>Caution.</em> "I want this to work — but is it safe for me?"</div>
+    </div>
+    <div class="cell">
+      <div class="label">First-30-seconds bar</div>
+      <div class="value">Earn first trust — FDA, Medicare, provider, pill.</div>
+    </div>
+  </div>
+
+  <div class="blocks">
+    <div class="block">
+      <h3 class="h-section">Top fears</h3>
+      <ul>
+        <li>Needles.</li>
+        <li>The side-effect stories they've heard from friends and family.</li>
+        <li>Cost, even with Medicare in the picture.</li>
+        <li><em>"Is this even safe for someone my age?"</em></li>
+      </ul>
+    </div>
+    <div class="block">
+      <h3 class="h-section">Top needs</h3>
+      <ul>
+        <li>Strong trust scaffolding up front: FDA approval, name brands, provider in the loop.</li>
+        <li>A gentle entry — the pill option as the default visual frame.</li>
+        <li>A clear, early cost story tied to Medicare coverage.</li>
+        <li>Reassurance that aging is <em>protected for</em>, not ignored — bone density, strength, balance.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="success-block">
+    <h3 class="h-section">What success looks like for them</h3>
+    <p>They feel safe enough to start. The first 30 days don't deliver the horror stories they were told to expect. They have <strong>a real person they can call</strong> when something feels off — but not one who pesters them with daily check-ins.</p>
+  </div>
+
+  <div class="implications-block">
+    <h3 class="h-section">Implications for design</h3>
+    <ol>
+      <li><strong>Onboarding must earn first trust.</strong> FDA + Medicare coverage signals visible in the first screen or two.</li>
+      <li><strong>Provider-as-safety-net</strong> language, not provider-as-coach. "A clinician will check in on side effects and dosage" — not "Chat with your coach today!"</li>
+      <li><strong>Pill as default visual frame.</strong> Pen as a clearly-offered secondary. No needle imagery anywhere.</li>
+      <li><strong>Acknowledge the stories without amplifying them.</strong> "You've probably heard scary stories about GLP-1s. Here's what we do to keep you safe."</li>
+      <li><strong>Surface body-composition framing early</strong> — many in this group are aging-aware and want to protect strength and bone, not just shrink.</li>
+    </ol>
+  </div>
+
+  <div class="evidence-strip">
+    <span class="label">Evidence</span>
+    Fear of shots: 2026-05-05 transcript, 00:13:23 · Body composition + bone density as aging concerns: 2026-05-05 transcript, 00:15:42; findings.md #8 · Trust signals trigger cost questions — pair them: findings.md #4, principles.md #5 · Provider as safety net, not coach: findings.md #5, principles.md #6.
+  </div>
+</section>
+
+<!-- ====================== UNIVERSAL CONSTANTS ====================== -->
+<section class="page">
+  <div class="mini-header">
+    <span class="left">Section 02</span>
+    <span>Personas · Weight Management App</span>
+  </div>
+  <header class="section-header">
+    <span class="eyebrow">Universal constants</span>
+    <h2 class="title">True for both personas.</h2>
+    <p class="lede">Every prototype must respect these regardless of which persona it targets. They are the floor — the place where audience consensus is strong enough to treat as design law.</p>
+  </header>
+
+  <table class="constants">
+    <thead>
+      <tr>
+        <th>Constant</th>
+        <th class="source-cell">Source</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="constant-text">Pill &gt; pen &gt;&gt; injection &gt;&gt; compounded vial.</td>
+        <td class="source-cell">findings.md #2</td>
+      </tr>
+      <tr>
+        <td class="constant-text">Guidance, not tracking. Help <em>before</em> the decision, not after.</td>
+        <td class="source-cell">findings #9–11 · principles #1–2</td>
+      </tr>
+      <tr>
+        <td class="constant-text">Real person for accountability + side-effect management — <strong>not</strong> chat coaching.</td>
+        <td class="source-cell">findings #5 · principles #6</td>
+      </tr>
+      <tr>
+        <td class="constant-text">FDA approval &amp; name brands matter but trigger cost questions — pair them.</td>
+        <td class="source-cell">findings #4 · principles #5</td>
+      </tr>
+      <tr>
+        <td class="constant-text">Body composition (lean mass, bone density, fat-vs-muscle) is the differentiator, not scale weight.</td>
+        <td class="source-cell">findings #6 · principles #3</td>
+      </tr>
+      <tr>
+        <td class="constant-text">Older-adult-appropriate by default — seated options; standing tolerance can be under 5 minutes.</td>
+        <td class="source-cell">findings #15–16 · principles #7</td>
+      </tr>
+      <tr>
+        <td class="constant-text">No wearables, no extra devices.</td>
+        <td class="source-cell">findings #12 · principles #8</td>
+      </tr>
+      <tr>
+        <td class="constant-text">$50/month, tied to Medicare coverage, surfaced early.</td>
+        <td class="source-cell">findings #19 · principles #11</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ====================== HONESTY ====================== -->
+<section class="page">
+  <div class="mini-header">
+    <span class="left">Section 03</span>
+    <span>Personas · Weight Management App</span>
+  </div>
+  <header class="section-header">
+    <span class="eyebrow muted" style="color: var(--accent-2);">Honesty section</span>
+    <h2 class="title">What these personas do <em style="font-style: italic;">not</em> cover.</h2>
+    <p class="lede">The bullseye sample was deliberately small. Treat every gap below as research debt — work to do before the personas earn the right to anchor anything beyond prototypes.</p>
+  </header>
+
+  <table class="honesty">
+    <thead>
+      <tr>
+        <th>Gap</th>
+        <th>Why it matters</th>
+        <th>When it gets resolved</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="gap-cell">Ages</td>
+        <td>Ages are not disclosed for any participant. We can't tune age-specific copy or imagery with confidence.</td>
+        <td class="resolved-cell">Larger survey + screener redesign</td>
+      </tr>
+      <tr>
+        <td class="gap-cell">Health diagnoses</td>
+        <td>Pre-diabetic / diabetic / post-menopausal status is not attributed per person. Some recurring themes (restrictive-diet fatigue, bone density worry) likely correlate with diagnoses we can't see.</td>
+        <td class="resolved-cell">Screener redesign</td>
+      </tr>
+      <tr>
+        <td class="gap-cell">Household &amp; eating patterns</td>
+        <td>Cooking, takeout, spouse roles are real in the transcript but not tied to a persona. The "75% takeout, spouse stopped cooking" quote could belong to either archetype.</td>
+        <td class="resolved-cell">Larger survey</td>
+      </tr>
+      <tr>
+        <td class="gap-cell">Validated proportions</td>
+        <td>Roughly 3:1 Tried-and-Burned vs Curious-but-Wary in the n=4 sample. Not generalizable to the broader Medicare-age audience.</td>
+        <td class="resolved-cell">Larger survey</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="bottom-line">
+    <div class="label">Bottom line</div>
+    <p>Use these personas to target prototype work. Do <strong>not</strong> use them to make brand or marketing-strategy decisions yet. Re-evaluate the moment the larger research lands — and if it contradicts the bullseye sample, this document is the first thing to update.</p>
+  </div>
+
+  <div class="sources-block">
+    <h3 class="h-section">Sources</h3>
+    <ul>
+      <li><strong>2026-05-05 · Weight Management Research Readout</strong>Full readout + transcript. <code>data/raw/Weight Management Research Readout - 2026_05_05 14_29 PDT - Notes by Gemini.pdf</code></li>
+      <li><strong>2026-05-04 · Weekly Product/Design Sync</strong>Early readout + Q3 launch commitment. <code>data/raw/Weekly Product_Design Sync - 2026_05_04 11_30 PDT - Notes by Gemini.pdf</code></li>
+      <li><strong>Synthesis files (working memory)</strong><code>data/synthesis/</code> — findings.md · decisions.md · principles.md · value-props.md · personas.md · positioning.md · open-questions.md</li>
+      <li><strong>Companion document</strong><code>design-brief.md</code> — the prototype-phase design brief that consumes these personas.</li>
+    </ul>
+  </div>
+</section>
+
+</body>
+</html>

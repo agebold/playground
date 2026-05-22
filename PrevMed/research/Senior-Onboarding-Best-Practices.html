@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Senior Healthcare Onboarding — Best Practices &amp; Bold Opportunities</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --purple-700: #3f00a8;
+    --purple-600: #5200d4;
+    --purple-100: #f5f0ff;
+    --purple-50:  #faf5ff;
+    --yellow:     #FFCC1A;
+    --navy:       #160840;
+    --green:      #16a34a;
+    --red:        #DC2626;
+    --gray-900:   #171717;
+    --gray-700:   #374151;
+    --gray-500:   #6B7280;
+    --gray-300:   #D1D5DB;
+    --gray-200:   #e5e5e5;
+    --gray-100:   #f5f5f5;
+    --gray-50:    #fafafa;
+    --white:      #ffffff;
+  }
+  @page {
+    size: Letter;
+    margin: 0.5in 0.6in;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.5;
+    color: var(--gray-900);
+    background: var(--white);
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  h1, h2, h3, h4 {
+    font-family: 'Inter', system-ui, sans-serif;
+    color: var(--navy);
+    margin: 0 0 0.4em 0;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  h1 { font-size: 26pt; letter-spacing: -0.02em; color: var(--purple-600); }
+  h2 { font-size: 16pt; margin-top: 1em; padding-bottom: 0.2em; border-bottom: 2px solid var(--purple-600); }
+  h3 { font-size: 12pt; margin-top: 0.8em; color: var(--purple-700); }
+  h4 { font-size: 10.5pt; margin-top: 0.5em; color: var(--gray-900); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; }
+  p { margin: 0 0 0.55em 0; }
+  a { color: var(--purple-600); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  strong { font-weight: 600; color: var(--gray-900); }
+  ul, ol { margin: 0 0 0.8em 0; padding-left: 1.4em; }
+  li { margin-bottom: 0.3em; }
+
+  /* Citation markers */
+  sup.cite {
+    font-size: 0.7em;
+    font-weight: 600;
+    color: var(--purple-600);
+    vertical-align: super;
+    margin-left: 0.1em;
+  }
+  sup.cite a { color: var(--purple-600); }
+
+  /* Cover */
+  .cover {
+    page-break-after: always;
+    padding-top: 0.4in;
+  }
+  .cover .eyebrow {
+    font-size: 10pt;
+    font-weight: 600;
+    color: var(--purple-600);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 0.6em;
+  }
+  .cover h1 {
+    font-size: 32pt;
+    line-height: 1.1;
+    margin-bottom: 0.4em;
+  }
+  .cover .subtitle {
+    font-size: 14pt;
+    color: var(--gray-700);
+    font-weight: 400;
+    max-width: 6.5in;
+    line-height: 1.4;
+    margin-bottom: 1.2em;
+  }
+  .cover .meta {
+    color: var(--gray-500);
+    font-size: 10pt;
+    border-top: 1px solid var(--gray-200);
+    padding-top: 0.6em;
+    margin-top: 1em;
+  }
+
+  /* TL;DR box */
+  .tldr {
+    background: var(--purple-50);
+    border-left: 4px solid var(--purple-600);
+    padding: 16px 20px;
+    border-radius: 6px;
+    margin: 1em 0 1.4em 0;
+  }
+  .tldr h3 { margin-top: 0; color: var(--purple-700); }
+  .tldr ul { margin-bottom: 0; }
+  .tldr li { line-height: 1.5; }
+
+  /* Section breaks */
+  .section { page-break-inside: auto; }
+  .pb { page-break-before: always; }
+  .avoid-break { page-break-inside: avoid; }
+
+  /* Table of contents */
+  .toc {
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    border-radius: 6px;
+    padding: 14px 20px;
+    margin: 0.6em 0 1em 0;
+  }
+  .toc h3 { margin-top: 0; }
+  .toc ol { margin: 0; padding-left: 1.2em; }
+  .toc li { margin-bottom: 0.2em; font-size: 10.5pt; }
+  .toc a { color: var(--gray-900); }
+  .toc a:hover { color: var(--purple-600); }
+
+  /* Stat callout (used inline) */
+  .stat-row {
+    display: flex;
+    gap: 14px;
+    margin: 0.5em 0 1em 0;
+    flex-wrap: wrap;
+  }
+  .stat {
+    flex: 1 1 30%;
+    min-width: 1.6in;
+    background: var(--purple-50);
+    border-left: 3px solid var(--purple-600);
+    padding: 10px 12px;
+    border-radius: 4px;
+    page-break-inside: avoid;
+  }
+  .stat .number {
+    font-size: 22pt;
+    font-weight: 800;
+    color: var(--purple-600);
+    line-height: 1;
+    margin-bottom: 0.25em;
+    letter-spacing: -0.02em;
+  }
+  .stat .label {
+    font-size: 9.5pt;
+    color: var(--gray-700);
+    line-height: 1.35;
+  }
+
+  /* Opportunity table */
+  table.opp {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.4em 0 1em 0;
+    font-size: 9.5pt;
+    page-break-inside: auto;
+  }
+  table.opp th, table.opp td {
+    text-align: left;
+    vertical-align: top;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--gray-200);
+  }
+  table.opp th {
+    background: var(--navy);
+    color: var(--white);
+    font-weight: 600;
+    font-size: 9pt;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  table.opp tr { page-break-inside: avoid; }
+  table.opp td.sev-high { color: var(--red); font-weight: 600; }
+  table.opp td.sev-med  { color: #d97706; font-weight: 600; }
+  table.opp td.sev-low  { color: var(--green); font-weight: 600; }
+
+  /* Sources list */
+  ol.sources {
+    counter-reset: src;
+    padding-left: 0;
+    list-style: none;
+  }
+  ol.sources li {
+    counter-increment: src;
+    padding-left: 2.2em;
+    position: relative;
+    margin-bottom: 0.5em;
+    font-size: 9.5pt;
+    line-height: 1.45;
+    page-break-inside: avoid;
+  }
+  ol.sources li::before {
+    content: "[" counter(src) "]";
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-weight: 600;
+    color: var(--purple-600);
+  }
+  ol.sources li a { word-break: break-all; }
+
+  /* Note callout */
+  .note {
+    background: #fffbeb;
+    border-left: 3px solid var(--yellow);
+    padding: 10px 14px;
+    border-radius: 4px;
+    margin: 0.5em 0 1em 0;
+    font-size: 10pt;
+    color: var(--gray-700);
+  }
+  .note strong { color: var(--gray-900); }
+
+  /* Compact list inside best-practice sections */
+  ul.tight li { margin-bottom: 0.15em; }
+</style>
+</head>
+<body>
+
+<!-- ============ COVER ============ -->
+<section class="cover">
+  <div class="eyebrow">Bold / PrevMed · Research Report</div>
+  <h1>Designing Onboarding for Seniors in Healthcare</h1>
+  <div class="subtitle">An executive brief on industry best practice and where the Bold funnel can win — every claim cited.</div>
+  <div class="meta">
+    Audience: 65+ Medicare-eligible · Sources current as of 2024–2026 · Prepared May 2026 · 8 pages
+  </div>
+
+  <div class="tldr">
+    <h3>TL;DR — Five things to internalize</h3>
+    <ul>
+      <li><strong>Form length is conversion's single biggest lever.</strong> Conversion drops from <strong>23.1% at 3 fields → 6.9% at 10+ fields</strong> <sup class="cite"><a href="#s1">[1]</a></sup>. The average e-commerce checkout has 11.3 fields when it needs ~8 <sup class="cite"><a href="#s2">[2]</a></sup>. Bold's current 14-step funnel is well past that cliff.</li>
+      <li><strong>Plain language is a 50%+ conversion multiplier in healthcare.</strong> Pages at a 5th–7th-grade reading level convert at a 10.8% median; 10th–12th-grade copy drops conversion by 55.6% <sup class="cite"><a href="#s3">[3]</a></sup>.</li>
+      <li><strong>Human voice beats automated reminders.</strong> Manual phone reminders reduce no-shows ~39% vs ~29% for automated SMS — a 10-point lift directly relevant to Bold's no-show problem <sup class="cite"><a href="#s4">[4]</a></sup>.</li>
+      <li><strong>Caregivers are central, but proxy access is broken industry-wide.</strong> Fewer than 3% of caregivers have a designated patient-portal proxy account <sup class="cite"><a href="#s5">[5]</a></sup>, while 82% of homebound older adults need caregiver help to complete a telehealth visit <sup class="cite"><a href="#s6">[6]</a></sup>. Whoever solves this first owns the category.</li>
+      <li><strong>Accessibility is now a legal floor, not a polish item.</strong> HHS Section 504 requires WCAG 2.1 AA compliance by May 11, 2026 for any Medicare-accepting entity <sup class="cite"><a href="#s7">[7]</a></sup>. 4,000+ ADA digital-accessibility lawsuits were filed in 2024 alone <sup class="cite"><a href="#s8">[8]</a></sup>.</li>
+    </ul>
+  </div>
+
+  <div class="toc">
+    <h3>Contents</h3>
+    <ol>
+      <li><a href="#s-audience">The Senior Audience Today</a></li>
+      <li><a href="#s-friction">Best Practice #1 — Reduce Friction Aggressively</a></li>
+      <li><a href="#s-trust">Best Practice #2 — Build Trust Early and Repeatedly</a></li>
+      <li><a href="#s-access">Best Practice #3 — Accessibility, Modality, and the Caregiver Lane</a></li>
+      <li><a href="#s-insurance">Best Practice #4 — Insurance Verification and Cost Resolution</a></li>
+      <li><a href="#s-noshow">Best Practice #5 — Post-Booking and No-Show Reduction</a></li>
+      <li><a href="#s-bold">Bold Opportunity Map</a></li>
+      <li><a href="#s-sources">Sources</a></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ 1. AUDIENCE ============ -->
+<section class="section" id="s-audience">
+  <h2>1. The Senior Audience Today</h2>
+
+  <p>The 65+ telehealth user is no longer a fringe persona. They have the device, the comfort, and increasingly the expectation that healthcare meets them online — but onboarding design assumptions have not caught up.</p>
+
+  <div class="stat-row">
+    <div class="stat">
+      <div class="number">78%</div>
+      <div class="label">of adults 65+ own a smartphone in 2025 — up from 18% in 2013 <sup class="cite"><a href="#s9">[9]</a></sup>.</div>
+    </div>
+    <div class="stat">
+      <div class="number">73%</div>
+      <div class="label">of adults 50+ used telehealth in the past 12 months; 90% were satisfied <sup class="cite"><a href="#s10">[10]</a></sup>.</div>
+    </div>
+    <div class="stat">
+      <div class="number">38%</div>
+      <div class="label">of older adults cannot complete a self-service video visit on their own <sup class="cite"><a href="#s11">[11]</a></sup>.</div>
+    </div>
+  </div>
+
+  <h4>Sensory and motor impairment is the baseline, not the edge case</h4>
+  <ul class="tight">
+    <li><strong>27.8%</strong> of adults 71+ have measured vision impairment <sup class="cite"><a href="#s12">[12]</a></sup>.</li>
+    <li><strong>67.9%</strong> of adults 70+ have hearing loss; <strong>97.6%</strong> of those 90+ <sup class="cite"><a href="#s13">[13]</a></sup>.</li>
+    <li><strong>50.4%</strong> of adults 65+ live with arthritis <sup class="cite"><a href="#s14">[14]</a></sup>.</li>
+    <li><strong>25.2%</strong> have mild cognitive impairment by ages 80–84 <sup class="cite"><a href="#s15">[15]</a></sup>.</li>
+  </ul>
+
+  <h4>The trust posture is fragile</h4>
+  <p>AARP's 2025 Tech Trends report finds that <strong>25% of older adults cite data privacy as the #1 barrier to tech adoption</strong> <sup class="cite"><a href="#s9">[9]</a></sup>. Nielsen Norman Group's senior usability research found seniors blame themselves <strong>90% of the time</strong> when they hit a problem, vs. 58% for younger users <sup class="cite"><a href="#s16">[16]</a></sup>. The senior user has the device but not the confidence. Onboarding is where you win them or lose them.</p>
+</section>
+
+<!-- ============ 2. FRICTION ============ -->
+<section class="section" id="s-friction">
+  <h2>2. Best Practice #1 — Reduce Friction Aggressively</h2>
+
+  <p>Every field, every screen, every cognitive switch is a tax. For seniors, who are 2× more likely than younger users to give up on a task when something goes wrong <sup class="cite"><a href="#s16">[16]</a></sup>, that tax compounds fast.</p>
+
+  <h3>The field-count cliff</h3>
+  <p>Digital Applied's 2026 benchmarks make this brutally clear: conversion drops <strong>modestly</strong> from 23.1% at 3 fields to 17.0% at 5, then <strong>collapses</strong> to 11.4% at 7 and 6.9% at 10+ fields <sup class="cite"><a href="#s1">[1]</a></sup>. Baymard's 2024 e-commerce checkout research finds the average checkout has 11.3 fields when it needs only ~8 — and <strong>18% of users abandon checkout because the process is "too long / complicated"</strong> <sup class="cite"><a href="#s2">[2]</a></sup>.</p>
+
+  <p>One concrete win: making a phone-number field <em>optional</em> reduced abandonment from <strong>39% to 4%</strong> in a documented ConvertCart case study <sup class="cite"><a href="#s17">[17]</a></sup>.</p>
+
+  <h3>Multi-step forms — with one important caveat</h3>
+  <p>The widely-cited "multi-step forms convert 86% higher" stat is poorly sourced. The credible primary benchmark is Zuko's analytics, which found multi-step beats single-page by <strong>~14% — but only when the form has more than 7 fields</strong> <sup class="cite"><a href="#s18">[18]</a></sup>. Below 7 fields, multi-step is neutral or slightly negative. Translation: <em>compress your fields first; then split what's left across screens.</em></p>
+
+  <h3>Conversational onboarding — promising but unproven for seniors</h3>
+  <p>Vendor benchmarks claim conversational/chatbot forms achieve <strong>30–50% higher completion</strong> than static forms <sup class="cite"><a href="#s19">[19]</a></sup>, and ~3× higher lead-conversion rates <sup class="cite"><a href="#s20">[20]</a></sup>. Hyro's enterprise health-system deployments report 80% positive-conversation rates with 98% accuracy <sup class="cite"><a href="#s21">[21]</a></sup>, and K Health's AI-led intake is now in Cedars-Sinai, Mayo Clinic, Mass General Brigham, and Northwell <sup class="cite"><a href="#s22">[22]</a></sup>.</p>
+
+  <div class="note"><strong>Confidence note:</strong> Every chatbot-lift number above is vendor-published; no peer-reviewed senior-specific RCT exists yet. The directional case is strong; the precise magnitude for 65+ in healthcare is unknown. Recommend piloting and instrumenting before treating it as a guaranteed lift.</div>
+</section>
+
+<!-- ============ 3. TRUST ============ -->
+<section class="section" id="s-trust">
+  <h2>3. Best Practice #2 — Build Trust Early and Repeatedly</h2>
+
+  <p>Rock Health titled its 2022 industry report <em>"Moving at the Speed of Trust"</em> for a reason. For Medicare-age users — who grew up reading AARP's scam warnings — trust is not a visual flourish, it is the gating factor on whether they will type a single character.</p>
+
+  <h3>Reading level is the single biggest trust signal</h3>
+  <div class="stat-row">
+    <div class="stat">
+      <div class="number">10.8%</div>
+      <div class="label">median conversion for healthcare pages written at a 5th–7th-grade reading level <sup class="cite"><a href="#s3">[3]</a></sup>.</div>
+    </div>
+    <div class="stat">
+      <div class="number">–55.6%</div>
+      <div class="label">drop in conversion when copy is at a 10th–12th-grade level vs. 5th–7th <sup class="cite"><a href="#s3">[3]</a></sup>.</div>
+    </div>
+    <div class="stat">
+      <div class="number">5.1%</div>
+      <div class="label">median healthcare landing-page conversion industry-wide — the absolute floor we are competing against <sup class="cite"><a href="#s3">[3]</a></sup>.</div>
+    </div>
+  </div>
+
+  <h3>Trust signals that move the needle (and where to place them)</h3>
+  <ul class="tight">
+    <li><strong>Trust badges near submit buttons</strong> — a recent A/B test adding a Norton badge alongside existing indicators lifted conversion <strong>12.2%</strong> and revenue 16.6% <sup class="cite"><a href="#s23">[23]</a></sup>. Critically, badges in the <em>footer</em> do almost nothing — placement matters.</li>
+    <li><strong>Real faces, not stock photography</strong> — VWO documented a <strong>+35% signup lift</strong> when a stock image was replaced with a photo of the company's founder; eye-tracking research confirms real faces draw attention and stock faces are ignored <sup class="cite"><a href="#s24">[24]</a></sup>.</li>
+    <li><strong>Testimonials, especially video</strong> — written testimonials lift sales-page conversion ~34%, video up to 62%; 79% of viewers prefer video over written <sup class="cite"><a href="#s25">[25]</a></sup>. For seniors, age-match the testimonial ("Margaret, 72, AZ") instead of using influencer content.</li>
+    <li><strong>Named, credentialed clinician above the fold</strong> — <strong>81% of older adults say telehealth is best with a known provider</strong> <sup class="cite"><a href="#s10">[10]</a></sup>. Show photo + full name + credentials + years of practice on landing and provider-match screens.</li>
+    <li><strong>17% of cart abandoners</strong> in Baymard's checkout research cited "didn't trust the site with my card info" — directly addressable with plain-English security copy <sup class="cite"><a href="#s26">[26]</a></sup>.</li>
+  </ul>
+
+  <h3>Anti-patterns that destroy trust</h3>
+  <ul class="tight">
+    <li>"Fear" copy ("harmful," "illness") underperforms "trust" copy ("proven," "recommended," "board-certified") in healthcare <sup class="cite"><a href="#s3">[3]</a></sup>.</li>
+    <li>Unexplained third-party processor names in consent text ("Verified and its vendors may receive your information…") pattern-match to identity-theft scam warnings for a 76-year-old <sup class="cite"><a href="#s27">[27]</a></sup>.</li>
+    <li>Wall-of-text HIPAA legalese gated behind a single "I acknowledge" checkbox causes abandonment at the final step — users want to "ask my daughter" first <sup class="cite"><a href="#s27">[27]</a></sup>.</li>
+  </ul>
+</section>
+
+<!-- ============ 4. ACCESS / CAREGIVER ============ -->
+<section class="section" id="s-access">
+  <h2>4. Best Practice #3 — Accessibility, Modality, and the Caregiver Lane</h2>
+
+  <h3>Accessibility is now the legal floor</h3>
+  <p>HHS's Section 504 final rule (May 2024) requires every entity that accepts Medicare or Medicaid funding to meet WCAG 2.1 Level AA by <strong>May 11, 2026</strong> (May 2027 for &lt;15 employees) <sup class="cite"><a href="#s7">[7]</a></sup>. The litigation trend is real: <strong>4,000+ ADA digital-accessibility lawsuits were filed in 2024 alone</strong>, and notably <strong>1,000+ of those were against businesses that had accessibility "widgets" installed</strong> — widgets do not provide legal protection <sup class="cite"><a href="#s8">[8]</a></sup>.</p>
+
+  <p>The senior-friendly floor is meaningfully stricter than baseline AA:</p>
+  <ul class="tight">
+    <li>Body text <strong>≥ 18px</strong> (not 16px — NN/g notes people read 11% slower for every 20 years they age <sup class="cite"><a href="#s16">[16]</a></sup>).</li>
+    <li>Touch targets <strong>≥ 44×44 px</strong> (WCAG 2.2 SC 2.5.8 AAA target — Apple HIG aligned). Motor-impaired users see error rates <strong>up to 75% higher</strong> on small targets <sup class="cite"><a href="#s28">[28]</a></sup>.</li>
+    <li>Contrast ≥ 4.5:1 body, ≥ 3:1 UI components. No gray-on-white.</li>
+    <li>Built-in text-resize control on the page itself — NN/g observes most seniors don't know browser zoom exists <sup class="cite"><a href="#s16">[16]</a></sup>.</li>
+    <li>Replace dropdowns with radio buttons when ≤5 options. Inline-error at field exit, not at submit.</li>
+  </ul>
+
+  <p>And accessibility is not just compliance theater — case-study evidence shows accessibility improvements lifted conversion <strong>26%</strong> and checkout completion <strong>21.9%</strong> in a documented retail case <sup class="cite"><a href="#s29">[29]</a></sup>, and a 10,000-site study found WCAG-compliant sites get <strong>23% more organic traffic</strong> <sup class="cite"><a href="#s30">[30]</a></sup>.</p>
+
+  <h3>Modality: phone is not a fallback, it's a primary channel</h3>
+  <p>AARP's 2024 research finds <strong>66% of older adults who don't currently use telehealth would prefer audio-only over video</strong>, and <strong>11% of Silent Generation consumers haven't tried virtual care because they found it "uncomfortable or too confusing"</strong> <sup class="cite"><a href="#s31">[31]</a></sup>. Zoom-first scheduling for Medicare-age users is a known anti-pattern. Phone should be <em>equal or default</em>, with Zoom as an "if you prefer video" option — and absolutely not buried as a small text link below the video CTA.</p>
+
+  <h3>The caregiver lane: a category-leading move</h3>
+  <p>Kalicki et al. (2021) found <strong>82% of homebound older adults (mean age 82.7; 46.6% with dementia) required caregiver assistance to complete a telehealth visit</strong> <sup class="cite"><a href="#s6">[6]</a></sup>. Yet across multiple US health-system studies, <strong>fewer than 3% of caregivers have a designated proxy patient-portal account</strong> <sup class="cite"><a href="#s5">[5]</a></sup>. Password-sharing — where the caregiver logs in <em>as</em> the patient — is the dominant workaround, and a documented HIPAA and privacy hazard <sup class="cite"><a href="#s32">[32]</a></sup>.</p>
+
+  <p>The fix is structural, not cosmetic:</p>
+  <ul class="tight">
+    <li>An explicit <em>"I'm helping a family member sign up"</em> entry on the welcome screen.</li>
+    <li><strong>Native proxy accounts</strong> — caregiver has their own credentials linked to the patient's record (not shared logins).</li>
+    <li>Granular consent — the patient toggles what the caregiver can see (visit notes yes, billing no).</li>
+    <li>Post-signup notification to the patient confirming proxy access was granted.</li>
+  </ul>
+
+  <p>Almost no Medicare-focused competitor has this built well. Whoever ships it first owns the conversation.</p>
+</section>
+
+<!-- ============ 5. INSURANCE ============ -->
+<section class="section" id="s-insurance">
+  <h2>5. Best Practice #4 — Insurance Verification and Cost Resolution</h2>
+
+  <p>Insurance verification is the single riskiest step in any healthcare onboarding. Healthcare patient-registration form abandonment runs <strong>20–40%</strong> per industry aggregations <sup class="cite"><a href="#s33">[33]</a></sup>, and the 5-to-7-field cliff (§2 above) sits right in the middle of where MBI + insurance fields typically land.</p>
+
+  <h3>The three-track flow</h3>
+  <p>Treat Medicare Beneficiary Identifier (MBI) capture as <strong>three parallel paths on one screen</strong>:</p>
+  <ol>
+    <li><strong>Photo capture with OCR (default)</strong> — front/back of the Medicare or Medicare Advantage card, processed via Stedi, pVerify, or Approved Admissions APIs that hit CMS HETS 270/271. pVerify and Stedi support automatic MA detection from a "Medicare" card photo — which matters because most seniors do not know whether their plan is Original Medicare or MA.</li>
+    <li><strong>Manual fallback</strong> — member ID + DOB + name only. No more.</li>
+    <li><strong>"I'll do this later" → phone concierge</strong> — route to a scheduled call-back. Heyday Health's Medicare-focused model uses a "Health Ally" as the human first-line; Devoted Health uses a "Guide" (1-800-DEVOTED) that proactively confirms onboarding within days of enrollment <sup class="cite"><a href="#s34">[34]</a></sup>.</li>
+  </ol>
+
+  <h3>Resolve cost ambiguity at the eligibility-confirmed screen</h3>
+  <p>The single most common cost-related abandonment trigger is an unresolved range — e.g. "Your estimated out-of-pocket cost is $0–$35." A senior on a fixed income reads that and pauses: <em>"Which one is me?"</em> The Bold funnel audit identifies this as a Tier 4 trust issue <sup class="cite"><a href="#s27">[27]</a></sup>. Show a personalized "You will pay $0" wherever the API can resolve it. If it cannot, explain why and commit to a follow-up — never leave the user guessing about money.</p>
+
+  <h3>Camera-capture UX details that matter</h3>
+  <ul class="tight">
+    <li>Card-sized overlay with auto edge detection.</li>
+    <li>Manual capture fallback if auto fails — never block on a single low-quality image.</li>
+    <li>Gallery upload alternative for users who already photographed their card.</li>
+    <li>Just-in-time camera permission with a plain-language reason: <em>"We need your camera to read your Medicare card. We don't store the photo after we read your member ID."</em></li>
+  </ul>
+</section>
+
+<!-- ============ 6. NO-SHOW ============ -->
+<section class="section" id="s-noshow">
+  <h2>6. Best Practice #5 — Post-Booking and No-Show Reduction</h2>
+
+  <p>Onboarding does not end at "Confirmed." For a senior user, the 24–48 hours between booking and the first visit is when they get cold feet, can't find the Zoom link, or aren't sure the appointment is real. No-show reduction is the highest-ROI lever in the entire funnel — and almost all of it lives <em>after</em> the booking is made.</p>
+
+  <h3>The hierarchy of reminders</h3>
+  <div class="stat-row">
+    <div class="stat">
+      <div class="number">38%</div>
+      <div class="label">no-show reduction from SMS reminders (Imperial College RCT, summarized by Klara) <sup class="cite"><a href="#s35">[35]</a></sup>.</div>
+    </div>
+    <div class="stat">
+      <div class="number">62%</div>
+      <div class="label">relative no-show reduction in a 2023 clinic deployment of automated SMS + phone reminders (18.55% → 7.01%) <sup class="cite"><a href="#s4">[4]</a></sup>.</div>
+    </div>
+    <div class="stat">
+      <div class="number">39% vs 29%</div>
+      <div class="label">Manual phone reminders reduce no-shows ~39%; automated SMS only ~29% — a clear 10-point edge for human voice <sup class="cite"><a href="#s4">[4]</a></sup>.</div>
+    </div>
+  </div>
+
+  <p>The implication for Bold is direct: a lightweight, scaled human-touch outreach 24 hours before the first visit is likely the single biggest lever available. This is exactly what the original Care Coordinator call did before it was removed — its job was not just scheduling but <em>expectation-setting, tech check, modality coaching, and human reassurance</em> <sup class="cite"><a href="#s27">[27]</a></sup>. A 2-minute confirmation outbound call brings most of that scaffolding back without restoring the full original step.</p>
+
+  <h3>Digital scheduling structurally helps too</h3>
+  <p>Zocdoc-published data shows online bookings have <strong>6.9% non-attendance</strong> (cancellations + no-shows) vs. <strong>17–31% for voice-booked appointments</strong> — i.e., a digital book + automated reminder stack is already a structural improvement over phone-only booking <sup class="cite"><a href="#s36">[36]</a></sup>. Solv reports <strong>75% of patients who book ahead complete digital intake before arrival</strong> <sup class="cite"><a href="#s37">[37]</a></sup>.</p>
+
+  <h3>What "good" looks like post-booking</h3>
+  <ul class="tight">
+    <li>Immediate confirmation: email + SMS + <code>.ics</code> calendar invite, sent <em>from the named clinician</em>, not "PrevMed Team."</li>
+    <li>60-second tech check inline after booking (camera/mic test for video; verify callback number for phone).</li>
+    <li>Day-before SMS with the provider's photo and a one-tap "Need help connecting? Call (XXX)" CTA.</li>
+    <li>24-hour pre-visit human confirmation call/SMS by a Care Coordinator (especially for users 75+ and first-time video users).</li>
+    <li>Day-of: text 1 hour before with "Tap here to join — need help? Reply HELP."</li>
+  </ul>
+</section>
+
+<!-- ============ 7. BOLD OPPORTUNITIES ============ -->
+<section class="section pb" id="s-bold">
+  <h2>7. Bold Opportunity Map</h2>
+
+  <p>Mapping the best practices above against Bold's current clinic-funnel flow (<em>Landing → Coverage → Loading → Eligibility → Focus → Concern → Intake → Matching → Provider → Schedule → HIPAA → Consent → Phone → Confirmed</em>) <sup class="cite"><a href="#s38">[38]</a></sup>. Gap severity is calibrated to the Bold Funnel Conversion Audit's Tier 1–4 prioritization <sup class="cite"><a href="#s27">[27]</a></sup>.</p>
+
+  <table class="opp">
+    <thead>
+      <tr>
+        <th style="width:22%">Best practice</th>
+        <th style="width:25%">Bold current state</th>
+        <th style="width:9%">Gap</th>
+        <th style="width:44%">Recommended action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Compress to ≤7 fields per screen; sub-5 if possible <sup class="cite"><a href="#s1">[1]</a></sup><sup class="cite"><a href="#s2">[2]</a></sup></td>
+        <td>14-step funnel; multiple steps re-ask for info already captured</td>
+        <td class="sev-high">High</td>
+        <td>Audit the 14 screens for duplicate fields (e.g. DOB at Account + Eligibility). Pre-fill from OCR. Compress visible step count to ~5 logical groups: Welcome → Coverage → About You → Pick Provider → Confirm.</td>
+      </tr>
+      <tr>
+        <td>Make phone-number optional or defer until post-confirmation <sup class="cite"><a href="#s17">[17]</a></sup></td>
+        <td>Phone is a dedicated mandatory step</td>
+        <td class="sev-high">High</td>
+        <td>Kill the dedicated Phone step or move it to post-confirmation. Cheapest 30+ point conversion lift available.</td>
+      </tr>
+      <tr>
+        <td>6th–8th grade reading level across the funnel <sup class="cite"><a href="#s3">[3]</a></sup></td>
+        <td>HIPAA and Consent screens are dense legalese; "Verify eligibility" is jargon</td>
+        <td class="sev-high">High</td>
+        <td>Run every screen through Hemingway Editor; target Grade 6. Replace "Verify eligibility" with "Check your Medicare coverage." Compress HIPAA into a plain-English summary with a "Read full notice" expand.</td>
+      </tr>
+      <tr>
+        <td>24h pre-visit human-touch outreach <sup class="cite"><a href="#s4">[4]</a></sup></td>
+        <td>No human contact post-booking after the CC call was removed</td>
+        <td class="sev-high">High</td>
+        <td>Restore a lightweight 2-minute CC confirmation call/SMS at T-24h. Single biggest no-show lever available.</td>
+      </tr>
+      <tr>
+        <td>Phone visit equal to Zoom (or default for 75+) <sup class="cite"><a href="#s31">[31]</a></sup></td>
+        <td>"45-min Zoom video call" is the default; "Switch to phone" is a hidden text link</td>
+        <td class="sev-high">High</td>
+        <td>Two primary buttons on Schedule: <em>Phone</em> and <em>Video</em>. Default to phone for users 75+. Reframe duration as "15-min welcome + 30-min care plan."</td>
+      </tr>
+      <tr>
+        <td>Three-track Medicare verification with personalized cost <sup class="cite"><a href="#s33">[33]</a></sup></td>
+        <td>Photo + manual paths exist but cost shown as "$0–$35" range; no concierge fallback</td>
+        <td class="sev-med">Med</td>
+        <td>Resolve to a personalized $ value. Add explicit "Talk to a Care Coordinator instead" escape-hatch on the Coverage and Provider-match screens.</td>
+      </tr>
+      <tr>
+        <td>Trust signals near submit buttons and sensitive fields <sup class="cite"><a href="#s23">[23]</a></sup><sup class="cite"><a href="#s24">[24]</a></sup></td>
+        <td>No security badges above the fold; "Frequently rebooked" badge is vague; consent text references "Verified" with no explanation</td>
+        <td class="sev-med">Med</td>
+        <td>Add SOC 2/HITRUST badge + plain-English HIPAA copy on Landing and Coverage. Replace "Frequently rebooked" with concrete proof ("Seen by 1,200+ patients, 4.9★"). Explain "Verified" inline or remove third-party language.</td>
+      </tr>
+      <tr>
+        <td>Persistent visible support phone in ≥18pt on every step <sup class="cite"><a href="#s10">[10]</a></sup></td>
+        <td>CC phone visible only after commitment, not in the hero or on Coverage</td>
+        <td class="sev-med">Med</td>
+        <td>Show ≥18pt phone number + "Request a call back" link on every step, including the Coverage step (highest drop-off).</td>
+      </tr>
+      <tr>
+        <td>Caregiver / proxy entry path <sup class="cite"><a href="#s5">[5]</a></sup><sup class="cite"><a href="#s6">[6]</a></sup></td>
+        <td>No "Helping a family member" entry; no native proxy account model</td>
+        <td class="sev-med">Med</td>
+        <td>Add "I'm helping a family member sign up" button on Landing. Build native proxy accounts with granular consent toggles. Category-leading move.</td>
+      </tr>
+      <tr>
+        <td>Replace stacked open-text fields with chip-select + 1 textarea <sup class="cite"><a href="#s18">[18]</a></sup></td>
+        <td>Two consecutive open-text questions on intake — highest mobile abandonment pattern</td>
+        <td class="sev-med">Med</td>
+        <td>Convert Q3 + Q4 to chip-select with a single optional "anything else?" textarea. Add voice input on any free-text that survives.</td>
+      </tr>
+      <tr>
+        <td>Conversational onboarding pilot (directional) <sup class="cite"><a href="#s19">[19]</a></sup><sup class="cite"><a href="#s21">[21]</a></sup></td>
+        <td>Static multi-step form throughout</td>
+        <td class="sev-low">Pilot</td>
+        <td>Pilot a chat-style version of the Intake step (Q3/Q4) and instrument completion vs the static control. Senior-specific evidence is thin; treat as a learning bet, not a guaranteed lift.</td>
+      </tr>
+      <tr>
+        <td>WCAG 2.2 AA compliance audit before May 11, 2026 <sup class="cite"><a href="#s7">[7]</a></sup><sup class="cite"><a href="#s8">[8]</a></sup></td>
+        <td>No documented accessibility audit; ≥18pt body and 44×44 targets not enforced</td>
+        <td class="sev-low">Plan</td>
+        <td>Schedule axe + Lighthouse pass + one manual screen-reader test. Block release of any new funnel screen on a passing audit.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>What I'd A/B test first (next 30 days)</h3>
+  <ol>
+    <li><strong>Phone equal to Zoom</strong> on the schedule screen → expected: no-show ↓.</li>
+    <li><strong>"Talk to a Care Coordinator first"</strong> escape-hatch on provider-match → expected: schedule rate ↑ (recovers the segment direct-booking lost).</li>
+    <li><strong>24-hour pre-visit CC outreach</strong> → expected: show rate ↑ (single biggest lever).</li>
+    <li><strong>Hero rewrite</strong> with "How it works" secondary CTA → expected: hero scroll % up from 30% toward 50%+.</li>
+  </ol>
+</section>
+
+<!-- ============ 8. SOURCES ============ -->
+<section class="section pb" id="s-sources">
+  <h2>8. Sources</h2>
+  <p style="font-size: 9.5pt; color: var(--gray-500);">Every numeric claim in this report is anchored to one of the sources below. Confidence labels: <strong>P</strong> = primary research / peer-reviewed; <strong>V</strong> = vendor-published (treat as directional); <strong>S</strong> = secondary trade-press / blog summary of a primary source.</p>
+
+  <ol class="sources">
+    <li id="s1"><strong>[P]</strong> Digital Applied, 2026 Form Conversion Benchmarks — "Conversion drops from 23.1% at 3 fields to 17.0% at 5, but collapses to 11.4% at 7 and 6.9% at 10+ fields." Cited via <em>Designing the PrevMed Onboarding for Seniors 65+ — A Research-Backed Playbook</em>, Bold internal, May 2026.</li>
+    <li id="s2"><strong>[P]</strong> Baymard Institute, "Checkout Optimization: Average Form Fields" (2024). <a href="https://baymard.com/blog/checkout-flow-average-form-fields">https://baymard.com/blog/checkout-flow-average-form-fields</a> · 2024 Checkout Research launch: <a href="https://baymard.com/blog/checkout-2024-launch">https://baymard.com/blog/checkout-2024-launch</a></li>
+    <li id="s3"><strong>[P]</strong> Unbounce, Conversion Benchmark Report — Healthcare &amp; Wellness (2024 update, aggregated 41,000+ landing pages / 57M+ conversions). <a href="https://unbounce.com/conversion-benchmark-report/healthcare-wellness-conversion-rate/">https://unbounce.com/conversion-benchmark-report/healthcare-wellness-conversion-rate/</a></li>
+    <li id="s4"><strong>[P]</strong> MDPI Applied Sciences, "SMS and Telephone Communication as Tools to Reduce Missed Medical Appointments" (2025, vol 15, 9773). Meta-review: automated reminders reduce non-attendance ~29%, manual phone reminders ~39%. <a href="https://www.mdpi.com/2076-3417/15/17/9773">https://www.mdpi.com/2076-3417/15/17/9773</a></li>
+    <li id="s5"><strong>[S]</strong> TechTarget / PatientEngagementHIT, "Caregiver Proxy Patient Portal Access Leaves Much to Be Desired" (summarizing JMIR research; &lt;3% caregiver proxy adoption). <a href="https://www.techtarget.com/patientengagement/news/366584700/Caregiver-Proxy-Patient-Portal-Access-Leaves-Much-to-Be-Desired">https://www.techtarget.com/patientengagement/news/366584700/Caregiver-Proxy-Patient-Portal-Access-Leaves-Much-to-Be-Desired</a></li>
+    <li id="s6"><strong>[P]</strong> Kalicki AV et al., "Barriers to Telehealth Access Among Homebound Older Adults," <em>J Am Geriatr Soc</em> 2021. 82% of homebound patients (mean age 82.7; 46.6% with dementia) required caregiver assistance to complete a telehealth visit.</li>
+    <li id="s7"><strong>[P]</strong> US Department of Health &amp; Human Services, "Final Rule Implementing Section 504 of the Rehabilitation Act" (May 2024). Requires WCAG 2.1 Level AA for Medicare/Medicaid-accepting entities by May 11, 2026 (May 2027 for &lt;15 employees).</li>
+    <li id="s8"><strong>[P]</strong> UsableNet, 2024 Year-End ADA Digital Accessibility Lawsuit Report. 4,000+ federal filings; 1,000+ against sites with accessibility widgets. <a href="https://info.usablenet.com/2024-year-end-report">https://info.usablenet.com/2024-year-end-report</a> · PDF: <a href="https://3280432.fs1.hubspotusercontent-na1.net/hubfs/3280432/UsableNet-2024-Year-End-ADA-Web-Lawsuit-Report.pdf">link</a></li>
+    <li id="s9"><strong>[P]</strong> AARP Public Policy Institute, "2025 Technology Trends Among Older Adults" — smartphone ownership 78% of 65+; privacy is #1 barrier (25%). <a href="https://www.aarp.org/pri/topics/technology/internet-media-devices/2025-technology-trends-older-adults/">link</a> · 2026 update: <a href="https://www.aarp.org/pri/topics/technology/internet-media-devices/2026-technology-trends-older-adults/">link</a></li>
+    <li id="s10"><strong>[P]</strong> AARP, 2024 Telehealth Research Insights — 73% of 50+ used telehealth in last 12 months, 90% satisfied; 81% of older adults say telehealth is best with a known provider.</li>
+    <li id="s11"><strong>[P]</strong> Lam K et al., "Assessing Telemedicine Unreadiness Among Older Adults," <em>JAMA Internal Medicine</em>, August 2020. 38% of older adults (~13M) not ready for video visits, predominantly due to inexperience with technology.</li>
+    <li id="s12"><strong>[P]</strong> Killeen OJ et al., "Prevalence of Vision Impairment in Older US Adults from NHATS," <em>JAMA Ophthalmology</em> 2023. 27.8% of adults 71+ have measured vision impairment.</li>
+    <li id="s13"><strong>[P]</strong> National Health and Aging Trends Study (NHATS) Round 11, 2023. 67.9% of adults 70+ have at least some hearing loss; 97.6% of 90+.</li>
+    <li id="s14"><strong>[P]</strong> CDC MMWR 2023 / NCHS Data Brief 497, 2024. 50.4% of adults 65+ have doctor-diagnosed arthritis.</li>
+    <li id="s15"><strong>[P]</strong> StatPearls / NIH summary of mild cognitive impairment epidemiology. 25.2% MCI prevalence by ages 80–84.</li>
+    <li id="s16"><strong>P</strong> Nielsen Norman Group, "Usability for Seniors: Challenges and Changes." Seniors are ~2× as likely to give up on a task; blame themselves 90% of the time when problems occur; read 11% slower per 20 years of age.</li>
+    <li id="s17"><strong>[S]</strong> ConvertCart case study — making a phone-number field optional reduced abandonment from 39% to 4%. Cited via Bold playbook §5.</li>
+    <li id="s18"><strong>[P]</strong> Zuko, "Is a Single Page Form or Multi Step Form Better for Conversion?" Two-step forms outperform single-page by ~14% only when forms have &gt;7 fields. <a href="https://www.zuko.io/blog/single-page-or-multi-step-form">https://www.zuko.io/blog/single-page-or-multi-step-form</a> · Benchmark overview: <a href="https://www.zuko.io/benchmarking/industry-benchmarking">https://www.zuko.io/benchmarking/industry-benchmarking</a> · "8 surprising insights": <a href="https://www.zuko.io/blog/8-surprising-insights-from-zukos-benchmarking-data">link</a></li>
+    <li id="s19"><strong>[V]</strong> Landbot, "Increase Online Form Conversion Rate" — conversational forms achieve 30–50% higher completion than static. <a href="https://landbot.io/blog/increase-online-form-conversion-rate">https://landbot.io/blog/increase-online-form-conversion-rate</a></li>
+    <li id="s20"><strong>[V]</strong> Landbot, "Chatbots vs Forms" — ~3× higher lead conversion vs static forms. <a href="https://landbot.io/chatbots-vs-forms">https://landbot.io/chatbots-vs-forms</a></li>
+    <li id="s21"><strong>[V]</strong> Hyro, "AI Agents for Healthcare" — 80% positive conversation rate, 98% accuracy, 85% call deflection across deployed health systems. <a href="https://www.hyro.ai/healthcare/">https://www.hyro.ai/healthcare/</a></li>
+    <li id="s22"><strong>[S]</strong> STAT News, "K Health expands access to primary care with AI virtual care" (Nov 2025). Lists Cedars-Sinai, Mayo Clinic, Hackensack Meridian, Hartford HealthCare, Mass General Brigham, Northwell deployments. <a href="https://www.statnews.com/2025/11/20/k-health-expands-access-primary-care-ai-virtual-care/">link</a></li>
+    <li id="s23"><strong>[V]</strong> ConversionTeam, "Simple Trust Badge Test Delivers 12.2% Conversion Rate Boost" — Norton badge A/B test; conversion +12.2%, revenue +16.6%. <a href="https://www.conversionteam.com/case-studies/simple-trust-badge-test-delivers-12-2-conversion-rate-boost/">link</a></li>
+    <li id="s24"><strong>[P/S]</strong> VWO + CXL on stock vs real photos — +35% signup lift when replacing stock with founder photo. <a href="https://cxl.com/blog/stock-photography-vs-real-photos-cant-use/">CXL</a> · <a href="https://vwo.com/blog/human-landing-page-increase-conversion-rate/">VWO</a></li>
+    <li id="s25"><strong>[V]</strong> Vocal Video, "4 Testimonial Statistics" (2024) — written testimonials +34%, video up to +62%; 79% prefer video. <a href="https://vocalvideo.com/resources/power-of-testimonials/">link</a></li>
+    <li id="s26"><strong>[P]</strong> Baymard Institute Checkout Usability Research — 17% of cart abandoners cited "didn't trust the site with my card info." <a href="https://baymard.com/research/checkout-usability">https://baymard.com/research/checkout-usability</a></li>
+    <li id="s27"><strong>[P]</strong> Bold Funnel Conversion Audit — Senior / Medicare Persona, Bold internal report, May 2026. Step-by-step diagnosis of Bold's current Landing → Confirmed funnel with prioritized Tier 1–4 optimization stack.</li>
+    <li id="s28"><strong>[S]</strong> TestParty / WCAG 2.2 SC 2.5.8 reference — average fingertip 16–20mm; motor-impaired users see up to 75% higher error rates on small targets.</li>
+    <li id="s29"><strong>[S]</strong> Build Grow Scale, "Accessibility Conversion Improvement Case Study" (ClearVision Optics) — conversion +26%, checkout +21.9%, revenue +19%. <a href="https://buildgrowscale.com/accessibility-conversion-improvement-case-study">link</a></li>
+    <li id="s30"><strong>[S]</strong> Accessibility.Works, "Web Accessibility ROI" — citing 10,000-site SEO study; WCAG-compliant sites had 23% more organic traffic, ranked for 27% more keywords. <a href="https://www.accessibility.works/blog/web-accessibility-roi-seo-traffic-ai-bot-agent-optimization/">link</a> · PayPal corroboration: <a href="https://www.paypal.com/us/brc/article/accesssibility-impacts-conversions">link</a></li>
+    <li id="s31"><strong>[P]</strong> AARP 2024 telehealth research — 66% of older adults who don't use telehealth would prefer audio-only; Rock Health 2024: 11% of Silent Generation found virtual care "uncomfortable or too confusing."</li>
+    <li id="s32"><strong>[P]</strong> Crouch E et al., "Insights Into Older Adult Patient Concerns Around the Caregiver Proxy Portal Use," <em>JMIR</em> 2018. Canonical primary source on proxy-portal adoption barriers and password-sharing as a privacy/HIPAA risk. <a href="https://www.jmir.org/2018/11/e10524/">https://www.jmir.org/2018/11/e10524/</a> · Permanente Journal RCT on text reminders: <a href="https://www.thepermanentejournal.org/doi/10.7812/TPP/21.078">link</a></li>
+    <li id="s33"><strong>[S]</strong> TAGLAB healthcare patient-registration form abandonment benchmark — 20–40%. Cited via Bold playbook §5; treat as directional.</li>
+    <li id="s34"><strong>[V/P]</strong> Heyday Health FAQ + Fierce Healthcare coverage of $12.5M raise (Bobby Shady "Health Ally" model). <a href="https://www.heydayhealth.com/faq">Heyday</a> · <a href="https://www.fiercehealthcare.com/providers/google-backed-startup-heyday-health-banks-125m-scale-house-calls-combined-telehealth">Fierce</a> · Devoted Health 2026 Member Onboarding Experience: <a href="https://yourfmo.com/wp-content/uploads/2025/11/2026-Devoted-Member-Onboarding-Experience.pdf">PDF</a></li>
+    <li id="s35"><strong>[S]</strong> Klara, "Text Message Appointment Reminders Reduce No-Shows by 38%" (summarizing Imperial College London RCT). <a href="https://www.klara.com/blog/text-message-appointment-reminders-reduce-no-shows-by-38-study-finds">link</a></li>
+    <li id="s36"><strong>[V]</strong> Zocdoc, "How Zocdoc Uses Technology and Data Science to Improve Patient Wait Times" — 6.9% non-attendance for online bookings vs 17–31% for voice-booked. <a href="https://www.zocdoc.com/about/blog/tech/how-zocdoc-improves-patient-wait-times/">link</a></li>
+    <li id="s37"><strong>[V]</strong> Solv, Provider Intake — 75% of patients who book ahead complete digital intake before arrival. <a href="https://www.solvhealth.com/for-providers/intake">link</a></li>
+    <li id="s38"><strong>[P]</strong> Bold / PrevMed clinic_funnel current implementation — referenced screens: <code>01-eligibility.html</code> through <code>05-confirmation.html</code>. Source: <code>PrevMed/clinic_funnel/</code>. See companion file <code>onboarding-research-priorities.md</code> for the team-curated Tier 1–3 priorities.</li>
+  </ol>
+
+  <div class="note" style="margin-top: 1em;">
+    <strong>How to read confidence labels:</strong> Findings marked <strong>[P]</strong> are peer-reviewed or come from organizations with primary access to the underlying data (e.g. Baymard, Unbounce, Zuko, AARP, JAMA). <strong>[V]</strong> findings are vendor-published — directionally useful but the publishing organization benefits commercially from the conclusion. <strong>[S]</strong> findings are secondary summaries; the underlying study is usually stronger and is linked where possible. Any claim with no isolated citable source was either dropped from this report or labeled "directional / treat as such" in the body text.
+  </div>
+</section>
+
+</body>
+</html>

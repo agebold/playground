@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Weight Management App — Information Architecture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --purple: #5200d4;
+    --purple-soft: #ede5fb;
+    --purple-tint: #faf7ff;
+    --ink: #161617;
+    --body: #2a2a2c;
+    --muted: #6b6b72;
+    --rule: #e4e2ea;
+    --rule-strong: #c6c0d4;
+    --bg: #ffffff;
+    --accent-2: #b04a2a;
+    --accent-2-tint: #fdf6f1;
+    --success: #1f6b3a;
+    --success-soft: #d8ecde;
+    --success-tint: #eef6f0;
+  }
+
+  @page { size: letter; margin: 0.5in 0.55in; }
+  @page strip { size: letter landscape; margin: 0.4in 0.4in; }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--bg);
+    color: var(--body);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 9.5pt;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page { page-break-after: always; break-after: page; }
+  .page:last-child { page-break-after: auto; break-after: auto; }
+  .page.landscape { page: strip; }
+
+  strong { color: var(--ink); font-weight: 600; }
+  em { font-style: italic; }
+  a { color: var(--purple); text-decoration: none; }
+
+  /* Cover */
+  .cover { padding-top: 0.4in; display: flex; flex-direction: column; justify-content: space-between; min-height: 9.7in; }
+  .cover-bar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-bottom: 22pt; margin-bottom: 50pt; border-bottom: 1.5px solid var(--ink);
+  }
+  .cover-bar .brand { font-size: 10pt; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink); }
+  .cover-bar .meta { font-size: 9pt; color: var(--muted); letter-spacing: 0.04em; }
+  .cover-eyebrow { font-size: 9pt; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--purple); margin-bottom: 14pt; }
+  .cover-title { font-size: 56pt; font-weight: 800; line-height: 0.96; letter-spacing: -0.035em; margin-bottom: 22pt; color: var(--ink); }
+  .cover-sub { font-size: 14pt; line-height: 1.4; color: var(--body); max-width: 5.6in; margin-bottom: 24pt; letter-spacing: -0.005em; }
+  .cover-meta-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 18pt;
+    padding-top: 18pt; border-top: 1px solid var(--rule); margin-top: 22pt;
+  }
+  .cover-meta-grid .label { font-size: 9pt; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 4pt; }
+  .cover-meta-grid .value { font-size: 10.5pt; color: var(--ink); font-weight: 500; line-height: 1.35; }
+
+  /* Sitemap page */
+  .mini-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-bottom: 6pt; margin-bottom: 10pt; border-bottom: 0.5px solid var(--rule);
+    font-size: 9pt; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted);
+  }
+  .mini-header .left { font-weight: 600; color: var(--ink); }
+  .section-header { margin-bottom: 18pt; padding-bottom: 10pt; border-bottom: 1.5px solid var(--ink); }
+  .section-header .eyebrow { font-size: 9pt; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--purple); margin-bottom: 8pt; display: block; }
+  .section-header .title { font-weight: 800; font-size: 24pt; line-height: 1.05; letter-spacing: -0.03em; color: var(--ink); }
+  .section-header .lede { font-size: 10.5pt; color: var(--muted); margin-top: 6pt; max-width: 6in; }
+
+  .top-nav-callout {
+    background: #f6f3fc; border: 1px dashed var(--rule-strong); border-radius: 8px;
+    padding: 10pt 14pt; margin-bottom: 12pt;
+  }
+  .top-nav-callout .label { font-size: 9pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.16em; color: var(--purple); margin-bottom: 4pt; }
+  .top-nav-callout .head { display: flex; align-items: baseline; gap: 8pt; margin-bottom: 4pt; }
+  .top-nav-callout .head .icon { font-size: 14pt; }
+  .top-nav-callout .head .name { font-size: 13pt; font-weight: 800; color: var(--ink); letter-spacing: -0.015em; }
+  .top-nav-callout .head .why { font-size: 9pt; font-style: italic; color: var(--muted); }
+  .top-nav-callout .items {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 4pt 12pt;
+    font-size: 9pt; color: var(--body);
+  }
+  .top-nav-callout .items .safety { color: var(--success); font-weight: 600; }
+  .top-nav-callout .items .warn { color: var(--accent-2); font-weight: 600; }
+
+  .strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12pt; align-items: stretch; }
+  .tab {
+    border: 1px solid var(--rule); border-radius: 10px; padding: 12pt 13pt;
+    background: var(--bg); display: flex; flex-direction: column;
+    page-break-inside: avoid; border-top: 4px solid var(--purple);
+  }
+  .tab .position { font-size: 9pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.16em; color: var(--muted); margin-bottom: 4pt; }
+  .tab .icon { font-size: 22pt; line-height: 1; margin-bottom: 4pt; }
+  .tab .name { font-size: 17pt; font-weight: 800; color: var(--ink); letter-spacing: -0.015em; line-height: 1.1; margin-bottom: 4pt; }
+  .tab .default-landing { font-size: 9pt; color: var(--purple); font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 10pt; }
+  .tab ul { list-style: none; padding: 0; margin: 0; }
+  .tab ul li {
+    font-size: 9pt; line-height: 1.4; color: var(--body);
+    padding: 5pt 0 5pt 14pt; border-bottom: 1px dashed var(--rule); position: relative;
+  }
+  .tab ul li:last-child { border-bottom: none; }
+  .tab ul li::before { content: "›"; position: absolute; left: 4pt; top: 5pt; color: var(--rule-strong); font-weight: 700; }
+  .tab ul li.default { font-weight: 600; color: var(--ink); }
+  .tab ul li.default::before { color: var(--purple); content: "★"; }
+  .tab ul li.safety { color: var(--success); font-weight: 600; }
+  .tab ul li.safety::before { color: var(--success); content: "◆"; }
+
+  /* Safety nets */
+  .safety-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14pt; }
+  .safety-card {
+    background: var(--success-tint); border: 1px solid var(--success-soft);
+    border-top: 4px solid var(--success); border-radius: 8px; padding: 12pt 14pt;
+    page-break-inside: avoid;
+  }
+  .safety-card .tag {
+    display: inline-block; font-size: 9pt; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.16em; color: var(--success); background: #fff;
+    padding: 2pt 7pt; border-radius: 99px; margin-bottom: 6pt;
+  }
+  .safety-card h3 { font-size: 13pt; font-weight: 700; color: var(--ink); margin-bottom: 6pt; letter-spacing: -0.01em; line-height: 1.15; }
+  .safety-card p { font-size: 9pt; line-height: 1.45; color: var(--body); }
+  .safety-card .where { font-size: 9pt; color: var(--muted); margin-top: 6pt; }
+
+  /* Deviation callout */
+  .deviation-card {
+    background: var(--accent-2-tint); border-left: 3px solid var(--accent-2);
+    border-radius: 0 6px 6px 0; padding: 10pt 14pt; margin-top: 14pt;
+    font-size: 9pt; line-height: 1.5;
+  }
+  .deviation-card b { color: var(--accent-2); text-transform: uppercase; letter-spacing: 0.12em; font-size: 9pt; display: block; margin-bottom: 4pt; }
+
+  /* Pre-auth lane */
+  .preauth-lane {
+    border: 1px solid var(--rule); border-radius: 8px;
+    padding: 8pt 12pt; margin-bottom: 12pt;
+    display: flex; align-items: center; gap: 6pt;
+    font-size: 9pt; flex-wrap: wrap;
+  }
+  .preauth-lane .label {
+    font-size: 9pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.14em;
+    color: var(--muted); margin-right: 8pt; white-space: nowrap;
+  }
+  .preauth-lane .crumb { color: var(--ink); font-weight: 500; }
+  .preauth-lane .crumb.end { color: var(--purple); font-weight: 700; }
+  .preauth-lane .arrow { color: var(--rule-strong); font-weight: 700; }
+
+  /* Persistent strip */
+  .persistent-strip {
+    margin-top: 12pt; border: 1px solid var(--rule); border-radius: 8px;
+    padding: 10pt 14pt;
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12pt;
+    font-size: 9pt;
+  }
+  .persistent-strip .item .label {
+    font-size: 9pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.14em;
+    color: var(--muted); margin-bottom: 3pt;
+  }
+  .persistent-strip .item p { font-size: 9pt; line-height: 1.4; }
+
+  /* Per-tab detail grid */
+  .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14pt; }
+  .detail-card {
+    border: 1px solid var(--rule); border-radius: 8px; padding: 12pt 14pt;
+    border-top: 4px solid var(--purple); page-break-inside: avoid;
+  }
+  .detail-card .head { display: flex; align-items: baseline; gap: 8pt; margin-bottom: 6pt; }
+  .detail-card .head .icon { font-size: 14pt; }
+  .detail-card .head .name { font-size: 13pt; font-weight: 800; color: var(--ink); letter-spacing: -0.015em; }
+  .detail-card .purpose { font-size: 9pt; color: var(--body); line-height: 1.45; margin-bottom: 8pt; }
+  .detail-card .label { font-size: 9pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted); margin-top: 6pt; margin-bottom: 3pt; }
+  .detail-card .surfaces { font-size: 9pt; line-height: 1.45; color: var(--body); }
+  .detail-card .anti {
+    margin-top: 8pt; font-size: 9pt; line-height: 1.4;
+    padding: 6pt 8pt; background: var(--accent-2-tint);
+    border-left: 2px solid var(--accent-2); border-radius: 0 4px 4px 0; color: var(--accent-2);
+  }
+  .detail-card .anti b { display: block; font-size: 9pt; text-transform: uppercase; letter-spacing: 0.12em; font-weight: 700; margin-bottom: 2pt; }
+
+  /* GLP-1 mockup */
+  .glp-mock { border: 1px solid var(--rule); border-radius: 10px; padding: 14pt 18pt; }
+  .glp-mock .week-label { font-size: 10pt; font-weight: 700; color: var(--purple); }
+  .glp-stepper { display: flex; gap: 3pt; margin: 8pt 0 12pt 0; }
+  .glp-stepper .step { flex: 1; height: 7pt; background: var(--rule); border-radius: 99px; }
+  .glp-stepper .step.done { background: var(--purple); }
+  .glp-stepper .step.current { background: var(--purple); position: relative; }
+  .glp-stepper .step.current::after {
+    content: "↓"; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%);
+    color: var(--purple); font-weight: 700; font-size: 11pt; line-height: 1; margin-bottom: 1pt;
+  }
+  .glp-mock .dose-rows {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 10pt;
+    padding: 8pt 0; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
+    margin-bottom: 10pt;
+  }
+  .glp-mock .dose-rows .row .label { font-size: 9pt; text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted); margin-bottom: 3pt; }
+  .glp-mock .dose-rows .row .value { font-size: 11pt; font-weight: 700; color: var(--ink); }
+  .glp-mock .expect {
+    background: var(--purple-tint); border-left: 3px solid var(--purple);
+    padding: 8pt 12pt; border-radius: 0 4px 4px 0; margin-bottom: 10pt;
+    font-size: 9pt; line-height: 1.5;
+  }
+  .glp-mock .expect b { display: block; font-size: 9pt; text-transform: uppercase; letter-spacing: 0.14em; color: var(--purple); margin-bottom: 3pt; font-weight: 700; }
+  .glp-mock .actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8pt; margin-bottom: 8pt; }
+  .glp-mock .actions .btn { text-align: center; padding: 7pt 0; border-radius: 6px; font-size: 9pt; font-weight: 700; letter-spacing: 0.04em; }
+  .glp-mock .actions .btn.primary { background: var(--purple); color: #fff; }
+  .glp-mock .actions .btn.safety { background: var(--success); color: #fff; }
+  .glp-mock .actions .btn.warn { background: var(--accent-2-tint); color: var(--accent-2); border: 1px solid var(--accent-2); }
+  .glp-mock .small-rows .row {
+    padding: 5pt 0; border-top: 1px dashed var(--rule);
+    font-size: 9pt; color: var(--body); display: flex; justify-content: space-between;
+  }
+
+  /* Checklist */
+  .checklist ul { list-style: none; padding: 0; column-count: 1; }
+  .checklist li {
+    padding: 6pt 12pt 6pt 28pt; border-bottom: 1px solid var(--rule);
+    font-size: 9pt; line-height: 1.45; color: var(--body); position: relative;
+  }
+  .checklist li::before {
+    content: ""; position: absolute; left: 8pt; top: 9pt;
+    width: 10pt; height: 10pt; border: 1.5px solid var(--rule-strong);
+    border-radius: 3px; background: #fff;
+  }
+  .checklist li strong { color: var(--ink); }
+  .checklist li code {
+    background: var(--purple-tint); color: var(--purple);
+    padding: 1pt 5pt; border-radius: 3px; font-family: 'Inter', sans-serif;
+    font-size: 9pt; font-weight: 600;
+  }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<section class="page cover">
+  <div>
+    <div class="cover-bar">
+      <div class="brand">Bold · Weight Management App</div>
+      <div class="meta">Information architecture · 2026-05-20</div>
+    </div>
+    <div class="cover-eyebrow">Information architecture</div>
+    <h1 class="cover-title">Four flat tabs.<br>Three safety nets.</h1>
+    <p class="cover-sub">A simple structure for the Bold GLP-1 companion app. Designed flat for older-adult cognition, with safety nets named explicitly.</p>
+  </div>
+  <div>
+    <div class="cover-meta-grid">
+      <div><div class="label">Audience</div><div class="value">65+ · US ·<br>Medicare-eligible</div></div>
+      <div><div class="label">Launch</div><div class="value">Q3 2026<br>GLP-1 companion</div></div>
+      <div><div class="label">Companion to</div><div class="value">Personas +<br>User journey</div></div>
+      <div><div class="label">Status</div><div class="value">Working IA<br>v1</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SITEMAP -->
+<section class="page landscape">
+  <div class="mini-header">
+    <span class="left">Sitemap</span>
+    <span>Four tabs · Profile in top-nav</span>
+  </div>
+
+  <header class="section-header">
+    <span class="eyebrow">The structure</span>
+    <h2 class="title">Four flat tabs. Profile in the top-nav.</h2>
+    <p class="lede">Every screen is ≤ 2 taps from any tab. Daily flow lives in the four tabs. Profile (admin) lives in the avatar.</p>
+  </header>
+
+  <!-- Pre-auth funnel lane -->
+  <div class="preauth-lane">
+    <span class="label">Pre-auth funnel</span>
+    <span class="crumb">Landing</span><span class="arrow">→</span>
+    <span class="crumb">How it works</span><span class="arrow">→</span>
+    <span class="crumb">Coverage check</span><span class="arrow">→</span>
+    <span class="crumb">Schedule visit</span><span class="arrow">→</span>
+    <span class="crumb">Account creation</span><span class="arrow">→</span>
+    <span class="crumb">Provider intake</span><span class="arrow">→</span>
+    <span class="crumb end">Home</span>
+  </div>
+
+  <!-- Top-nav Profile -->
+  <div class="top-nav-callout">
+    <div class="label">Top-nav button · always visible</div>
+    <div class="head"><span class="icon">👤</span><span class="name">Profile</span><span class="why">— admin hub, off the tab bar to protect the daily flow.</span></div>
+    <div class="items">
+      <div>Personal info</div>
+      <div>Medicare &amp; coverage</div>
+      <div>Billing · $50/mo · 86% pay $0</div>
+      <div>GLP-1 prescription (admin)</div>
+      <div>Notification settings</div>
+      <div>Share with my PCP</div>
+      <div class="safety">◆ Trusted contacts (#2)</div>
+      <div class="safety">◆ What Bold knows about me (#3)</div>
+      <div class="warn">⚠ Linked external devices</div>
+      <div>Privacy &amp; sign out</div>
+    </div>
+  </div>
+
+  <!-- Four tabs -->
+  <div class="strip">
+    <div class="tab">
+      <div class="position">Tab 01</div>
+      <div class="icon">🏠</div>
+      <div class="name">Home</div>
+      <div class="default-landing">Default · Today's one thing</div>
+      <ul>
+        <li class="default">Today's one thing — with "Why this today?"</li>
+        <li>"Ask anything" chat (text + photo)</li>
+        <li>Snapshot peeks (appt · Rx · GLP-1 week)</li>
+        <li class="safety">"Something doesn't feel right" (#1)</li>
+      </ul>
+    </div>
+
+    <div class="tab">
+      <div class="position">Tab 02</div>
+      <div class="icon">📈</div>
+      <div class="name">Progress</div>
+      <div class="default-landing">Default · Body composition</div>
+      <ul>
+        <li class="default">Body composition module — weight, muscle, fat, bone density, fat distribution combined. Inline "Take a new scan."</li>
+        <li>GLP-1 dosage · Week X of 16 · Refill · Report a problem · Pause</li>
+        <li>Weekly steps · Protein-goal-reached</li>
+        <li>Food &amp; sleep — empty until a device is linked</li>
+      </ul>
+    </div>
+
+    <div class="tab">
+      <div class="position">Tab 03</div>
+      <div class="icon">🧭</div>
+      <div class="name">Explore</div>
+      <div class="default-landing">Default · For you today</div>
+      <ul>
+        <li class="default">Personalized feed</li>
+        <li>Workouts (seated · balance-safe · joint-friendly)</li>
+        <li>Recipes (matched to fridge / preferences)</li>
+        <li>Restaurant &amp; takeout guidance</li>
+        <li>Articles on GLP-1 + aging</li>
+      </ul>
+    </div>
+
+    <div class="tab">
+      <div class="position">Tab 04</div>
+      <div class="icon">👩‍⚕️</div>
+      <div class="name">My Care</div>
+      <div class="default-landing">Default · Upcoming appointments</div>
+      <ul>
+        <li class="default">Upcoming appointments</li>
+        <li>Past appointments</li>
+        <li>Schedule new · reschedule</li>
+        <li>About my clinician</li>
+        <li>Contact · 911 callout for emergencies</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="deviation-card">
+    <b>⚠ Deliberate research deviation</b>
+    "Linked external devices" in Profile conflicts with <a href="data/synthesis/principles.md">principles.md #8</a> (no wearables, no extra devices). Included on purpose as an opt-in, Profile-only surface — never shown in onboarding, marketing, or Home. To be logged in <a href="data/synthesis/decisions.md">decisions.md</a> at ship.
+  </div>
+
+  <!-- Persistent surfaces strip -->
+  <div class="persistent-strip">
+    <div class="item">
+      <div class="label">Top-bar (everywhere)</div>
+      <p>Avatar (→ Profile) · Help (FAQs + "Message my clinician") · Notifications icon.</p>
+    </div>
+    <div class="item">
+      <div class="label">Allowed notifications</div>
+      <p>Scan reminder (monthly) · Rx refill window · Scheduled appointment · Clinician reply.</p>
+    </div>
+    <div class="item">
+      <div class="label">Forbidden everywhere</div>
+      <p>Daily check-ins · Streaks · Badges · Meal-logging · Step-count nudges · "Your coach is online!"</p>
+    </div>
+  </div>
+</section>
+
+<!-- PER-TAB DETAIL -->
+<section class="page">
+  <div class="mini-header">
+    <span class="left">Per-tab detail</span>
+    <span>Purpose · primary surfaces · anti-pattern guard</span>
+  </div>
+
+  <header class="section-header">
+    <span class="eyebrow">Per-tab detail</span>
+    <h2 class="title">What each tab is for —<br>and what it isn't.</h2>
+    <p class="lede">One compact card per tab. Read the anti-pattern line first; that's where the discipline lives.</p>
+  </header>
+
+  <div class="detail-grid">
+    <div class="detail-card">
+      <div class="head"><span class="icon">🏠</span><span class="name">Home</span></div>
+      <p class="purpose">One action at a time, progressive disclosure. Chat is the entry; one card is the focus; safety net is always one tap.</p>
+      <div class="label">Primary surfaces</div>
+      <p class="surfaces"><strong>Today's one thing</strong> (default) with "Why this today?" reason · <strong>"Ask anything" chat</strong> (text + photo · routes meals/movement to AI, clinical questions to a real clinician) · <strong>Snapshot peeks</strong> (≤ 3, collapsed) · <strong>"Something doesn't feel right"</strong> safety-net button.</p>
+      <div class="anti"><b>Won't do</b>Streaks · badges · stacked dashboard · chatbot impersonating a clinician.</div>
+    </div>
+
+    <div class="detail-card">
+      <div class="head"><span class="icon">📈</span><span class="name">Progress</span></div>
+      <p class="purpose">Body composition is the user's progress story; everything else sits underneath it.</p>
+      <div class="label">Primary surfaces</div>
+      <p class="surfaces"><strong>Body composition module</strong> (default · weight, muscle, fat, bone density, fat distribution combined · inline scan CTA · "Scan fully clothed · Your data stays private") · <strong>GLP-1 dosage</strong> (Week X of 16 · Refill · Report a problem · Pause/hold) · <strong>Steps</strong> (weekly) · <strong>Protein-goal-reached</strong> · <strong>Food/sleep empty placeholder</strong> · Scan history · About DEXA-grade ⓘ.</p>
+      <div class="anti"><b>Won't do</b>Standalone weight card · scale-weight headline · prominent separate scan block · food/sleep without a linked device.</div>
+    </div>
+
+    <div class="detail-card">
+      <div class="head"><span class="icon">🧭</span><span class="name">Explore</span></div>
+      <p class="purpose">A single browsing surface for workouts, recipes, restaurant guidance, and short articles — older-adult-filtered.</p>
+      <div class="label">Primary surfaces</div>
+      <p class="surfaces"><strong>"For you today"</strong> personalized feed (default) · <strong>Workouts</strong> with filters (seated · balance-safe · joint-friendly · under-5-min standing) · <strong>Recipes</strong> matched to fridge / preferences · <strong>Restaurant &amp; takeout guidance</strong> · <strong>Articles</strong> on GLP-1 + aging.</p>
+      <div class="anti"><b>Won't do</b>Generic fitness imagery · food logging · stacked four-deep carousels · restrictive-diet framing.</div>
+    </div>
+
+    <div class="detail-card">
+      <div class="head"><span class="icon">👩‍⚕️</span><span class="name">My Care</span></div>
+      <p class="purpose">Appointments and contact. Not the primary clinical chat (that lives on Home).</p>
+      <div class="label">Primary surfaces</div>
+      <p class="surfaces"><strong>Upcoming appointments</strong> (default) · Past appointments · Schedule / reschedule · <strong>About my clinician</strong> · <strong>Contact</strong> (phone for urgent-but-non-emergency · 911 callout for emergencies, kept clearly separate).</p>
+      <div class="anti"><b>Won't do</b>Coach framing · daily check-in prompts · merging the 911 path with the routine-contact path.</div>
+    </div>
+  </div>
+</section>
+
+<!-- GLP-1 DOSAGE DETAIL -->
+<section class="page">
+  <div class="mini-header">
+    <span class="left">GLP-1 dosage detail</span>
+    <span>Inside Progress · Compact mockup</span>
+  </div>
+
+  <header class="section-header">
+    <span class="eyebrow">GLP-1 dosage detail</span>
+    <h2 class="title">Bounded, clinician-led,<br>one tap to escalation.</h2>
+    <p class="lede">Pill-first adaptation of validated GLP-1 tracker patterns. Where you are · what to expect next · how to act.</p>
+  </header>
+
+  <div class="glp-mock">
+    <div class="week-label">You're in week 6 of 16 of titration</div>
+    <div class="glp-stepper">
+      <div class="step done"></div><div class="step done"></div><div class="step done"></div><div class="step done"></div>
+      <div class="step done"></div><div class="step current"></div>
+      <div class="step"></div><div class="step"></div><div class="step"></div><div class="step"></div>
+      <div class="step"></div><div class="step"></div><div class="step"></div><div class="step"></div>
+      <div class="step"></div><div class="step"></div>
+    </div>
+
+    <div class="dose-rows">
+      <div class="row"><div class="label">Current dose</div><div class="value">7 mg / day</div></div>
+      <div class="row"><div class="label">Next planned step</div><div class="value">14 mg / day</div></div>
+      <div class="row"><div class="label">Next adjustment</div><div class="value">Apr 12</div></div>
+    </div>
+
+    <div class="expect">
+      <b>What to expect this week</b>
+      Mild nausea in the first 24–48 hours after dose changes is common. If it's severe, lasts more than 3 days, or comes with vomiting or dizziness — tap <em>Report a problem</em>. Clinician-written; updates each titration week.
+    </div>
+
+    <div class="actions">
+      <div class="btn primary">Order refill</div>
+      <div class="btn safety">Report a problem</div>
+      <div class="btn warn">Pause / hold dose</div>
+    </div>
+
+    <div class="small-rows">
+      <div class="row"><span>Missed-dose guide</span><span style="color: var(--muted);">Clinician-issued ›</span></div>
+      <div class="row"><span>Side-effect log</span><span style="color: var(--muted);">Private · share via chat if you want</span></div>
+    </div>
+  </div>
+
+  <p style="font-size: 9pt; color: var(--muted); margin-top: 10pt; line-height: 1.5;">
+    Sources: <a href="https://www.donedose.com/guides/best-glp1-tracker-app">Done Dose 2026</a> · <a href="https://trimrx.com/blog/tools-tracking-glp-1-progress/">TrimRX</a> · <a href="https://glapp.io/">Glapp</a>. Pause/hold pattern from PMC findings on adverse-event tracking in elderly digital weight-loss programs.
+  </p>
+</section>
+
+<!-- ANTI-PATTERN CHECKLIST -->
+<section class="page">
+  <div class="mini-header">
+    <span class="left">Anti-pattern checklist</span>
+    <span>Run before declaring done</span>
+  </div>
+
+  <header class="section-header">
+    <span class="eyebrow" style="color: var(--accent-2);">Anti-pattern checklist</span>
+    <h2 class="title">Run before declaring done.</h2>
+    <p class="lede">If the IA violates one of these, it goes back — not the visual design.</p>
+  </header>
+
+  <div class="checklist">
+    <ul>
+      <li>Every screen ≤ 2 taps from a primary tab. No three-level navigation.</li>
+      <li>Primary nav is <strong>four</strong> tabs (Home → Progress → Explore → My Care). Profile is a top-nav button, not a tab.</li>
+      <li>Home contains one primary action card; never a stacked dashboard. Snapshot peeks collapsed by default and capped at three. <code>principles #1, #2</code></li>
+      <li>"Why this today?" reason line is present on Home's primary action card.</li>
+      <li>Chat bar routes clinical questions to a <strong>real clinician</strong> with stated SLA — never a chatbot. <code>principles #6</code></li>
+      <li>Photo input on chat is bounded — one-line nutrition notes + yes/no protein prompt. Never a calorie log, daily diary, or streak. <code>findings #11</code></li>
+      <li>Progress leads with the <strong>body composition module</strong> integrating weight, muscle, fat, bone density, fat distribution. No standalone weight card or trend. <code>principles #3</code></li>
+      <li>"Take a new scan" is a <strong>small inline CTA inside the body-comp module</strong>, not a separate prominent block.</li>
+      <li>Steps and protein are smaller cards under body-comp; never the page headline.</li>
+      <li>Food / sleep card is empty until a device is linked. Never prompts the user.</li>
+      <li>GLP-1 dosage uses "week X of Y" stepper, clinician-issued "what to expect," missed-dose guide, refill CTA, "Report a problem" safety-net CTA, and "Pause / hold dose" that auto-notifies the clinician.</li>
+      <li>No section is named or functions as a habit tracker, streak system, or daily logging surface. <code>principles #1</code></li>
+      <li>Cost &amp; coverage reachable in two taps (Profile → Medicare &amp; coverage / Billing). <code>principles #11</code></li>
+      <li>No tab or sub-page uses jargon ("metabolic," "telemetry," "insights"). Plain language only.</li>
+      <li>Notifications list the four allowed types and the forbidden types explicitly. <code>principles #1, #6</code></li>
+      <li>DEXA-grade ⓘ explainer is reachable from Progress, not buried in marketing.</li>
+      <li>"Linked external devices" is opt-in, Profile-only, and produces zero notifications or nudges anywhere else.</li>
+      <li>"Share with my PCP" is opt-in, granular, shows last-shared timestamp, revocable at any time.</li>
+      <li>All three safety nets exist and are introduced during onboarding.</li>
+      <li>Marketing, onboarding, Home, and Explore stay device-agnostic — no wearable references outside the Profile opt-in.</li>
+      <li>Every journey stage has a non-empty IA home in the mapping.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- SAFETY NETS -->
+<section class="page">
+  <div class="mini-header">
+    <span class="left">Safety nets</span>
+    <span>Three first-class IA citizens</span>
+  </div>
+
+  <header class="section-header">
+    <span class="eyebrow" style="color: var(--success);">Safety nets</span>
+    <h2 class="title">Human support, transparent data,<br>easy escalation.</h2>
+    <p class="lede">Older-adult digital weight-loss programs succeed when they pair the app with these three. None are buried; all surfaced in 1–2 taps; introduced once during onboarding.</p>
+  </header>
+
+  <div class="safety-grid">
+    <div class="safety-card">
+      <span class="tag">01</span>
+      <h3>"Something doesn't feel right"</h3>
+      <p>One tap → pre-filled clinician escalation with topic picker (nausea · dizziness · pain · mood · something else). Bypasses normal SLA. A real clinician responds — usually within 15 minutes.</p>
+      <p class="where"><strong>Lives on:</strong> Home (persistent button) · Progress → "Report a problem" · Help. Not a chatbot, not 911.</p>
+    </div>
+
+    <div class="safety-card">
+      <span class="tag">02</span>
+      <h3>Trusted contacts (opt-in)</h3>
+      <p>User names 1–2 contacts. Notified only on a transparent allow-list: missed scan + missed check-in for 30 days · clinician-flagged safety event · user-triggered "tell my contact I need help." Nothing else fires.</p>
+      <p class="where"><strong>Lives on:</strong> Profile. Introduced during onboarding as optional.</p>
+    </div>
+
+    <div class="safety-card">
+      <span class="tag">03</span>
+      <h3>"What Bold knows about me"</h3>
+      <p>Quarterly plain-language summary: what data Bold collected, what the clinician saw, what was shared with the PCP, what changed in the plan. Any share is revocable here.</p>
+      <p class="where"><strong>Lives on:</strong> Profile. Addresses this audience's anxiety about being talked-down-to with transparency, not just compliance.</p>
+    </div>
+  </div>
+
+  <p style="font-size: 9pt; color: var(--muted); margin-top: 16pt; line-height: 1.5;">
+    Sources: <a href="https://www.frontiersin.org/journals/digital-health/articles/10.3389/fdgth.2022.886783/full">Frontiers in Digital Health, 2022</a> · <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11150599/">PMC11150599</a> · <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC12334334/">PMC12334334</a>
+  </p>
+</section>
+
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Finding Your Provider – Bold Care</title>
+  <link rel="stylesheet" href="funnel.css" />
+</head>
+<body>
+<div class="cf-loader-page">
+  <div class="cf-loader-inner">
+
+    <h1 class="cf-heading-lg">
+      Matching you with the right Bold Care Provider
+    </h1>
+
+    <ul class="cf-loader-list" role="list">
+
+      <!-- Row 1: done immediately -->
+      <li class="cf-loader-item is-done" id="row1">
+        <span class="cf-loader-label">Licensed in California</span>
+        <div class="cf-check-icon" aria-label="Complete">
+          <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="16" cy="16" r="16" fill="#5200d4"/>
+            <path d="M10 16L14.5 20.5L22 12" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </li>
+
+      <!-- Row 2: done after short delay -->
+      <li class="cf-loader-item is-done" id="row2">
+        <span class="cf-loader-label">Focused on weight management</span>
+        <div class="cf-check-icon" aria-label="Complete">
+          <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="16" cy="16" r="16" fill="#5200d4"/>
+            <path d="M10 16L14.5 20.5L22 12" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </li>
+
+      <!-- Row 3: pending, will animate in -->
+      <li class="cf-loader-item is-pending" id="row3">
+        <span class="cf-loader-label">Covered by your insurance</span>
+        <div class="cf-check-icon" aria-label="Complete">
+          <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="16" cy="16" r="16" fill="#5200d4"/>
+            <path d="M10 16L14.5 20.5L22 12" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </li>
+
+    </ul>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var row3 = document.getElementById('row3');
+
+    // After 2500ms: mark row3 done
+    setTimeout(function () {
+      row3.classList.remove('is-pending');
+      row3.classList.add('is-done');
+
+      // After another 700ms: navigate
+      setTimeout(function () {
+        window.location.href = '03-provider-match.html';
+      }, 700);
+    }, 2500);
+  })();
+</script>
+</body>
+</html>
