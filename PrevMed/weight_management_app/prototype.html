@@ -3518,6 +3518,23 @@
     color: var(--color-gray-700);
   }
 
+  /* ──── Capture mode (Figma export) ──── */
+  /* Activated by ?capture=phone — hides desktop chrome so a screenshot
+     grabs just the iPhone frame. See URL-param handler near the bottom
+     of the script for the routing logic. */
+  body.capture-mode .sidebar,
+  body.capture-mode .sidebar-backdrop,
+  body.capture-mode #hamburger,
+  body.capture-mode .stage-caption {
+    display: none !important;
+  }
+  body.capture-mode .stage {
+    padding: 0 !important;
+    min-height: 100vh;
+    background: var(--color-white);
+  }
+  body.capture-mode { background: var(--color-white); }
+
 </style>
 </head>
 <body>
@@ -6490,6 +6507,69 @@
       pendingSafetyReport = null;
     });
   }
+
+  // ════════════════════════════════════════════════
+  // CAPTURE MODE — URL-param routing for Figma exports
+  // ════════════════════════════════════════════════
+  // ?screen=<name>     — jump straight to a screen (home, progress, ask, etc.)
+  // ?chat=<flow>       — open Ask and play a chat flow to its final state
+  //                      Values: greeting, meal, move, clinician, symptom
+  // ?capture=phone     — hide desktop chrome (sidebar, caption) so a screenshot
+  //                      grabs just the iPhone frame.
+  // Example: ...prototype.html?screen=progress&capture=phone
+  //          ...prototype.html?chat=clinician&capture=phone
+  (function setupCaptureMode() {
+    const params = new URLSearchParams(window.location.search);
+    const screenParam = params.get('screen');
+    const chatParam = params.get('chat');
+    const captureMode = params.get('capture');
+    if (!screenParam && !chatParam && !captureMode) return;
+
+    if (captureMode === 'phone') {
+      document.body.classList.add('capture-mode');
+    }
+
+    let origSetTimeout = null;
+    const fastForward = () => {
+      if (origSetTimeout) return;
+      origSetTimeout = window.setTimeout;
+      window.setTimeout = function (fn, delay) {
+        return origSetTimeout(fn, Math.min(delay || 0, 5));
+      };
+    };
+    const restoreTimers = () => {
+      if (!origSetTimeout) return;
+      window.setTimeout = origSetTimeout;
+      origSetTimeout = null;
+    };
+
+    const playChat = (flow) => {
+      showScreen('ask');
+      showGreeting();
+      requestAnimationFrame(() => {
+        if (!flow || flow === 'greeting' || flow === 'initial') return;
+        if (flow === 'meal' || flow === 'plan-meal' || flow === 'meal-plan') {
+          planMealFlow();
+        } else if (flow === 'move' || flow === 'strength' || flow === 'workout') {
+          startMoveFlow();
+        } else if (flow === 'clinician' || flow === 'dr-chen' || flow === 'dr_chen') {
+          startClinicianFlow();
+        } else if (flow === 'symptom' || flow === 'symptom-report' || flow === 'log-symptom') {
+          renderSafetyReportSequence(['Nausea', 'Mild dizziness']);
+        }
+      });
+    };
+
+    requestAnimationFrame(() => {
+      if (chatParam) {
+        fastForward();
+        playChat(chatParam);
+        setTimeout(restoreTimers, 800);
+      } else if (screenParam) {
+        showScreen(screenParam);
+      }
+    });
+  })();
 </script>
 
 <script>
