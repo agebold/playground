@@ -12,7 +12,6 @@ Design and prototype explorations for the Age Bold platform.
 | `MSK-ACCESS/` | 28-screen patient journey for MSK care access and onboarding |
 | `care_plan/` | Care plan screens, MSK progress tracking and program views |
 | `telehealth/` | Telehealth video call interface and flow |
-| `design-system/` | Tokens, type scale, spacing, and component library |
 | `user-research/` | Card sort and tree test tools |
 | `vision/` | Product vision and strategy overview |
 

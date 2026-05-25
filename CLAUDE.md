@@ -1,3 +1,30 @@
+# Age Bold Playground — Claude Working Notes
+
+## Working in this repo — hard rules
+
+### Design system source of truth
+
+For ANY UI, styling, component, layout, or markup work, you MUST invoke the
+`design-system-guardian` skill **before** reading files or writing code.
+
+- **Do NOT read `/design-system/` in this repo.** It is legacy CSS preserved
+  for historical reference only. It is **not** authoritative. Treat it as you
+  would a screenshot.
+- The authoritative design system is `@bold/web`, accessed via:
+  - **Hosted Storybook** (no auth): https://staging-ui.agebold.com/
+    Catalog: `https://staging-ui.agebold.com/index.json`
+  - **Source on GitHub** (private, `gh api`): `agebold/agebold-web`
+- The full workflow lives in `.claude/skills/design-system-guardian/SKILL.md` —
+  catalog discovery via `index.json`, source reading via `gh api`, hand-implement
+  in prototypes matching `@bold/web` component names and prop APIs exactly.
+- If a UI task tempts you toward `/design-system/`, stop and pull from the
+  Storybook + GitHub instead.
+
+The legacy `/design-system/` folder will be removed once the remaining
+prototypes that depend on it are migrated.
+
+---
+
 # Age Bold — Strategy & Rationale Agent
 
 ## System Prompt
