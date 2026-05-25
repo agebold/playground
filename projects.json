@@ -109,15 +109,6 @@
       "category": "Prototypes"
     },
     {
-      "path": "design-system",
-      "href": "design-system/",
-      "name": "Bold Design System",
-      "desc": "Tokens, type scale, spacing system, and component library",
-      "icon": "🎨",
-      "author": "Tzu-Yi",
-      "category": "Design System"
-    },
-    {
       "path": "user-research",
       "href": "user-research/",
       "name": "Research Tools",
