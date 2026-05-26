@@ -4,6 +4,20 @@ Dated record of what the team agreed to do, drop, or defer. Newest first.
 
 ---
 
+## 2026-05-26 — Adopted a Health Score module (intentional deviation from [[findings]] #7)
+
+The Health page in `prototype-merged.html` now leads with a Whoop-style weekly Health Score module (0–100 ring, plain-English status word, 2-sentence summary, and a "Chat about this week's insight" text button that routes into the Home chat with a scripted opener). Tapping the module opens a `health-score-detail` screen with a weekly trend chart, the three body-comp drilldown chips (Muscle / Body fat / Bone density), and a "how this is measured" explainer. The trend chart lives **only** in the detail view — not on the Health page itself.
+
+- **Why this is a deviation:** [[findings]] #7 explicitly warns against leading with a "metabolic health score" — users said in research they already get that from their PCP and don't want it duplicated. CLAUDE.md also says "Progress is not a dashboard. Not track percentages or create evaluation moments."
+- **Why the team chose to ship it anyway:** the team wants a Whoop-style overall-health primary module at the top of the Health page. Older-adult adaptations applied so the deviation does as little damage as possible:
+  - Status word ("Strong week") paired with the number — color is never the sole signal (a11y).
+  - 2-sentence summary explains the score in plain English (muscle steady, fat down, bone normal, protein on track) — anchored to [[value-props]] #2 + #3 framing.
+  - Whole module is one large 44px+ touch target.
+  - Trend chart hidden behind a tap to keep the Health page reassurance-forward, not numbers-forward.
+  - "Chat about this week's insight" routes the user into Home with a scripted AI opener so the score's number leads to a conversation, not a verdict.
+- **What to watch:** if user research surfaces an "I feel evaluated" reaction or a drop in confidence-leaning metrics (NPS/CSAT), revisit. The score is the highest-risk module for [[findings]] #7-style feedback.
+- **Where it lives in code:** module markup + CSS in `PrevMed/weight_management_app/prototype-merged.html`; detail screen `data-screen="health-score-detail"`; chat opener in `startWeeklyInsightFlow()`.
+
 ## 2026-05-21 — Weight-focused LP review decisions
 
 Internal review of Eliza/Tzu-Yi's weight-led landing page draft (Eliza, Chris, Tzu-Yi, Miranda, Zack). Distilled into [[findings]] #33–41, [[positioning]], [[value-props]] #6, [[principles]] #15, [[open-questions]].
@@ -63,6 +77,7 @@ Two Dovetail outputs from the same 4-participant bullseye sprint (the report + t
 - **Revisit the screener** to segment older adults by prior GLP-1 experience and find the product's "sweet spot." *(Source: 2026-05-04 sync.)*
 
 ### Market context (not a decision, but load-bearing)
+
 - **Medicare starts subsidizing GLP-1s in July 2026** — expect a significant demand spike around the Q3 launch. *(Source: 2026-05-05 readout, 00:03:15.)*
 
 ---
