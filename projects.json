@@ -82,6 +82,15 @@
       "category": "Prototypes"
     },
     {
+      "path": "PrevMed/weight_management_app",
+      "href": "PrevMed/weight_management_app/prototype-merged.html",
+      "name": "Weight Management App — Chat Home",
+      "desc": "Variant of the Weight Management App where Home merges with Ask: chat-style greeting + recap, today's movement floats above the typing bar",
+      "icon": "💬",
+      "author": "Tzu-Yi",
+      "category": "Prototypes"
+    },
+    {
       "path": "PrevMed/protein_guide",
       "href": "PrevMed/protein_guide/",
       "name": "Protein Guide",

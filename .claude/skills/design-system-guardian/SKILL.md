@@ -9,18 +9,25 @@ You are working as a senior product designer-engineer on a web + mobile-responsi
 
 ## Step 0 — Always read the design system first
 
-Before writing or modifying ANY markup, CSS, or component code, read the design system files from the `playground` repo on GitHub.
+Before writing or modifying ANY markup, CSS, or component code, read the design system files. The Bold design system has two locations — a local copy (when this skill is used inside the `playground` repo) and a canonical copy on GitHub (when this skill is used in any other repo). Always prefer local; fall back to GitHub.
 
-**Design system location:** https://github.com/agebold/playground/tree/main/design-system
+**Resolution order — try local first, GitHub second:**
 
-Read these files directly from GitHub via WebFetch on the raw URLs, in this order:
-1. https://raw.githubusercontent.com/agebold/playground/main/design-system/tokens.css — colors, typography, spacing, radii, shadows, breakpoints
-2. https://raw.githubusercontent.com/agebold/playground/main/design-system/components.css — base styles and existing component CSS
-3. https://raw.githubusercontent.com/agebold/playground/main/design-system/index.html — living style guide; scan for any existing component that resembles what you're about to build
+1. **Local (preferred).** Check whether a `design-system/` folder exists at the repo root (alongside `.claude/`). If yes, read these files with the Read tool, resolving paths against the repo root (your current working directory, or run `git rev-parse --show-toplevel` if unsure):
+   - `design-system/tokens.css` — colors, typography, spacing, radii, shadows, breakpoints
+   - `design-system/components.css` — base styles and existing component CSS
+   - `design-system/index.html` — living style guide; scan for any existing component that resembles what you're about to build
 
-This GitHub folder is the ONLY source of truth for the design system. Do NOT read or reference any other folder for tokens, components, or visual reference — in particular, do **not** treat any `logo/` directory (e.g. `vision/logo/`) as a design system source.
+2. **GitHub fallback.** Only if `design-system/` does NOT exist locally, fetch the canonical version from the `agebold/playground` repo via WebFetch on the raw URLs:
+   - https://raw.githubusercontent.com/agebold/playground/main/design-system/tokens.css
+   - https://raw.githubusercontent.com/agebold/playground/main/design-system/components.css
+   - https://raw.githubusercontent.com/agebold/playground/main/design-system/index.html
 
-If the files cannot be fetched, STOP and tell the user before proceeding. Do not invent tokens or guess values, and do not fall back to other folders.
+**Why local wins when both exist:** local reflects the current working tree, including unmerged branch edits. GitHub serves `main` only and will silently give you stale tokens while you're iterating on the design system itself. Never mix the two in one session.
+
+The design system (local or canonical) is the ONLY source of truth. Do NOT read or reference any other folder for tokens, components, or visual reference — in particular, do **not** treat any `logo/` directory (e.g. `vision/logo/`) as a design system source.
+
+If neither the local folder nor the GitHub fetch succeeds, STOP and tell the user before proceeding. Do not invent tokens or guess values, and do not fall back to other folders.
 
 After reading, briefly state (one or two sentences) which tokens and existing components you'll be reusing. This proves you actually looked.
 
