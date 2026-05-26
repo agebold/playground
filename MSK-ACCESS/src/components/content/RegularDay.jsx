@@ -24,12 +24,6 @@ const PAIN_OPTIONS = [
   { type: 'good',      color: '#22c55e', label: "I'm feeling good, no pain" },
 ]
 
-const RESPONSE_COPY = {
-  flare:     "Sorry to hear that — we've swapped your class for a seated, low-impact option that's easier on your knee. Take it at your own pace today.",
-  tolerable: "Got it — we've adjusted your class to something manageable. Listen to your body and go at your own pace.",
-  good:      "Love to hear it! We've lined up a great class for you. Let's make the most of your pain-free day.",
-}
-
 const STEP2_COPY = {
   locked:    "Ready to get moving? Check in to unlock your move class.",
   flare:     "Here's a gentle move class to keep you going without straining your knee.",
@@ -182,9 +176,6 @@ export default function RegularDay() {
                 </span>
                 <CheckIcon />
               </div>
-              <p style={{ fontSize: 15, color: '#09112a', lineHeight: '24px', margin: 0 }}>
-                {RESPONSE_COPY[response]}
-              </p>
             </motion.div>
           )}
         </AnimatePresence>

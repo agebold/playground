@@ -7,9 +7,10 @@ import amorphousBlob from '../../assets/amorphous-blob.png'
 import psfsWalking from '../../assets/PSFS-activity-walking.jpg'
 import imgTrainer from '../../assets/alicia_headshot.jpg'
 import imgClassThumbnail from '../../assets/class-thumbnail.jpg'
-import GaugeIcon     from '../../assets/Gauge.svg'
-import TrendUpIcon   from '../../assets/TrendUp.svg'
-import TrendDownIcon from '../../assets/TrendDown.svg'
+import GaugeIcon      from '../../assets/Gauge.svg'
+import TrendUpIcon    from '../../assets/TrendUp.svg'
+import TrendDownIcon  from '../../assets/TrendDown.svg'
+import MountainsIcon  from '../../assets/Mountains.svg'
 
 const ease = [0.16, 1, 0.3, 1]
 const TEAL    = '#0d9488'
@@ -414,56 +415,87 @@ export default function MonthlyCheckin({ onNext }) {
           >
             {overlayHeader(false)}
             <div style={{ flex: 1, overflowY: 'auto', padding: '24px 20px 16px' }}>
-              {/* Teal checkmark */}
-              <div style={{ width: 44, height: 44, borderRadius: '50%', background: TEAL, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20 }}>
-                <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-                  <path d="M5 11.5l4.5 4.5 8-9" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </div>
 
-              <h2 style={{ fontSize: 20, fontWeight: 600, color: '#140d26', lineHeight: 1.25, letterSpacing: -0.3, marginBottom: 24 }}>
-                Thanks for checking in, Carol. You're making steady progress!
+              {/* Heading */}
+              <h2 style={{ fontSize: 22, fontWeight: 600, color: '#140d26', lineHeight: 1.2, letterSpacing: -0.5, marginBottom: 4 }}>
+                Thanks for checking in, Carol
               </h2>
 
-              {/* Metric cards */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                {/* Card 1 — Pain */}
-                <div style={{ background: C.white, border: `1px solid ${C.border}`, borderRadius: 12, padding: 16 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-                    <div style={{ width: 32, height: 32, borderRadius: '50%', background: TEAL_BG, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      <img src={TrendDownIcon} alt="" style={{ width: 18, height: 18 }} />
-                    </div>
-                    <span style={{ fontSize: 18, fontWeight: 600, color: '#140d26' }}>Decreasing pain</span>
-                  </div>
-                  <p style={{ fontSize: 16, color: '#525252', lineHeight: '22px', margin: 0 }}>
-                    Since one month ago on June 17, your pain has decreased by{' '}
-                    <strong style={{ color: TEAL }}>2 points</strong>.
-                  </p>
-                </div>
+              {/* Subtext */}
+              <p style={{ fontSize: 16, color: '#525252', lineHeight: 1.5, margin: '0 0 24px' }}>
+                You've been able to manage pain with light exercise. Now, let's build your capacity for improved function.
+              </p>
 
-                {/* Card 2 — Functional ability */}
-                <div style={{ background: C.white, border: `1px solid ${C.border}`, borderRadius: 12, padding: 16 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-                    <div style={{ width: 32, height: 32, borderRadius: '50%', background: TEAL_BG, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      <img src={TrendUpIcon} alt="" style={{ width: 18, height: 18 }} />
-                    </div>
-                    <span style={{ fontSize: 18, fontWeight: 600, color: '#140d26' }}>Increasing functional ability</span>
+              {/* Metric cards — side by side */}
+              <div style={{ display: 'flex', gap: 12, marginBottom: 20 }}>
+                {/* Pain */}
+                <div style={{ flex: 1, background: C.white, border: `1px solid ${C.border}`, borderRadius: 12, padding: '14px 16px' }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: '#166534', marginBottom: 6 }}>Avg pain level</div>
+                  <div style={{ display: 'flex', alignItems: 'baseline', gap: 2, marginBottom: 4 }}>
+                    <span style={{ fontSize: 38, fontWeight: 700, color: '#140d26', lineHeight: 1 }}>3</span>
+                    <span style={{ fontSize: 16, color: '#525252' }}>/10</span>
                   </div>
-                  <p style={{ fontSize: 16, color: '#525252', lineHeight: '22px', margin: 0 }}>
-                    Since one month ago on June 17, your functional ability has increased by{' '}
-                    <strong style={{ color: TEAL }}>2 points</strong>.
-                  </p>
+                  <div style={{ fontSize: 13, color: '#8a8693' }}>from 8/10 baseline</div>
+                </div>
+                {/* Walking comfort */}
+                <div style={{ flex: 1, background: C.white, border: `1px solid ${C.border}`, borderRadius: 12, padding: '14px 16px' }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: '#166534', marginBottom: 6 }}>Walking comfort</div>
+                  <div style={{ display: 'flex', alignItems: 'baseline', gap: 2, marginBottom: 4 }}>
+                    <span style={{ fontSize: 38, fontWeight: 700, color: '#140d26', lineHeight: 1 }}>6</span>
+                    <span style={{ fontSize: 16, color: '#525252' }}>/10</span>
+                  </div>
+                  <div style={{ fontSize: 13, color: '#8a8693' }}>from 1/10 baseline</div>
                 </div>
               </div>
+
+              {/* Updated phase */}
+              <div style={{ background: '#dcfce7', borderRadius: 14, padding: '4px 4px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4, marginLeft: 12, marginTop: 4, marginRight: 12 }}>
+                  <span style={{ fontSize: 15, fontWeight: 600, color: '#166534' }}>Updated phase</span>
+                  <span style={{ fontSize: 15, color: '#166534' }}>Calm → Build</span>
+                </div>
+                {/* Build card */}
+                <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 10, padding: '12px 14px', display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <div style={{ width: 44, height: 44, borderRadius: '50%', background: '#bbf7d0', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <img src={MountainsIcon} alt="" style={{ width: 24, height: 24 }} />
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 17, fontWeight: 600, color: '#166534', marginBottom: 2 }}>Build</div>
+                    <p style={{ fontSize: 15, color: '#166534', lineHeight: 1.4, margin: 0, opacity: 0.85 }}>
+                      Gain strength and confidence as your body adapts
+                    </p>
+                  </div>
+                </div>
+              </div>
+
             </div>
 
-            <div style={{ flexShrink: 0, padding: '12px 16px 8px' }}>
-              <button
-                onClick={() => setCompletePage(2)}
-                style={{ width: '100%', padding: '14px 16px', background: C.purple, color: C.white, border: 'none', borderRadius: 12, fontSize: 15, fontWeight: 600, cursor: 'pointer', fontFamily: 'Inter, sans-serif' }}
-              >
-                Continue
-              </button>
+            {/* Bottom CTAs */}
+            <div style={{ flexShrink: 0, padding: '0 16px 8px', position: 'relative' }}>
+              <style>{`@keyframes toastUp { from { transform: translateY(64px); } to { transform: translateY(0); } }`}</style>
+              <div style={{
+                background: '#ede9fe', borderRadius: 12,
+                padding: '12px 16px', marginBottom: 10,
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+                position: 'relative', zIndex: 0,
+                animation: 'toastUp 0.48s cubic-bezier(0.32, 0.72, 0, 1) 0.2s both',
+              }}>
+                <span style={{ fontSize: 14, fontWeight: 500, color: C.purple }}>Move class updated based on your responses</span>
+              </div>
+              <div style={{ position: 'relative', zIndex: 1, background: C.white, display: 'flex', flexDirection: 'column', gap: 10 }}>
+                <button
+                  onClick={handleReturnHome}
+                  style={{ width: '100%', padding: '14px 16px', background: C.purple, color: C.white, border: 'none', borderRadius: 12, fontSize: 15, fontWeight: 600, cursor: 'pointer', fontFamily: 'Inter, sans-serif' }}
+                >
+                  Start class
+                </button>
+                <button
+                  onClick={handleReturnHome}
+                  style={{ width: '100%', padding: '14px 16px', background: C.white, border: `1.5px solid ${C.border}`, borderRadius: 12, fontSize: 15, fontWeight: 500, color: C.text, cursor: 'pointer', fontFamily: 'Inter, sans-serif' }}
+                >
+                  Return to today's plan
+                </button>
+              </div>
             </div>
           </motion.div>
         )}
