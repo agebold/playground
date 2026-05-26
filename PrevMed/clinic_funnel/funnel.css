@@ -1,18 +1,114 @@
-@import url('../../design-system/tokens.css');
-@import url('../../design-system/components.css');
-
 /* ══════════════════════════════════════════════
-   FUNNEL EXTRA TOKENS
+   TOKENS — hand-implementation
+   Source of truth: @bold/web (agebold/agebold-web master)
+     packages/web/src/styles/_variables.scss
+   Storybook: https://staging-ui.agebold.com/
+
+   Tokens marked with ⚠ NOT in @bold/web are legacy Tailwind-palette
+   shades used by this funnel — keep until upstream adds equivalents or
+   we remap to the @bold/web greyscale ($grey---200..500, $ink).
 ══════════════════════════════════════════════ */
 :root {
-  --color-mint-100:  #e6f8f6;
+  /* Typography */
+  --font-family: 'Inter', system-ui, -apple-system, sans-serif;   /* $font---inter */
+
+  /* @bold/web greys + ink */
+  --color-gray-50:   #fafafa;   /* $grey---200 */
+  --color-gray-200:  #e5e5e5;   /* $grey---300 */
+  --color-gray-475:  #737373;   /* ≈ $grey---500 (#4d4d4d) — kept for visual parity ⚠ */
+  --color-gray-950:  #140d26;   /* $ink ($ink---300) */
+
+  /* Legacy Tailwind greys — not in @bold/web ⚠ */
+  --color-gray-75:   #f9f9f9;
+  --color-gray-100:  #f5f5f5;
+  --color-gray-250:  #d4d4d4;
+  --color-gray-300:  #d1d5db;
+  --color-gray-350:  #a3a3a3;
+  --color-gray-400:  #9ca3af;
+  --color-gray-500:  #6b7280;
+  --color-gray-900:  #171717;
+
+  /* @bold/web purple */
+  --color-purple-600: #5200d4;   /* $purple ($purple---300) */
+  --color-purple-500: #29006a;   /* $purple---500 hover */
+  --color-purple-ede: #ede9fe;   /* form hover / landing purple-light — close to $purple---100 (#eee6fb) ⚠ */
+  --color-purple-border: #7c3aed; /* funnel-only accent — not in @bold/web ⚠ */
+
+  /* @bold/web blue (limited palette) */
+  --color-blue-100:  #ebf0ff;    /* ≈ $blue---100 */
+  --color-blue-400:  #264dbf;    /* $blue---400 */
+
+  /* Funnel-only mint accents — not in @bold/web ⚠ */
+  --color-mint-100:  #e6f8f6;    /* ≈ $green---100 */
   --color-mint-200:  #bfede8;
-  --color-mint-300:  #00b5a3;
+  --color-mint-300:  #00b5a3;    /* ≈ $green ($green---300) */
   --color-mint-400:  #00887a;
-  --color-blue-400:  #264dbf;
-  --color-blue-100:  #ebf0ff;
-  --color-yellow-amber: #fbbf24;
-  --color-purple-border: #7c3aed;
+
+  --color-yellow-amber: #fbbf24;  /* funnel-only — not in @bold/web ⚠ */
+
+  /* Radii (match @bold/web $border-radius---xsmall|small|medium) */
+  --radius-sm: 8px;    /* $border-radius---xsmall */
+  --radius-md: 12px;   /* $border-radius---small / $button-border-radius */
+  --radius-xl: 16px;   /* $border-radius---medium / $border-radius */
+
+  /* Shadows (match @bold/web $box-shadow---xsmall|small) */
+  --shadow-xs: 0 1px 2px rgba(16,24,40,0.05);
+  --shadow-sm: 0 1px 3px rgba(16,24,40,0.1), 0 1px 2px rgba(16,24,40,0.06);
+
+  /* z-index — local; @bold/web uses $Header-z-index: 100 */
+  --z-nav: 20;
+}
+
+/* ══════════════════════════════════════════════
+   BUTTON — hand-implementation of @bold/web Button
+   Source: packages/web/src/components/Button/Button.{tsx,module.scss}
+   Story:  https://staging-ui.agebold.com/?path=/story/button--default
+══════════════════════════════════════════════ */
+.Button {
+  font-family: var(--font-family);
+  cursor: pointer;
+  user-select: none;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+}
+.Button---primary,
+.Button---secondary {
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  color: var(--color-gray-950);
+  font-size: 16px;
+  font-weight: 700;
+  padding: 13px 18px;          /* size medium */
+  transition:
+    background-color 150ms ease-in-out,
+    border-color 150ms ease-in-out,
+    box-shadow 150ms ease-in-out,
+    color 150ms ease-in-out,
+    transform 150ms ease-in-out;
+}
+.Button---primary:active,
+.Button---secondary:active { transform: scale(0.99); }
+.Button---primary { box-shadow: var(--shadow-xs); }
+.Button---primary.Button---purple {
+  background: var(--color-purple-600);
+  color: #ffffff;
+}
+.Button---primary.Button---purple:hover,
+.Button---primary.Button---purple:focus-visible {
+  background: var(--color-purple-500);
+}
+.Button---secondary { background: transparent; }
+.Button---secondary:hover,
+.Button---secondary:focus-visible { background: var(--color-gray-200); }
+.Button:focus-visible {
+  outline: 2px solid var(--color-purple-600);
+  outline-offset: 2px;
+}
+.Button---full { width: 100%; text-align: center; }
+@media (prefers-reduced-motion: reduce) {
+  .Button---primary, .Button---secondary { transition: none; }
+  .Button---primary:active, .Button---secondary:active { transform: none; }
 }
 
 /* ══════════════════════════════════════════════
@@ -117,7 +213,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }
   padding-top: 32px;
   background: linear-gradient(to bottom, rgba(250,250,250,0) 0%, #fafafa 40%);
 }
-.cf-footer-cta .bold-btn { width: 100%; }
+.cf-footer-cta .Button { width: 100%; }
 /* Home indicator bar */
 .cf-home-bar {
   height: 5px;
