@@ -1165,6 +1165,7 @@
      Does not include the actual flow.
   ════════════════════════════════════════════════ */
   .health-assessment-body {
+    flex: 1;
     padding: 16px 20px 32px;
     display: flex;
     flex-direction: column;
@@ -1265,6 +1266,7 @@
     line-height: var(--line-height-relaxed);
   }
   .assessment-start-row {
+    margin-top: auto;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -2011,7 +2013,7 @@
     grid-template-columns: 1fr 1fr 1fr;
     align-items: end;
     gap: 14px;
-    padding-top: 18px;     /* clears the brand mark */
+    padding-top: 26px;     /* clears the brand mark + 8px breathing room */
   }
   .bold-ls-btn {
     position: relative;
@@ -2785,6 +2787,10 @@
     color: #140d26;
     margin: 0;
     line-height: 1.2;
+    leading-trim: both;
+    text-edge: cap alphabetic;
+    text-box-trim: trim-both;
+    text-box-edge: cap alphabetic;
   }
   .rx-dose {
     font-size: 14px;
@@ -2792,13 +2798,17 @@
     color: #4b5563;
     margin: 0;
     line-height: 1.2;
+    leading-trim: both;
+    text-edge: cap alphabetic;
+    text-box-trim: trim-both;
+    text-box-edge: cap alphabetic;
   }
   .rx-progress {
     display: flex;
     align-items: center;
     gap: 10px;
     margin: 0;
-    padding: 6px 0 4px;
+    padding: 0;
     width: 100%;
   }
   .rx-progress .bold-progress-bar { flex: 1; }
@@ -2808,6 +2818,10 @@
     color: #4b5563;
     white-space: nowrap;
     line-height: 1.3;
+    leading-trim: both;
+    text-edge: cap alphabetic;
+    text-box-trim: trim-both;
+    text-box-edge: cap alphabetic;
   }
   .rx-refill {
     display: flex;
@@ -2818,6 +2832,10 @@
     color: #374151;
     margin: 0;
     line-height: 1.2;
+    leading-trim: both;
+    text-edge: cap alphabetic;
+    text-box-trim: trim-both;
+    text-box-edge: cap alphabetic;
   }
   .rx-refill i { color: #6b7280; font-size: 14px; }
   .rx-refill strong { font-weight: inherit; color: inherit; }
@@ -2995,11 +3013,11 @@
     margin-top: 14px;
     text-decoration: none;
   }
-  .coordinator-hours {
+  p.coordinator-hours {
     display: flex; align-items: center; justify-content: center; gap: 6px;
     font-size: var(--font-size-md);
     color: var(--color-gray-600);
-    margin: 14px 0 0;
+    margin: 8px 0 0;
     line-height: 1.3;
   }
   .emergency-block {
@@ -4276,10 +4294,10 @@
     background: linear-gradient(151.75deg, var(--color-purple-50) 0%, var(--color-white) 78%);
     border: 1px solid var(--color-gray-200);
     border-radius: var(--radius-xl);
-    padding: 20px;
+    padding: 12px;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 12px;
     box-shadow: var(--shadow-xs);
   }
   .weekly-summary-head {
@@ -4306,7 +4324,7 @@
     font-size: var(--font-size-xl);
     font-weight: var(--font-weight-medium);
     color: var(--color-gray-900);
-    line-height: var(--line-height-relaxed);
+    line-height: var(--line-height-normal);
   }
   .weekly-summary-link {
     align-self: flex-start;
@@ -4337,7 +4355,7 @@
     background: var(--color-white);
     border: 1px solid var(--color-gray-200);
     border-radius: var(--radius-xl);
-    padding: 18px;
+    padding: 12px;
     display: flex;
     flex-direction: column;
     gap: 14px;
@@ -4420,7 +4438,7 @@
   .health-trainer-note {
     background: var(--color-blue-50);
     border-radius: var(--radius-md);
-    padding: 14px;
+    padding: 12px;
     display: flex;
     flex-direction: column;
     gap: 6px;
@@ -4457,7 +4475,7 @@
     margin: 0;
     font-size: var(--font-size-lg);
     color: var(--color-gray-900);
-    line-height: var(--line-height-relaxed);
+    line-height: var(--line-height-normal);
   }
 
   /* "My health" section (Today + 8-week averages) */
@@ -4466,7 +4484,7 @@
     padding-top: 24px;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 8px;
   }
   .my-health-heading {
     margin: 0;
@@ -4481,6 +4499,7 @@
     font-size: var(--font-size-lg);
     font-weight: var(--font-weight-medium);
     color: var(--color-gray-500);
+    line-height: 1;
   }
   .my-health-sublabel-spaced { margin-top: 8px; }
 
@@ -5031,11 +5050,11 @@
                     <span class="bold-ls-btn-label">Protein</span>
                   </button>
 
-                  <!-- Log symptom button — opens the Log symptom modal overlaid on Home. -->
+                  <!-- Symptom check-in button — opens the Log symptom modal overlaid on Home. -->
                   <button type="button" class="bold-ls-btn bold-ls-btn--log"
-                          data-modal="safety-net" aria-label="Log a symptom">
+                          data-modal="safety-net" aria-label="Check in on how you're feeling">
                     <i class="ph-fill ph-heart" aria-hidden="true"></i>
-                    <span class="bold-ls-btn-label">Log</span>
+                    <span class="bold-ls-btn-label">Check in</span>
                   </button>
                 </div>
               </div>
@@ -5125,7 +5144,7 @@
 
                   <div class="chat-actions-list">
                     <button type="button" class="chat-action-tile" data-chat-action="meal-photo">
-                      <span class="icon-circle green" aria-hidden="true"><i class="ph ph-camera"></i></span>
+                      <span class="icon-circle blue" aria-hidden="true"><i class="ph ph-camera"></i></span>
                       <span class="text">
                         <span class="label">Snap a meal photo</span>
                         <span class="hint">Get a quick read before you eat</span>
@@ -5240,8 +5259,6 @@
                   </button>
                 </div>
 
-                <p class="my-health-sublabel my-health-sublabel-spaced">Average of the past 8 weeks</p>
-
                 <!-- Bone density -->
                 <article class="bsr-metric bsr-metric-bone" aria-label="Bone density">
                   <header class="bsr-metric-head">
@@ -5300,6 +5317,34 @@
                       <div class="ws-stat-label">BODY FAT LOST</div>
                     </div>
                   </div>
+                </article>
+
+                <!-- ─── Waist-to-height ratio (clinical signal — see clinical-protocol.md §2) ─── -->
+                <article class="bsr-metric" data-metric="waist-height" aria-label="Waist-to-height ratio">
+                  <header class="bsr-metric-head">
+                    <h3>Waist-to-height ratio</h3>
+                    <span class="bold-score-pill bold-score-mid">Slightly high</span>
+                  </header>
+                  <p class="bsr-metric-value"><strong>0.53</strong></p>
+
+                  <div class="ws-leanmass-stats ws-leanmass-stats--card">
+                    <div class="ws-stat">
+                      <div class="ws-stat-value"><span class="ws-stat-num ws-stat-num-positive">−0.02</span></div>
+                      <div class="ws-stat-label">IN 8 WEEKS</div>
+                    </div>
+                  </div>
+
+                  <div class="bsr-gauge" role="img" aria-label="Waist-to-height ratio 0.53, in the borderline range">
+                    <span class="bsr-gauge-band borderline"></span>
+                    <span class="bsr-gauge-dot" style="left: 55%;"></span>
+                    <div class="bsr-gauge-labels">
+                      <i>&lt;0.50</i>
+                      <i class="is-current">0.50–0.60</i>
+                      <i>0.60+</i>
+                    </div>
+                  </div>
+
+                  <p class="bsr-detail-body">A signal of visceral fat. Lower is better.</p>
                 </article>
 
                 <button type="button" class="bold-btn bold-btn-outline bold-btn-full"
@@ -5467,7 +5512,7 @@
               </div>
 
               <div style="display: flex; flex-direction: column; gap: 12px;">
-                <p class="bold-label-caps" style="margin: 0; font-size: 18px; font-weight: var(--font-weight-semibold); line-height: 1.3; color: var(--color-gray-700);">Your doctor — keeping you on track</p>
+                <p class="bold-label-caps" style="margin: 0; font-size: 18px; font-weight: var(--font-weight-semibold); line-height: 1.3; color: var(--color-gray-700);">Your care team</p>
                 <div class="clinician-card">
                   <figure class="img-slot img-slot-portrait-sm" aria-hidden="true">
                     <img src="images/clinician-rivera.jpg" alt="" onerror="this.classList.add('failed');this.parentNode.classList.add('no-img')">
@@ -5475,13 +5520,19 @@
                   </figure>
                   <div class="clinician-info">
                     <p class="name">Dr. Chen, MD</p>
-                    <p class="creds">Internal Medicine · 18 yrs</p>
+                    <p class="creds">Weight Management Provider · Internal Medicine · 18 yrs</p>
                   </div>
                 </div>
-              </div>
-
-              <div style="display: flex; flex-direction: column; gap: 12px;">
-                <p class="bold-label-caps" style="margin: 0; font-size: 18px; font-weight: var(--font-weight-semibold); line-height: 1.3; color: var(--color-gray-700);">Your coordinator</p>
+                <div class="clinician-card">
+                  <figure class="img-slot img-slot-portrait-sm" aria-hidden="true">
+                    <img src="images/PCP.png" alt="" onerror="this.classList.add('failed');this.parentNode.classList.add('no-img')">
+                    <figcaption><span class="initials">RH</span></figcaption>
+                  </figure>
+                  <div class="clinician-info">
+                    <p class="name">Dr. Robert Hayes, MD</p>
+                    <p class="creds">Primary Care Provider · Family Medicine · 22 yrs</p>
+                  </div>
+                </div>
                 <div class="clinician-card coordinator-card">
                   <div class="coordinator-card-top">
                     <figure class="img-slot img-slot-portrait-sm" aria-hidden="true">
@@ -5502,10 +5553,7 @@
                   </p>
                 </div>
 
-                <div class="emergency-block" style="margin-top: 0;">
-                  <p class="label"><i class="ph-fill ph-warning-circle" aria-hidden="true"></i> Emergency</p>
-                  <p class="text">If this is a medical emergency, <a href="tel:911" style="color: var(--color-red-600); text-decoration: underline; font-weight: var(--font-weight-bold);">call 911</a> right away.</p>
-                </div>
+                <p style="font-size: var(--font-size-lg); color: var(--color-gray-950); margin: 0;">If this is a medical emergency, <a href="tel:911" style="color: var(--color-red-600); text-decoration: underline; font-weight: var(--font-weight-bold);">call 911</a> right away.</p>
               </div>
             </div>
 
@@ -5675,7 +5723,7 @@
                 <i class="ph ph-caret-right" aria-hidden="true" style="color: var(--color-gray-400);"></i>
               </button>
               <button class="small-row" style="background: none; border: none; width: 100%; text-align: left; cursor: pointer; font-family: inherit;">
-                <span><span class="label">Side-effect log</span><br><span class="sub">Private — share with Dr. Chen if you want</span></span>
+                <span><span class="label">Manage side effects</span><br><span class="sub">Know what to expect and how to reduce them</span></span>
                 <i class="ph ph-caret-right" aria-hidden="true" style="color: var(--color-gray-400);"></i>
               </button>
             </div>
@@ -5906,7 +5954,7 @@
               <article class="bsr-metric" data-metric="waist-height">
                 <header class="bsr-metric-head">
                   <h3>Waist-to-height ratio</h3>
-                  <span class="bold-score-pill bold-score-mid">Borderline</span>
+                  <span class="bold-score-pill bold-score-mid">Slightly high</span>
                 </header>
                 <p class="bsr-metric-value"><strong>0.53</strong></p>
                 <div class="bsr-gauge" role="img" aria-label="Waist-to-height ratio 0.53, slightly above the optimal range">
@@ -6001,55 +6049,10 @@
                 </p>
               </article>
 
-              <div>
-                <p class="bold-label-caps" style="margin: 0 0 12px;"><i class="ph ph-list-numbers" aria-hidden="true"></i> &nbsp;What you'll do</p>
-                <ol class="assessment-steps">
-                  <li>
-                    <span class="step-num">1</span>
-                    <span class="step-text">
-                      <strong>30-second sit-to-stand</strong>
-                      <span>Stand up and sit back down as many times as you can in 30 seconds.</span>
-                    </span>
-                  </li>
-                  <li>
-                    <span class="step-num">2</span>
-                    <span class="step-text">
-                      <strong>Single-leg balance</strong>
-                      <span>Hold a counter and lift one foot. We time each side.</span>
-                    </span>
-                  </li>
-                  <li>
-                    <span class="step-num">3</span>
-                    <span class="step-text">
-                      <strong>Grip squeeze</strong>
-                      <span>Squeeze for 5 seconds. Effort counts, not perfection.</span>
-                    </span>
-                  </li>
-                </ol>
-              </div>
-
-              <div class="assessment-why">
-                <i class="ph ph-info" aria-hidden="true"></i>
-                <p style="margin: 0;">
-                  Strength predicts how well you'll age. Tracking it weekly catches small dips before you feel them.
-                </p>
-              </div>
-
               <div class="assessment-start-row">
-                <span class="assessment-coming-soon">
-                  <i class="ph-fill ph-clock" aria-hidden="true"></i>
-                  Coming soon
-                </span>
-                <button type="button" class="bold-btn bold-btn-primary bold-btn-full" disabled
-                        aria-disabled="true"
-                        title="Available in your next check-in"
-                        style="opacity: 0.6; cursor: not-allowed;">
-                  <i class="ph ph-play-circle" aria-hidden="true"></i>
+                <button type="button" class="bold-btn bold-btn-primary bold-btn-full">
                   Start assessment
                 </button>
-                <p style="text-align: center; font-size: var(--font-size-md); color: var(--color-gray-600); margin: 0;">
-                  We'll show this on Today when it's ready.
-                </p>
               </div>
 
             </div>

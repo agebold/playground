@@ -9,7 +9,7 @@ Validated insights from research with the Medicare-age GLP-1 target audience. Ea
 ## GLP-1 form factor and trust
 
 1. **GLP-1 form factor overrides every other product factor.** Whether the user gets a needle, pill, or compounded vial drives their decision before they evaluate the rest of the program. *(2026-05-05 readout, 00:10:14; 2026-05-04 sync.)*
-2. **Hierarchy: pill > pen >> traditional injection >> compounded vial.** Quoted user: *"Pills easy. Pen second. Compounded with a vial like that. No way. Definitely no."* *(2026-05-05 transcript, 00:12:29.)*
+2. **Hierarchy: pill > pen >> traditional injection >> compounded vial.** Quoted user: *"Pills easy. Pen second. Compounded with a vial like that. No way. Definitely no."* *(2026-05-05 transcript, 00:12:29.)* **⚠ Clinical reality gap:** the Bold Care GLP-1 formulary contains only SC injectables (pen / auto-injector / daily pen). There is no oral GLP-1. See [[clinical-protocol]] §5–6 for resolution paths.
 3. **Cost and side effects are the two top fears**, competing for #1. Stories of nausea, constipation, headaches travel widely — most participants have heard them even if they haven't tried GLP-1s themselves. *(2026-05-05, 00:11:30; 00:28:27.)*
 4. **FDA approval + name brands signal safety**, but mentioning brand names immediately triggers questions about cost and coverage. *(2026-05-05, 00:10:14.)*
 5. **Provider oversight = trust signal**, specifically for managing side effects and dosage. Users do NOT want frequent provider conversations or generic check-ins. *(2026-05-05, 00:18:50.)*

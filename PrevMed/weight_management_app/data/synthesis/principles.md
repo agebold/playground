@@ -8,6 +8,8 @@ Distilled from the research. These are the rules of thumb every design decision 
 
 Older adults in our audience want to be *told what to do*, not asked to *record what they did*. Meal plans, shopping lists, exercise routines = yes. Food logs, habit checkboxes, sleep diaries = no. Photo capture is acceptable only as a temporary onboarding tool, never as the long-term interaction. *(Source: [[findings]] #9–12.)*
 
+> **Clinical tension:** the Bold Care GLP-1 protocol gates Tirzepatide refills on verified daily protein logs and Bold Fitness adherence ([[clinical-protocol]] §3). Resolve by reframing the protein target as **what to eat today** (suggested foods, eating-out picks, simple "had it / didn't have it") and letting Bold Fitness attendance flow passively into adherence — not by surfacing a calorie/macro logger.
+
 ## 2. Help before the decision, not after it
 
 Be useful at the moment of choice — what to order at the restaurant, what to put in the cart, which exercise to do today. Logging after the fact is the wrong moment. *(Source: [[findings]] #10.)*
