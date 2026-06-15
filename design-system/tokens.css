@@ -57,6 +57,15 @@
   /* Semantic — Swap/Updated */
   --color-teal-500:     #14b8a6;   /* swap banner */
 
+  /* ACCESS Landing Page additions — from Figma "ACCESS Landing Page" file,
+     not previously present in this token set. Added 2026-06-12. */
+  --color-purple-900:   #29006a;   /* landing hero headline/body text (Figma Purple/500) */
+  --color-lavender-50:  #f0f3fd;   /* hero + section background tint */
+  --color-blue-300:     #3366ff;   /* testimonial highlight text (Figma Blue/300) */
+  --color-blue-tint-2:  #dde3f8;   /* "How it works" step 3 art background */
+  --color-yellow-accent:#fbbf24;   /* "What is Bold" accent block */
+  --color-mint-100:     #e6f8f6;   /* "What is Bold" accent block */
+
   /* ══════════════════════════════════════════════
      NEUTRAL GRAYS
   ══════════════════════════════════════════════ */

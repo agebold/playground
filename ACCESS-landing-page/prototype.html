@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bold ACCESS — Pain Management Covered by Medicare</title>
+<link rel="stylesheet" href="../design-system/tokens.css">
+<link rel="stylesheet" href="../design-system/components.css">
+
+<!-- Phosphor Icons -->
+<script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+<!-- Figma capture script (no-op unless URL has #figmacapture=... hash) -->
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+
+<!--
+  ─── IMAGE MANIFEST (all live in ./images/) ────────────────────────────
+  Real imagery is wired in. Slot → file mapping:
+
+    Nav / footer logo      → bold-logo-original.svg / bold-logo-white.svg
+    Hero video poster      → hero-image-placeholder.jpg
+    Social-proof avatars   → gerrie- / kay- / bennett-headshot.png (reused)
+    What is Bold           → todays-plan-iphone-mockup.png (shapes baked in)
+    How it works 1/2/3     → "How it works - 1/2/3.jpg" (tooltip + phase cards baked into 2 & 3)
+    Supported body parts   → supported-body-parts.jpg
+    Testimonials           → gerrie- / kay- / bennett-headshot.png
+    Partner banner         → yoga-mat.png (dark scrim overlaid for text contrast)
+
+  Unused for now: "AICPA SOC Compliant Badge.png", "HIPAA Compliant Badge.png",
+  "Apple/Google Play Store Badge.png", "Testimonial Images.png" (composite).
+─────────────────────────────────────────────────────────────────────── -->
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-family);
+    background: var(--color-white);
+    color: var(--color-gray-900);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+  }
+  img { max-width: 100%; display: block; }
+  a { color: inherit; }
+
+  :focus-visible {
+    outline: 3px solid var(--color-purple-600);
+    outline-offset: 2px;
+    border-radius: var(--radius-2xs);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  }
+
+  /* ════════════════════════════════════════════════
+     LAYOUT HELPERS
+  ════════════════════════════════════════════════ */
+  .container { max-width: 1280px; margin: 0 auto; padding: 0 20px; }
+  .section { padding: var(--space-9) 0; }
+  @media (min-width: 768px) { .section { padding: var(--space-10) 0; } }
+
+  .section-title {
+    font-size: 32px;
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-tight);
+    letter-spacing: -1px;
+    color: var(--color-gray-900);
+    text-align: center;
+    margin: 0 0 var(--space-7);
+  }
+  @media (min-width: 768px) {
+    .section-title { font-size: var(--font-size-4xl); margin-bottom: var(--space-7); }
+  }
+  .section-title--light { color: var(--color-white); }
+
+  /* ════════════════════════════════════════════════
+     BUTTONS (page-specific, sized to Figma spec —
+     44px+ tap target, tokens for color/radius)
+  ════════════════════════════════════════════════ */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    font-family: var(--font-family);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    min-height: 48px;
+    padding: 12px 20px;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    text-decoration: none;
+    transition: var(--transition-base);
+    white-space: nowrap;
+  }
+  .btn-primary { background: var(--color-purple-600); color: var(--color-white); }
+  .btn-primary:hover { background: var(--color-purple-700); }
+  .btn-yellow { background: var(--color-yellow-500); color: var(--color-gray-950); }
+  .btn-yellow:hover { background: var(--color-yellow-200); }
+  .btn-outline {
+    background: var(--color-white);
+    color: var(--color-gray-950);
+    border: 1px solid var(--color-gray-200);
+    box-shadow: var(--shadow-xs);
+  }
+  .btn-outline:hover { background: var(--color-gray-75); }
+  .btn-ghost-white {
+    background: transparent;
+    color: var(--color-white);
+    border: 1.5px solid rgba(255,255,255,0.4);
+  }
+  .btn-ghost-white:hover { background: rgba(255,255,255,0.1); }
+  .btn-full { width: 100%; }
+  .btn-sm { min-height: 44px; font-size: var(--font-size-md); padding: 10px 16px; }
+
+  /* ════════════════════════════════════════════════
+     NAVIGATION
+  ════════════════════════════════════════════════ */
+  .site-nav {
+    position: sticky;
+    top: 0;
+    z-index: var(--z-nav);
+    background: var(--color-gray-25);
+    border-bottom: 1px solid var(--color-gray-200);
+  }
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding: var(--space-3) var(--space-4);
+  }
+  .nav-logo { display: flex; align-items: center; height: 26.7px; width: 89px; }
+  .nav-logo svg, .nav-logo img { height: 100%; width: auto; }
+  .nav-logo-lines { height: 100%; }
+  .nav-logo-text { height: 65.8%; margin-left: 6px; }
+
+  .nav-links { display: none; }
+  .nav-actions { display: flex; align-items: center; gap: var(--space-3); }
+  .nav-actions .btn-outline,
+  .nav-actions .btn-primary { display: none; }
+
+  .menu-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    background: none;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    color: var(--color-gray-900);
+    font-size: 28px;
+  }
+  .menu-toggle:hover { background: var(--color-gray-75); }
+
+  .mobile-menu {
+    display: none;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4) var(--space-4);
+    border-top: 1px solid var(--color-gray-200);
+    background: var(--color-gray-25);
+  }
+  .mobile-menu.is-open { display: flex; }
+  .mobile-menu a {
+    display: block;
+    padding: var(--space-3) var(--space-3);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-gray-900);
+    text-decoration: none;
+  }
+  .mobile-menu a:hover { background: var(--color-white); }
+  .mobile-menu .btn-outline { margin-top: var(--space-2); }
+
+  @media (min-width: 768px) {
+    .site-nav {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 80px);
+      max-width: 1360px;
+      background: var(--color-white);
+      border-radius: var(--radius-md);
+      border: none;
+      box-shadow: var(--shadow-sm);
+    }
+    .nav-inner { padding: var(--space-4) var(--space-9); }
+    .nav-logo { height: 40px; width: 133px; }
+    .nav-links {
+      display: flex;
+      gap: var(--space-2);
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .nav-links a {
+      padding: var(--space-3) var(--space-4);
+      border-radius: var(--radius-md);
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-medium);
+      color: var(--color-gray-900);
+      text-decoration: none;
+    }
+    .nav-links a:hover { background: var(--color-gray-75); }
+    .nav-actions .btn-outline,
+    .nav-actions .btn-primary { display: inline-flex; }
+    .menu-toggle, .mobile-menu { display: none; }
+    body { padding-top: 96px; }
+  }
+
+  /* ════════════════════════════════════════════════
+     HERO
+  ════════════════════════════════════════════════ */
+  .hero { background: var(--color-lavender-50); padding-top: var(--space-7); padding-bottom: var(--space-9); }
+  @media (min-width: 768px) {
+    .hero { margin-top: -96px; padding-top: calc(96px + var(--space-7)); }
+  }
+  .hero-row { display: flex; flex-direction: column; gap: var(--space-7); }
+  .hero-content { display: flex; flex-direction: column; gap: var(--space-6); }
+  .hero-text { display: flex; flex-direction: column; gap: var(--space-2); }
+  .hero-title {
+    font-size: 32px;
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-tight);
+    letter-spacing: -1px;
+    color: var(--color-purple-900);
+    margin: 0;
+  }
+  .hero-subhead { font-size: var(--font-size-xl); line-height: 1.4; color: var(--color-purple-900); margin: 0; }
+  .hero-subhead strong { font-weight: var(--font-weight-semibold); }
+
+  .hero-form { display: flex; flex-direction: column; gap: var(--space-6); }
+  .form-row { display: flex; flex-direction: column; gap: var(--space-4); }
+  .field { display: flex; flex-direction: column; gap: var(--space-2); flex: 1; }
+  .field label { font-size: var(--font-size-lg); font-weight: var(--font-weight-medium); color: var(--color-purple-900); }
+  .field input {
+    height: 44px;
+    padding: 0 var(--space-4);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-lg);
+    font-family: var(--font-family);
+    color: var(--color-gray-900);
+    background: var(--color-white);
+  }
+  .field input::placeholder { color: var(--color-gray-350); }
+  .field input:focus-visible { outline: 3px solid var(--color-purple-600); outline-offset: 1px; border-color: var(--color-purple-600); }
+
+  .form-info { display: flex; align-items: flex-start; margin-top: calc(var(--space-3) - var(--space-6)); }
+  .why-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    background: none;
+    border: none;
+    padding: var(--space-2) 0;
+    min-height: 44px;
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-purple-600);
+    cursor: pointer;
+  }
+  .why-toggle i { font-size: 20px; }
+  .why-toggle-text { text-decoration: underline; }
+  .why-text {
+    display: none;
+    font-size: var(--font-size-lg);
+    color: var(--color-gray-700);
+    background: var(--color-purple-50);
+    border-radius: var(--radius-sm);
+    padding: var(--space-4);
+    margin: 0 0 0 0;
+  }
+  .why-text.is-open { display: block; }
+
+  .form-actions { display: flex; flex-direction: column; gap: var(--space-3); }
+  .form-legal { font-size: var(--font-size-md); color: var(--color-gray-600); margin: 0; text-align: center; }
+  .form-legal a { text-decoration: underline; }
+
+  .hero-art {
+    position: relative;
+    border-radius: var(--radius-2xl);
+    overflow: hidden;
+  }
+  .hero-art .img-placeholder { aspect-ratio: 715 / 606; border-radius: var(--radius-2xl); }
+  .hero-art img { width: 100%; height: auto; display: block; border-radius: var(--radius-2xl); }
+
+  .social-proof {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-5);
+    padding-top: var(--space-9);
+    text-align: center;
+  }
+  .social-proof-group { display: flex; align-items: center; gap: var(--space-3); }
+  .avatar-stack { display: flex; }
+  .avatar-stack .img-placeholder {
+    width: 40px; height: 40px; border-radius: 50%;
+    border: 1px solid var(--color-gray-200);
+    margin-left: -10px;
+    font-size: 10px;
+  }
+  .avatar-stack .img-placeholder:first-child { margin-left: 0; }
+  .avatar-stack .avatar-img {
+    width: 40px; height: 40px; border-radius: 50%; object-fit: cover;
+    border: 2px solid var(--color-white);
+    margin-left: -10px;
+  }
+  .avatar-stack .avatar-img:first-child { margin-left: 0; }
+  .social-proof-label, .social-proof-reviews {
+    font-size: var(--font-size-xl);
+    color: var(--color-purple-900);
+    font-weight: var(--font-weight-regular);
+  }
+  .social-proof-divider { width: 1px; height: 24px; background: var(--color-gray-200); }
+  .stars { display: inline-flex; gap: 2px; color: var(--color-yellow-500); font-size: 20px; }
+
+  @media (min-width: 768px) {
+    .hero-row { flex-direction: row; align-items: flex-start; gap: var(--space-10); }
+    .hero-content { flex: 1; max-width: 525px; gap: var(--space-7); }
+    .hero-title { font-size: 48px; }
+    .hero-subhead { font-size: var(--font-size-2xl); }
+    .hero-art { flex: 1; max-width: 715px; }
+  }
+
+  /* ════════════════════════════════════════════════
+     IMAGE PLACEHOLDERS
+  ════════════════════════════════════════════════ */
+  .img-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: var(--color-gray-100);
+    border: 1px dashed var(--color-gray-300);
+    color: var(--color-gray-500);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    padding: var(--space-3);
+    width: 100%;
+    height: 100%;
+  }
+  /* Real-image fills — cover crops to fill the art frame, contain fits whole */
+  .fill-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .contain-img { width: 100%; height: 100%; object-fit: contain; display: block; }
+
+  /* ════════════════════════════════════════════════
+     WHAT IS BOLD
+  ════════════════════════════════════════════════ */
+  .what-is-bold .container { display: flex; flex-direction: column; gap: var(--space-7); }
+  .wib-art {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    width: 100%;
+  }
+  .wib-shape { position: absolute; border-radius: var(--radius-2xl); }
+  .wib-shape--yellow { background: var(--color-yellow-accent); width: 72%; height: 58%; top: 0; left: 0; }
+  .wib-shape--purple { background: var(--color-purple-ede); width: 34%; height: 31%; bottom: 0; right: 12%; }
+  .wib-shape--mint { background: var(--color-mint-100); width: 26%; height: 28%; bottom: 6%; left: 8%; }
+  .wib-photo {
+    position: absolute;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+  }
+  .wib-photo--1 { width: 48%; height: 60%; top: 8%; right: 4%; }
+  .wib-photo--2 { width: 36%; height: 42%; bottom: 4%; left: 30%; }
+
+  .wib-content { display: flex; flex-direction: column; gap: var(--space-6); }
+  .wib-title { font-size: 28px; font-weight: var(--font-weight-bold); letter-spacing: -1px; line-height: var(--line-height-tight); color: var(--color-gray-900); margin: 0; }
+  .wib-list { display: flex; flex-direction: column; gap: var(--space-4); list-style: none; margin: 0; padding: 0; }
+  .wib-list li { display: flex; align-items: flex-start; gap: var(--space-3); font-size: var(--font-size-xl); letter-spacing: -0.2px; color: var(--color-gray-900); }
+  .wib-list i { font-size: 24px; color: var(--color-purple-600); flex-shrink: 0; margin-top: 2px; }
+
+  @media (min-width: 768px) {
+    .what-is-bold .container { flex-direction: row; align-items: center; gap: var(--space-10); }
+    .wib-art { flex: 1; max-width: 567px; }
+    .wib-content { flex: 1; max-width: 648px; }
+    .wib-title { font-size: 40px; }
+  }
+
+  /* ════════════════════════════════════════════════
+     HOW IT WORKS
+  ════════════════════════════════════════════════ */
+  .how-it-works { background: var(--color-lavender-50); }
+  .steps { display: flex; flex-direction: column; gap: var(--space-6); }
+  .step { display: flex; flex-direction: column; flex: 1; }
+  .step-art {
+    position: relative;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    aspect-ratio: 1 / 1;
+    margin-bottom: var(--space-4);
+  }
+  .step-badge {
+    position: absolute;
+    top: 12px; left: 12px;
+    width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--color-blue-600);
+    color: var(--color-white);
+    font-size: 20px;
+    font-weight: var(--font-weight-bold);
+    border-radius: var(--radius-2xs);
+    box-shadow: var(--shadow-sm);
+  }
+  .step-tooltip {
+    position: absolute;
+    top: 12px; left: 12px; right: 12px;
+    max-width: 260px;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(4px);
+    border-radius: var(--radius-sm);
+    padding: var(--space-3);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  .step-tooltip-header { display: flex; align-items: center; gap: var(--space-2); font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold); color: var(--color-gray-900); }
+  .step-tooltip-header i { font-size: 20px; color: var(--color-purple-600); }
+  .step-tooltip p { margin: 0; font-size: var(--font-size-sm); color: var(--color-gray-700); }
+  .step-scrim {
+    position: absolute; inset: 0;
+    background: rgba(0,0,0,0.48);
+    backdrop-filter: blur(1.5px);
+    mix-blend-mode: multiply;
+  }
+  .step-title { font-size: var(--font-size-2xl); font-weight: var(--font-weight-semibold); letter-spacing: -0.5px; margin: 0 0 var(--space-2); color: var(--color-gray-900); }
+  .step-desc { font-size: var(--font-size-xl); letter-spacing: -0.2px; line-height: 1.5; margin: 0; color: var(--color-gray-700); }
+  .steps-cta { display: flex; justify-content: center; margin-top: var(--space-7); }
+
+  @media (min-width: 768px) {
+    .steps { flex-direction: row; gap: var(--space-6); }
+  }
+
+  /* ════════════════════════════════════════════════
+     SUPPORTED BODY PARTS
+  ════════════════════════════════════════════════ */
+  .body-parts { background: var(--color-lavender-50); }
+  .body-parts .container { display: flex; flex-direction: column; gap: var(--space-7); }
+  .bp-content { display: flex; flex-direction: column; gap: var(--space-6); }
+  .bp-title { font-size: 28px; font-weight: var(--font-weight-bold); letter-spacing: -1px; line-height: var(--line-height-tight); margin: 0; color: var(--color-gray-900); }
+  .bp-subhead { font-size: var(--font-size-xl); color: var(--color-gray-900); margin: 0; margin-top: calc(var(--space-3) - var(--space-6)); }
+
+  .accordion-list { list-style: none; margin: 0; padding: 0; }
+  .accordion-item { border-bottom: 2px solid var(--color-gray-200); }
+  .accordion-item:last-child { border-bottom: none; }
+  .accordion-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: var(--space-3);
+    background: none;
+    border: none;
+    text-align: left;
+    padding: var(--space-5) 0;
+    min-height: 44px;
+    cursor: pointer;
+    font-family: var(--font-family);
+  }
+  .accordion-trigger span { font-size: var(--font-size-2xl); font-weight: var(--font-weight-semibold); letter-spacing: -0.5px; color: var(--color-gray-900); }
+  .accordion-trigger i { font-size: 20px; color: var(--color-gray-900); flex-shrink: 0; }
+  .accordion-panel {
+    display: none;
+    padding: 0 0 var(--space-5);
+    font-size: var(--font-size-xl);
+    line-height: 1.5;
+    color: var(--color-gray-700);
+  }
+  .accordion-item[data-open="true"] .accordion-panel { display: block; }
+  .accordion-item[data-open="true"] .icon-collapsed { display: none; }
+  .accordion-item[data-open="false"] .icon-expanded { display: none; }
+
+  /* Body parts + FAQs accordions: smooth expand/collapse.
+     Height is set via JS (measured from content) so the transition is linear. */
+  .body-parts .accordion-panel,
+  .faqs .accordion-panel {
+    display: block;
+    overflow: hidden;
+    max-height: 0;
+    padding: 0;
+    transition: max-height 0.3s ease;
+  }
+  .body-parts .accordion-panel-inner,
+  .faqs .accordion-panel-inner {
+    padding-bottom: var(--space-5);
+  }
+
+  .bp-art {
+    position: relative;
+    border-radius: var(--radius-2xl);
+    overflow: hidden;
+    aspect-ratio: 644 / 630;
+    order: -1;
+  }
+  .bp-highlight {
+    position: absolute;
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-circle);
+    background: rgba(20, 184, 166, 0.35);
+    box-shadow: 0 0 0 6px rgba(20, 184, 166, 0.18), inset 0 0 0 2px var(--color-teal-500);
+    transform: translate(-50%, -50%);
+    transition: var(--transition-base);
+  }
+  .bp-highlight:hover {
+    transform: translate(-50%, -50%) scale(1.35);
+    box-shadow: 0 0 0 10px rgba(20, 184, 166, 0.24), inset 0 0 0 2px var(--color-teal-500);
+  }
+  .bp-highlight:nth-of-type(1) { top: 20%; left: 53%; }
+  .bp-highlight:nth-of-type(2) { top: 26%; left: 59%; }
+  .bp-highlight:nth-of-type(3) { top: 37%; left: 55%; }
+  .bp-highlight:nth-of-type(4) { top: 50%; left: 53%; }
+  .bp-highlight:nth-of-type(5) { top: 54%; left: 57%; }
+  .bp-highlight:nth-of-type(6) { top: 72%; left: 65%; }
+
+  @media (min-width: 768px) {
+    .body-parts .container { flex-direction: row; gap: var(--space-9); align-items: flex-start; }
+    .bp-content { flex: 1; }
+    .bp-title { font-size: 40px; }
+    .bp-art { flex: 0 0 480px; order: 0; }
+  }
+
+  /* ════════════════════════════════════════════════
+     TESTIMONIALS
+  ════════════════════════════════════════════════ */
+  .testimonials { background: var(--color-navy); }
+  .testimonial-track {
+    display: flex;
+    gap: var(--space-6);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: var(--space-3);
+    scrollbar-width: thin;
+  }
+  .testimonial-card {
+    scroll-snap-align: start;
+    flex: 0 0 85%;
+    background: var(--color-blue-50);
+    border-radius: var(--radius-2xl);
+    padding: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-7);
+  }
+  .testimonial-member { display: flex; align-items: center; gap: var(--space-6); }
+  .testimonial-member .img-placeholder { width: 80px; height: 80px; border-radius: 50%; font-size: 10px; flex-shrink: 0; }
+  .testimonial-member .member-photo { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+  .testimonial-name { font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold); color: var(--color-blue-300); margin: 0; line-height: 1.3; }
+  .testimonial-age { font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold); color: var(--color-blue-300); margin: 0; line-height: 1.3; }
+  .testimonial-quote { font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold); letter-spacing: -0.5px; line-height: 1.45; color: var(--color-gray-900); margin: 0; }
+  .testimonial-quote mark { background: none; color: var(--color-blue-300); }
+
+  .testimonial-controls { display: flex; justify-content: center; gap: var(--space-5); margin-top: var(--space-6); }
+  .carousel-btn {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255,255,255,0.12);
+    color: var(--color-white);
+    font-size: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .carousel-btn:hover { background: rgba(255,255,255,0.22); }
+
+  @media (min-width: 768px) {
+    .testimonial-card { flex: 0 0 calc((100% - 2 * 24px) / 3); padding: var(--space-8); aspect-ratio: 490 / 560; }
+    .testimonial-quote { font-size: 28px; line-height: 40px; }
+  }
+
+  /* ════════════════════════════════════════════════
+     FAQs
+  ════════════════════════════════════════════════ */
+  .faqs .accordion-list { max-width: 720px; margin: 0 auto; }
+  .faqs .accordion-trigger span { font-size: var(--font-size-xl); font-weight: var(--font-weight-semibold); }
+  .faqs .accordion-panel { font-size: var(--font-size-xl); }
+
+  /* ════════════════════════════════════════════════
+     PARTNER WITH US
+  ════════════════════════════════════════════════ */
+  .partner-cta {
+    position: relative;
+    text-align: center;
+    color: var(--color-white);
+    overflow: hidden;
+  }
+  .partner-cta .img-placeholder { position: absolute; inset: 0; border-radius: 0; border: none; }
+  .partner-cta .partner-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .partner-cta::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: rgba(0,0,0,0.45);
+  }
+  .partner-cta .container {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-5);
+    max-width: 760px;
+  }
+  .partner-cta h2 { font-size: 32px; font-weight: var(--font-weight-bold); letter-spacing: -1px; line-height: var(--line-height-tight); margin: 0; }
+  @media (min-width: 768px) { .partner-cta h2 { font-size: var(--font-size-4xl); white-space: nowrap; } }
+
+  /* ════════════════════════════════════════════════
+     FOOTER
+  ════════════════════════════════════════════════ */
+  .site-footer { background: var(--color-navy); color: var(--color-gray-50); padding: var(--space-9) 0 var(--space-7); }
+  .footer-top { display: flex; flex-direction: column; gap: var(--space-7); margin-bottom: var(--space-8); }
+  .footer-logo { height: 40px; width: 133px; margin-bottom: var(--space-6); }
+  .footer-logo img, .footer-logo svg { height: 100%; }
+  .footer-lockup { display: flex; flex-direction: column; gap: var(--space-6); align-items: flex-start; }
+  .footer-tagline { font-size: 24px; font-weight: var(--font-weight-bold); line-height: var(--line-height-tight); letter-spacing: -1px; margin: 0; }
+  .footer-columns { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-6); }
+  .footer-col h3 { font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); margin: 0 0 var(--space-3); letter-spacing: -0.2px; }
+  .footer-col ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-2); }
+  .footer-col a { font-size: var(--font-size-lg); text-decoration: none; color: var(--color-gray-50); }
+  .footer-col a:hover { text-decoration: underline; }
+  .footer-apps { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4); margin-bottom: var(--space-6); }
+  .store-badge { height: 48px; width: auto; display: block; }
+  .footer-badges { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-5); margin-bottom: var(--space-7); }
+  .trust-badge { height: 60px; width: auto; display: block; }
+
+  .footer-meta {
+    border-top: 1px solid rgba(255,255,255,0.3);
+    padding-top: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    font-size: var(--font-size-md);
+  }
+  .footer-meta-links { display: flex; gap: var(--space-6); flex-wrap: wrap; }
+  .footer-meta-links a { text-decoration: underline; color: var(--color-gray-50); }
+
+  @media (min-width: 768px) {
+    .footer-top { flex-direction: row; justify-content: space-between; gap: var(--space-9); }
+    .footer-lockup { width: 360px; flex-shrink: 0; }
+    .footer-tagline { font-size: 30px; }
+    .footer-columns { grid-template-columns: repeat(4, 1fr); gap: var(--space-6); flex: 1; }
+    .footer-meta { flex-direction: row; justify-content: space-between; align-items: center; font-size: var(--font-size-lg); }
+  }
+
+</style>
+</head>
+<body>
+
+  <!-- ════════════════════════════════════════════════
+       NAVIGATION
+  ════════════════════════════════════════════════ -->
+  <header class="site-nav">
+    <div class="nav-inner">
+      <a href="#hero" class="nav-logo" aria-label="Bold home">
+        <img src="images/bold-logo-original.svg" alt="Bold">
+      </a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="#what-is-bold">What is Bold</a>
+        <a href="#how-it-works">How Bold works</a>
+        <a href="#partner-with-us">Partner with us</a>
+      </nav>
+      <div class="nav-actions">
+        <a href="#sign-in" class="btn btn-outline btn-sm">Sign in</a>
+        <a href="#hero-form" class="btn btn-primary btn-sm">Check eligibility</a>
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu" id="menu-toggle">
+          <i class="ph ph-list" aria-hidden="true"></i>
+          <span style="position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0);">Open menu</span>
+        </button>
+      </div>
+    </div>
+    <nav class="mobile-menu" id="mobile-menu" aria-label="Primary">
+      <a href="#what-is-bold">What is Bold</a>
+      <a href="#how-it-works">How Bold works</a>
+      <a href="#partner-with-us">Partner with us</a>
+      <a href="#sign-in" class="btn btn-outline btn-full">Sign in</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ════════════════════════════════════════════════
+         HERO
+    ════════════════════════════════════════════════ -->
+    <section class="hero" id="hero">
+      <div class="container">
+        <div class="hero-row">
+          <div class="hero-content">
+            <div class="hero-text">
+              <h1 class="hero-title">More good days. Fewer days defined by pain.</h1>
+              <p class="hero-subhead">Your online exercise program to manage pain. <strong>Covered by Medicare. No co-pay.</strong></p>
+            </div>
+
+            <form class="hero-form" id="hero-form" aria-label="Check your eligibility">
+              <div class="form-row">
+                <div class="field">
+                  <label for="first-name">First name</label>
+                  <input type="text" id="first-name" name="first-name" placeholder="First name" autocomplete="given-name" required>
+                </div>
+                <div class="field">
+                  <label for="last-name">Last name</label>
+                  <input type="text" id="last-name" name="last-name" placeholder="Last name" autocomplete="family-name" required>
+                </div>
+                <div class="field">
+                  <label for="email">Email</label>
+                  <input type="email" id="email" name="email" placeholder="Email address" autocomplete="email" required>
+                </div>
+              </div>
+              <div class="form-info">
+                <button type="button" class="why-toggle" aria-expanded="false" aria-controls="why-text">
+                  <i class="ph ph-question" aria-hidden="true"></i>
+                  <span class="why-toggle-text">Why are we asking this?</span>
+                </button>
+              </div>
+              <p class="why-text" id="why-text">
+                We use your name and email to check whether your Medicare plan covers Bold ACCESS in your area and to send you your personalized program. We never sell your information.
+              </p>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary btn-full">Check eligibility</button>
+                <p class="form-legal">By signing up, you agree to Bold's <a href="#terms">Terms of Service</a> and <a href="#privacy">Privacy Policy</a>.</p>
+              </div>
+            </form>
+          </div>
+
+          <div class="hero-art">
+            <img src="images/hero-image-placeholder.jpg" alt="A Bold member doing a seated stretch at home">
+          </div>
+        </div>
+
+        <div class="social-proof">
+          <div class="social-proof-group">
+            <div class="avatar-stack">
+              <img class="avatar-img" src="images/gerrie-headshot.png" alt="">
+              <img class="avatar-img" src="images/kay-headshot.png" alt="">
+              <img class="avatar-img" src="images/bennett-headshot.png" alt="">
+            </div>
+            <span class="social-proof-label">Beloved by members</span>
+          </div>
+          <div class="social-proof-divider" aria-hidden="true"></div>
+          <div class="social-proof-group">
+            <span class="stars" aria-hidden="true">
+              <i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i>
+            </span>
+            <span class="social-proof-reviews">Based on 10k+ reviews</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════
+         WHAT IS BOLD
+    ════════════════════════════════════════════════ -->
+    <section class="section what-is-bold" id="what-is-bold">
+      <div class="container">
+        <div class="wib-art">
+          <img class="contain-img" src="images/todays-plan-iphone-mockup.png" alt="The Bold app showing a member's personalized Today's Plan with daily check-in questions">
+        </div>
+        <div class="wib-content">
+          <h2 class="wib-title">Built for adults after 65 to manage chronic pain</h2>
+          <ul class="wib-list">
+            <li><i class="ph-fill ph-check-circle" aria-hidden="true"></i> Exercise and education built around your area of pain</li>
+            <li><i class="ph-fill ph-check-circle" aria-hidden="true"></i> A program that adapts to how you feel</li>
+            <li><i class="ph-fill ph-check-circle" aria-hidden="true"></i> Built by doctors and physical therapists, and covered at no cost through Medicare</li>
+          </ul>
+          <div>
+            <a href="#hero-form" class="btn btn-primary">Check eligibility</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════
+         HOW IT WORKS
+    ════════════════════════════════════════════════ -->
+    <section class="section how-it-works" id="how-it-works">
+      <div class="container">
+        <h2 class="section-title">How it works</h2>
+        <div class="steps">
+          <div class="step">
+            <div class="step-art">
+              <img class="fill-img" src="images/How it works - 1.jpg" alt="A Bold member relaxing at home with coffee and her phone">
+              <div class="step-badge" aria-hidden="true">1</div>
+            </div>
+            <h3 class="step-title">Tell us where it hurts</h3>
+            <p class="step-desc">Answer questions about your background and pain. We use your answers to build your program.</p>
+          </div>
+          <div class="step">
+            <div class="step-art">
+              <img class="fill-img" src="images/How it works - 2.jpg" alt="A Bold member doing a seated workout with hand weights, with a 'Why this class' note explaining today's plan">
+              <div class="step-badge" aria-hidden="true">2</div>
+            </div>
+            <h3 class="step-title">Check in every day</h3>
+            <p class="step-desc">Before class, share how you feel. Your program adapts to you each day.</p>
+          </div>
+          <div class="step">
+            <div class="step-art">
+              <img class="fill-img" src="images/How it works - 3.jpg" alt="The three program phases — Calm, Build, and Maintain — with Build highlighted">
+              <div class="step-badge" aria-hidden="true">3</div>
+            </div>
+            <h3 class="step-title">Build at your own pace</h3>
+            <p class="step-desc">Move through three phases — Calm, Build, and Maintain — as your body is ready.</p>
+          </div>
+        </div>
+        <div class="steps-cta">
+          <a href="#hero-form" class="btn btn-primary">Check eligibility</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════
+         SUPPORTED BODY PARTS
+    ════════════════════════════════════════════════ -->
+    <section class="section body-parts" id="body-parts">
+      <div class="container">
+        <div class="bp-content">
+          <h2 class="bp-title">Exercise to help where it hurts</h2>
+          <p class="bp-subhead">A program built around your specific area of pain, at a pace that works for you.</p>
+
+          <ul class="accordion-list">
+            <li class="accordion-item" data-open="true">
+              <button class="accordion-trigger" aria-expanded="true" aria-controls="bp-panel-neck">
+                <span>Neck</span>
+                <i class="ph ph-minus icon-expanded" aria-hidden="true"></i>
+                <i class="ph ph-plus icon-collapsed" aria-hidden="true"></i>
+              </button>
+              <div class="accordion-panel" id="bp-panel-neck"><div class="accordion-panel-inner">Relieve tension and restore movement with gentle exercises designed for chronic neck pain.</div></div>
+            </li>
+            <li class="accordion-item" data-open="false">
+              <button class="accordion-trigger" aria-expanded="false" aria-controls="bp-panel-shoulder">
+                <span>Shoulder</span>
+                <i class="ph ph-minus icon-expanded" aria-hidden="true"></i>
+                <i class="ph ph-plus icon-collapsed" aria-hidden="true"></i>
+              </button>
+              <div class="accordion-panel" id="bp-panel-shoulder"><div class="accordion-panel-inner">Rebuild strength and range of motion in your shoulder.</div></div>
+            </li>
+            <li class="accordion-item" data-open="false">
+              <button class="accordion-trigger" aria-expanded="false" aria-controls="bp-panel-upper-back">
+                <span>Upper back</span>
+                <i class="ph ph-minus icon-expanded" aria-hidden="true"></i>
+                <i class="ph ph-plus icon-collapsed" aria-hidden="true"></i>
+              </button>
+              <div class="accordion-panel" id="bp-panel-upper-back"><div class="accordion-panel-inner">Reduce tightness and improve posture through progressive movement that addresses how your upper body works together.</div></div>
+            </li>
+            <li class="accordion-item" data-open="false">
+              <button class="accordion-trigger" aria-expanded="false" aria-controls="bp-panel-lower-back">
+                <span>Lower back</span>
+                <i class="ph ph-minus icon-expanded" aria-hidden="true"></i>
+                <i class="ph ph-plus icon-collapsed" aria-hidden="true"></i>
+              </button>
+              <div class="accordion-panel" id="bp-panel-lower-back"><div class="accordion-panel-inner">Ease tension and find relief in your lower back to continue daily activities.</div></div>
+            </li>
+            <li class="accordion-item" data-open="false">
+              <button class="accordion-trigger" aria-expanded="false" aria-controls="bp-panel-hip">
+                <span>Hip</span>
+                <i class="ph ph-minus icon-expanded" aria-hidden="true"></i>
+                <i class="ph ph-plus icon-collapsed" aria-hidden="true"></i>
+              </button>
+              <div class="accordion-panel" id="bp-panel-hip"><div class="accordion-panel-inner">Restore stability and ease of movement with exercises anchored in how your hip functions in daily life.</div></div>
+            </li>
+            <li class="accordion-item" data-open="false">
+              <button class="accordion-trigger" aria-expanded="false" aria-controls="bp-panel-knee">
+                <span>Knee</span>
+                <i class="ph ph-minus icon-expanded" aria-hidden="true"></i>
+                <i class="ph ph-plus icon-collapsed" aria-hidden="true"></i>
+              </button>
+              <div class="accordion-panel" id="bp-panel-knee"><div class="accordion-panel-inner">Reduce pain and rebuild confidence in movement with a program paced to how your knee feels.</div></div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="bp-art">
+          <img class="fill-img" src="images/supported-body-parts.jpg" alt="An older adult holding a steady standing yoga pose on a mat at home">
+          <div class="bp-highlight" aria-hidden="true"></div>
+          <div class="bp-highlight" aria-hidden="true"></div>
+          <div class="bp-highlight" aria-hidden="true"></div>
+          <div class="bp-highlight" aria-hidden="true"></div>
+          <div class="bp-highlight" aria-hidden="true"></div>
+          <div class="bp-highlight" aria-hidden="true"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════
+         TESTIMONIALS
+    ════════════════════════════════════════════════ -->
+    <section class="section testimonials" id="testimonials" aria-label="Member testimonials">
+      <div class="container">
+        <h2 class="section-title section-title--light">Beloved by members</h2>
+
+        <div class="testimonial-track" id="testimonial-track" tabindex="0" aria-label="Member testimonials, scroll to see more">
+          <div class="testimonial-card">
+            <div class="testimonial-member">
+              <img class="member-photo" src="images/gerrie-headshot.png" alt="Gerrie, a Bold member">
+              <div>
+                <p class="testimonial-name">Gerrie</p>
+                <p class="testimonial-age">75 years old</p>
+              </div>
+            </div>
+            <p class="testimonial-quote">"I was delighted with the breadth of classes offered, the instruction was really good, <mark>I could do it at home, and I could do it at my convenience</mark>."</p>
+          </div>
+          <div class="testimonial-card">
+            <div class="testimonial-member">
+              <img class="member-photo" src="images/kay-headshot.png" alt="Kay, a Bold member">
+              <div>
+                <p class="testimonial-name">Kay</p>
+                <p class="testimonial-age">72 years old</p>
+              </div>
+            </div>
+            <p class="testimonial-quote">"I think having confidence in my own balance <mark>helps me feel more confident in the world</mark> – just going out and walking, and not worrying about falling."</p>
+          </div>
+          <div class="testimonial-card">
+            <div class="testimonial-member">
+              <img class="member-photo" src="images/bennett-headshot.png" alt="Bennett, a Bold member">
+              <div>
+                <p class="testimonial-name">Bennett</p>
+                <p class="testimonial-age">68 years old</p>
+              </div>
+            </div>
+            <p class="testimonial-quote">"The instructors show you what to do and how to do it – because correct form means everything. <mark>And they make it fun!</mark> I look forward to my Bold sessions."</p>
+          </div>
+        </div>
+
+        <div class="testimonial-controls">
+          <button class="carousel-btn" type="button" id="testimonial-prev" aria-label="Show previous testimonial">
+            <i class="ph ph-caret-circle-left" aria-hidden="true"></i>
+          </button>
+          <button class="carousel-btn" type="button" id="testimonial-next" aria-label="Show next testimonial">
+            <i class="ph ph-caret-circle-right" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════
+         FAQs
+    ════════════════════════════════════════════════ -->
+    <section class="section faqs" id="faqs">
+      <div class="container">
+        <h2 class="section-title">Frequently asked questions</h2>
+        <ul class="accordion-list">
+          <li class="accordion-item" data-open="true">
+            <button class="accordion-trigger" aria-expanded="true" aria-controls="faq-panel-1">
+              <span>Who qualifies for this program?</span>
+              <i class="ph ph-caret-up icon-expanded" aria-hidden="true"></i>
+              <i class="ph ph-caret-down icon-collapsed" aria-hidden="true"></i>
+            </button>
+            <div class="accordion-panel" id="faq-panel-1"><div class="accordion-panel-inner">Bold ACCESS is available to Original Medicare members in California, Texas, and Pennsylvania who have been living with chronic musculoskeletal pain for 12 weeks or more. You can check your eligibility in under a minute above.</div></div>
+          </li>
+          <li class="accordion-item" data-open="false">
+            <button class="accordion-trigger" aria-expanded="false" aria-controls="faq-panel-2">
+              <span>How much does it cost?</span>
+              <i class="ph ph-caret-up icon-expanded" aria-hidden="true"></i>
+              <i class="ph ph-caret-down icon-collapsed" aria-hidden="true"></i>
+            </button>
+            <div class="accordion-panel" id="faq-panel-2"><div class="accordion-panel-inner">Bold waived the co-pay. The program is covered through your Original Medicare benefit at no cost to you.</div></div>
+          </li>
+          <li class="accordion-item" data-open="false">
+            <button class="accordion-trigger" aria-expanded="false" aria-controls="faq-panel-3">
+              <span>Do I need a doctor's referral to join?</span>
+              <i class="ph ph-caret-up icon-expanded" aria-hidden="true"></i>
+              <i class="ph ph-caret-down icon-collapsed" aria-hidden="true"></i>
+            </button>
+            <div class="accordion-panel" id="faq-panel-3"><div class="accordion-panel-inner">No referral is required to get started. If you have a physical therapist or primary care provider you work with, we can keep them updated on your progress.</div></div>
+          </li>
+          <li class="accordion-item" data-open="false">
+            <button class="accordion-trigger" aria-expanded="false" aria-controls="faq-panel-4">
+              <span>What if my pain changes from day to day?</span>
+              <i class="ph ph-caret-up icon-expanded" aria-hidden="true"></i>
+              <i class="ph ph-caret-down icon-collapsed" aria-hidden="true"></i>
+            </button>
+            <div class="accordion-panel" id="faq-panel-4"><div class="accordion-panel-inner">That's exactly what this program is designed for. Before each class you tell us how you are feeling, and your program adjusts accordingly. Chronic pain is not linear and your program shouldn't be either.</div></div>
+          </li>
+          <li class="accordion-item" data-open="false">
+            <button class="accordion-trigger" aria-expanded="false" aria-controls="faq-panel-5">
+              <span>Is this a replacement for physical therapy?</span>
+              <i class="ph ph-caret-up icon-expanded" aria-hidden="true"></i>
+              <i class="ph ph-caret-down icon-collapsed" aria-hidden="true"></i>
+            </button>
+            <div class="accordion-panel" id="faq-panel-5"><div class="accordion-panel-inner">No. Bold ACCESS is designed to complement your care, not replace it. It works well as a next step after PT or during the time between episodes when you need ongoing support.</div></div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════
+         PARTNER WITH US
+    ════════════════════════════════════════════════ -->
+    <section class="section partner-cta" id="partner-with-us">
+      <img class="partner-bg" src="images/yoga-mat.png" alt="">
+
+      <div class="container">
+        <h2>Make Bold your preferred MSK ACCESS partner</h2>
+        <a href="#contact" class="btn btn-yellow">Partner with us</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- ════════════════════════════════════════════════
+       FOOTER
+  ════════════════════════════════════════════════ -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-lockup">
+          <img class="footer-logo" src="images/bold-logo-white.svg" alt="Bold">
+          <p class="footer-tagline">Do something<br>Bold every day.</p>
+          <a href="#hero-form" class="btn btn-yellow">Check eligibility</a>
+        </div>
+        <div class="footer-columns">
+          <div class="footer-col">
+            <h3>Company</h3>
+            <ul>
+              <li><a href="#about">About Bold</a></li>
+              <li><a href="#science">Science</a></li>
+              <li><a href="#trainers">Trainers</a></li>
+              <li><a href="#resources">Resources</a></li>
+              <li><a href="#press">Press</a></li>
+              <li><a href="#careers">Careers</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h3>For health plans</h3>
+            <ul>
+              <li><a href="#partnerships">Partnerships</a></li>
+              <li><a href="#request-demo">Request demo</a></li>
+              <li><a href="#health-plan-resources">Resources</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h3>Product</h3>
+            <ul>
+              <li><a href="#hero-form">Check eligibility</a></li>
+              <li><a href="#faqs">FAQ</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h3>Connect</h3>
+            <ul>
+              <li><a href="#contact">Contact us</a></li>
+              <li><a href="#instagram">Instagram</a></li>
+              <li><a href="#facebook">Facebook</a></li>
+              <li><a href="#linkedin">LinkedIn</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-apps">
+        <a href="#app-store" aria-label="Download on the App Store"><img class="store-badge" src="images/Apple App Store Badge.png" alt="Download on the App Store"></a>
+        <a href="#google-play" aria-label="Get it on Google Play"><img class="store-badge" src="images/Google Play Store Badge.png" alt="Get it on Google Play"></a>
+      </div>
+
+      <div class="footer-badges">
+        <img class="trust-badge" src="images/HIPAA Compliant Badge.png" alt="HIPAA compliant">
+        <img class="trust-badge" src="images/AICPA SOC Compliant Badge.png" alt="AICPA SOC compliant">
+      </div>
+
+      <div class="footer-meta">
+        <p>© 2026 Age Bold Inc.</p>
+        <div class="footer-meta-links">
+          <a href="#terms">Terms</a>
+          <a href="#privacy">Privacy</a>
+          <a href="#disclaimers">Disclaimers</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Mobile menu toggle
+    var menuToggle = document.getElementById('menu-toggle');
+    var mobileMenu = document.getElementById('mobile-menu');
+    menuToggle.addEventListener('click', function () {
+      var isOpen = mobileMenu.classList.toggle('is-open');
+      menuToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      menuToggle.querySelector('i').className = isOpen ? 'ph ph-x' : 'ph ph-list';
+    });
+    mobileMenu.querySelectorAll('a').forEach(function (link) {
+      link.addEventListener('click', function () {
+        mobileMenu.classList.remove('is-open');
+        menuToggle.setAttribute('aria-expanded', 'false');
+        menuToggle.querySelector('i').className = 'ph ph-list';
+      });
+    });
+
+    // "Why are we asking this?" disclosure
+    var whyToggle = document.querySelector('.why-toggle');
+    var whyText = document.getElementById('why-text');
+    whyToggle.addEventListener('click', function () {
+      var isOpen = whyText.classList.toggle('is-open');
+      whyToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+
+    // Shared helper: smoothly expand/collapse an accordion panel by setting
+    // max-height to its measured content height (so the CSS transition is linear).
+    function setAccordionPanelHeight(item, open) {
+      var panel = item.querySelector('.accordion-panel');
+      panel.style.maxHeight = open ? panel.scrollHeight + 'px' : '0px';
+    }
+
+    // FAQs accordion — each item toggles independently, with a smooth height transition.
+    var faqItems = document.querySelectorAll('.faqs .accordion-item');
+    faqItems.forEach(function (item) {
+      var trigger = item.querySelector('.accordion-trigger');
+      setAccordionPanelHeight(item, item.getAttribute('data-open') === 'true');
+      trigger.addEventListener('click', function () {
+        var isOpen = item.getAttribute('data-open') === 'true';
+        item.setAttribute('data-open', isOpen ? 'false' : 'true');
+        trigger.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+        setAccordionPanelHeight(item, !isOpen);
+      });
+    });
+    // Recalculate any open FAQ panel's height if the layout reflows (e.g. orientation change)
+    var faqResizeTimer;
+    window.addEventListener('resize', function () {
+      clearTimeout(faqResizeTimer);
+      faqResizeTimer = setTimeout(function () {
+        faqItems.forEach(function (item) {
+          if (item.getAttribute('data-open') === 'true') setAccordionPanelHeight(item, true);
+        });
+      }, 150);
+    });
+
+    // Supported Body Parts accordion — opening one collapses the others,
+    // with a smooth height transition driven by the panel's measured content height.
+    var bpItems = document.querySelectorAll('.body-parts .accordion-item');
+    bpItems.forEach(function (item) {
+      var trigger = item.querySelector('.accordion-trigger');
+      setAccordionPanelHeight(item, item.getAttribute('data-open') === 'true');
+      trigger.addEventListener('click', function () {
+        var isOpen = item.getAttribute('data-open') === 'true';
+        bpItems.forEach(function (other) {
+          var otherTrigger = other.querySelector('.accordion-trigger');
+          var shouldOpen = other === item && !isOpen;
+          other.setAttribute('data-open', shouldOpen ? 'true' : 'false');
+          otherTrigger.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+          setAccordionPanelHeight(other, shouldOpen);
+        });
+      });
+    });
+    // Recalculate the open panel's height if the layout reflows (e.g. orientation change)
+    var bpResizeTimer;
+    window.addEventListener('resize', function () {
+      clearTimeout(bpResizeTimer);
+      bpResizeTimer = setTimeout(function () {
+        bpItems.forEach(function (item) {
+          if (item.getAttribute('data-open') === 'true') setAccordionPanelHeight(item, true);
+        });
+      }, 150);
+    });
+
+    // Testimonial carousel — scroll-based, all cards remain reachable by
+    // keyboard/scroll, not just via these controls.
+    var track = document.getElementById('testimonial-track');
+    var prevBtn = document.getElementById('testimonial-prev');
+    var nextBtn = document.getElementById('testimonial-next');
+    function scrollByCard(direction) {
+      var card = track.querySelector('.testimonial-card');
+      var amount = card ? card.getBoundingClientRect().width + 24 : 300;
+      track.scrollBy({ left: direction * amount, behavior: 'smooth' });
+    }
+    prevBtn.addEventListener('click', function () { scrollByCard(-1); });
+    nextBtn.addEventListener('click', function () { scrollByCard(1); });
+  </script>
+</body>
+</html>
