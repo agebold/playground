@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bold Weight Management — Watch how it works</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- Design tokens + hand-implemented @bold/web components (Button, etc.) -->
+  <link rel="stylesheet" href="funnel.css" />
+  <style>
+    /* ══════════════════════════════════════════════
+       ADS — pre-landing video reel (step 00)
+       Hand-implements @bold/web `Video2` (orientation="portrait", 9:16)
+       inside a `Carousel2`-style arrow viewer. One video shown at a time;
+       left/right arrows switch slides. Permanently MUTED, autoplay loop.
+       Tokens from funnel.css (:root). Black backdrop = --color-gray-950 (ink).
+    ══════════════════════════════════════════════ */
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { overflow: hidden; }
+    body {
+      font-family: var(--font-family);
+      background: var(--color-gray-950);   /* ink backdrop behind 9:16 video */
+      color: #fff;
+      height: 100vh;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Carousel region (full bleed inside the phone) ── */
+    .ads {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      background: var(--color-gray-950);
+    }
+
+    /* ── Slides (one stacked on another; opacity crossfade) ── */
+    .ads-slide {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.32s ease;
+    }
+    .ads-slide.is-active { opacity: 1; visibility: visible; }
+
+    .ads-video-wrap { position: absolute; inset: 0; background: var(--color-gray-950); }
+
+    /* @bold/web Video2 — portrait. object-fit:cover fills the frame; the
+       9:16 source is centered (sides trim slightly on the taller phone).
+       Switch to `contain` for letterboxed full-frame if creative needs it. */
+    .Video2 {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      background: var(--color-gray-950);
+      cursor: pointer;          /* tap video to play / pause */
+    }
+
+    /* Upload placeholder — shown until the real video file loads */
+    .ads-placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 0 32px;
+      text-align: center;
+      background:
+        radial-gradient(ellipse at 50% 35%, rgba(82,0,212,0.28) 0%, transparent 62%),
+        var(--color-gray-950);
+    }
+    .ads-video-wrap.is-loaded .ads-placeholder { display: none; }
+    .ads-placeholder-box {
+      width: 84px; height: 84px;
+      border-radius: var(--radius-xl);
+      border: 2px dashed rgba(255,255,255,0.45);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .ads-placeholder-title { font-size: 17px; font-weight: 700; color: #fff; }
+    .ads-placeholder-path {
+      font-size: 14px; font-weight: 500;
+      color: rgba(255,255,255,0.72);
+      line-height: 1.5;
+    }
+    .ads-placeholder-path code {
+      font-family: 'SF Mono', 'Menlo', monospace;
+      background: rgba(255,255,255,0.14);
+      border-radius: var(--radius-sm);
+      padding: 2px 6px;
+      color: #fff;
+    }
+
+    /* ── Top scrim (keeps the iOS status bar + dots legible over video) ── */
+    .ads-scrim-top {
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 150px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.92) 0%, rgba(255,255,255,0.55) 38%, transparent 100%);
+      pointer-events: none;
+      z-index: 5;
+    }
+    /* ── Bottom scrim (seats the CTA + play control) ── */
+    .ads-scrim-bottom {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 220px;
+      background: linear-gradient(0deg, rgba(20,13,38,0.78) 0%, rgba(20,13,38,0.45) 45%, transparent 100%);
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    /* ── Progress dots (tap to jump) ── */
+    .ads-dots {
+      position: absolute;
+      top: 64px; left: 0; right: 0;
+      z-index: 12;
+      display: flex;
+      justify-content: center;
+      gap: 4px;
+    }
+    .ads-dot {
+      /* 44px hit area, small visible pill inside */
+      width: 44px; height: 44px;
+      padding: 0;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .ads-dot::after {
+      content: '';
+      width: 28px; height: 5px;
+      border-radius: 100px;
+      background: rgba(20,13,38,0.22);
+      transition: background 0.2s ease;
+    }
+    .ads-dot[aria-current="true"]::after { background: var(--color-purple-600); }
+    .ads-dot:hover::after { background: rgba(20,13,38,0.4); }
+    .ads-dot[aria-current="true"]:hover::after { background: var(--color-purple-500); }
+    .ads-dot:focus-visible { outline: 2px solid var(--color-purple-600); outline-offset: -6px; border-radius: var(--radius-md); }
+
+    /* ── Arrow buttons (Carousel2 — white circles, left/right, centered) ── */
+    .ads-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 12;
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: #fff;
+      border: 1px solid var(--color-gray-200);
+      box-shadow: var(--shadow-sm);
+      color: var(--color-gray-950);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      transition: opacity 0.25s ease, background 0.15s ease, transform 0.1s ease;
+    }
+    .ads-arrow:hover { background: var(--color-gray-50); }
+    .ads-arrow:active { transform: translateY(-50%) scale(0.94); }
+    .ads-arrow:focus-visible { outline: 2px solid var(--color-purple-600); outline-offset: 2px; }
+    .ads-arrow--prev { left: 12px; }
+    .ads-arrow--next { right: 12px; }
+    /* Embla behavior: fade out the arrow that has no slide to go to */
+    .ads-arrow.is-hidden { opacity: 0; pointer-events: none; }
+
+    /* ── Play / pause control (WCAG 2.2.2 — stop auto-playing motion) ── */
+    .ads-playpause {
+      position: absolute;
+      left: 16px; bottom: 92px;
+      z-index: 12;
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.16);
+      border: 1px solid rgba(255,255,255,0.5);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      transition: background 0.15s ease, transform 0.1s ease;
+    }
+    .ads-playpause:hover { background: rgba(255,255,255,0.28); }
+    .ads-playpause:active { transform: scale(0.94); }
+    .ads-playpause:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+    .ads-playpause .icon-play { display: none; }
+    .ads-playpause .icon-pause { display: block; }
+    .ads-playpause.is-paused .icon-play { display: block; }
+    .ads-playpause.is-paused .icon-pause { display: none; }
+
+    /* ── Bottom CTA → landing page ── */
+    .ads-cta {
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      z-index: 12;
+      padding: 16px 16px 28px;
+    }
+    .ads-cta .Button { font-size: 17px; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .ads-slide, .ads-arrow, .ads-dot::after, .ads-playpause { transition: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <main class="ads" role="region" aria-roledescription="carousel" aria-label="Intro videos — how Bold works">
+
+    <!-- Slide 1 -->
+    <div class="ads-slide is-active" data-index="0" role="group" aria-roledescription="slide" aria-label="Video 1 of 2">
+      <div class="ads-video-wrap">
+        <video class="Video2 Video2---portrait"
+               muted loop playsinline preload="auto"
+               disablepictureinpicture aria-label="Bold intro video 1 (no sound)">
+          <source src="assets/ads/ad-1.mp4" type="video/mp4" />
+        </video>
+        <div class="ads-placeholder" aria-hidden="true">
+          <div class="ads-placeholder-box">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 16V4M12 4L7 9M12 4l5 5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <p class="ads-placeholder-title">Upload your first video</p>
+          <p class="ads-placeholder-path">Drop a 9:16 video at<br><code>assets/ads/ad-1.mp4</code></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 2 -->
+    <div class="ads-slide" data-index="1" role="group" aria-roledescription="slide" aria-label="Video 2 of 2">
+      <div class="ads-video-wrap">
+        <video class="Video2 Video2---portrait"
+               muted loop playsinline preload="auto"
+               disablepictureinpicture aria-label="Bold intro video 2 (no sound)">
+          <source src="assets/ads/ad-2.mp4" type="video/mp4" />
+        </video>
+        <div class="ads-placeholder" aria-hidden="true">
+          <div class="ads-placeholder-box">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 16V4M12 4L7 9M12 4l5 5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <p class="ads-placeholder-title">Upload your second video</p>
+          <p class="ads-placeholder-path">Drop a 9:16 video at<br><code>assets/ads/ad-2.mp4</code></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scrims for legibility -->
+    <div class="ads-scrim-top" aria-hidden="true"></div>
+    <div class="ads-scrim-bottom" aria-hidden="true"></div>
+
+    <!-- Progress dots -->
+    <div class="ads-dots" role="group" aria-label="Choose a video">
+      <button class="ads-dot" type="button" data-go="0" aria-current="true" aria-label="Show video 1 of 2"></button>
+      <button class="ads-dot" type="button" data-go="1" aria-current="false" aria-label="Show video 2 of 2"></button>
+    </div>
+
+    <!-- Prev / Next arrows -->
+    <button class="ads-arrow ads-arrow--prev is-hidden" type="button" id="ads-prev" aria-label="Previous video">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <button class="ads-arrow ads-arrow--next" type="button" id="ads-next" aria-label="Next video">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+
+    <!-- Play / pause (lets users stop the auto-playing motion) -->
+    <button class="ads-playpause" type="button" id="ads-playpause" aria-label="Pause video">
+      <svg class="icon-pause" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <rect x="6" y="5" width="4" height="14" rx="1.2"/>
+        <rect x="14" y="5" width="4" height="14" rx="1.2"/>
+      </svg>
+      <svg class="icon-play" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M8 5.5v13a1 1 0 0 0 1.5.87l11-6.5a1 1 0 0 0 0-1.74l-11-6.5A1 1 0 0 0 8 5.5Z"/>
+      </svg>
+    </button>
+
+    <!-- Continue to landing page -->
+    <div class="ads-cta">
+      <a class="Button Button---primary Button---purple Button---full" href="00-lp.html">Continue</a>
+    </div>
+
+    <!-- Screen-reader announcement of the active slide -->
+    <p class="cf-visually-hidden" aria-live="polite" id="ads-live">Video 1 of 2</p>
+
+  </main>
+
+  <script>
+    (function () {
+      var slides   = Array.prototype.slice.call(document.querySelectorAll('.ads-slide'));
+      var videos   = slides.map(function (s) { return s.querySelector('video'); });
+      var dots     = Array.prototype.slice.call(document.querySelectorAll('.ads-dot'));
+      var prevBtn  = document.getElementById('ads-prev');
+      var nextBtn  = document.getElementById('ads-next');
+      var ppBtn    = document.getElementById('ads-playpause');
+      var live     = document.getElementById('ads-live');
+      var total    = slides.length;
+      var current  = 0;
+      var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var userPaused   = reduceMotion;   // honor reduced-motion: start paused
+
+      // Reveal each video once it can render (hides the upload placeholder)
+      videos.forEach(function (v) {
+        v.muted = true;                                  // belt + suspenders for autoplay
+        function reveal() { v.parentElement.classList.add('is-loaded'); }
+        v.addEventListener('loadeddata', reveal);
+        if (v.readyState >= 2) reveal();                 // already buffered
+      });
+
+      function setPlayIcon() {
+        ppBtn.classList.toggle('is-paused', userPaused);
+        ppBtn.setAttribute('aria-label', userPaused ? 'Play video' : 'Pause video');
+      }
+
+      function playActive() {
+        var v = videos[current];
+        if (!v) return;
+        var p = v.play();
+        if (p && p.catch) { p.catch(function () { /* autoplay blocked — ignore */ }); }
+      }
+
+      function goTo(i) {
+        if (i < 0 || i > total - 1 || i === current) {
+          if (i === current) return;
+        }
+        i = Math.max(0, Math.min(total - 1, i));
+
+        // Pause + rewind the outgoing video
+        var leaving = videos[current];
+        if (leaving) { leaving.pause(); try { leaving.currentTime = 0; } catch (e) {} }
+
+        current = i;
+
+        slides.forEach(function (s, idx) { s.classList.toggle('is-active', idx === current); });
+        dots.forEach(function (d, idx) { d.setAttribute('aria-current', idx === current ? 'true' : 'false'); });
+
+        // Embla-style: hide the arrow with nowhere to go
+        prevBtn.classList.toggle('is-hidden', current === 0);
+        nextBtn.classList.toggle('is-hidden', current === total - 1);
+
+        live.textContent = 'Video ' + (current + 1) + ' of ' + total;
+
+        if (!userPaused) playActive();
+        setPlayIcon();
+      }
+
+      function togglePlay() {
+        userPaused = !userPaused;
+        if (userPaused) { videos[current] && videos[current].pause(); }
+        else { playActive(); }
+        setPlayIcon();
+      }
+
+      prevBtn.addEventListener('click', function () { goTo(current - 1); });
+      nextBtn.addEventListener('click', function () { goTo(current + 1); });
+      dots.forEach(function (d) {
+        d.addEventListener('click', function () { goTo(parseInt(d.getAttribute('data-go'), 10)); });
+      });
+      ppBtn.addEventListener('click', togglePlay);
+
+      // Tap the video itself to play / pause
+      videos.forEach(function (v) { v.addEventListener('click', togglePlay); });
+
+      // Keyboard: left / right arrows switch slides
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowLeft')  { goTo(current - 1); }
+        if (e.key === 'ArrowRight') { goTo(current + 1); }
+      });
+
+      // Kick off the first video (muted autoplay) unless reduced-motion
+      setPlayIcon();
+      if (!userPaused) playActive();
+    })();
+  </script>
+
+</body>
+</html>
