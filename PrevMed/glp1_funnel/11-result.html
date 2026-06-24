@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>You're a strong candidate — Bold Weight Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="funnel.css" />
+  <link rel="stylesheet" href="steps.css" />
+  <style>
+    /* ── Program card ── */
+    .rs-card { background: #fff; border: 1px solid var(--color-gray-200); border-radius: var(--radius-xl); padding: 16px 12px; display: flex; flex-direction: column; gap: 12px; }
+    .rs-card-head { display: flex; gap: 12px; align-items: center; }
+    .rs-card-thumb { width: 60px; height: 60px; border-radius: var(--radius-sm); object-fit: cover; flex-shrink: 0; }
+    .rs-card-title { font-size: 20px; font-weight: 600; line-height: 24px; color: var(--color-gray-950); }
+
+    /* ── "What you'll pay" card ── */
+    .rs-pay { background: var(--color-mint-100); border-radius: var(--radius-xl); overflow: hidden; box-shadow: var(--shadow-sm); }
+    .rs-pay-badge { padding: 6px 16px; font-size: 14px; font-weight: 600; line-height: 22px; color: #005b52; }
+    .rs-pay-body { background: #fff; border-radius: var(--radius-xl); padding: 12px; display: flex; gap: 16px; }
+    .rs-pay-col { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: space-between; min-height: 100px; }
+    .rs-pay-col--divided { border-right: 1px solid var(--color-gray-200); padding-right: 16px; }
+    .rs-pay-label { font-size: 16px; font-weight: 600; line-height: 24px; color: var(--color-gray-900); }
+    .rs-pay-note { font-size: 14px; font-style: italic; font-weight: 400; }
+    .rs-pay-amt { font-size: 24px; font-weight: 600; line-height: 32px; letter-spacing: -0.5px; color: var(--color-gray-900); }
+    .rs-pay-sub { font-size: 16px; font-weight: 400; line-height: 24px; color: var(--color-gray-900); }
+
+    /* ── Quote card ── */
+    .rs-quote { background: var(--color-blue-100); border-radius: var(--radius-xl); padding: 12px; box-shadow: var(--shadow-xs); display: flex; gap: 12px; align-items: flex-start; }
+    .rs-quote-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+    .rs-quote-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+    .rs-quote-text { font-size: 16px; line-height: 24px; color: #1a3380; }
+    .rs-quote-name { font-size: 14px; font-weight: 600; line-height: 22px; color: #1a3380; }
+    .rs-quote-name span { display: block; }
+
+    .rs-faq-label { font-size: 18px; font-weight: 600; line-height: 24px; color: #000; }
+    .cf-faq-answer ol { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; }
+    .cf-faq-answer strong { color: var(--color-gray-900); font-weight: 700; }
+
+    /* Pin the "Schedule call" CTA to the bottom of the viewport (always visible) */
+    .st-footer {
+      position: fixed;
+      bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 100%; max-width: 393px;
+      z-index: 20;
+    }
+    .st-content { padding-bottom: 96px; } /* clear the fixed CTA so the FAQ isn't hidden */
+  </style>
+</head>
+<body>
+
+  <div class="st-statusbar-fill" aria-hidden="true"></div>
+
+  <div class="cf-page">
+
+    <nav class="cf-nav" aria-label="Your result">
+      <a class="cf-nav-btn" href="10-discuss.html" aria-label="Go back">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+      <span class="cf-logo" role="img" aria-label="Bold">
+        <span class="logo-lines"><img src="assets/lp/logo-lines.svg" alt="" /></span>
+        <span class="logo-text"><img src="assets/lp/logo-text.svg" alt="" /></span>
+      </span>
+      <span class="cf-nav-btn is-hidden" aria-hidden="true"></span>
+    </nav>
+
+    <main class="st-content">
+      <h1 class="cf-heading">Good news. You're a strong candidate!</h1>
+
+      <!-- Program card -->
+      <div class="rs-card">
+        <div class="rs-card-head">
+          <img class="rs-card-thumb" src="assets/lp/figma-pill.png" alt="" />
+          <p class="rs-card-title">Bold doctor-supervised GLP-1 weight loss program</p>
+        </div>
+        <div class="st-check-list">
+          <div class="st-check">
+            <svg class="st-check-ic" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#3366ff"/><path d="M7 12.5l3.2 3.2L17 9" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="st-check-text--sm">Access FDA-approved GLP-1s like Wegovy and Zepbound if prescribed</span>
+          </div>
+          <div class="st-check">
+            <svg class="st-check-ic" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#3366ff"/><path d="M7 12.5l3.2 3.2L17 9" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="st-check-text--sm">Designed for older adults, <span class="reg">helping you lose fat and protect your strength</span></span>
+          </div>
+          <div class="st-check">
+            <svg class="st-check-ic" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#3366ff"/><path d="M7 12.5l3.2 3.2L17 9" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="st-check-text--sm">Your provider stays in the loop <span class="reg">to keep you safe and adjusts the plan as you go.</span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- What you'll pay -->
+      <div class="rs-pay">
+        <div class="rs-pay-badge">What you'll pay</div>
+        <div class="rs-pay-body">
+          <div class="rs-pay-col rs-pay-col--divided">
+            <p class="rs-pay-label">Initial visit</p>
+            <div>
+              <p class="rs-pay-amt">$0-25</p>
+              <p class="rs-pay-sub">out of pocket</p>
+            </div>
+          </div>
+          <div class="rs-pay-col">
+            <p class="rs-pay-label">GLP-1s <span class="rs-pay-note">(if eligible)*</span></p>
+            <div>
+              <p class="rs-pay-amt">$50</p>
+              <p class="rs-pay-sub">monthly copay</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quote -->
+      <div class="rs-quote">
+        <img class="rs-quote-avatar" src="assets/lp/prov-sandeep.jpg" alt="" />
+        <div class="rs-quote-body">
+          <p class="rs-quote-text">"Bold weight-management program is designed for adults 65+ to lose weight safely. With personalized lifestyle support with FDA-approved medications when it's appropriate, it not only works but lasts."</p>
+          <p class="rs-quote-name"><span>Dr. Sandeep Palakodeti, M.D., M.P.H.</span><span>Chief Medical Officer at Bold</span></p>
+        </div>
+      </div>
+
+      <!-- FAQs -->
+      <p class="rs-faq-label">*FAQs</p>
+      <div class="cf-faq-list">
+        <div class="cf-faq-item">
+          <button class="cf-faq-btn" type="button" aria-expanded="false">
+            <span class="cf-faq-question">How medication coverage works.</span>
+            <svg class="cf-faq-caret" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M7.5 5l5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="cf-faq-answer">
+            <ol>
+              <li><strong>Meet with your Bold provider.</strong> Together, you'll determine whether a GLP-1 is suitable for you.</li>
+              <li><strong>Your provider will work with Medicare</strong> to get your prescription covered.</li>
+              <li><strong>If Medicare approves your prescription,</strong> you'll pay a $50 copay per month. <strong>If you aren't covered,</strong> your provider will focus on lifestyle support to help you lose weight without medication.</li>
+            </ol>
+          </div>
+        </div>
+        <div class="cf-faq-item">
+          <button class="cf-faq-btn" type="button" aria-expanded="false">
+            <span class="cf-faq-question">Are GLP-1s required?</span>
+            <svg class="cf-faq-caret" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M7.5 5l5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="cf-faq-answer">No! If a GLP-1 isn't the right fit for you, your provider will still support you with a personalized lifestyle plan to reach your weight management goals.</div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="st-footer">
+      <div class="st-actions">
+        <a class="Button Button---primary Button---purple Button---full" href="12-schedule.html">Schedule call</a>
+      </div>
+    </footer>
+
+  </div>
+
+  <script src="steps.js"></script>
+</body>
+</html>

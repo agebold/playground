@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Health history — Bold Weight Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="funnel.css" />
+  <link rel="stylesheet" href="steps.css" />
+</head>
+<body>
+
+  <div class="st-statusbar-fill" aria-hidden="true"></div>
+
+  <div class="cf-page">
+
+    <nav class="cf-nav" aria-label="Health history question">
+      <a class="cf-nav-btn" href="08-medications.html" aria-label="Go back">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+      <span class="cf-logo" role="img" aria-label="Bold">
+        <span class="logo-lines"><img src="assets/lp/logo-lines.svg" alt="" /></span>
+        <span class="logo-text"><img src="assets/lp/logo-text.svg" alt="" /></span>
+      </span>
+      <span class="cf-nav-btn is-hidden" aria-hidden="true"></span>
+    </nav>
+
+    <main class="st-content">
+      <div class="st-intro">
+        <p class="st-eyebrow">Question 5 of 6</p>
+        <h1 class="cf-heading">Do any of the following apply to you?</h1>
+        <p class="cf-body">Select all that apply.</p>
+      </div>
+
+      <fieldset class="cf-checkbox-group" data-checkgroup data-continue="#continue-btn"
+                aria-label="Do any of the following apply to you?">
+        <label class="cf-checkbox-option">
+          <input type="checkbox" name="history" value="prediabetes" />
+          <span class="cf-checkbox-indicator" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M2.5 7.5L6 11L11.5 4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span class="cf-checkbox-label">Prediabetes</span>
+        </label>
+        <label class="cf-checkbox-option">
+          <input type="checkbox" name="history" value="hypertension" />
+          <span class="cf-checkbox-indicator" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M2.5 7.5L6 11L11.5 4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span class="cf-checkbox-label">High blood pressure (hypertension)</span>
+        </label>
+        <label class="cf-checkbox-option">
+          <input type="checkbox" name="history" value="heart-attack" />
+          <span class="cf-checkbox-indicator" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M2.5 7.5L6 11L11.5 4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span class="cf-checkbox-label">Previous heart attack</span>
+        </label>
+        <label class="cf-checkbox-option">
+          <input type="checkbox" name="history" value="stroke" />
+          <span class="cf-checkbox-indicator" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M2.5 7.5L6 11L11.5 4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span class="cf-checkbox-label">Previous stroke</span>
+        </label>
+        <label class="cf-checkbox-option">
+          <input type="checkbox" name="history" value="pad" />
+          <span class="cf-checkbox-indicator" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M2.5 7.5L6 11L11.5 4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span class="cf-checkbox-label">Peripheral artery disease that causes leg pain or cramping when you walk</span>
+        </label>
+        <label class="cf-checkbox-option">
+          <input type="checkbox" name="history" value="ckd" />
+          <span class="cf-checkbox-indicator" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M2.5 7.5L6 11L11.5 4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span class="cf-checkbox-label">Chronic moderate to severe kidney disease (stage 3a or above)</span>
+        </label>
+        <label class="cf-checkbox-option">
+          <input type="checkbox" name="history" value="hfpef" />
+          <span class="cf-checkbox-indicator" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M2.5 7.5L6 11L11.5 4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span class="cf-checkbox-label">Heart failure with normal pumping strength but stiffness</span>
+        </label>
+        <label class="cf-checkbox-option cf-checkbox-option--exclusive">
+          <input type="checkbox" name="history" value="none" data-exclusive />
+          <span class="cf-checkbox-indicator" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M2.5 7.5L6 11L11.5 4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span class="cf-checkbox-label">None of the above</span>
+        </label>
+      </fieldset>
+    </main>
+
+    <footer class="st-footer">
+      <div class="st-actions">
+        <button id="continue-btn" class="Button Button---primary Button---purple Button---full"
+                type="button" data-next="10-discuss.html" disabled>Continue</button>
+      </div>
+    </footer>
+
+  </div>
+
+  <script src="steps.js"></script>
+</body>
+</html>

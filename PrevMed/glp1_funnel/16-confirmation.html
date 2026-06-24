@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>You're all set — Bold Weight Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="funnel.css" />
+  <link rel="stylesheet" href="steps.css" />
+  <style>
+    /* ── Upcoming-call card (centered, per Figma) ── */
+    .cf-appointment-badge { text-align: center; line-height: 22px; }
+    .cf-appointment-photo img { width: 100%; height: 100%; object-fit: cover; margin-left: 0; }
+    .cf-appointment-dates { align-items: center; }
+    .cf-appointment-date-row { justify-content: center; }
+    .cf-appointment-date-row svg { flex-shrink: 0; color: var(--color-gray-475); }
+    .cf-appointment-bottom .cf-action-row { gap: 32px; }
+    /* Greeting subtitle is Body (16px) in Figma, not 18px */
+    .cf-greeting-sub { font-size: 16px; }
+    .cn-expect { width: 100%; border-top: 1px solid var(--color-gray-200); padding-top: 16px; display: flex; flex-direction: column; gap: 8px; }
+    .cn-expect-title { font-size: 18px; font-weight: 600; line-height: 24px; color: var(--color-gray-900); }
+    .cn-expect-list { margin: 0; padding-left: 22px; }
+    .cn-expect-list li { font-size: 16px; line-height: 24px; color: var(--color-gray-900); }
+    .cn-expect-list li + li { margin-top: 4px; }
+
+    /* ── About your program ── */
+    .cn-h2 { font-size: 20px; font-weight: 600; line-height: 24px; color: #000; }     /* Headline Bold — "Learn more" */
+    .cn-h2--lg { font-size: 28px; line-height: 34px; letter-spacing: -0.8px; }          /* Title 3 Bold — "About your program" */
+    .cn-program { background: var(--color-mint-100); border-radius: var(--radius-xl); overflow: hidden; box-shadow: var(--shadow-sm); }
+    .cn-program-badge { padding: 6px 16px; font-size: 14px; font-weight: 600; line-height: 22px; color: #005b52; }
+    .cn-program-body { background: #fff; border: 1px solid var(--color-gray-200); border-radius: var(--radius-xl); padding: 16px 12px; display: flex; flex-direction: column; gap: 16px; }
+    .cn-program-head { display: flex; gap: 12px; align-items: center; }
+    .cn-thumb { width: 60px; height: 60px; border-radius: var(--radius-sm); object-fit: cover; flex-shrink: 0; }
+    .cn-program-title { font-size: 20px; font-weight: 600; line-height: 24px; color: var(--color-gray-950); }
+    .cn-coverage { border-top: 1px solid var(--color-gray-200); padding-top: 16px; }
+    .cn-coverage-title { font-size: 18px; font-weight: 600; line-height: 24px; color: var(--color-gray-900); margin-bottom: 12px; }
+    .st-check-text--sm strong { font-weight: 600; }
+
+    /* ── Video ── */
+    .cn-video { position: relative; display: flex; align-items: flex-end; padding: 16px; border-radius: var(--radius-sm); overflow: hidden; background: #1a1a2e; aspect-ratio: 16 / 10; cursor: pointer; }
+    .cn-video > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .cn-video::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.78) 100%); }
+    .cn-video-play { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80px; height: 80px; background: #000; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; z-index: 1; }
+    .cn-video-meta { position: relative; z-index: 1; color: #fff; display: flex; flex-direction: column; }
+    .cn-video-title { font-size: 24px; font-weight: 600; line-height: 32px; letter-spacing: -0.5px; }
+    .cn-video-cred { margin-top: 8px; display: flex; flex-direction: column; gap: 2px; }
+    .cn-video-name { font-size: 16px; font-weight: 600; line-height: 24px; }
+    .cn-video-role { font-size: 16px; font-weight: 400; line-height: 24px; }
+
+    .cf-resource-scroll { min-width: 0; }
+    .cf-resource-img img { width: 100%; height: 100%; object-fit: cover; }
+    .cf-resource-card { text-decoration: none; }  /* card titles aren't underlined in Figma */
+    .cf-resource-title { line-height: 24px; }   /* Body Bold — was 22px */
+    .cf-resource-type { line-height: 22px; }    /* Caption 1 — line-height was unset */
+
+    .cn-faq-label { font-size: 20px; font-weight: 600; line-height: 24px; color: #000; }
+    .cn-portal { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 12px 16px; background: #fff; border-radius: var(--radius-xl); box-shadow: var(--shadow-sm); font-size: 16px; font-weight: 400; line-height: 24px; color: var(--color-gray-900); text-decoration: none; }
+    .cn-portal svg { flex-shrink: 0; color: var(--color-gray-475); }
+  </style>
+</head>
+<body>
+
+  <div class="st-statusbar-fill" aria-hidden="true"></div>
+
+  <div class="cf-page st-fade-in">
+
+    <nav class="cf-nav" aria-label="Appointment confirmed">
+      <a class="cf-nav-btn" href="15-phone.html" aria-label="Go back">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+      <span class="cf-logo" role="img" aria-label="Bold">
+        <span class="logo-lines"><img src="assets/lp/logo-lines.svg" alt="" /></span>
+        <span class="logo-text"><img src="assets/lp/logo-text.svg" alt="" /></span>
+      </span>
+      <span class="cf-nav-btn is-hidden" aria-hidden="true"></span>
+    </nav>
+
+    <main class="st-content">
+
+      <div class="cf-greeting">
+        <div class="cf-greeting-icon" aria-hidden="true">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="15" fill="#00b5a3"/><path d="M11.5 18.5l4.2 4.2L25 13" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h1 class="cf-greeting-title">You're all set!</h1>
+        <p class="cf-greeting-sub">Your Care Coordinator will reach out to you at the time of your scheduled call.</p>
+      </div>
+
+      <!-- Upcoming call -->
+      <div class="cf-appointment-outer" role="region" aria-label="Upcoming call">
+        <div class="cf-appointment-badge">Upcoming call</div>
+        <div class="cf-appointment-inner">
+          <div class="cf-appointment-top">
+            <div class="cf-appointment-photo"><img src="assets/lp/figma-coord-woman.jpg" alt="Ali N." /></div>
+            <p class="cf-appointment-call-title">15-min intake call with Ali N.</p>
+            <div class="cf-appointment-dates">
+              <div class="cf-appointment-date-row">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="3" y="4.5" width="14" height="13" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M3 8h14M7 3v3M13 3v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                <span id="appt-date">Monday, June 29</span>
+              </div>
+              <div class="cf-appointment-date-row">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="7.5" stroke="currentColor" stroke-width="1.5"/><path d="M10 6v4l2.5 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span id="appt-time">9:00am – 9:15am (PT)</span>
+              </div>
+              <div class="cf-appointment-date-row">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="7.5" stroke="currentColor" stroke-width="1.5"/><path d="M10 6.2v7.6M12 8c0-1-.9-1.6-2-1.6S8 7 8 8s.9 1.4 2 1.7 2 .7 2 1.7-.9 1.6-2 1.6-2-.6-2-1.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+                <span>No cost</span>
+              </div>
+            </div>
+          </div>
+          <div class="cf-appointment-bottom">
+            <div class="cf-action-row">
+              <button class="cf-action-btn" type="button" aria-label="Add to contacts">
+                <span class="cf-action-icon-btn" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="9" cy="7.5" r="3.2" stroke="#140d26" stroke-width="1.5"/><path d="M3.5 17c0-3 2.5-4.8 5.5-4.8 1.2 0 2.3.3 3.2.8M16.5 10v5M14 12.5h5" stroke="#140d26" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+                <span class="cf-action-label">Add to<br>contact</span>
+              </button>
+              <button class="cf-action-btn" type="button" aria-label="Add to calendar">
+                <span class="cf-action-icon-btn" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="3.5" y="5" width="15" height="14" rx="2" stroke="#140d26" stroke-width="1.5"/><path d="M3.5 9h15M7.5 3.5v3M14.5 3.5v3M11 12v4M9 14h4" stroke="#140d26" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+                <span class="cf-action-label">Add to<br>calendar</span>
+              </button>
+              <button class="cf-action-btn" type="button" aria-label="Cancel appointment">
+                <span class="cf-action-icon-btn" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="7.5" stroke="#140d26" stroke-width="1.5"/><path d="M8.5 8.5l5 5M13.5 8.5l-5 5" stroke="#140d26" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+                <span class="cf-action-label">Cancel<br>appointment</span>
+              </button>
+            </div>
+            <div class="cn-expect">
+              <p class="cn-expect-title">What to expect</p>
+              <ul class="cn-expect-list">
+                <li>Confirm your coverage and cost</li>
+                <li>Schedule your provider appointment</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- About your program -->
+      <h2 class="cn-h2 cn-h2--lg">About your program</h2>
+      <div class="cn-program">
+        <div class="cn-program-badge">Your weight loss program</div>
+        <div class="cn-program-body">
+          <div class="cn-program-head">
+            <img class="cn-thumb" src="assets/lp/figma-pill.png" alt="" />
+            <p class="cn-program-title">Bold doctor-supervised GLP-1 weight loss program</p>
+          </div>
+          <div class="cn-coverage">
+            <p class="cn-coverage-title">Covered by UnitedHealthcare</p>
+            <div class="st-check-list">
+              <div class="st-check">
+                <svg class="st-check-ic" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#3366ff"/><path d="M7 12.5l3.2 3.2L17 9" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span class="st-check-text--sm"><span class="reg">Your UnitedHealthcare plan offers <strong>$0 copay visits</strong> for virtual appointments with in-network providers, like Bold.</span></span>
+              </div>
+              <div class="st-check">
+                <svg class="st-check-ic" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#3366ff"/><path d="M7 12.5l3.2 3.2L17 9" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span class="st-check-text--sm"><span class="reg">If prescribed a GLP-1 medication, your provider will check your coverage and confirm what you'll pay before anything is prescribed — no surprises.</span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Video -->
+      <a class="cn-video" href="#" aria-label="Watch: What to expect in your first visit">
+        <img src="assets/lp/figma-video.jpg" alt="" />
+        <span class="cn-video-play" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 22 22" fill="#fff"><path d="M7 5l11 6-11 6V5z"/></svg></span>
+        <span class="cn-video-meta">
+          <span class="cn-video-title">What to expect in your first visit</span>
+          <span class="cn-video-cred">
+            <span class="cn-video-name">Dr. Sandeep Palakodeti, M.D., M.P.H.</span>
+            <span class="cn-video-role">Chief Medical Officer at Bold Care</span>
+          </span>
+        </span>
+      </a>
+
+      <!-- Learn more -->
+      <h2 class="cn-h2">Learn more</h2>
+      <div class="cf-resource-scroll">
+        <a class="cf-resource-card" href="#">
+          <div class="cf-resource-img"><img src="assets/lp/figma-res-1.jpg" alt="" /></div>
+          <div class="cf-resource-footer">
+            <p class="cf-resource-type">Resources</p>
+            <p class="cf-resource-title">Weight management for seniors: What you need to know</p>
+          </div>
+        </a>
+        <a class="cf-resource-card" href="#">
+          <div class="cf-resource-img"><img src="assets/lp/figma-res-2.jpg" alt="" /></div>
+          <div class="cf-resource-footer">
+            <p class="cf-resource-type">Resources</p>
+            <p class="cf-resource-title">How Bold Care helps you manage chronic conditions</p>
+          </div>
+        </a>
+        <a class="cf-resource-card" href="#">
+          <div class="cf-resource-img"><img src="assets/lp/figma-res-3.jpg" alt="" /></div>
+          <div class="cf-resource-footer">
+            <p class="cf-resource-type">Resources</p>
+            <p class="cf-resource-title">What to expect at your Bold Care healthy aging visit</p>
+          </div>
+        </a>
+      </div>
+
+      <!-- FAQ -->
+      <p class="cn-faq-label">FAQ</p>
+      <div class="cf-faq-list">
+        <div class="cf-faq-item">
+          <button class="cf-faq-btn" type="button" aria-expanded="false">
+            <span class="cf-faq-question">What to expect in the appointment</span>
+            <svg class="cf-faq-caret" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M7.5 5l5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="cf-faq-answer">Your Care Coordinator will confirm your coverage and costs, answer your questions, and book your first visit with a Bold Care provider. The call takes about 15 minutes.</div>
+        </div>
+        <div class="cf-faq-item">
+          <button class="cf-faq-btn" type="button" aria-expanded="false">
+            <span class="cf-faq-question">What is included in my personalized Care Plan?</span>
+            <svg class="cf-faq-caret" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M7.5 5l5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="cf-faq-answer">Medication management if a GLP-1 is the right fit, senior-friendly strength and nutrition guidance, and support for sleep, stress, and energy — with your provider adjusting the plan as you go.</div>
+        </div>
+        <div class="cf-faq-item">
+          <button class="cf-faq-btn" type="button" aria-expanded="false">
+            <span class="cf-faq-question">Will I have any co-pay or co-insurance fees associated with my appointments?</span>
+            <svg class="cf-faq-caret" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M7.5 5l5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="cf-faq-answer">78% of Bold patients pay $0 out of pocket. Bold is in-network with Medicare and many plans, and we confirm your exact cost with you before your visit — so you'll never get a surprise bill.</div>
+        </div>
+        <div class="cf-faq-item">
+          <button class="cf-faq-btn" type="button" aria-expanded="false">
+            <span class="cf-faq-question">Does Bold Care offer primary care?</span>
+            <svg class="cf-faq-caret" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M7.5 5l5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="cf-faq-answer">Bold complements your primary care rather than replacing it. We help you stick with your weight plan between regular doctor visits, and you can share your progress with your PCP.</div>
+        </div>
+      </div>
+
+      <a class="cn-portal" href="#">
+        Access your secure patient portal
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 15L15 5M7 5h8v8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+
+    </main>
+
+  </div>
+
+  <script src="steps.js"></script>
+  <script>
+    // Reflect the time chosen on the schedule screen (fallbacks already in the HTML)
+    (function () {
+      try {
+        var d = localStorage.getItem('boldApptDateFull');
+        var t = localStorage.getItem('boldApptTimeRange');
+        if (d) document.getElementById('appt-date').textContent = d;
+        if (t) document.getElementById('appt-time').textContent = t;
+      } catch (e) {}
+    })();
+  </script>
+
+</body>
+</html>

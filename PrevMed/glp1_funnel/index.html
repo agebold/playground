@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bold Weight Management — GLP-1 Funnel Preview</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; scrollbar-width: none; -ms-overflow-style: none; }
+    *::-webkit-scrollbar { display: none; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: #f0f0f5;
+      color: #1d1d1f;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Top bar ── */
+    .demo-topbar {
+      height: 52px;
+      background: #fff;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      flex-shrink: 0;
+    }
+    .demo-topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .demo-topbar-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #5200d4;
+    }
+    .demo-topbar-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1d1d1f;
+      letter-spacing: -0.2px;
+    }
+    .demo-topbar-tag {
+      font-size: 14px;
+      font-weight: 500;
+      background: rgba(82,0,212,0.08);
+      color: #5200d4;
+      border: 1px solid rgba(82,0,212,0.2);
+      border-radius: 100px;
+      padding: 3px 10px;
+      letter-spacing: 0.2px;
+    }
+
+    /* ── Layout ── */
+    .demo-layout {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* ── Sidebar ── */
+    .demo-sidebar {
+      width: 256px;
+      flex-shrink: 0;
+      background: #fff;
+      border-right: 1px solid rgba(0,0,0,0.07);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      padding: 24px 16px;
+      gap: 8px;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .demo-sidebar::-webkit-scrollbar { display: none; }
+
+    .demo-sidebar-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: rgba(0,0,0,0.38);
+      padding: 0 8px;
+      margin-bottom: 8px;
+    }
+
+    /* Step button */
+    .demo-step {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      padding: 6px 8px;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      background: transparent;
+      cursor: pointer;
+      text-align: left;
+      font-family: 'Inter', sans-serif;
+      color: rgba(0,0,0,0.5);
+      transition: all 0.15s;
+      position: relative;
+    }
+    .demo-step:hover {
+      background: rgba(0,0,0,0.04);
+      color: rgba(0,0,0,0.8);
+    }
+    .demo-step.is-active {
+      background: rgba(82,0,212,0.07);
+      border-color: rgba(82,0,212,0.25);
+      color: #1d1d1f;
+    }
+
+    .demo-step-num {
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      background: rgba(0,0,0,0.06);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      color: rgba(0,0,0,0.35);
+      flex-shrink: 0;
+      transition: all 0.15s;
+    }
+    .demo-step.is-active .demo-step-num {
+      background: #5200d4;
+      color: #fff;
+    }
+
+    .demo-step-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+    .demo-step-title {
+      font-size: 14px;
+      font-weight: 400;
+      color: inherit;
+      line-height: 1.3;
+    }
+    .demo-step-desc {
+      font-size: 14px;
+      font-weight: 400;
+      color: rgba(0,0,0,0.38);
+      line-height: 1.4;
+    }
+    .demo-step.is-active .demo-step-desc { color: rgba(0,0,0,0.5); }
+
+    /* Active indicator pip */
+    .demo-step.is-active::before {
+      content: '';
+      position: absolute;
+      left: -16px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 3px;
+      height: 24px;
+      background: #5200d4;
+      border-radius: 0 3px 3px 0;
+    }
+
+    /* Divider in sidebar */
+    .demo-sidebar-divider {
+      height: 1px;
+      background: rgba(0,0,0,0.07);
+      margin: 8px 0;
+    }
+
+    .demo-sidebar-hint {
+      padding: 0 8px;
+      font-size: 14px;
+      color: rgba(0,0,0,0.3);
+      line-height: 1.5;
+    }
+
+    /* ── Main (phone area) ── */
+    .demo-main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse at 30% 20%, rgba(82,0,212,0.06) 0%, transparent 60%),
+        radial-gradient(ellipse at 70% 80%, rgba(0,181,163,0.05) 0%, transparent 50%),
+        #f0f0f5;
+    }
+
+    /* ── iPhone 16 frame ── */
+    .phone-wrapper {
+      zoom: 0.78;
+      -moz-transform: scale(0.78);
+      -moz-transform-origin: center center;
+    }
+    @supports not (zoom: 1) {
+      .phone-wrapper {
+        transform: scale(0.78);
+        transform-origin: center center;
+      }
+    }
+
+    .iphone {
+      position: relative;
+      width: 421px;
+      background: linear-gradient(160deg, #2c2c2e 0%, #1c1c1e 50%, #2c2c2e 100%);
+      border-radius: 56px;
+      padding: 16px;
+      box-shadow:
+        0 0 0 1.5px rgba(255,255,255,0.14),
+        0 0 0 3px #1a1a1c,
+        0 0 0 4.5px rgba(255,255,255,0.12),
+        0 40px 100px rgba(0,0,0,0.28),
+        0 10px 30px rgba(0,0,0,0.16),
+        inset 0 1px 0 rgba(255,255,255,0.12),
+        inset 0 -1px 0 rgba(0,0,0,0.4);
+    }
+
+    /* Volume buttons (left side) */
+    .iphone::before {
+      content: '';
+      position: absolute;
+      left: -5px;
+      top: 148px;
+      width: 5px;
+      height: 36px;
+      background: linear-gradient(to right, #1a1a1c, #2c2c2e);
+      border-radius: 3px 0 0 3px;
+      box-shadow:
+        0 46px 0 #2c2c2e,
+        0 -54px 0 #2c2c2e;
+    }
+
+    /* Power button (right side) */
+    .iphone::after {
+      content: '';
+      position: absolute;
+      right: -5px;
+      top: 162px;
+      width: 5px;
+      height: 72px;
+      background: linear-gradient(to left, #1a1a1c, #2c2c2e);
+      border-radius: 0 3px 3px 0;
+      box-shadow: inset 1px 0 0 rgba(255,255,255,0.05);
+    }
+
+    /* Screen bezel */
+    .iphone-screen {
+      background: #fff;
+      border-radius: 44px;
+      overflow: hidden;
+      position: relative;
+      width: 389px;
+      height: 852px;
+    }
+
+    /* Status bar overlay */
+    .iphone-status-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 54px;
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 28px 0;
+      pointer-events: none;
+    }
+    .iphone-status-time {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      color: #1d1d1f;
+      letter-spacing: -0.3px;
+    }
+    .iphone-status-icons {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* iframe */
+    .iphone-screen iframe {
+      width: 393px;
+      height: 852px;
+      border: none;
+      display: block;
+      margin-left: -2px;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .iphone-screen iframe::-webkit-scrollbar { display: none; }
+
+    /* Loading state */
+    .iphone-screen.is-loading::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: #fff;
+      z-index: 50;
+      animation: screen-fade 0.3s 0.1s forwards;
+    }
+    @keyframes screen-fade {
+      to { opacity: 0; pointer-events: none; }
+    }
+
+    /* ── Folder (collapsible group) ── */
+    .demo-folder-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      padding: 8px 8px;
+      border: none;
+      border-radius: 8px;
+      background: transparent;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      color: rgba(0,0,0,0.45);
+      transition: all 0.15s;
+    }
+    .demo-folder-header:hover { background: rgba(0,0,0,0.04); color: rgba(0,0,0,0.7); }
+    .demo-folder-label {
+      flex: 1;
+      font-size: 14px;
+      font-weight: 600;
+      text-align: left;
+    }
+    .demo-folder-chevron {
+      flex-shrink: 0;
+      transition: transform 0.2s;
+    }
+    .demo-folder-header.is-open .demo-folder-chevron {
+      transform: rotate(90deg);
+    }
+    .demo-folder-items {
+      display: none;
+      flex-direction: column;
+      gap: 4px;
+      padding-left: 8px;
+    }
+    .demo-folder-items.is-open { display: flex; }
+
+    /* Sub-step button */
+    .demo-sub-step {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      padding: 6px 8px;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      background: transparent;
+      cursor: pointer;
+      text-align: left;
+      font-family: 'Inter', sans-serif;
+      color: rgba(0,0,0,0.5);
+      transition: all 0.15s;
+      position: relative;
+    }
+    .demo-sub-step:hover { background: rgba(0,0,0,0.04); color: rgba(0,0,0,0.8); }
+    .demo-sub-step.is-active {
+      background: rgba(82,0,212,0.07);
+      border-color: rgba(82,0,212,0.25);
+      color: #1d1d1f;
+    }
+    .demo-sub-step.is-active::before {
+      content: '';
+      position: absolute;
+      left: -8px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 3px;
+      height: 20px;
+      background: #5200d4;
+      border-radius: 0 3px 3px 0;
+    }
+    .demo-sub-num {
+      width: 20px;
+      height: 20px;
+      border-radius: 5px;
+      background: rgba(0,0,0,0.06);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      color: rgba(0,0,0,0.35);
+      flex-shrink: 0;
+      transition: all 0.15s;
+    }
+    .demo-sub-step.is-active .demo-sub-num {
+      background: #5200d4;
+      color: #fff;
+    }
+
+    /* ── Sidebar toggle & close buttons ── */
+    .demo-topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .sidebar-toggle-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1px solid rgba(0,0,0,0.1);
+      background: #fff;
+      color: rgba(0,0,0,0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .sidebar-toggle-btn:hover  { background: rgba(0,0,0,0.05); color: rgba(0,0,0,0.85); }
+    .sidebar-toggle-btn:active { transform: scale(0.93); }
+    .demo-sidebar-header {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 8px;
+      flex-shrink: 0;
+    }
+    .sidebar-close-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(0,0,0,0.06);
+      color: rgba(0,0,0,0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.15s, color 0.15s;
+    }
+    .sidebar-close-btn:hover {
+      background: rgba(0,0,0,0.1);
+      color: rgba(0,0,0,0.75);
+    }
+    .demo-sidebar {
+      transition: width 0.28s cubic-bezier(0.4,0,0.2,1),
+                  padding 0.28s cubic-bezier(0.4,0,0.2,1),
+                  opacity 0.2s ease;
+      overflow: hidden;
+      will-change: width;
+    }
+    .demo-sidebar:not(.sidebar-collapsed) { overflow-y: auto; }
+    .demo-sidebar.sidebar-collapsed {
+      width: 0;
+      padding-left: 0;
+      padding-right: 0;
+      opacity: 0;
+      pointer-events: none;
+      border-right-width: 0;
+    }
+
+    /* Glass reflection */
+    .iphone-reflection {
+      position: absolute;
+      top: 20px;
+      left: 28px;
+      right: 28px;
+      height: 50%;
+      background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, transparent 100%);
+      border-radius: 44px 44px 0 0;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top bar -->
+  <header class="demo-topbar">
+    <div class="demo-topbar-left">
+      <button class="sidebar-toggle-btn" id="sidebar-toggle" type="button"
+              aria-label="Toggle navigation" aria-expanded="false" aria-controls="demo-sidebar">
+        <svg width="16" height="14" viewBox="0 0 16 14" fill="none" aria-hidden="true">
+          <rect y="0"  width="16" height="2" rx="1" fill="currentColor"/>
+          <rect y="6"  width="16" height="2" rx="1" fill="currentColor"/>
+          <rect y="12" width="16" height="2" rx="1" fill="currentColor"/>
+        </svg>
+      </button>
+      <div class="demo-topbar-brand">
+        <div class="demo-topbar-dot"></div>
+        <span class="demo-topbar-title">Bold Weight Management · Funnel</span>
+      </div>
+    </div>
+    <span class="demo-topbar-tag">Prototype Preview</span>
+  </header>
+
+  <!-- Main layout -->
+  <div class="demo-layout">
+
+    <!-- Left sidebar: step navigation -->
+    <aside class="demo-sidebar sidebar-collapsed" id="demo-sidebar" role="navigation" aria-label="Funnel steps">
+      <div class="demo-sidebar-header">
+        <button class="sidebar-close-btn" id="sidebar-close" type="button" aria-label="Close navigation">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+            <path d="M1 1L11 11M11 1L1 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+      <p class="demo-sidebar-label">All steps</p>
+
+      <button class="demo-step is-active" data-src="00-lp.html" type="button">
+        <span class="demo-step-num">01</span>
+        <div class="demo-step-info">
+          <span class="demo-step-title">Landing</span>
+        </div>
+      </button>
+
+      <button class="demo-step" data-src="01-coverage.html" type="button">
+        <span class="demo-step-num">02</span>
+        <div class="demo-step-info">
+          <span class="demo-step-title">Coverage</span>
+        </div>
+      </button>
+
+      <button class="demo-step" data-src="02-loading.html" type="button">
+        <span class="demo-step-num">03</span>
+        <div class="demo-step-info">
+          <span class="demo-step-title">Checking coverage</span>
+        </div>
+      </button>
+
+      <button class="demo-step" data-src="03-covered.html" type="button">
+        <span class="demo-step-num">04</span>
+        <div class="demo-step-info">
+          <span class="demo-step-title">Covered</span>
+        </div>
+      </button>
+
+      <button class="demo-step" data-src="04-personalize.html" type="button">
+        <span class="demo-step-num">05</span>
+        <div class="demo-step-info">
+          <span class="demo-step-title">Personalize</span>
+        </div>
+      </button>
+
+      <button class="demo-step" data-src="05-screening.html" type="button">
+        <span class="demo-step-num">06</span>
+        <div class="demo-step-info">
+          <span class="demo-step-title">Screening</span>
+        </div>
+      </button>
+
+      <button class="demo-step" data-src="06-conditions.html" type="button">
+        <span class="demo-step-num">07</span>
+        <div class="demo-step-info">
+          <span class="demo-step-title">Conditions</span>
+        </div>
+      </button>
+
+      <button class="demo-step" data-src="07-measurements.html" type="button">
+        <span class="demo-step-num">08</span>
+        <div class="demo-step-info">
+          <span class="demo-step-title">Height &amp; weight</span>
+        </div>
+      </button>
+
+      <button class="demo-step" data-src="08-medications.html" type="button">
+        <span class="demo-step-num">09</span>
+        <div class="demo-step-info">
+          <span class="demo-step-title">Medications</span>
+        </div>
+      </button>
+
+      <button class="demo-step" data-src="09-history.html" type="button">
+        <span class="demo-step-num">10</span>
+        <div class="demo-step-info">
+          <span class="demo-step-title">Health history</span>
+        </div>
+      </button>
+
+      <button class="demo-step" data-src="10-discuss.html" type="button">
+        <span class="demo-step-num">11</span>
+        <div class="demo-step-info">
+          <span class="demo-step-title">Discuss</span>
+        </div>
+      </button>
+
+      <button class="demo-step" data-src="11-result.html" type="button">
+        <span class="demo-step-num">12</span>
+        <div class="demo-step-info">
+          <span class="demo-step-title">Result</span>
+        </div>
+      </button>
+
+      <button class="demo-step" data-src="12-schedule.html" type="button">
+        <span class="demo-step-num">13</span>
+        <div class="demo-step-info">
+          <span class="demo-step-title">Schedule call</span>
+        </div>
+      </button>
+
+      <button class="demo-step" data-src="13-consent-privacy.html" type="button">
+        <span class="demo-step-num">14</span>
+        <div class="demo-step-info">
+          <span class="demo-step-title">Consent: Privacy</span>
+        </div>
+      </button>
+
+      <button class="demo-step" data-src="14-consent-care.html" type="button">
+        <span class="demo-step-num">15</span>
+        <div class="demo-step-info">
+          <span class="demo-step-title">Consent: Care</span>
+        </div>
+      </button>
+
+      <button class="demo-step" data-src="15-phone.html" type="button">
+        <span class="demo-step-num">16</span>
+        <div class="demo-step-info">
+          <span class="demo-step-title">Phone</span>
+        </div>
+      </button>
+
+      <button class="demo-step" data-src="16-confirmation.html" type="button">
+        <span class="demo-step-num">17</span>
+        <div class="demo-step-info">
+          <span class="demo-step-title">Confirmation</span>
+        </div>
+      </button>
+
+      <div class="demo-sidebar-divider"></div>
+      <p class="demo-sidebar-hint">Click a step to preview it, or move through the flow inside the phone.</p>
+    </aside>
+
+    <!-- Phone frame -->
+    <main class="demo-main" aria-label="Phone preview">
+      <div class="phone-wrapper">
+        <div class="iphone" role="presentation">
+          <div class="iphone-screen" id="phone-screen">
+            <!-- iOS status bar -->
+            <div class="iphone-status-bar" aria-hidden="true">
+              <span class="iphone-status-time">9:41</span>
+              <div class="iphone-status-icons">
+                <!-- Signal bars -->
+                <svg width="18" height="12" viewBox="0 0 18 12" fill="none">
+                  <rect x="0" y="7" width="3" height="5" rx="0.8" fill="#1d1d1f"/>
+                  <rect x="4.5" y="4.5" width="3" height="7.5" rx="0.8" fill="#1d1d1f"/>
+                  <rect x="9" y="2" width="3" height="10" rx="0.8" fill="#1d1d1f"/>
+                  <rect x="13.5" y="0" width="3" height="12" rx="0.8" fill="#1d1d1f"/>
+                </svg>
+                <!-- WiFi -->
+                <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+                  <path d="M8 9.5a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5Z" fill="#1d1d1f"/>
+                  <path d="M4.1 7.2a5.5 5.5 0 0 1 7.8 0" stroke="#1d1d1f" stroke-width="1.4" stroke-linecap="round"/>
+                  <path d="M1.3 4.4a9.5 9.5 0 0 1 13.4 0" stroke="#1d1d1f" stroke-width="1.4" stroke-linecap="round"/>
+                </svg>
+                <!-- Battery -->
+                <svg width="25" height="12" viewBox="0 0 25 12" fill="none">
+                  <rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="#1d1d1f" stroke-opacity="0.35"/>
+                  <rect x="2" y="2" width="17" height="8" rx="2" fill="#1d1d1f"/>
+                  <path d="M22.5 4v4a2 2 0 0 0 0-4Z" fill="#1d1d1f" fill-opacity="0.4"/>
+                </svg>
+              </div>
+            </div>
+            <iframe
+              id="funnel-frame"
+              src="00-lp.html"
+              title="Bold Weight Management funnel preview"
+              loading="lazy"
+            ></iframe>
+          </div>
+          <div class="iphone-reflection" aria-hidden="true"></div>
+        </div>
+      </div>
+    </main>
+
+  </div>
+
+  <script>
+    (function () {
+      var allBtns       = document.querySelectorAll('.demo-step, .demo-sub-step');
+      var frame         = document.getElementById('funnel-frame');
+      var screen        = document.getElementById('phone-screen');
+      var frameReady    = false;
+      var pendingView   = null;
+      // The funnel iframe loads standalone files directly (00-lp.html and,
+      // later, other step files) rather than a provider-booking.html SPA, so
+      // start in external-src mode: the load handler syncs the sidebar
+      // highlight by filename and never posts a stray navTo.
+      var externalSrc   = true;
+
+      function flash() {
+        screen.classList.add('is-loading');
+        setTimeout(function () { screen.classList.remove('is-loading'); }, 400);
+      }
+
+      // Navigate to a view inside provider-booking.html via postMessage
+      function navigateToView(view) {
+        flash();
+        if (externalSrc) {
+          // Switch iframe back to provider-booking.html; navigate on load
+          externalSrc   = false;
+          frameReady    = false;
+          pendingView   = view;
+          frame.src     = 'provider-booking.html';
+        } else if (frameReady) {
+          frame.contentWindow.postMessage({ navTo: view }, '*');
+        } else {
+          pendingView = view;
+        }
+      }
+
+      // Load an external HTML file directly
+      function navigateToSrc(src) {
+        flash();
+        externalSrc = true;
+        frameReady  = false;
+        frame.src   = src;
+      }
+
+      function clearActive() {
+        allBtns.forEach(function (b) { b.classList.remove('is-active'); });
+      }
+
+      allBtns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var view = btn.getAttribute('data-view');
+          var src  = btn.getAttribute('data-src');
+          clearActive();
+          btn.classList.add('is-active');
+          if (view) { navigateToView(view); }
+          else if (src) { navigateToSrc(src); }
+        });
+      });
+
+      frame.addEventListener('load', function () {
+        frameReady = true;
+        if (!externalSrc) {
+          // provider-booking.html loaded — navigate to target view
+          var target  = pendingView || 'lp';
+          pendingView = null;
+          frame.contentWindow.postMessage({ navTo: target }, '*');
+        } else {
+          // External HTML file loaded — sync sidebar highlight
+          try {
+            var currentSrc = frame.contentWindow.location.href.split('/').pop().split('?')[0];
+            allBtns.forEach(function (btn) {
+              if (btn.getAttribute('data-src') === currentSrc) {
+                clearActive();
+                btn.classList.add('is-active');
+              }
+            });
+          } catch (e) {}
+        }
+      });
+
+      // Listen for navigation requests posted from child iframes
+      window.addEventListener('message', function (e) {
+        if (!e.data) return;
+        if (e.data.navToSrc) {
+          clearActive();
+          allBtns.forEach(function (btn) {
+            if (btn.getAttribute('data-src') === e.data.navToSrc) {
+              btn.classList.add('is-active');
+            }
+          });
+          navigateToSrc(e.data.navToSrc);
+        } else if (e.data.navTo) {
+          clearActive();
+          allBtns.forEach(function (btn) {
+            if (btn.getAttribute('data-view') === e.data.navTo) {
+              btn.classList.add('is-active');
+            }
+          });
+          navigateToView(e.data.navTo);
+        }
+      });
+
+      // Folder toggle — generalized to any folder header that has
+      // aria-controls pointing to its items panel.
+      document.querySelectorAll('.demo-folder-header').forEach(function (header) {
+        var itemsId = header.getAttribute('aria-controls');
+        var items   = itemsId ? document.getElementById(itemsId) : null;
+        if (!items) return;
+        header.addEventListener('click', function () {
+          var open = header.classList.toggle('is-open');
+          items.classList.toggle('is-open', open);
+          header.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+      });
+
+      // ── Sidebar collapse toggle ──
+      var sidebar   = document.querySelector('.demo-sidebar');
+      var toggleBtn = document.getElementById('sidebar-toggle');
+      var closeBtn  = document.getElementById('sidebar-close');
+
+      function setSidebarOpen(open) {
+        sidebar.classList.toggle('sidebar-collapsed', !open);
+        toggleBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      }
+
+      if (toggleBtn) {
+        toggleBtn.addEventListener('click', function () {
+          setSidebarOpen(sidebar.classList.contains('sidebar-collapsed'));
+        });
+      }
+      if (closeBtn) {
+        closeBtn.addEventListener('click', function () { setSidebarOpen(false); });
+      }
+    })();
+  </script>
+
+</body>
+</html>

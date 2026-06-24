@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Personalize your plan — Bold Weight Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="funnel.css" />
+  <link rel="stylesheet" href="steps.css" />
+  <style>
+    /* ── "What to expect" card with numbered steps (Figma 932:8265) ── */
+    .pz-card {
+      background: #fff; border: 1px solid var(--color-gray-200);
+      border-radius: var(--radius-xl); padding: 20px 16px;
+      display: flex; flex-direction: column; gap: 16px;
+    }
+    .pz-lead { font-size: 18px; font-weight: 400; line-height: 24px; color: var(--color-gray-950); }
+    .pz-lead strong { font-weight: 700; }
+    .pz-steps { display: flex; flex-direction: column; }
+    .pz-step { display: flex; gap: 12px; }
+    .pz-rail { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
+    .pz-num {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--color-purple-600); color: #fff;
+      font-size: 16px; font-weight: 600;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .pz-line { flex: 1; width: 2px; background: var(--color-gray-200); margin: 4px 0; }
+    .pz-step:last-child .pz-line { display: none; }
+    .pz-body { padding-bottom: 24px; display: flex; flex-direction: column; gap: 4px; }
+    .pz-step:last-child .pz-body { padding-bottom: 0; }
+    .pz-title { font-size: 18px; font-weight: 600; line-height: 24px; color: var(--color-gray-950); }
+    .pz-desc { font-size: 16px; font-weight: 400; line-height: 22px; color: var(--color-gray-475); }
+  </style>
+</head>
+<body>
+
+  <div class="st-statusbar-fill" aria-hidden="true"></div>
+
+  <div class="cf-page">
+
+    <nav class="cf-nav" aria-label="Personalize your plan">
+      <a class="cf-nav-btn" href="03-covered.html" aria-label="Go back">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+      <span class="cf-logo" role="img" aria-label="Bold">
+        <span class="logo-lines"><img src="assets/lp/logo-lines.svg" alt="" /></span>
+        <span class="logo-text"><img src="assets/lp/logo-text.svg" alt="" /></span>
+      </span>
+      <span class="cf-nav-btn is-hidden" aria-hidden="true"></span>
+    </nav>
+
+    <main class="st-content">
+      <h1 class="cf-heading">Let's personalize your weight loss plan</h1>
+
+      <div class="pz-card">
+        <p class="pz-lead">It takes about <strong>2 minutes</strong>.</p>
+        <div class="pz-steps">
+          <div class="pz-step">
+            <div class="pz-rail"><span class="pz-num">1</span><span class="pz-line"></span></div>
+            <div class="pz-body">
+              <p class="pz-title">Answer a few quick questions</p>
+              <p class="pz-desc">Determine if medication through Bold is right for you</p>
+            </div>
+          </div>
+          <div class="pz-step">
+            <div class="pz-rail"><span class="pz-num">2</span><span class="pz-line"></span></div>
+            <div class="pz-body">
+              <p class="pz-title">Confirm your coverage</p>
+            </div>
+          </div>
+          <div class="pz-step">
+            <div class="pz-rail"><span class="pz-num">3</span><span class="pz-line"></span></div>
+            <div class="pz-body">
+              <p class="pz-title">Schedule a free intake call</p>
+              <p class="pz-desc">We call to confirm your coverage, help you understand your plan, and schedule your provider appointment.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="st-footer">
+      <div class="st-actions">
+        <a class="Button Button---primary Button---purple Button---full" href="05-screening.html">Continue</a>
+      </div>
+    </footer>
+
+  </div>
+
+</body>
+</html>

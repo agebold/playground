@@ -73,6 +73,15 @@
       "category": "Prototypes"
     },
     {
+      "path": "PrevMed/glp1_funnel",
+      "href": "PrevMed/glp1_funnel/",
+      "name": "GLP-1 Funnel",
+      "desc": "Bold Care GLP-1 weight-management enrollment funnel — landing page, coverage check, eligibility screening, result, scheduling, consent, and confirmation",
+      "icon": "💊",
+      "author": "Tzu-Yi",
+      "category": "Prototypes"
+    },
+    {
       "path": "PrevMed/care_plan",
       "href": "PrevMed/care_plan/care-plan.html",
       "name": "Care Plan",

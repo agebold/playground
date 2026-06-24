@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bold Weight Management — Lose fat, not strength</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- Design tokens + hand-implemented @bold/web components (Button, Field, Input, etc.) -->
+  <link rel="stylesheet" href="funnel.css" />
+  <style>
+    /* ══════════════════════════════════════════════
+       LANDING PAGE — Weight Management / GLP-1
+       Implements Figma "mWeb - Landing Page" (node 932:11459).
+       Tokens from funnel.css (:root). Section-only styles below.
+       Two funnel-only colors not yet in @bold/web are flagged ⚠.
+    ══════════════════════════════════════════════ */
+    :root {
+      --color-blue-300:   #3366ff;   /* $blue ($blue---300) */
+      --color-blue-200b:  #99b3ff;   /* $blue---200 */
+      --color-yellow-300: #ffcc1a;   /* $yellow ($yellow---300) */
+      --color-yellow-400: #e6b800;   /* yellow hover — funnel-only ⚠ */
+      --color-navy-900:   #001d56;   /* stats/testimonials section bg — funnel-only ⚠ */
+      --color-lavender-stat: #d5aeff;/* lavender stat card — funnel-only ⚠ */
+      --color-blue-accent: #2563eb;  /* hero accent (surface-brand-accent-blue) — funnel-only ⚠ */
+      --color-blue-stat:   #2952e6;  /* blue stat card — funnel-only ⚠ */
+      --color-yellow-100:  #fef3c7;  /* testimonial yellow card (surface-brand-accent-yellow-secondary) — funnel-only ⚠ */
+      --color-purple-300:  #a78bfa;  /* step 2–3 circle (surface-brand-tertiary) — funnel-only ⚠ */
+    }
+
+    html { overflow-x: clip; }
+    body {
+      font-family: var(--font-family);
+      background: #fff;
+      color: var(--color-gray-950);
+      -webkit-font-smoothing: antialiased;
+      padding-top: 54px;            /* clear the harness iOS status-bar overlay */
+      max-width: 393px;             /* mobile comp width — centered on wider screens */
+      margin: 0 auto;
+      overflow-x: clip;             /* clip any stray horizontal overflow */
+    }
+    /* Opaque fill behind the harness iOS status bar (top 54px) so scrolling
+       content never bleeds behind the time/icons — matches the white nav header. */
+    .lp-statusbar-fill {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 393px;
+      height: 54px;
+      background: #fff;
+      z-index: 25;
+    }
+    img { display: block; max-width: 100%; }
+    a { color: inherit; }
+
+    /* full-bleed section + centered mobile column */
+    .lp-section { width: 100%; }
+    .lp-inner {
+      max-width: 393px;
+      margin: 0 auto;
+      padding: 40px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* ── Button: yellow + secondary-outline variants (extend funnel.css .Button) ── */
+    .Button---primary.Button---yellow { background: var(--color-yellow-300); color: var(--color-gray-950); }
+    .Button---primary.Button---yellow:hover,
+    .Button---primary.Button---yellow:focus-visible { background: var(--color-yellow-400); }
+    .Button---outline {
+      border: 1.5px solid var(--color-gray-200);
+      border-radius: var(--radius-md);
+      background: #fff;
+      color: var(--color-gray-950);
+      font-size: 16px;
+      font-weight: 700;
+      padding: 13px 18px;
+    }
+    .Button---outline:hover,
+    .Button---outline:focus-visible { background: var(--color-gray-50); }
+
+    /* ── Sticky nav ── */
+    .lp-nav {
+      position: sticky;
+      top: 54px;
+      z-index: var(--z-nav);
+      background: #fff;
+      border-bottom: 1px solid var(--color-gray-200);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 10px 12px;
+    }
+    .lp-nav-actions { display: flex; align-items: center; gap: 6px; }
+    .lp-logo { position: relative; width: 80px; height: 28px; flex-shrink: 0; display: block; }
+    .lp-logo .lp-logo-lines { position: absolute; top: 1px; left: 0; width: 26px; height: 26px; }
+    .lp-logo .lp-logo-text  { position: absolute; top: 4px; left: 31px; right: 0; bottom: 5px; }
+    .lp-logo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; max-width: none; }
+    .lp-signin {
+      min-height: 44px; flex-shrink: 0;
+      display: inline-flex; align-items: center;
+      padding: 0 9px;
+      font-size: 14px; font-weight: 600;
+      color: var(--color-gray-950);
+      background: #fff;
+      border: 1px solid var(--color-gray-200);
+      border-radius: var(--radius-md);
+      text-decoration: none; white-space: nowrap;
+    }
+    .lp-signin:hover { background: var(--color-gray-50); }
+    .lp-nav-cta {
+      min-height: 44px; flex-shrink: 0;
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 0 12px;
+      font-size: 14px; font-weight: 700;
+      color: #fff; background: var(--color-purple-600);
+      border: none; border-radius: var(--radius-md);
+      text-decoration: none; white-space: nowrap;
+    }
+    .lp-nav-cta:hover, .lp-nav-cta:focus-visible { background: var(--color-purple-500); }
+    .lp-menu-btn {
+      width: 44px; height: 44px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: #fff; border: 1px solid var(--color-gray-200);
+      border-radius: var(--radius-md); cursor: pointer; color: var(--color-gray-950);
+    }
+    .lp-menu-btn:hover { background: var(--color-gray-50); }
+
+    /* ── Hero ── */
+    .lp-hero { background: var(--color-blue-100); border-bottom: 1px solid var(--color-gray-200); }
+    .lp-hero-title {
+      font-size: 32px; font-weight: 600; line-height: 40px; letter-spacing: -1px;
+      color: var(--color-purple-500);
+    }
+    .lp-accent-blue { color: var(--color-blue-300); }
+    .lp-accent-hero { color: var(--color-blue-accent); }
+    .lp-underline {
+      text-decoration: underline;
+      text-decoration-color: var(--color-blue-accent);
+      text-decoration-thickness: 2px;
+      text-underline-offset: 3px;
+    }
+    .lp-trust-line {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 18px; font-weight: 500; line-height: 24px; color: var(--color-purple-500);
+    }
+    .lp-trust-line svg { flex-shrink: 0; }
+    .lp-form-card {
+      background: #fff;
+      border: 1px solid var(--color-gray-200);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-sm);
+      padding: 16px;
+      display: flex; flex-direction: column; gap: 16px;
+    }
+    .lp-info-link {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 16px; font-weight: 500;
+      color: var(--color-purple-600); text-decoration: underline;
+      background: none; border: none; padding: 0; cursor: pointer;
+      font-family: var(--font-family);
+    }
+    .lp-form-legal { font-size: 14px; line-height: 20px; color: var(--color-gray-350); }
+    .lp-form-legal a { color: var(--color-purple-600); text-decoration: underline; }
+    /* hero lead-capture form — labels/inputs match Figma (16px) */
+    .lp-form-card .cf-field-label { font-size: 16px; font-weight: 500; color: var(--color-gray-900); }
+    .lp-form-card .cf-input { font-size: 16px; }
+    .lp-carrier {
+      font-size: 16px; line-height: 24px; color: var(--color-purple-500);
+    }
+    .lp-hero-img { width: 100%; border-radius: var(--radius-xl); }
+
+    /* social proof bar */
+    .lp-social {
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+      background: #fff; border: 1px solid var(--color-gray-200);
+      border-radius: var(--radius-xl); padding: 12px 16px; box-shadow: var(--shadow-xs);
+    }
+    .lp-avatars { display: flex; }
+    .lp-avatars img {
+      width: 36px; height: 36px; border-radius: 50%; object-fit: cover;
+      border: 2px solid #fff; margin-left: -10px;
+    }
+    .lp-avatars img:first-child { margin-left: 0; }
+    .lp-social-text { font-size: 18px; font-weight: 400; line-height: 24px; color: var(--color-purple-500); }
+    .lp-social-divider { width: 1px; align-self: stretch; background: var(--color-gray-200); }
+    .lp-stars { display: inline-flex; gap: 2px; }
+    .lp-stars svg { width: 18px; height: 18px; }
+
+    /* ── Generic section heading ── */
+    .lp-h2 {
+      font-size: 32px; font-weight: 600; line-height: 40px; letter-spacing: -1px;
+      color: var(--color-gray-900);
+    }
+    .lp-h2--purple { color: var(--color-purple-500); }
+    .lp-sub { font-size: 20px; line-height: 24px; color: var(--color-gray-900); opacity: 0.9; }
+    .lp-footnote { font-size: 16px; line-height: 24px; color: var(--color-gray-350); }
+    .lp-footnote a { color: var(--color-purple-600); text-decoration: underline; }
+
+    /* ── Value props ── */
+    .lp-vp { display: flex; flex-direction: column; gap: 12px; }
+    .lp-vp-img { width: 100%; height: 250px; object-fit: cover; border-radius: var(--radius-xl); }
+    .lp-vp-title { font-size: 20px; font-weight: 600; line-height: 24px; color: var(--color-gray-900); }
+    .lp-vp-body { font-size: 18px; line-height: 24px; color: var(--color-gray-900); }
+
+    /* ── Stats (navy) ── */
+    .lp-navy { background: var(--color-navy-900); }
+    .lp-navy .lp-h2 { color: #fff; }
+    .lp-navy .lp-h2--stats {
+      font-size: 28px; font-weight: 700; line-height: 34px;
+      color: var(--color-gray-50); text-align: center;
+    }
+    .lp-stats { display: flex; flex-direction: column; gap: 24px; }
+    .lp-stat { border-radius: 24px; padding: 24px; }
+    .lp-stat--blue { background: var(--color-blue-stat); color: #fff; }
+    .lp-stat--peri { background: var(--color-blue-200b); color: var(--color-gray-900); }
+    .lp-stat--lav  { background: var(--color-lavender-stat); color: var(--color-gray-900); }
+    .lp-stat-num {
+      font-size: 64px; font-weight: 400; line-height: 1; letter-spacing: -0.64px;
+      display: flex; align-items: center; gap: 8px; margin-bottom: 16px;
+    }
+    .lp-stat-num small { font-size: 32px; font-weight: 400; letter-spacing: -0.32px; }
+    .lp-stat-num svg { width: 48px; height: 48px; }
+    .lp-stat-body { font-size: 20px; line-height: 30px; letter-spacing: -0.2px; }
+
+    /* ── How it works steps ── */
+    .lp-hiw-img { width: 280px; max-width: 100%; height: auto; margin: 0 auto; }
+    .lp-steps { display: flex; flex-direction: column; gap: 32px; }
+    .lp-step { display: flex; gap: 16px; align-items: flex-start; }
+    .lp-step-num {
+      flex-shrink: 0; width: 40px; height: 40px; border-radius: 50%;
+      background: var(--color-purple-600); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; font-weight: 600;
+    }
+    .lp-step:nth-child(n+2) .lp-step-num { background: var(--color-purple-300); }
+    .lp-step-title { font-size: 20px; font-weight: 600; line-height: 24px; color: var(--color-gray-900); margin-bottom: 4px; }
+    .lp-step-body { font-size: 18px; line-height: 24px; color: var(--color-gray-900); }
+
+    /* ── Doctor block + provider list ── */
+    .lp-quote-card {
+      background: var(--color-purple-ede);
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      display: flex; flex-direction: column; gap: 24px;
+    }
+    .lp-quote-text { font-size: 24px; font-weight: 600; line-height: 32px; letter-spacing: -0.5px; color: var(--color-gray-900); }
+    .lp-quote-name { font-size: 16px; font-weight: 400; line-height: 24px; color: var(--color-gray-900); }
+    .lp-quote-name strong { display: block; font-weight: 400; color: var(--color-gray-900); }
+    .lp-provider-scroll {
+      display: flex; gap: 16px; overflow-x: auto;
+      scroll-snap-type: x mandatory; padding-bottom: 4px;
+      min-width: 0; width: 100%;   /* allow shrink so overflow-x scrolls (flex child) */
+    }
+    .lp-provider-card {
+      position: relative; flex-shrink: 0; width: 250px; height: 250px;
+      border-radius: 24px; overflow: hidden; scroll-snap-align: start;
+      background: var(--color-purple-500);
+    }
+    .lp-provider-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .lp-provider-card::after {
+      content: ""; position: absolute; inset: 0;
+      background: linear-gradient(to bottom, rgba(0,0,0,0) 55%, rgba(0,0,0,0.85) 100%);
+    }
+    .lp-provider-meta { position: absolute; left: 16px; right: 16px; bottom: 16px; z-index: 1; color: #fff; }
+    .lp-provider-name { font-size: 18px; font-weight: 600; line-height: 24px; }
+    .lp-provider-role { font-size: 14px; font-weight: 600; line-height: 20px; opacity: 0.95; margin-top: 2px; }
+
+    /* ── What you get (checklist) ── */
+    .lp-whatyouget-img { width: 100%; border-radius: var(--radius-xl); }
+    .lp-checks { display: flex; flex-direction: column; gap: 24px; }
+    .lp-check { display: flex; gap: 16px; align-items: flex-start; }
+    .lp-check-icon { flex-shrink: 0; width: 24px; height: 24px; color: var(--color-mint-400); }
+    .lp-check-text { font-size: 20px; line-height: 24px; color: var(--color-gray-900); }
+
+    /* ── Testimonials (navy) ── */
+    .lp-laurel { display: flex; align-items: center; justify-content: center; gap: 4px; color: #fff; }
+    .lp-laurel img { height: 100px; width: auto; filter: brightness(0) invert(1); }  /* recolor laurels white */
+    .lp-laurel img:first-child { transform: scaleX(-1); }  /* mirror left laurel to wrap the content */
+    .lp-laurel-mid { display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; }
+    .lp-laurel-num { font-size: 32px; font-weight: 700; line-height: 1; }
+    .lp-laurel-sub { font-size: 18px; line-height: 24px; }
+    .lp-stars-gold svg { width: 28px; height: 28px; }
+    .lp-testi-scroll {
+      display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory;
+      padding-bottom: 4px;
+      min-width: 0; width: 100%;   /* allow shrink so overflow-x scrolls (flex child) */
+    }
+    .lp-testi-card {
+      flex-shrink: 0; width: 300px; scroll-snap-align: center;
+      background: var(--color-purple-ede); border-radius: 20px;
+      padding: 24px; display: flex; flex-direction: column; gap: 24px;
+    }
+    .lp-testi-card:nth-child(even) { background: var(--color-yellow-100); }
+    .lp-testi-head { display: flex; align-items: center; gap: 16px; }
+    .lp-testi-avatar {
+      width: 56px; height: 56px; border-radius: 50%; object-fit: cover; flex-shrink: 0;
+      background: var(--color-purple-600); color: #fff;
+      display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700;
+    }
+    .lp-testi-name { font-size: 20px; font-weight: 700; line-height: 28px; color: var(--color-gray-900); }
+    .lp-testi-age { font-size: 20px; font-weight: 700; line-height: 28px; color: var(--color-gray-900); }
+    .lp-testi-quote { font-size: 20px; font-weight: 700; line-height: 30px; color: var(--color-gray-900); }
+    .lp-featured { text-align: center; display: flex; flex-direction: column; gap: 16px; }
+    .lp-featured-label { font-size: 16px; color: rgba(255,255,255,0.85); }
+    .lp-featured-logos { display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap; }
+    .lp-featured-logos img { height: 22px; width: auto; filter: brightness(0) invert(1); opacity: 0.9; }
+
+    /* ── Insights ── */
+    .lp-insight-featured-img { width: 100%; height: 210px; object-fit: cover; border-radius: var(--radius-xl); }
+    .lp-insight-title { font-size: 20px; font-weight: 600; line-height: 24px; color: var(--color-gray-900); }
+    .lp-insight-body { font-size: 16px; line-height: 24px; color: var(--color-gray-900); }
+    .lp-insight-row { display: flex; gap: 16px; align-items: center; }
+    .lp-insight-thumb { width: 140px; height: 100px; flex-shrink: 0; object-fit: cover; border-radius: var(--radius-xl); }
+    .lp-insight-row-title { font-size: 20px; font-weight: 600; line-height: 24px; color: var(--color-gray-900); }
+    .lp-insight-link { text-decoration: none; display: block; }
+
+    /* ── FAQ (static Q&A cards, matching Figma) ── */
+    .lp-faq-list { display: flex; flex-direction: column; gap: 16px; }
+    .lp-faq-card {
+      background: var(--color-gray-50);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .lp-faq-q { font-size: 24px; font-weight: 600; line-height: 32px; letter-spacing: -0.5px; color: var(--color-gray-950); }
+    .lp-faq-a { font-size: 16px; line-height: 24px; color: var(--color-gray-475); }
+    .lp-faq-a p + p { margin-top: 12px; }
+    .lp-faq-a strong { color: var(--color-gray-950); font-weight: 700; }
+    .lp-faq-a ul { margin: 8px 0 0; padding-left: 22px; }
+    .lp-faq-a li { margin-bottom: 6px; }
+    .lp-faq-a a { color: var(--color-purple-600); text-decoration: underline; }
+
+    /* ── Footer ── */
+    .lp-footer { background: #fff; border-top: 1px solid var(--color-gray-200); }
+    .lp-footer .lp-inner { gap: 48px; }
+    .lp-footer-blurb { font-size: 16px; line-height: 24px; color: #667085; }
+    .lp-footer-logo { position: relative; display: block; width: 150px; height: 45px; }
+    .lp-footer-logo .lp-logo-lines { position: absolute; top: 0; left: 0; width: 45px; height: 45px; }
+    .lp-footer-logo .lp-logo-text  { position: absolute; top: 9px; left: 55px; width: 95px; height: 27px; }
+    .lp-footer-logo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; max-width: none; }
+    .lp-news-title { font-size: 16px; font-weight: 600; line-height: 24px; color: var(--color-gray-950); }
+    .lp-news-sub { font-size: 16px; line-height: 24px; color: #667085; margin-top: 4px; }
+    .lp-news-form { display: flex; flex-direction: column; gap: 16px; margin-top: 16px; }
+    .lp-footer-cols { display: flex; gap: 50px; flex-wrap: wrap; }
+    .lp-footer-col { display: flex; flex-direction: column; gap: 16px; }
+    .lp-footer-col-title { font-size: 16px; font-weight: 600; color: var(--color-gray-950); }
+    .lp-footer-links { display: flex; flex-direction: column; gap: 12px; }
+    .lp-footer-link { font-size: 16px; font-weight: 600; color: var(--color-purple-600); text-decoration: none; }
+    .lp-footer-link:hover { text-decoration: underline; }
+    .lp-footer-bottom { border-top: 1px solid var(--color-gray-200); padding-top: 32px; display: flex; flex-direction: column; gap: 16px; }
+    .lp-footer-legal { display: flex; gap: 16px; flex-wrap: wrap; }
+    .lp-footer-legal a { font-size: 16px; color: #667085; text-decoration: none; }
+    .lp-footer-copy { font-size: 16px; color: #667085; }
+  </style>
+</head>
+<body>
+
+  <!-- Solid fill behind the iPhone status bar so scrolling content stays clear of the time/icons -->
+  <div class="lp-statusbar-fill" aria-hidden="true"></div>
+
+  <!-- ════════ NAV ════════ -->
+  <header class="lp-nav">
+    <a class="lp-logo" href="#" aria-label="Bold — home">
+      <span class="lp-logo-lines"><img src="assets/lp/logo-lines.svg" alt="" /></span>
+      <span class="lp-logo-text"><img src="assets/lp/logo-text.svg" alt="" /></span>
+    </a>
+    <div class="lp-nav-actions">
+      <a class="lp-signin" href="#">Sign in</a>
+      <a class="lp-nav-cta" href="01-coverage.html">Check coverage</a>
+      <button class="lp-menu-btn" type="button" aria-label="Open menu">
+        <svg width="20" height="16" viewBox="0 0 20 16" fill="none" aria-hidden="true">
+          <rect y="0" width="20" height="2" rx="1" fill="currentColor"/>
+          <rect y="7" width="20" height="2" rx="1" fill="currentColor"/>
+          <rect y="14" width="20" height="2" rx="1" fill="currentColor"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ════════ HERO ════════ -->
+    <section class="lp-section lp-hero">
+      <div class="lp-inner">
+        <h1 class="lp-hero-title">Doctor-supervised GLP-1 weight loss is <span class="lp-accent-hero lp-underline">now</span> <span class="lp-accent-hero">covered by Medicare.</span></h1>
+
+        <p class="lp-trust-line">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 4.3A2 2 0 0 1 15.85 5.33A2 2 0 0 1 18.67 8.15A2 2 0 0 1 19.7 12A2 2 0 0 1 18.67 15.85A2 2 0 0 1 15.85 18.67A2 2 0 0 1 12 19.7A2 2 0 0 1 8.15 18.67A2 2 0 0 1 5.33 15.85A2 2 0 0 1 4.3 12A2 2 0 0 1 5.33 8.15A2 2 0 0 1 8.15 5.33A2 2 0 0 1 12 4.3Z" fill="#5200d4"/>
+            <path d="M8.4 12.1l2.5 2.5 4.7-5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          FDA-approved GLP-1 pills at $50 copay*
+        </p>
+
+        <!-- Lead-capture form (hand-implemented @bold/web Field + Input) -->
+        <form class="lp-form-card" onsubmit="try{localStorage.setItem('boldFirstName',document.getElementById('lp-first').value);localStorage.setItem('boldLastName',document.getElementById('lp-last').value);}catch(e){}location.href='01-coverage.html';return false;">
+          <div class="cf-field">
+            <label class="cf-field-label" for="lp-first">First name</label>
+            <input class="cf-input" id="lp-first" name="firstName" type="text" placeholder="First name" autocomplete="given-name" />
+          </div>
+          <div class="cf-field">
+            <label class="cf-field-label" for="lp-last">Last name</label>
+            <input class="cf-input" id="lp-last" name="lastName" type="text" placeholder="Last name" autocomplete="family-name" />
+          </div>
+          <div class="cf-field">
+            <label class="cf-field-label" for="lp-email">Email</label>
+            <input class="cf-input" id="lp-email" name="email" type="email" placeholder="Email address" autocomplete="email" />
+          </div>
+          <button class="lp-info-link" type="button">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <circle cx="10" cy="10" r="8.25" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M10 9v4.2M10 6.6h.01" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+            </svg>
+            Why are we asking this?
+          </button>
+          <button class="Button Button---primary Button---purple Button---full" type="submit">Check coverage</button>
+          <p class="lp-form-legal">By signing up, you agree to Bold's <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.</p>
+        </form>
+
+        <p class="lp-carrier">Covered by Medicare, UnitedHealthcare, Aetna, Cigna, Blue Cross Blue Shield, Humana, and more.</p>
+
+        <img class="lp-hero-img" src="assets/lp/figma-hero.png" alt="An older woman on a video visit with her Bold Care provider." />
+
+        <div class="lp-social">
+          <div class="lp-avatars" aria-hidden="true">
+            <img src="assets/lp/testimonial-1.jpg" alt="" />
+            <img src="assets/lp/testimonial-2.jpg" alt="" />
+            <img src="assets/lp/testimonial-3.jpg" alt="" />
+          </div>
+          <span class="lp-social-text">Beloved by members</span>
+          <span class="lp-social-divider"></span>
+          <span class="lp-stars" aria-hidden="true">
+            <svg viewBox="0 0 20 20" fill="#ffcc1a"><path d="M10 1l2.6 5.3 5.9.9-4.3 4.1 1 5.8L10 14.9 4.8 17l1-5.8L1.5 7.2l5.9-.9L10 1z"/></svg>
+            <svg viewBox="0 0 20 20" fill="#ffcc1a"><path d="M10 1l2.6 5.3 5.9.9-4.3 4.1 1 5.8L10 14.9 4.8 17l1-5.8L1.5 7.2l5.9-.9L10 1z"/></svg>
+            <svg viewBox="0 0 20 20" fill="#ffcc1a"><path d="M10 1l2.6 5.3 5.9.9-4.3 4.1 1 5.8L10 14.9 4.8 17l1-5.8L1.5 7.2l5.9-.9L10 1z"/></svg>
+            <svg viewBox="0 0 20 20" fill="#ffcc1a"><path d="M10 1l2.6 5.3 5.9.9-4.3 4.1 1 5.8L10 14.9 4.8 17l1-5.8L1.5 7.2l5.9-.9L10 1z"/></svg>
+            <svg viewBox="0 0 20 20" fill="#ffcc1a"><path d="M10 1l2.6 5.3 5.9.9-4.3 4.1 1 5.8L10 14.9 4.8 17l1-5.8L1.5 7.2l5.9-.9L10 1z"/></svg>
+          </span>
+          <span class="lp-social-text">based on 10k+ reviews</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════ VALUE PROPS ════════ -->
+    <section class="lp-section">
+      <div class="lp-inner">
+        <h2 class="lp-h2">Lose fat, not strength</h2>
+        <p class="lp-sub">A doctor-led weight-loss program for adults 65+ that works with or without medication — covered by Medicare.</p>
+        <a class="Button Button---primary Button---purple Button---full" href="01-coverage.html">Am I eligible?</a>
+
+        <div class="lp-vp">
+          <img class="lp-vp-img" src="assets/lp/figma-vp-affordable.png" alt="FDA-approved GLP-1 medications." />
+          <h3 class="lp-vp-title">Affordable FDA-approved GLP-1s</h3>
+          <p class="lp-vp-body">FDA-approved GLP-1 medications (Foundayo®, Wegovy®, Zepbound®) for a $50 monthly copay.*</p>
+        </div>
+        <div class="lp-vp">
+          <img class="lp-vp-img" src="assets/lp/figma-vp-beyond.jpg" alt="An older adult exercising with light weights." />
+          <h3 class="lp-vp-title">Go beyond the scale</h3>
+          <p class="lp-vp-body">Uncover what's affecting your weight and get personalized fitness routines and nutritional support to do more.</p>
+        </div>
+        <div class="lp-vp">
+          <img class="lp-vp-img" src="assets/lp/figma-vp-careplan.jpg" alt="A Bold Care doctor reviewing a care plan." />
+          <h3 class="lp-vp-title">Doctor-supervised Care Plan</h3>
+          <p class="lp-vp-body">Your personalized Care Plan and followup appointments are covered by insurance – so your weight loss sticks.</p>
+        </div>
+
+        <p class="lp-footnote">* Medicare GLP-1 Bridge program lets eligible members get FDA-approved GLP-1s for a flat $50/month copay starting July 1st, 2026. <a href="#">Learn more.</a></p>
+      </div>
+    </section>
+
+    <!-- ════════ STATS ════════ -->
+    <section class="lp-section lp-navy">
+      <div class="lp-inner">
+        <h2 class="lp-h2 lp-h2--stats">Built for adults 65+. Covered by Medicare.</h2>
+        <a class="Button Button---primary Button---yellow Button---full" href="01-coverage.html">Check coverage</a>
+
+        <div class="lp-stats">
+          <div class="lp-stat lp-stat--blue">
+            <div class="lp-stat-num">$50&nbsp;<small>monthly</small></div>
+            <p class="lp-stat-body">copay for GLP-1 prescriptions if eligible, covered by Medicare. It's not a membership fee. You are in control.</p>
+          </div>
+          <div class="lp-stat lp-stat--peri">
+            <div class="lp-stat-num">78%</div>
+            <p class="lp-stat-body">of Bold patients pay $0 out of pocket for their initial Bold Care appointment to tailor your care and prescriptions.</p>
+          </div>
+          <div class="lp-stat lp-stat--lav">
+            <div class="lp-stat-num">5.0
+              <svg viewBox="0 0 24 24" fill="#140d26" aria-hidden="true"><path d="M12 1.5l3.1 6.3 7 1-5 4.9 1.2 6.9L12 17.3 5.7 20.6l1.2-6.9-5-4.9 7-1L12 1.5z"/></svg>
+            </div>
+            <p class="lp-stat-body">rating from 10k reviews of adults 65+, via the Apple Store and Google Play.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════ HOW IT WORKS ════════ -->
+    <section class="lp-section" style="background: var(--color-blue-100); border-bottom: 1px solid var(--color-gray-200);">
+      <div class="lp-inner">
+        <div>
+          <h2 class="lp-h2">How Bold works</h2>
+          <p class="lp-sub" style="margin-top:8px;">To weight loss – all from home.</p>
+        </div>
+        <img class="lp-hiw-img" src="assets/lp/figma-hiw.png" alt="A Bold Care provider profile shown on a phone: Dr. Mitul S. Desai, MD, geriatric specialist." />
+        <div class="lp-steps">
+          <div class="lp-step">
+            <span class="lp-step-num" aria-hidden="true">1</span>
+            <div>
+              <h3 class="lp-step-title">Check your coverage</h3>
+              <p class="lp-step-body">Answer a few insurance questions, about 2 minutes.</p>
+            </div>
+          </div>
+          <div class="lp-step">
+            <span class="lp-step-num" aria-hidden="true">2</span>
+            <div>
+              <h3 class="lp-step-title">Meet your Bold Care provider virtually</h3>
+              <p class="lp-step-body">Your provider creates a personalized, practical Care Plan, and prescribes FDA-approved medications, if it's the right fit.</p>
+            </div>
+          </div>
+          <div class="lp-step">
+            <span class="lp-step-num" aria-hidden="true">3</span>
+            <div>
+              <h3 class="lp-step-title">Start losing weight safely</h3>
+              <p class="lp-step-body">Your care team checks in on side effects, dosage, and progress, and keeps you on track.</p>
+            </div>
+          </div>
+        </div>
+        <a class="Button Button---primary Button---purple Button---full" href="01-coverage.html">Check eligibility</a>
+      </div>
+    </section>
+
+    <!-- ════════ DOCTOR BLOCK + PROVIDER LIST ════════ -->
+    <section class="lp-section">
+      <div class="lp-inner">
+        <h2 class="lp-h2">Doctor-supervised, built to keep you safe</h2>
+        <div class="lp-quote-card">
+          <p class="lp-quote-text">"Every Bold member is guided by a real doctor — so you can lose weight safely, protect your strength, and feel confident you're doing it the right way for your body."</p>
+          <p class="lp-quote-name"><strong>Dr. Sandeep Palakodeti, M.D., M.P.H.</strong>Chief Medical Officer at Bold</p>
+        </div>
+        <a class="Button Button---primary Button---purple Button---full" href="01-coverage.html">Match with a provider</a>
+      </div>
+      <div class="lp-inner" style="padding-top:0;">
+        <div class="lp-provider-scroll">
+          <article class="lp-provider-card">
+            <img src="assets/lp/prov-janessa.jpg" alt="Janessa Webster" />
+            <div class="lp-provider-meta">
+              <div class="lp-provider-name">Janessa Webster</div>
+              <div class="lp-provider-role">MSN, APRN, FNP-BC · 5 years</div>
+            </div>
+          </article>
+          <article class="lp-provider-card">
+            <img src="assets/lp/prov-sandeep.jpg" alt="Dr. Sandeep Palakodeti, M.D., M.P.H." />
+            <div class="lp-provider-meta">
+              <div class="lp-provider-name">Dr. Sandeep Palakodeti, M.D., M.P.H.</div>
+              <div class="lp-provider-role">Chief Medical Officer at Bold</div>
+            </div>
+          </article>
+          <article class="lp-provider-card">
+            <img src="assets/lp/prov-sloane.jpg" alt="Sloane Fowkes" />
+            <div class="lp-provider-meta">
+              <div class="lp-provider-name">Sloane Fowkes</div>
+              <div class="lp-provider-role">13 years</div>
+            </div>
+          </article>
+          <article class="lp-provider-card">
+            <img src="assets/lp/prov-christa.jpg" alt="Christa Steffensmeier, NP" />
+            <div class="lp-provider-meta">
+              <div class="lp-provider-name">Christa Steffensmeier, NP</div>
+              <div class="lp-provider-role">18 years of experience</div>
+            </div>
+          </article>
+          <article class="lp-provider-card">
+            <img src="assets/lp/prov-mitul.jpg" alt="Dr. Mitul S. Desai, MD" />
+            <div class="lp-provider-meta">
+              <div class="lp-provider-name">Dr. Mitul S. Desai, MD</div>
+              <div class="lp-provider-role">21 years of experience</div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════ WHAT YOU GET ════════ -->
+    <section class="lp-section" style="background: var(--color-blue-100); border-bottom: 1px solid var(--color-gray-200);">
+      <div class="lp-inner">
+        <h2 class="lp-h2">A personalized <span class="lp-accent-blue">Care Plan</span> to keep the weight off</h2>
+        <img class="lp-whatyouget-img" src="assets/lp/figma-whatyouget.jpg" alt="A Bold Care plan card: a 10-minute, 50g-protein recipe recommended by Dr. Desai." />
+        <div class="lp-checks">
+          <div class="lp-check">
+            <svg class="lp-check-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="currentColor"/><path d="M7 12.5l3.2 3.2L17 9" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <p class="lp-check-text">Personalized exercise and nutrition programming, plus guidance on medication, sleep, and daily habits.</p>
+          </div>
+          <div class="lp-check">
+            <svg class="lp-check-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="currentColor"/><path d="M7 12.5l3.2 3.2L17 9" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <p class="lp-check-text">No wearables, calorie tracking or meal logging.</p>
+          </div>
+          <div class="lp-check">
+            <svg class="lp-check-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="currentColor"/><path d="M7 12.5l3.2 3.2L17 9" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <p class="lp-check-text">Your provider stays in the loop and adjusts the plan as you go so you can make sure your approach is working.</p>
+          </div>
+        </div>
+        <a class="Button Button---primary Button---yellow Button---full" href="01-coverage.html">Get my Care Plan</a>
+      </div>
+    </section>
+
+    <!-- ════════ TESTIMONIALS ════════ -->
+    <section class="lp-section lp-navy">
+      <div class="lp-inner">
+        <h2 class="lp-h2">Real people, <span style="color: var(--color-blue-200b);">real results</span></h2>
+        <div class="lp-laurel">
+          <img src="assets/brief/laurel-left.svg" alt="" aria-hidden="true" />
+          <span class="lp-laurel-mid">
+            <span class="lp-laurel-num">10k+</span>
+            <span class="lp-laurel-sub">reviews from adults 65+</span>
+            <span class="lp-stars lp-stars-gold" aria-hidden="true">
+              <svg viewBox="0 0 20 20" fill="#ffcc1a"><path d="M10 1l2.6 5.3 5.9.9-4.3 4.1 1 5.8L10 14.9 4.8 17l1-5.8L1.5 7.2l5.9-.9L10 1z"/></svg>
+              <svg viewBox="0 0 20 20" fill="#ffcc1a"><path d="M10 1l2.6 5.3 5.9.9-4.3 4.1 1 5.8L10 14.9 4.8 17l1-5.8L1.5 7.2l5.9-.9L10 1z"/></svg>
+              <svg viewBox="0 0 20 20" fill="#ffcc1a"><path d="M10 1l2.6 5.3 5.9.9-4.3 4.1 1 5.8L10 14.9 4.8 17l1-5.8L1.5 7.2l5.9-.9L10 1z"/></svg>
+              <svg viewBox="0 0 20 20" fill="#ffcc1a"><path d="M10 1l2.6 5.3 5.9.9-4.3 4.1 1 5.8L10 14.9 4.8 17l1-5.8L1.5 7.2l5.9-.9L10 1z"/></svg>
+              <svg viewBox="0 0 20 20" fill="#ffcc1a"><path d="M10 1l2.6 5.3 5.9.9-4.3 4.1 1 5.8L10 14.9 4.8 17l1-5.8L1.5 7.2l5.9-.9L10 1z"/></svg>
+            </span>
+          </span>
+          <img src="assets/brief/laurel-right.svg" alt="" aria-hidden="true" />
+        </div>
+
+        <div class="lp-testi-scroll">
+          <article class="lp-testi-card">
+            <div class="lp-testi-head">
+              <span class="lp-testi-avatar" aria-hidden="true">B</span>
+              <div><div class="lp-testi-name">Bold Care patient</div><div class="lp-testi-age">72 years old</div></div>
+            </div>
+            <p class="lp-testi-quote">"I appreciate having all of the tools we talked about right here handy for me to refer to. She understands things about what was going on with my health that I hadn't thought of."</p>
+          </article>
+          <article class="lp-testi-card">
+            <div class="lp-testi-head">
+              <img class="lp-testi-avatar" src="assets/lp/testimonial-2.jpg" alt="" />
+              <div><div class="lp-testi-name">Tammy</div><div class="lp-testi-age">66 years old</div></div>
+            </div>
+            <p class="lp-testi-quote">"My Bold Care doctor is very friendly, not pushy, and seems to accept shortcomings on my part."</p>
+          </article>
+          <article class="lp-testi-card">
+            <div class="lp-testi-head">
+              <img class="lp-testi-avatar" src="assets/lp/testimonial-1.jpg" alt="" />
+              <div><div class="lp-testi-name">Cal</div><div class="lp-testi-age">72 years old</div></div>
+            </div>
+            <p class="lp-testi-quote">"I'm very fond of my Bold Care doctor. She asks all the right questions. She listens as well — a lost art. I don't feel rushed, and she always has good info for me! I'm so glad I found her."</p>
+          </article>
+          <article class="lp-testi-card">
+            <div class="lp-testi-head">
+              <img class="lp-testi-avatar" src="assets/lp/testimonial-3.jpg" alt="" />
+              <div><div class="lp-testi-name">Renay</div><div class="lp-testi-age">68 years old</div></div>
+            </div>
+            <p class="lp-testi-quote">"My Bold Care doctor is very friendly and easy to talk to — she gave great direction for taking action to improve my health."</p>
+          </article>
+        </div>
+
+        <div class="lp-featured">
+          <p class="lp-featured-label">Featured in</p>
+          <div class="lp-featured-logos">
+            <img src="assets/brief/nyt.svg" alt="The New York Times" />
+            <img src="assets/brief/forbes.svg" alt="Forbes" />
+            <img src="assets/brief/medcity.svg" alt="MedCity News" />
+          </div>
+        </div>
+
+        <a class="Button Button---primary Button---yellow Button---full" href="01-coverage.html">Check coverage</a>
+      </div>
+    </section>
+
+    <!-- ════════ HEALTHY AGING INSIGHTS ════════ -->
+    <section class="lp-section">
+      <div class="lp-inner">
+        <h2 class="lp-h2 lp-h2--purple">Healthy Aging Insights</h2>
+
+        <a class="lp-insight-link" href="#">
+          <img class="lp-insight-featured-img" src="assets/lp/figma-insight-featured.jpg" alt="An older man stretching outdoors." />
+          <h3 class="lp-insight-title" style="margin-top:16px;">How to lose weight as a senior: Weight loss tips for people over 60</h3>
+          <p class="lp-insight-body" style="margin-top:8px;">Losing weight after 60 can be challenging due to hormone and metabolism changes with age. These diet and exercise tips can help you lose weight as a senior.</p>
+        </a>
+
+        <a class="lp-insight-link" href="#">
+          <div class="lp-insight-row">
+            <img class="lp-insight-thumb" src="assets/lp/figma-insight-1.jpg" alt="" />
+            <h3 class="lp-insight-row-title">Nutrition webinar: Eating for functional health</h3>
+          </div>
+        </a>
+        <a class="lp-insight-link" href="#">
+          <div class="lp-insight-row">
+            <img class="lp-insight-thumb" src="assets/lp/figma-insight-2.jpg" alt="" />
+            <h3 class="lp-insight-row-title">The cost of your Bold Care appointment</h3>
+          </div>
+        </a>
+        <a class="lp-insight-link" href="#">
+          <div class="lp-insight-row">
+            <img class="lp-insight-thumb" src="assets/lp/figma-insight-3.jpg" alt="" />
+            <h3 class="lp-insight-row-title">How Bold Care helps you manage chronic conditions – without adding another prescription</h3>
+          </div>
+        </a>
+
+        <a class="Button Button---primary Button---purple Button---full" href="01-coverage.html">Check coverage</a>
+        <a class="Button Button---outline Button---full" href="#">See all</a>
+      </div>
+    </section>
+
+    <!-- ════════ FAQ ════════ -->
+    <section class="lp-section">
+      <div class="lp-inner">
+        <h2 class="lp-h2" style="text-align:center;">Frequently asked questions</h2>
+        <div class="lp-faq-list">
+
+          <div class="lp-faq-card">
+            <h3 class="lp-faq-q">Can Bold Care help me lose weight?</h3>
+            <div class="lp-faq-a"><p>Yes. Bold Care is a doctor-supervised weight-loss program built for adults 65+. Your provider creates a personalized care plan to help you lose fat while protecting the muscle, bone, and balance that matter as you age — with or without medication.</p></div>
+          </div>
+
+          <div class="lp-faq-card">
+            <h3 class="lp-faq-q">Does Bold Care prescribe GLP-1 medications? Which ones?</h3>
+            <div class="lp-faq-a"><p>Yes — when it's the right fit, your Bold Care provider can prescribe FDA-approved GLP-1 medications, including pill options like Foundayo® and Wegovy® tablets, plus other options such as Zepbound®. We prescribe only FDA-approved medications — never compounded. Medication is one part of your plan, alongside the nutrition and strength support that keep your weight loss safe.</p></div>
+          </div>
+
+          <div class="lp-faq-card">
+            <h3 class="lp-faq-q">Do I qualify for the $50/month GLP-1?</h3>
+            <div class="lp-faq-a">
+              <p>The $50/month price comes through Medicare's new GLP-1 Bridge program. To qualify, you'll need a <strong>Medicare Part D</strong> (prescription drug) plan and to meet one of these health guidelines, which your Bold Care provider confirms during your visit:</p>
+              <ul>
+                <li>A BMI of 35 or higher, <strong>or</strong></li>
+                <li>A BMI of 30+ with a qualifying heart, blood pressure, or kidney condition, <strong>or</strong></li>
+                <li>A BMI of 27+ with pre-diabetes or a history of heart attack, stroke, or peripheral artery disease.</li>
+              </ul>
+              <p>Don't meet these? You may still be able to get a GLP-1 through your regular Part D plan — for example, if you have type 2 diabetes or sleep apnea. Your cost would be different from the $50 Bridge price.</p>
+              <p>Not sure if you qualify? <a href="#">Check your coverage</a> in a few minutes — we'll look at every option and confirm everything before your first appointment.</p>
+            </div>
+          </div>
+
+          <div class="lp-faq-card">
+            <h3 class="lp-faq-q">What will this cost me?</h3>
+            <div class="lp-faq-a">
+              <p>If you are prescribed a GLP-1, there are two costs associated with your appointment:</p>
+              <p><strong>Your appointment:</strong></p>
+              <ul>
+                <li>Bold is in-network with Medicare and other insurance plans. 78% of Bold patients pay $0 out of pocket. Bold bills Medicare directly, so you'll never get a surprise bill.</li>
+                <li>For many insurance plans, Bold is fully covered with a $0 copay. Other members have supplemental coverage (often through Medigap, an employer, or a spouse) that frequently covers any remaining copays. Your Care Coordinator can help you understand your cost estimate per appointment.</li>
+                <li>For the small percentage of patients who do have a payment responsibility, it's usually a modest copay for a virtual visit.</li>
+                <li>Depending on your plan, Bold healthy-aging services may count toward your yearly deductible.</li>
+              </ul>
+              <p><strong>Your GLP-1 medication,</strong> if prescribed — your cost depends on how Medicare covers it:</p>
+              <ul>
+                <li>Through the Medicare GLP-1 Bridge: a $50 monthly copay, even before you meet your deductible.</li>
+                <li>Through your Part D plan (if you qualify another way, like type 2 diabetes or sleep apnea): your cost varies by plan. We confirm your exact cost with you, for free, before anything is prescribed — no hidden fees, no surprises.</li>
+              </ul>
+              <p>We confirm your full coverage before your first appointment — no hidden fees. If you have any questions, please call or text us at <a href="tel:+14245775266">(424) 577-5266</a>. A Bold Care Coordinator is available to help you look up your specific plan details.</p>
+            </div>
+          </div>
+
+          <div class="lp-faq-card">
+            <h3 class="lp-faq-q">What if I don't want a GLP-1, or don't qualify?</h3>
+            <div class="lp-faq-a"><p>That's completely fine. GLP-1s aren't right for everyone, and Bold helps you lose weight and build strength with or without medication. Your provider will build a plan around nutrition, movement, and accountability that fits your body and your goals.</p></div>
+          </div>
+
+          <div class="lp-faq-card">
+            <h3 class="lp-faq-q">Is it safe to lose weight at my age — will I lose muscle?</h3>
+            <div class="lp-faq-a"><p>That's exactly what Bold is built to prevent. Rapid weight loss can cost older adults muscle and bone, so a GLP-1 alone isn't the plan — it's one piece. Your doctor-supervised program pairs it with protein guidance and senior-friendly strength and balance exercises so you lose fat, not strength. Your provider checks in on dose, side effects, and progress along the way.</p></div>
+          </div>
+
+          <div class="lp-faq-card">
+            <h3 class="lp-faq-q">What's included in my personalized Care Plan?</h3>
+            <div class="lp-faq-a">
+              <p>Your Care Plan is built with your Bold Care team and may include:</p>
+              <ul>
+                <li>Medication management, if a GLP-1 is the right fit</li>
+                <li>Personalized, senior-friendly strength and balance exercise programming</li>
+                <li>Practical nutrition guidance — including eating out and prepared foods</li>
+                <li>Support for sleep, stress, and energy</li>
+              </ul>
+              <p>No wearables, calorie counting, or meal logging — we meet you where you are. Your provider stays in the loop and adjusts the plan as you go.</p>
+            </div>
+          </div>
+
+          <div class="lp-faq-card">
+            <h3 class="lp-faq-q">Does Bold Care replace my regular doctor?</h3>
+            <div class="lp-faq-a"><p>No — Bold complements your primary care. We help you stick with your weight plan between regular doctor visits, and you can share your progress with your PCP. You can also message your Bold provider about dosage, side effects, or daily habits and usually hear back within hours.</p></div>
+          </div>
+
+          <div class="lp-faq-card">
+            <h3 class="lp-faq-q">Who are Bold Care Providers?</h3>
+            <div class="lp-faq-a"><p>Bold Care Providers are board-certified doctors, nurse practitioners, dietitians, and licensed social workers who specialize in healthy aging and supervise your weight loss and medication safely.</p></div>
+          </div>
+
+          <div class="lp-faq-card">
+            <h3 class="lp-faq-q">Is Bold available where I live?</h3>
+            <div class="lp-faq-a"><p>Bold Care is currently available to members in California, Texas, Pennsylvania, and Illinois, with more states coming soon.</p></div>
+          </div>
+
+          <div class="lp-faq-card">
+            <h3 class="lp-faq-q">What else can Bold Care help with?</h3>
+            <div class="lp-faq-a"><p>Beyond weight, Bold supports related conditions that often improve as you lose weight and get stronger — including joint pain and arthritis, high blood pressure, diabetes and pre-diabetes, heart health, and overall healthy aging.</p></div>
+          </div>
+
+          <div class="lp-faq-card">
+            <h3 class="lp-faq-q">Any further questions?</h3>
+            <div class="lp-faq-a"><p>You can reach Bold Monday–Friday, 5am–5pm PT by phone at <a href="tel:+14245775266">(424) 577-5266</a>. A Bold Care Coordinator is here to help. Or you can email us at <a href="mailto:careteam@agebold.com">careteam@agebold.com</a>.</p></div>
+          </div>
+
+        </div>
+        <a class="Button Button---primary Button---purple Button---full" href="01-coverage.html">Book your first appointment</a>
+      </div>
+    </section>
+
+    <!-- ════════ FOOTER ════════ -->
+    <footer class="lp-section lp-footer">
+      <div class="lp-inner">
+        <div>
+          <span class="lp-footer-logo">
+            <span class="lp-logo-lines"><img src="assets/lp/logo-lines.svg" alt="Bold" /></span>
+            <span class="lp-logo-text"><img src="assets/lp/logo-text.svg" alt="" /></span>
+          </span>
+          <p class="lp-footer-blurb" style="margin-top:24px;">Find better balance, build strength, and reduce pain with easy-to-follow online video workouts personalized for you.</p>
+        </div>
+
+        <div>
+          <div>
+            <p class="lp-news-title">Stay up to date</p>
+            <p class="lp-news-sub">Receive exercise tips, product updates, event invites, and more!</p>
+          </div>
+          <form class="lp-news-form" onsubmit="return false">
+            <div class="cf-field">
+              <label class="cf-field-label cf-visually-hidden" for="lp-news-email">Email address</label>
+              <input class="cf-input" id="lp-news-email" name="newsletterEmail" type="email" placeholder="Enter your email" autocomplete="email" />
+            </div>
+            <button class="Button Button---primary Button---purple Button---full" type="submit">Subscribe</button>
+          </form>
+        </div>
+
+        <div class="lp-footer-cols">
+          <nav class="lp-footer-col" aria-label="Company">
+            <p class="lp-footer-col-title">Company</p>
+            <div class="lp-footer-links">
+              <a class="lp-footer-link" href="#">About Bold</a>
+              <a class="lp-footer-link" href="#">Science</a>
+              <a class="lp-footer-link" href="#">Careers</a>
+              <a class="lp-footer-link" href="#">Trainers</a>
+              <a class="lp-footer-link" href="#">Blog</a>
+              <a class="lp-footer-link" href="#">Press</a>
+            </div>
+          </nav>
+          <nav class="lp-footer-col" aria-label="Product">
+            <p class="lp-footer-col-title">Product</p>
+            <div class="lp-footer-links">
+              <a class="lp-footer-link" href="#">Sign up</a>
+              <a class="lp-footer-link" href="#">How's my health?</a>
+              <a class="lp-footer-link" href="#">Partnerships</a>
+              <a class="lp-footer-link" href="#">FAQ</a>
+            </div>
+          </nav>
+        </div>
+
+        <nav class="lp-footer-col" aria-label="Connect">
+          <p class="lp-footer-col-title">Connect</p>
+          <div class="lp-footer-links">
+            <a class="lp-footer-link" href="#">Contact us</a>
+            <a class="lp-footer-link" href="#">Facebook</a>
+            <a class="lp-footer-link" href="#">Instagram</a>
+          </div>
+        </nav>
+
+        <div class="lp-footer-bottom">
+          <div class="lp-footer-legal">
+            <a href="#">Terms</a>
+            <a href="#">Privacy</a>
+            <a href="#">Disclaimers</a>
+          </div>
+          <p class="lp-footer-copy">© 2025 Age Bold Inc.</p>
+        </div>
+      </div>
+    </footer>
+
+  </main>
+
+</body>
+</html>

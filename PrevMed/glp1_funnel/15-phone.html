@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your phone number — Bold Weight Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="funnel.css" />
+  <link rel="stylesheet" href="steps.css" />
+  <style>
+    .ph-agree { display: flex; align-items: flex-start; gap: 12px; cursor: pointer; }
+    .ph-agree input { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
+    .ph-agree-box { flex-shrink: 0; width: 24px; height: 24px; margin-top: 1px; border: 2px solid var(--color-gray-200); border-radius: 6px; background: #fff; display: flex; align-items: center; justify-content: center; }
+    .ph-agree-box svg { width: 14px; height: 14px; opacity: 0; }
+    .ph-agree input:checked ~ .ph-agree-box { background: var(--color-purple-600); border-color: var(--color-purple-600); }
+    .ph-agree input:checked ~ .ph-agree-box svg { opacity: 1; }
+    .ph-agree:focus-within .ph-agree-box { outline: 2px solid var(--color-purple-600); outline-offset: 2px; }
+    .ph-agree-text { font-size: 14px; line-height: 22px; color: var(--color-gray-475); }
+    .ph-agree-text strong { font-weight: 600; text-decoration: underline; color: var(--color-gray-950); }
+    .ph-note { display: flex; gap: 8px; align-items: flex-start; background: var(--color-blue-100); border-radius: var(--radius-xl); padding: 16px; }
+    .ph-note svg { flex-shrink: 0; color: var(--color-blue-400); }
+    .ph-note-text { font-size: 14px; line-height: 22px; color: var(--color-gray-950); }
+    .ph-note-text strong { font-weight: 700; }
+  </style>
+</head>
+<body>
+
+  <div class="st-statusbar-fill" aria-hidden="true"></div>
+
+  <div class="cf-page">
+
+    <nav class="cf-nav" aria-label="Phone number">
+      <a class="cf-nav-btn" href="14-consent-care.html" aria-label="Go back">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+      <span class="cf-logo" role="img" aria-label="Bold">
+        <span class="logo-lines"><img src="assets/lp/logo-lines.svg" alt="" /></span>
+        <span class="logo-text"><img src="assets/lp/logo-text.svg" alt="" /></span>
+      </span>
+      <span class="cf-nav-btn is-hidden" aria-hidden="true"></span>
+    </nav>
+
+    <main class="st-content">
+      <div class="st-intro">
+        <h1 class="cf-heading">What's your mobile phone number?</h1>
+        <p class="cf-body">We use your phone number to coordinate your care.</p>
+      </div>
+
+      <div class="cf-field">
+        <label class="cf-field-label" for="ph-input">Mobile phone number</label>
+        <input class="cf-input" id="ph-input" name="phone" type="tel" inputmode="tel"
+               autocomplete="tel" placeholder="(555) 555-5555" maxlength="14" />
+      </div>
+
+      <label class="ph-agree">
+        <input type="checkbox" id="ph-agree-cb" />
+        <span class="ph-agree-box" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M2.5 7.5L6 11L11.5 4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <span class="ph-agree-text">I agree to receive automated text reminders and calls about marketing updates as outlined in Bold's <strong>Terms of service</strong> and <strong>Privacy policy</strong>.</span>
+      </label>
+
+      <div class="ph-note">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.5l7 2.5v6c0 4.6-3 8.2-7 9.5-4-1.3-7-4.9-7-9.5V5l7-2.5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M9 12l2 2 4-4.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="ph-note-text">You're in control. You can opt out by replying <strong>STOP</strong> to any texts from Bold. We don't sell your information.</span>
+      </div>
+    </main>
+
+    <footer class="st-footer">
+      <div class="st-actions">
+        <button id="continue-btn" class="Button Button---primary Button---purple Button---full" type="button" disabled>Continue</button>
+      </div>
+    </footer>
+
+  </div>
+
+  <script>
+    (function () {
+      var phone = document.getElementById('ph-input');
+      var agree = document.getElementById('ph-agree-cb');
+      var btn = document.getElementById('continue-btn');
+
+      function fmt(v) {
+        var d = v.replace(/\D/g, '').slice(0, 10);
+        if (d.length > 6) return '(' + d.slice(0, 3) + ') ' + d.slice(3, 6) + '-' + d.slice(6);
+        if (d.length > 3) return '(' + d.slice(0, 3) + ') ' + d.slice(3);
+        if (d.length > 0) return '(' + d;
+        return '';
+      }
+      function refresh() {
+        btn.disabled = !(phone.value.replace(/\D/g, '').length >= 10 && agree.checked);
+      }
+      phone.addEventListener('input', function () { phone.value = fmt(phone.value); refresh(); });
+      agree.addEventListener('change', refresh);
+      btn.addEventListener('click', function () { if (!btn.disabled) location.href = '16-confirmation.html'; });
+      refresh();
+    })();
+  </script>
+
+</body>
+</html>

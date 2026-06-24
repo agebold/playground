@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Schedule your call — Bold Weight Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="funnel.css" />
+  <link rel="stylesheet" href="steps.css" />
+  <style>
+    /* ── Coordinator call card ── */
+    .sc-card { background: #fff; border: 1px solid var(--color-gray-200); border-radius: var(--radius-xl); box-shadow: var(--shadow-xs); padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+    .sc-card-head { display: flex; align-items: center; gap: 12px; }
+    .sc-avatars { display: flex; flex-shrink: 0; }
+    .sc-avatars img { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid #fff; margin-left: -10px; }
+    .sc-avatars img:first-child { margin-left: 0; }
+    .sc-card-title { font-size: 18px; font-weight: 600; line-height: 24px; color: var(--color-gray-950); }
+    .sc-meta-row { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+    .sc-meta { display: flex; align-items: center; gap: 6px; font-size: 16px; color: var(--color-gray-900); }
+    .sc-meta svg { flex-shrink: 0; color: var(--color-gray-475); }
+    .sc-card-body { font-size: 16px; line-height: 24px; color: var(--color-gray-900); }
+    .sc-tz { font-size: 14px; color: var(--color-gray-475); }
+
+    /* ── Date tabs ── */
+    .sc-days { display: flex; gap: 8px; overflow-x: auto; min-width: 0; width: 100%; padding-bottom: 4px; }
+    .sc-day { flex-shrink: 0; width: 80px; padding: 12px 8px; background: #fff; border: 1px solid var(--color-gray-200); border-radius: var(--radius-md); box-shadow: var(--shadow-xs); cursor: pointer; font-family: var(--font-family); display: flex; flex-direction: column; align-items: center; gap: 4px; transition: background 150ms, border-color 150ms; }
+    .sc-day:hover { border-color: var(--color-purple-border); }
+    .sc-day.is-selected { background: var(--color-purple-ede); border-color: var(--color-purple-border); }
+    .sc-day:focus-visible { outline: 2px solid var(--color-purple-600); outline-offset: 2px; }
+    .sc-day-wd { font-size: 16px; font-weight: 400; color: var(--color-gray-900); }
+    .sc-day-dt { font-size: 18px; font-weight: 600; color: var(--color-gray-950); }
+
+    /* Pin the "Schedule call" CTA to the bottom of the viewport (always visible) */
+    .st-footer {
+      position: fixed;
+      bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 100%; max-width: 393px;
+      z-index: 20;
+    }
+    .st-content { padding-bottom: 96px; } /* clear the fixed CTA so the last time slots aren't hidden */
+  </style>
+</head>
+<body>
+
+  <div class="st-statusbar-fill" aria-hidden="true"></div>
+
+  <div class="cf-page">
+
+    <nav class="cf-nav" aria-label="Schedule your call">
+      <a class="cf-nav-btn" href="11-result.html" aria-label="Go back">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+      <span class="cf-logo" role="img" aria-label="Bold">
+        <span class="logo-lines"><img src="assets/lp/logo-lines.svg" alt="" /></span>
+        <span class="logo-text"><img src="assets/lp/logo-text.svg" alt="" /></span>
+      </span>
+      <span class="cf-nav-btn is-hidden" aria-hidden="true"></span>
+    </nav>
+
+    <main class="st-content">
+      <h1 class="cf-heading">Schedule a 15-min quick call</h1>
+
+      <div class="sc-card">
+        <div class="sc-card-head">
+          <span class="sc-avatars" aria-hidden="true">
+            <img src="assets/lp/figma-coord-man.jpg" alt="" />
+            <img src="assets/lp/figma-coord-woman.jpg" alt="" />
+          </span>
+          <span class="sc-card-title">Bold Care Coordinator call</span>
+        </div>
+        <div class="sc-meta-row">
+          <span class="sc-meta">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="7.5" stroke="currentColor" stroke-width="1.6"/><path d="M10 6v4l2.5 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            15 min
+          </span>
+          <span class="sc-meta">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="7.5" stroke="currentColor" stroke-width="1.6"/><path d="M10 6.2v7.6M12.2 8c0-1-1-1.6-2.2-1.6S7.8 7 7.8 8s1 1.4 2.2 1.7 2.2.7 2.2 1.8-1 1.7-2.2 1.7-2.2-.6-2.2-1.6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+            No-cost
+          </span>
+        </div>
+        <p class="sc-card-body">Confirm your coverage and schedule your first visit with a licensed care provider.</p>
+      </div>
+
+      <p class="sc-tz">All times shown are in Pacific Time (PT).</p>
+
+      <div class="sc-days" id="sc-days" role="group" aria-label="Choose a day"></div>
+
+      <div class="cf-time-slots-all">
+        <div class="cf-time-section">
+          <h2 class="cf-time-section-label">Morning</h2>
+          <div class="cf-time-grid" role="group" aria-label="Morning times">
+            <button class="cf-time-slot" type="button" aria-pressed="false"><span class="cf-time-slot-hour">7:00am</span><span class="cf-time-slot-tz">PT</span></button>
+            <button class="cf-time-slot" type="button" aria-pressed="false"><span class="cf-time-slot-hour">9:00am</span><span class="cf-time-slot-tz">PT</span></button>
+            <button class="cf-time-slot" type="button" aria-pressed="false"><span class="cf-time-slot-hour">10:30am</span><span class="cf-time-slot-tz">PT</span></button>
+            <button class="cf-time-slot" type="button" aria-pressed="false"><span class="cf-time-slot-hour">11:15am</span><span class="cf-time-slot-tz">PT</span></button>
+          </div>
+        </div>
+        <div class="cf-time-section">
+          <h2 class="cf-time-section-label">Afternoon</h2>
+          <div class="cf-time-grid" role="group" aria-label="Afternoon times">
+            <button class="cf-time-slot" type="button" aria-pressed="false"><span class="cf-time-slot-hour">12:00pm</span><span class="cf-time-slot-tz">PT</span></button>
+            <button class="cf-time-slot" type="button" aria-pressed="false"><span class="cf-time-slot-hour">12:45pm</span><span class="cf-time-slot-tz">PT</span></button>
+            <button class="cf-time-slot" type="button" aria-pressed="false"><span class="cf-time-slot-hour">1:30pm</span><span class="cf-time-slot-tz">PT</span></button>
+            <button class="cf-time-slot" type="button" aria-pressed="false"><span class="cf-time-slot-hour">2:15pm</span><span class="cf-time-slot-tz">PT</span></button>
+            <button class="cf-time-slot" type="button" aria-pressed="false"><span class="cf-time-slot-hour">3:00pm</span><span class="cf-time-slot-tz">PT</span></button>
+            <button class="cf-time-slot" type="button" aria-pressed="false"><span class="cf-time-slot-hour">5:00pm</span><span class="cf-time-slot-tz">PT</span></button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="st-footer">
+      <div class="st-actions">
+        <button id="continue-btn" class="Button Button---primary Button---purple Button---full" type="button" disabled>Schedule call</button>
+      </div>
+    </footer>
+
+  </div>
+
+  <script>
+    (function () {
+      var WD  = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+      var WDF = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+      var MO  = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      var MOF = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+      var daysWrap = document.getElementById('sc-days');
+      var btn = document.getElementById('continue-btn');
+      var selectedDay = null, selectedTime = null;
+
+      // Next 5 weekdays starting tomorrow
+      var dates = [], d = new Date(); d.setHours(0, 0, 0, 0);
+      while (dates.length < 5) {
+        d.setDate(d.getDate() + 1);
+        if (d.getDay() !== 0 && d.getDay() !== 6) dates.push(new Date(d));
+      }
+      dates.forEach(function (dt, i) {
+        var tab = document.createElement('button');
+        tab.type = 'button';
+        tab.className = 'sc-day' + (i === 0 ? ' is-selected' : '');
+        tab.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
+        tab.innerHTML = '<span class="sc-day-wd">' + WD[dt.getDay()] + '</span>' +
+                        '<span class="sc-day-dt">' + MO[dt.getMonth()] + ' ' + dt.getDate() + '</span>';
+        tab.dataset.full = WDF[dt.getDay()] + ', ' + MOF[dt.getMonth()] + ' ' + dt.getDate();
+        tab.addEventListener('click', function () {
+          if (selectedDay) { selectedDay.classList.remove('is-selected'); selectedDay.setAttribute('aria-pressed', 'false'); }
+          tab.classList.add('is-selected'); tab.setAttribute('aria-pressed', 'true');
+          selectedDay = tab;
+        });
+        if (i === 0) selectedDay = tab;
+        daysWrap.appendChild(tab);
+      });
+
+      document.querySelectorAll('.cf-time-slot').forEach(function (slot) {
+        slot.addEventListener('click', function () {
+          if (selectedTime) { selectedTime.classList.remove('is-selected'); selectedTime.setAttribute('aria-pressed', 'false'); }
+          slot.classList.add('is-selected'); slot.setAttribute('aria-pressed', 'true');
+          selectedTime = slot;
+          btn.disabled = false;
+        });
+      });
+
+      function plus15(t) {
+        var m = t.match(/^(\d+):(\d+)(am|pm)$/); if (!m) return t;
+        var tot = (parseInt(m[1], 10) % 12) * 60 + parseInt(m[2], 10) + (m[3] === 'pm' ? 720 : 0) + 15;
+        tot %= 1440;
+        var H = Math.floor(tot / 60), M = tot % 60, ap = H >= 12 ? 'pm' : 'am', h = H % 12 || 12;
+        return h + ':' + (M < 10 ? '0' + M : M) + ap;
+      }
+
+      btn.addEventListener('click', function () {
+        if (btn.disabled) return;
+        var time = selectedTime.querySelector('.cf-time-slot-hour').textContent.trim();
+        try {
+          localStorage.setItem('boldApptDateFull', selectedDay.dataset.full);
+          localStorage.setItem('boldApptTimeRange', time + ' – ' + plus15(time) + ' (PT)');
+        } catch (e) {}
+        location.href = '13-consent-privacy.html';
+      });
+    })();
+  </script>
+
+</body>
+</html>

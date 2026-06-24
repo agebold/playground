@@ -1,0 +1,67 @@
+/* ══════════════════════════════════════════════
+   steps.css — shared shell for GLP-1 funnel intake steps (02–11)
+   Builds ON funnel.css component classes (.cf-*). Page-specific
+   styles live in each step file's <style> block.
+══════════════════════════════════════════════ */
+
+html { overflow-x: clip; }
+body {
+  background: var(--color-gray-50);              /* surface-default-primary #fafafa */
+  max-width: 393px;                              /* mobile comp width — centered on wider screens */
+  margin: 0 auto;
+  overflow-x: clip;
+}
+
+/* Opaque white fill behind the harness iOS status bar (top 54px) */
+.st-statusbar-fill {
+  position: fixed; top: 0; left: 50%; transform: translateX(-50%);
+  width: 100%; max-width: 393px; height: 54px; background: #fff; z-index: 25;
+}
+
+/* Content column — like .cf-content but no fixed-footer bottom padding
+   (the footer is in-flow at the end of the .cf-page flex column). */
+.st-content {
+  flex: 1; padding: 16px;
+  display: flex; flex-direction: column; gap: 24px;
+}
+.st-eyebrow { font-size: 14px; font-weight: 600; color: var(--color-gray-475); letter-spacing: 0.2px; }
+.st-intro { display: flex; flex-direction: column; gap: 8px; }
+.st-intro .cf-body, .st-intro .cf-body--lg { color: var(--color-gray-900); }
+
+/* Bottom actions block + purple CTA (mirrors 01-coverage .ec-actions) */
+.st-footer { display: flex; flex-direction: column; flex-shrink: 0; }
+.st-actions {
+  padding: 16px;
+  background: linear-gradient(to bottom, rgba(245,245,245,0) 0%, var(--color-gray-100) 60%);
+}
+.st-skip {
+  display: block; width: 100%; margin-top: 4px; padding: 12px;
+  background: none; border: none; cursor: pointer;
+  font-family: var(--font-family); font-size: 16px; font-weight: 700; color: var(--color-gray-950);
+  text-align: center;
+}
+.st-skip:hover { text-decoration: underline; }
+
+/* Guarantee the grey disabled CTA look (in case funnel.css lacks a generic rule) */
+.Button---primary.Button---purple:disabled {
+  background: var(--color-gray-200);
+  color: var(--color-gray-350);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* Page fade-in (used on 03 after the loader fade-out) */
+@keyframes st-fade-in { from { opacity: 0; } to { opacity: 1; } }
+.st-fade-in { animation: st-fade-in 360ms ease-out both; }
+
+/* Blue check-circle bullet list (loading + result) */
+.st-check-list { display: flex; flex-direction: column; gap: 16px; }
+.st-check { display: flex; gap: 8px; align-items: flex-start; }
+.st-check-ic { flex-shrink: 0; width: 24px; height: 24px; }
+.st-check-text { font-size: 20px; font-weight: 600; line-height: 24px; color: var(--color-gray-900); }
+.st-check-text--sm { font-size: 16px; font-weight: 600; line-height: 24px; }
+.st-check-text--sm .reg { font-weight: 400; }
+
+@media (prefers-reduced-motion: reduce) {
+  .st-fade-in { animation: none; }
+}

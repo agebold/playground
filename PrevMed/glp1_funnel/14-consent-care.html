@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Consent for care — Bold Weight Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="funnel.css" />
+  <link rel="stylesheet" href="steps.css" />
+  <style>
+    .cs-icon { width: 48px; height: 48px; border-radius: var(--radius-md); background: var(--color-blue-100); display: flex; align-items: center; justify-content: center; color: var(--color-purple-600); flex-shrink: 0; }
+    .cs-doc { flex: 1; min-height: 120px; overflow-y: auto; background: #fff; border: 1px solid var(--color-gray-200); border-radius: var(--radius-xl); box-shadow: var(--shadow-xs); padding: 20px 16px; display: flex; flex-direction: column; gap: 12px; }
+    .cs-doc-title { font-size: 18px; font-weight: 600; line-height: 24px; color: var(--color-gray-900); }
+    .cs-doc-body { font-size: 16px; line-height: 24px; color: var(--color-gray-475); }
+    .cs-agree { padding: 0 16px; }
+  </style>
+</head>
+<body>
+
+  <div class="st-statusbar-fill" aria-hidden="true"></div>
+
+  <div class="cf-page">
+
+    <nav class="cf-nav" aria-label="Consent for care">
+      <a class="cf-nav-btn" href="13-consent-privacy.html" aria-label="Go back">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+      <span class="cf-logo" role="img" aria-label="Bold">
+        <span class="logo-lines"><img src="assets/lp/logo-lines.svg" alt="" /></span>
+        <span class="logo-text"><img src="assets/lp/logo-text.svg" alt="" /></span>
+      </span>
+      <span class="cf-nav-btn is-hidden" aria-hidden="true"></span>
+    </nav>
+
+    <main class="st-content">
+      <div class="st-intro">
+        <span class="cs-icon" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2.5l7 2.5v6c0 4.6-3 8.2-7 9.5-4-1.3-7-4.9-7-9.5V5l7-2.5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M8.7 12l2.2 2.2 4.4-4.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <h1 class="cf-heading">Consent for care</h1>
+        <p class="cf-body">This document outlines your care, rights, and consent to treatment from Bold providers.</p>
+      </div>
+
+      <div class="cs-doc" tabindex="0" role="region" aria-label="New patient agreement">
+        <p class="cs-doc-title">New patient agreement</p>
+        <p class="cs-doc-body">Age Bold's clinical care is provided by Mighty Health Medical Services of New Jersey, P.C.; Mighty Health Medical Services, P.A.; Bradley J. E. Professional Corporation, and New York City Health Medical, P.C. ("Provider Group") and its contractual affiliates. Age Bold connects you with licensed providers in the Provider Group for telehealth care.</p>
+        <p class="cs-doc-body">By accepting, you consent to receive care via telehealth, acknowledge that a provider-patient relationship is established with the Provider Group, and agree that your provider may prescribe medication when clinically appropriate. You may withdraw consent at any time.</p>
+        <p class="cs-doc-body">Telehealth has limitations and may not be appropriate for every condition. In a medical emergency, call 911. This agreement is governed by Bold's Terms of Service and Privacy Policy.</p>
+      </div>
+    </main>
+
+    <footer class="st-footer">
+      <fieldset class="cf-checkbox-group cs-agree" data-checkgroup data-continue="#continue-btn" aria-label="New patient agreement acceptance">
+        <label class="cf-checkbox-option">
+          <input type="checkbox" name="care" value="agree" />
+          <span class="cf-checkbox-indicator" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M2.5 7.5L6 11L11.5 4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span class="cf-checkbox-label">I accept and agree to the New Patient Agreement and Informed Consent</span>
+        </label>
+      </fieldset>
+      <div class="st-actions">
+        <button id="continue-btn" class="Button Button---primary Button---purple Button---full" type="button" data-next="15-phone.html" disabled>Continue</button>
+      </div>
+    </footer>
+
+  </div>
+
+  <script src="steps.js"></script>
+</body>
+</html>

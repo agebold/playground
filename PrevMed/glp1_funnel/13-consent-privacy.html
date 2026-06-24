@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your privacy matters — Bold Weight Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="funnel.css" />
+  <link rel="stylesheet" href="steps.css" />
+  <style>
+    .cs-icon { width: 48px; height: 48px; border-radius: var(--radius-md); background: var(--color-blue-100); display: flex; align-items: center; justify-content: center; color: var(--color-purple-600); flex-shrink: 0; }
+    .cs-doc { flex: 1; min-height: 120px; overflow-y: auto; background: #fff; border: 1px solid var(--color-gray-200); border-radius: var(--radius-xl); box-shadow: var(--shadow-xs); padding: 20px 16px; display: flex; flex-direction: column; gap: 12px; }
+    .cs-seal { align-self: center; width: 96px; height: 96px; border: 2px solid var(--color-gray-200); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; color: var(--color-gray-350); font-size: 14px; font-weight: 700; letter-spacing: 0.4px; text-align: center; opacity: 0.55; }
+    .cs-doc-title { font-size: 18px; font-weight: 600; line-height: 24px; color: var(--color-gray-900); }
+    .cs-doc-body { font-size: 16px; line-height: 24px; color: var(--color-gray-475); }
+    .cs-agree { padding: 0 16px; }
+  </style>
+</head>
+<body>
+
+  <div class="st-statusbar-fill" aria-hidden="true"></div>
+
+  <div class="cf-page">
+
+    <nav class="cf-nav" aria-label="Privacy notice">
+      <a class="cf-nav-btn" href="12-schedule.html" aria-label="Go back">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+      <span class="cf-logo" role="img" aria-label="Bold">
+        <span class="logo-lines"><img src="assets/lp/logo-lines.svg" alt="" /></span>
+        <span class="logo-text"><img src="assets/lp/logo-text.svg" alt="" /></span>
+      </span>
+      <span class="cf-nav-btn is-hidden" aria-hidden="true"></span>
+    </nav>
+
+    <main class="st-content">
+      <div class="st-intro">
+        <span class="cs-icon" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2.5l7 2.5v6c0 4.6-3 8.2-7 9.5-4-1.3-7-4.9-7-9.5V5l7-2.5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M8.7 12l2.2 2.2 4.4-4.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <h1 class="cf-heading">Your privacy matters</h1>
+        <p class="cf-body">Bold is HIPAA compliant. We're committed to protecting your personal information.</p>
+      </div>
+
+      <div class="cs-doc" tabindex="0" role="region" aria-label="HIPAA notice of privacy practices">
+        <span class="cs-seal" aria-hidden="true"><span>HIPAA</span><span>COMPLIANT</span></span>
+        <p class="cs-doc-title">Our Privacy Obligations</p>
+        <p class="cs-doc-body">The law requires us to maintain the privacy of certain health information called "Protected Health Information" or "PHI." We are required to provide you with this notice of our legal duties and privacy practices, to follow the terms of the notice currently in effect, and to notify you if a breach of your unsecured PHI occurs.</p>
+        <p class="cs-doc-body">We use and disclose your health information to provide and coordinate your treatment, to obtain payment for services, and to run our health care operations. We will not use or share your information other than as described here without your written permission.</p>
+        <p class="cs-doc-body">You have the right to access your records, request corrections, ask how your information has been shared, and request that we limit how we use or disclose it. To exercise these rights, contact our care team at careteam@agebold.com.</p>
+      </div>
+    </main>
+
+    <footer class="st-footer">
+      <fieldset class="cf-checkbox-group cs-agree" data-checkgroup data-continue="#continue-btn" aria-label="HIPAA acknowledgement">
+        <label class="cf-checkbox-option">
+          <input type="checkbox" name="hipaa" value="ack" />
+          <span class="cf-checkbox-indicator" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none"><path d="M2.5 7.5L6 11L11.5 4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span class="cf-checkbox-label">I acknowledge the HIPAA notice of privacy practices</span>
+        </label>
+      </fieldset>
+      <div class="st-actions">
+        <button id="continue-btn" class="Button Button---primary Button---purple Button---full" type="button" data-next="14-consent-care.html" disabled>Continue</button>
+      </div>
+    </footer>
+
+  </div>
+
+  <script src="steps.js"></script>
+</body>
+</html>

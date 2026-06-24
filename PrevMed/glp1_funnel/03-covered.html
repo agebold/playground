@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>You're covered — Bold Weight Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="funnel.css" />
+  <link rel="stylesheet" href="steps.css" />
+  <style>
+    /* page-specific tweaks */
+    .cv-blurb a { color: var(--color-gray-900); text-decoration: underline; }
+    .cv-blurb strong { font-weight: 600; }
+  </style>
+</head>
+<body>
+
+  <div class="st-statusbar-fill" aria-hidden="true"></div>
+
+  <div class="cf-page st-fade-in">
+
+    <nav class="cf-nav" aria-label="Coverage confirmed">
+      <a class="cf-nav-btn" href="01-coverage.html" aria-label="Go back">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+      <span class="cf-logo" role="img" aria-label="Bold">
+        <span class="logo-lines"><img src="assets/lp/logo-lines.svg" alt="" /></span>
+        <span class="logo-text"><img src="assets/lp/logo-text.svg" alt="" /></span>
+      </span>
+      <span class="cf-nav-btn is-hidden" aria-hidden="true"></span>
+    </nav>
+
+    <main class="st-content">
+      <div class="st-intro">
+        <h1 class="cf-heading">Your appointment is fully covered!</h1>
+        <p class="cf-body--lg cv-blurb">Your UnitedHealthcare plan offers <strong>$0 copay</strong> visits for virtual appointments with in-network providers, like Bold. <a href="#">Learn more.</a></p>
+      </div>
+
+      <div class="cf-insurance-card">
+        <p class="cf-insurance-name">UnitedHealthcare</p>
+        <div>
+          <p class="cf-insurance-member-name" id="member-name">Kathleen K.</p>
+          <p class="cf-insurance-member-id">Member ID:<strong>*********789</strong></p>
+        </div>
+        <span class="cf-seal-check" aria-hidden="true">
+          <svg width="50" height="50" viewBox="0 0 50 50" fill="none">
+            <path d="M25 3l4.7 3.6 5.9-.4 1.8 5.6 5 3.1-1.3 5.8 3.6 4.7-3.6 4.7 1.3 5.8-5 3.1-1.8 5.6-5.9-.4L25 47l-4.7-3.6-5.9.4-1.8-5.6-5-3.1 1.3-5.8L5.3 24.6l3.6-4.7-1.3-5.8 5-3.1 1.8-5.6 5.9.4L25 3z" fill="#115e59"/>
+            <path d="M17.5 25.2l5 5 10-10.4" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+      </div>
+
+      <p class="cf-edit-row">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <circle cx="10" cy="10" r="8.25" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M10 9v4.2M10 6.6h.01" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+        Is your info correct? <a class="cf-link" href="01-coverage.html">Edit information.</a>
+      </p>
+    </main>
+
+    <footer class="st-footer">
+      <div class="st-actions">
+        <a class="Button Button---primary Button---purple Button---full" href="04-personalize.html">Continue</a>
+      </div>
+    </footer>
+
+  </div>
+
+  <script>
+    // Show the member's name captured on the landing page (fallback: Kathleen K.)
+    (function () {
+      try {
+        var f = (localStorage.getItem('boldFirstName') || '').trim();
+        var l = (localStorage.getItem('boldLastName') || '').trim();
+        if (f) {
+          document.getElementById('member-name').textContent =
+            f + (l ? ' ' + l.charAt(0).toUpperCase() + '.' : '');
+        }
+      } catch (e) {}
+    })();
+  </script>
+
+</body>
+</html>
