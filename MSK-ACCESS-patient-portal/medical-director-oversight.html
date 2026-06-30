@@ -381,7 +381,7 @@
     .inst-fullname { font-size: 11.5px; color: #888; margin-bottom: 14px; line-height: 1.4; flex: 1; }
     .inst-meta { margin-bottom: 12px; }
     .inst-meta-row { display: flex; align-items: center; gap: 7px; font-size: 12px; color: #555; margin-bottom: 5px; }
-    .inst-meta-icon { font-size: 11px; width: 14px; text-align: center; flex-shrink: 0; }
+    .inst-meta-icon { width: 13px; height: 13px; flex-shrink: 0; color: var(--color-gray-400); }
     .inst-card-footer { font-size: 12px; font-weight: 600; color: #1a6fa8; text-align: right; padding-top: 8px; border-top: 1px solid #f5f5f2; }
 
     /* ─── INSTRUMENT DETAIL ─── */
@@ -394,29 +394,32 @@
     .inst-detail-meta span { display: flex; align-items: center; gap: 5px; }
     .inst-detail-meta strong { color: #333; }
 
-    .q-section-divider {
-      font-size: 12px; font-weight: 700; color: #666;
-      background: #f0f0ed; border-radius: 6px;
-      padding: 9px 14px; margin: 18px 0 10px;
-      border-left: 4px solid #bbb;
+    .inst-questions {
+      background: var(--color-white); border: 1px solid var(--color-gray-150);
+      border-radius: var(--radius-lg); padding: 24px 28px;
     }
-    .q-block {
-      background: #fff; border: 1px solid #e8e8e4; border-radius: 8px;
-      padding: 16px 18px; margin-bottom: 10px;
+    .q-section-head {
+      font-size: 14px; font-weight: var(--font-weight-bold); color: var(--color-gray-900);
+      margin: 26px 0 4px;
     }
-    .q-header { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 14px; }
-    .q-num { font-size: 10px; font-weight: 700; color: #aaa; background: #f5f5f2; border-radius: 4px; padding: 3px 7px; white-space: nowrap; margin-top: 1px; flex-shrink: 0; }
-    .q-text { font-size: 13.5px; font-weight: 600; color: #1a1a1a; line-height: 1.4; }
-    .q-note { font-size: 11px; color: #bbb; margin-top: 3px; }
-
-    /* Distribution chart */
-    .dist-row { display: flex; align-items: center; gap: 10px; margin-bottom: 7px; }
-    .dist-row:last-child { margin-bottom: 0; }
-    .dist-label { font-size: 12px; color: #555; min-width: 210px; text-align: right; flex-shrink: 0; line-height: 1.3; }
-    .dist-track { flex: 1; height: 22px; background: #f0f0ee; border-radius: 5px; overflow: hidden; }
-    .dist-fill { height: 100%; border-radius: 5px; min-width: 3px; }
-    .dist-pct { font-size: 12px; font-weight: 700; color: #333; min-width: 34px; text-align: right; }
-    .dist-n { font-size: 11px; color: #bbb; min-width: 44px; }
+    .q-section-head:first-child { margin-top: 0; }
+    .q-intro {
+      font-size: 12.5px; color: var(--color-gray-400); line-height: 1.55;
+      margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid var(--color-gray-150);
+    }
+    .q-item { margin-bottom: 22px; }
+    .q-item:last-child { margin-bottom: 0; }
+    .q-item-text { display: flex; gap: 8px; font-size: 13.5px; font-weight: var(--font-weight-semibold); color: var(--color-gray-900); line-height: 1.4; margin-bottom: 10px; }
+    .q-item-num { flex-shrink: 0; color: var(--color-gray-400); font-weight: var(--font-weight-semibold); }
+    .q-baseline-tag { display:inline-flex; align-items:center; gap:3px; background:#fef3e0; color:#d4890a; font-size:10px; font-weight:600; padding:2px 7px; border-radius:var(--radius-full); margin-left:8px; vertical-align:middle; }
+    .q-opts { display: flex; flex-direction: column; gap: 7px; margin-left: 22px; }
+    .q-opt {
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--color-gray-50); border: 1px solid var(--color-gray-150);
+      border-radius: var(--radius-md); padding: 10px 16px;
+      font-size: 13px; color: var(--color-gray-700);
+    }
+    .q-opt-value { font-weight: var(--font-weight-semibold); color: var(--color-gray-400); font-size: 12.5px; flex-shrink: 0; margin-left: 16px; }
 
     /* ─── TOAST ─── */
     .toast {
@@ -443,7 +446,8 @@
     }
     .ctrl-btn:hover { background: var(--color-gray-75); }
     .ctrl-btn.active { background: var(--color-purple-50); border-color: var(--color-purple-600); color: var(--color-purple-600); }
-    .ctrl-btn-arrow { font-size: 9px; opacity: 0.6; }
+    .ctrl-btn-arrow { width: 13px; height: 13px; flex-shrink: 0; opacity: 0.6; transition: transform 0.15s ease; }
+    .ctrl-dropdown.open .ctrl-btn-arrow { transform: rotate(180deg); }
     .ctrl-menu {
       display: none; position: absolute; top: calc(100% + 4px); left: 0;
       background: var(--color-white); border: 1px solid var(--color-gray-200);
@@ -491,12 +495,10 @@
   <div class="sidebar-section">
     <div class="sidebar-section-label">Review</div>
     <div class="nav-item active" id="nav-queue" onclick="navigate('queue')">
-      <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="1.5" y="1.5" width="13" height="13" rx="2"/><line x1="1.5" y1="6" x2="14.5" y2="6"/><line x1="6" y1="6" x2="6" y2="14.5"/></svg>
       Review queue
       <span class="nav-badge" id="queue-badge">12</span>
     </div>
     <div class="nav-item" id="nav-members" onclick="navigate('members')">
-      <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="5.5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg>
       All members
     </div>
   </div>
@@ -504,7 +506,6 @@
   <div class="sidebar-section">
     <div class="sidebar-section-label">Check-ins</div>
     <div class="nav-item" id="nav-instruments" onclick="navigate('instruments')">
-      <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="1" y="3" width="14" height="2" rx="1"/><rect x="1" y="7" width="10" height="2" rx="1"/><rect x="1" y="11" width="12" height="2" rx="1"/><circle cx="14" cy="12" r="2" fill="currentColor" stroke="none"/></svg>
       Instruments
     </div>
   </div>
@@ -512,7 +513,6 @@
   <div class="sidebar-section">
     <div class="sidebar-section-label">Governance</div>
     <div class="nav-item" id="nav-standing-orders" onclick="navigate('standing-orders')">
-      <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><line x1="2" y1="4" x2="14" y2="4"/><line x1="2" y1="8" x2="10" y2="8"/><line x1="2" y1="12" x2="12" y2="12"/></svg>
       Standing orders
     </div>
   </div>
@@ -528,32 +528,6 @@
 
 <!-- ═══════════ MAIN ═══════════ -->
 <main class="main" id="main"></main>
-
-<!-- ═══════════ PATIENT MODAL ═══════════ -->
-<div class="overlay hidden" id="patient-modal" onclick="onOverlayClick(event)">
-  <div class="modal" id="modal-inner">
-    <div class="modal-head">
-      <div class="modal-patient-name" id="m-name"></div>
-      <div class="modal-patient-meta" id="m-meta"></div>
-      <button class="modal-close" onclick="closeModal()">✕</button>
-      <div class="modal-tabs">
-        <div class="modal-tab active"  onclick="switchTab('overview',this)">Overview</div>
-        <div class="modal-tab"         onclick="switchTab('outcomes',this)">Outcome measures</div>
-        <div class="modal-tab"         onclick="switchTab('classes',this)">Class history</div>
-        <div class="modal-tab"         onclick="switchTab('actions',this)">Actions &amp; approvals</div>
-      </div>
-    </div>
-    <div class="modal-alert hidden" id="m-alert"></div>
-    <div class="modal-body" id="m-body"></div>
-    <div class="modal-foot">
-      <button class="btn btn-outline" onclick="doExportCSV()">Export outcomes CSV</button>
-      <div style="display:flex;gap:8px">
-        <button class="btn btn-outline" onclick="openPCPDrawer()">Message PCP</button>
-        <button class="btn btn-green"   onclick="doApprove()">Approve &amp; send to external org</button>
-      </div>
-    </div>
-  </div>
-</div>
 
 <!-- ═══════════ PCP DRAWER ═══════════ -->
 <div class="drawer-overlay hidden" id="pcp-drawer">
@@ -629,9 +603,14 @@
 // ═══════════════════════════════════════════════════
 // CHECK-IN INSTRUMENTS DATA
 // ═══════════════════════════════════════════════════
+const L5 = ['None','Mild','Moderate','Severe','Extreme'];
+function opts5(labels, startAt) {
+  return labels.map((label,i) => ({ label, value: (startAt===undefined?0:startAt)+i }));
+}
+
 const INSTRUMENTS = {
   'KOOS JR': {
-    fullName: 'Knee injury and Osteoarthritis Outcome Score, Joint Replacement',
+    fullName: 'Knee injury and Osteoarthritis Outcome Score for Joint Replacement',
     bodyPart: 'Knee',
     cadence: 'Baseline, then every 3 months',
     cadenceShort: 'Baseline + Q3M',
@@ -639,17 +618,20 @@ const INSTRUMENTS = {
     nPatients: 142,
     color: '#1a6fa8',
     questions: [
-      { text:'How often do you experience knee pain?',             note:'Pain — frequency',          options:['Never','Monthly','Weekly','Daily','Always'],                        dist:[5,12,28,38,17] },
-      { text:'Twisting / pivoting on your knee',                   note:'Pain — difficulty',         options:['None','Mild','Moderate','Severe','Extreme'],                        dist:[4,11,27,35,23] },
-      { text:'Straightening your knee fully',                      note:'Pain — difficulty',         options:['None','Mild','Moderate','Severe','Extreme'],                        dist:[8,18,30,29,15] },
-      { text:'Going down stairs',                                  note:'Pain — difficulty',         options:['None','Mild','Moderate','Severe','Extreme'],                        dist:[3,9,24,38,26]  },
-      { text:'Standing up from sitting',                           note:'Function — difficulty',     options:['None','Mild','Moderate','Severe','Extreme'],                        dist:[5,14,29,34,18] },
-      { text:'Bending to the floor / picking up an object',        note:'Function — difficulty',     options:['None','Mild','Moderate','Severe','Extreme'],                        dist:[6,15,31,31,17] },
-      { text:'Going up or down stairs',                            note:'Function — difficulty',     options:['None','Mild','Moderate','Severe','Extreme'],                        dist:[4,10,26,38,22] },
+      { section: 'Stiffness', intro: 'The following question concerns the amount of joint stiffness you have experienced during the last week in your knee. Stiffness is a sensation of restriction or slowness in the ease of which you move your knee joint.' },
+      { text:'How severe is your knee stiffness after first wakening in the morning?', options: opts5(L5) },
+      { section: 'Pain', intro: 'What amount of knee pain have you experienced in the last week during the following activities?' },
+      { text:'Twisting/pivoting on your knee',            options: opts5(L5) },
+      { text:'Straightening knee fully',                   options: opts5(L5) },
+      { text:'Going up or down stairs',                    options: opts5(L5) },
+      { text:'Standing upright',                           options: opts5(L5) },
+      { section: 'Function, daily living', intro: 'The following questions concern your physical function. By this we mean your ability to move around and to look after yourself. For each of the following activities please indicate the degree of difficulty you have experienced in the last week due to your knee.' },
+      { text:'Rising from sitting',                        options: opts5(L5) },
+      { text:'Bending to floor/pick up an object',         options: opts5(L5) },
     ]
   },
   'HOOS JR': {
-    fullName: 'Hip disability and Osteoarthritis Outcome Score, Joint Replacement',
+    fullName: 'Hip disability and Osteoarthritis Outcome Score for Joint Replacement',
     bodyPart: 'Hip',
     cadence: 'Baseline, then every 3 months',
     cadenceShort: 'Baseline + Q3M',
@@ -657,12 +639,14 @@ const INSTRUMENTS = {
     nPatients: 98,
     color: '#7b4fa8',
     questions: [
-      { text:'How often do you experience hip pain?',              note:'Pain — frequency',          options:['Never','Monthly','Weekly','Daily','Always'],                        dist:[6,14,30,35,15] },
-      { text:'Going up or down stairs',                            note:'Pain — difficulty',         options:['None','Mild','Moderate','Severe','Extreme'],                        dist:[4,10,28,36,22] },
-      { text:'Straightening your hip fully',                       note:'Pain — difficulty',         options:['None','Mild','Moderate','Severe','Extreme'],                        dist:[7,16,31,30,16] },
-      { text:'Sitting down and rising from a seat',                note:'Function — difficulty',     options:['None','Mild','Moderate','Severe','Extreme'],                        dist:[5,12,26,37,20] },
-      { text:'Going down stairs',                                  note:'Function — difficulty',     options:['None','Mild','Moderate','Severe','Extreme'],                        dist:[3,9,25,40,23]  },
-      { text:'Putting on socks / stockings',                       note:'Function — difficulty',     options:['None','Mild','Moderate','Severe','Extreme'],                        dist:[6,13,24,34,23] },
+      { section: 'Pain', intro: 'What amount of hip pain have you experienced the last week during the following activities?' },
+      { text:'Going up or down stairs',                    options: opts5(L5) },
+      { text:'Walking on an uneven surface',                options: opts5(L5) },
+      { section: 'Function, daily living', intro: 'The following questions concern your physical function. By this we mean your ability to move around and to look after yourself. For each of the following activities please indicate the degree of difficulty you have experienced in the last week due to your hip.' },
+      { text:'Rising from sitting',                        options: opts5(L5) },
+      { text:'Bending to floor/pick up an object',         options: opts5(L5) },
+      { text:'Lying in bed (turning over, maintaining hip position)', options: opts5(L5) },
+      { text:'Sitting',                                    options: opts5(L5) },
     ]
   },
   'ODI': {
@@ -674,16 +658,96 @@ const INSTRUMENTS = {
     nPatients: 76,
     color: '#d4890a',
     questions: [
-      { text:'Pain intensity',                                     note:'Section 1',  options:['No pain','Very mild','Moderate','Fairly severe','Very severe','Worst imaginable'],                   dist:[1,7,23,37,24,8]  },
-      { text:'Personal care (washing, dressing)',                   note:'Section 2',  options:['No difficulty','Some extra pain','Painful but manage','Significant help needed','Help most days','Cannot self-care'],dist:[5,12,28,30,18,7]  },
-      { text:'Lifting',                                            note:'Section 3',  options:['No difficulty','Extra pain lifting heavy','Pain prevents very heavy lifts','Light weights only','Very light only','Cannot lift'],dist:[4,10,25,32,21,8]  },
-      { text:'Walking',                                            note:'Section 4',  options:['No pain any distance','Some pain up to 1 mile','Under 1 mile','Under 0.5 mile','Under 100 m','Aid required / bed rest'],dist:[8,15,27,28,16,6]  },
-      { text:'Sitting',                                            note:'Section 5',  options:['Any chair as long as needed','Special chair required','Up to 1 hour','Up to 30 min','Up to 10 min','Cannot sit'],    dist:[6,14,29,31,14,6]  },
-      { text:'Standing',                                           note:'Section 6',  options:['No pain as long as needed','Some pain after 1 hour','Up to 1 hour','Up to 30 min','Up to 10 min','Cannot stand'],  dist:[7,13,26,30,17,7]  },
-      { text:'Sleeping',                                           note:'Section 7',  options:['No pain in bed','Some pain, not prevented','Full night with medication','Up to 6 hours','Up to 4 hours','Cannot sleep'], dist:[10,18,28,26,13,5] },
-      { text:'Social life',                                        note:'Section 8',  options:['Normal, no extra pain','Normal but extra pain','No major impact','Some activities restricted','Most activities restricted','Confined to home'],dist:[12,20,30,24,10,4] },
-      { text:'Travelling',                                         note:'Section 9',  options:['No extra pain','Some extra pain, manage','Under 2 hours','Under 30 min','Essential travel only','Cannot travel'],     dist:[9,16,28,28,14,5]  },
-      { text:'Employment / homemaking',                            note:'Section 10', options:['Normal, no extra pain','Normal with extra pain','Most activities limited','Light work only','Very light only','Cannot work'],dist:[8,14,26,30,15,7]  },
+      { section: 'Section 1 — Pain intensity' },
+      { text:'Pain intensity', options:[
+        {label:'I have no pain at the moment',value:0},
+        {label:'The pain is very mild at the moment',value:1},
+        {label:'The pain is moderate at the moment',value:2},
+        {label:'The pain is fairly severe at the moment',value:3},
+        {label:'The pain is very severe at the moment',value:4},
+        {label:'The pain is the worst imaginable at the moment',value:5},
+      ]},
+      { section: 'Section 2 — Personal care (washing, dressing etc)' },
+      { text:'Personal care', options:[
+        {label:'I can look after myself normally without causing extra pain',value:0},
+        {label:'I can look after myself normally but it causes extra pain',value:1},
+        {label:'It is painful to look after myself and I am slow and careful',value:2},
+        {label:'I need some help but manage most of my personal care',value:3},
+        {label:'I need help every day in most aspects of self-care',value:4},
+        {label:'I do not get dressed, I wash with difficulty and stay in bed',value:5},
+      ]},
+      { section: 'Section 3 — Lifting' },
+      { text:'Lifting', options:[
+        {label:'I can lift heavy weights without extra pain',value:0},
+        {label:'I can lift heavy weights but it gives extra pain',value:1},
+        {label:'Pain prevents me from lifting heavy weights off the floor, but I can manage if they are conveniently placed eg. on a table',value:2},
+        {label:'Pain prevents me from lifting heavy weights, but I can manage light to medium weights if they are conveniently positioned',value:3},
+        {label:'I can lift very light weights',value:4},
+        {label:'I cannot lift or carry anything at all',value:5},
+      ]},
+      { section: 'Section 4 — Walking' },
+      { text:'Walking', options:[
+        {label:'Pain does not prevent me walking any distance',value:0},
+        {label:'Pain prevents me from walking more than 2 kilometres',value:1},
+        {label:'Pain prevents me from walking more than 1 kilometre',value:2},
+        {label:'Pain prevents me from walking more than 500 metres',value:3},
+        {label:'I can only walk using a stick or crutches',value:4},
+        {label:'I am in bed most of the time',value:5},
+      ]},
+      { section: 'Section 5 — Sitting' },
+      { text:'Sitting', options:[
+        {label:'I can sit in any chair as long as I like',value:0},
+        {label:'I can only sit in my favourite chair as long as I like',value:1},
+        {label:'Pain prevents me sitting more than one hour',value:2},
+        {label:'Pain prevents me from sitting more than 30 minutes',value:3},
+        {label:'Pain prevents me from sitting more than 10 minutes',value:4},
+        {label:'Pain prevents me from sitting at all',value:5},
+      ]},
+      { section: 'Section 6 — Standing' },
+      { text:'Standing', options:[
+        {label:'I can stand as long as I want without extra pain',value:0},
+        {label:'I can stand as long as I want but it gives me extra pain',value:1},
+        {label:'Pain prevents me from standing for more than 1 hour',value:2},
+        {label:'Pain prevents me from standing for more than 30 minutes',value:3},
+        {label:'Pain prevents me from standing for more than 10 minutes',value:4},
+        {label:'Pain prevents me from standing at all',value:5},
+      ]},
+      { section: 'Section 7 — Sleeping' },
+      { text:'Sleeping', options:[
+        {label:'My sleep is never disturbed by pain',value:0},
+        {label:'My sleep is occasionally disturbed by pain',value:1},
+        {label:'Because of pain I have less than 6 hours sleep',value:2},
+        {label:'Because of pain I have less than 4 hours sleep',value:3},
+        {label:'Because of pain I have less than 2 hours sleep',value:4},
+        {label:'Pain prevents me from sleeping at all',value:5},
+      ]},
+      { section: 'Section 8 — Sex life (if applicable)' },
+      { text:'Sex life', options:[
+        {label:'My sex life is normal and causes no extra pain',value:0},
+        {label:'My sex life is normal but causes some extra pain',value:1},
+        {label:'My sex life is nearly normal but is very painful',value:2},
+        {label:'My sex life is severely restricted by pain',value:3},
+        {label:'My sex life is nearly absent because of pain',value:4},
+        {label:'Pain prevents any sex life at all',value:5},
+      ]},
+      { section: 'Section 9 — Social life' },
+      { text:'Social life', options:[
+        {label:'My social life is normal and gives me no extra pain',value:0},
+        {label:'My social life is normal but increases the degree of pain',value:1},
+        {label:'Pain has no significant effect on my social life apart from limiting my more energetic interests eg, sport',value:2},
+        {label:'Pain has restricted my social life and I do not go out as often',value:3},
+        {label:'Pain has restricted my social life to my home',value:4},
+        {label:'I have no social life because of pain',value:5},
+      ]},
+      { section: 'Section 10 — Travelling' },
+      { text:'Travelling', options:[
+        {label:'I can travel anywhere without pain',value:0},
+        {label:'I can travel anywhere but it gives me extra pain',value:1},
+        {label:'Pain is bad but I manage journeys over two hours',value:2},
+        {label:'Pain restricts me to journeys of less than one hour',value:3},
+        {label:'Pain restricts me to short necessary journeys under 30 minutes',value:4},
+        {label:'Pain prevents me from travelling except to receive treatment',value:5},
+      ]},
     ]
   },
   'NDI': {
@@ -695,16 +759,96 @@ const INSTRUMENTS = {
     nPatients: 44,
     color: '#1a9688',
     questions: [
-      { text:'Pain intensity',                                     note:'Section 1',  options:['No pain','Very mild','Moderate','Fairly severe','Very severe','Worst imaginable'],                   dist:[2,9,26,35,22,6]  },
-      { text:'Personal care',                                      note:'Section 2',  options:['No difficulty','Some extra pain','Slow and careful','Significant help needed','Help every day','Cannot self-care'],dist:[8,15,30,28,14,5]  },
-      { text:'Lifting',                                            note:'Section 3',  options:['No difficulty','Extra pain lifting heavy','Medium weight with pain','Light weights only','Very light only','Cannot lift'],dist:[5,12,27,33,18,5]  },
-      { text:'Reading',                                            note:'Section 4',  options:['No pain, any duration','Slight pain, any duration','Moderate pain, any duration','Moderate pain limits duration','Severe pain, can hardly read','Cannot read'],dist:[10,18,28,27,13,4] },
-      { text:'Headaches',                                          note:'Section 5',  options:['None','Slight and infrequent','Moderate and infrequent','Moderate and frequent','Severe and frequent','Constant headaches'],dist:[7,14,26,30,17,6]  },
-      { text:'Concentration',                                      note:'Section 6',  options:['Full concentration, no difficulty','Slight difficulty','Moderate difficulty','Significant difficulty','Extreme difficulty','Cannot concentrate'],dist:[9,16,29,28,14,4]  },
-      { text:'Work',                                               note:'Section 7',  options:['Full workload, no extra pain','Full workload, some extra pain','Most usual work','Cannot do usual work','Hardly any work','Cannot work'],dist:[6,13,27,32,17,5]  },
-      { text:'Driving',                                            note:'Section 8',  options:['No pain while driving','Slight pain while driving','Moderate pain while driving','Cannot drive, moderate pain','Can hardly drive, severe pain','Cannot drive'],dist:[14,20,28,24,11,3]  },
-      { text:'Sleeping',                                           note:'Section 9',  options:['No trouble','Slight trouble','Under 6 hours due to pain','Under 4 hours due to pain','Under 2 hours due to pain','Cannot sleep'],dist:[8,16,30,28,14,4]  },
-      { text:'Recreation',                                         note:'Section 10', options:['All activities, no extra pain','Most activities, some extra pain','Some activities restricted','Few activities possible','Hardly any activities','No activities possible'],dist:[7,14,27,30,17,5]  },
+      { section: 'Section 1 — Pain intensity' },
+      { text:'Pain intensity', options:[
+        {label:'I have no pain at the moment',value:0},
+        {label:'The pain is very mild at the moment',value:1},
+        {label:'The pain is moderate at the moment',value:2},
+        {label:'The pain is fairly severe at the moment',value:3},
+        {label:'The pain is very severe at the moment',value:4},
+        {label:'The pain is the worst imaginable at the moment',value:5},
+      ]},
+      { section: 'Section 2 — Personal care (washing, dressing, etc.)' },
+      { text:'Personal care', options:[
+        {label:'I can look after myself normally without causing extra pain',value:0},
+        {label:'I can look after myself normally but it causes extra pain',value:1},
+        {label:'It is painful to look after myself and I am slow and careful',value:2},
+        {label:'I need some help but can manage most of my personal care',value:3},
+        {label:'I need help every day in most aspects of self care',value:4},
+        {label:'I do not get dressed, I wash with difficulty and stay in bed',value:5},
+      ]},
+      { section: 'Section 3 — Lifting' },
+      { text:'Lifting', options:[
+        {label:'I can lift heavy weights without extra pain',value:0},
+        {label:'I can lift heavy weights but it gives extra pain',value:1},
+        {label:'Pain prevents me lifting heavy weights off the floor, but I can manage if they are conveniently placed, for example on a table',value:2},
+        {label:'Pain prevents me from lifting heavy weights but I can manage light to medium weights if they are conveniently positioned',value:3},
+        {label:'I can only lift very light weights',value:4},
+        {label:'I cannot lift or carry anything',value:5},
+      ]},
+      { section: 'Section 4 — Reading' },
+      { text:'Reading', options:[
+        {label:'I can read as much as I want to with no pain in my neck',value:0},
+        {label:'I can read as much as I want to with slight pain in my neck',value:1},
+        {label:'I can read as much as I want with moderate pain in my neck',value:2},
+        {label:'I can’t read as much as I want because of moderate pain in my neck',value:3},
+        {label:'I can hardly read at all because of severe pain in my neck',value:4},
+        {label:'I cannot read at all',value:5},
+      ]},
+      { section: 'Section 5 — Headaches' },
+      { text:'Headaches', options:[
+        {label:'I have no headaches at all',value:0},
+        {label:'I have slight headaches, which come infrequently',value:1},
+        {label:'I have moderate headaches, which come infrequently',value:2},
+        {label:'I have moderate headaches, which come frequently',value:3},
+        {label:'I have severe headaches, which come frequently',value:4},
+        {label:'I have headaches almost all the time',value:5},
+      ]},
+      { section: 'Section 6 — Concentration' },
+      { text:'Concentration', options:[
+        {label:'I can concentrate fully when I want to with no difficulty',value:0},
+        {label:'I can concentrate fully when I want to with slight difficulty',value:1},
+        {label:'I have a fair degree of difficulty in concentrating when I want to',value:2},
+        {label:'I have a lot of difficulty in concentrating when I want to',value:3},
+        {label:'I have a great deal of difficulty in concentrating when I want to',value:4},
+        {label:'I cannot concentrate at all',value:5},
+      ]},
+      { section: 'Section 7 — Work' },
+      { text:'Work', options:[
+        {label:'I can do as much work as I want to',value:0},
+        {label:'I can only do my usual work, but no more',value:1},
+        {label:'I can do most of my usual work, but no more',value:2},
+        {label:'I cannot do my usual work',value:3},
+        {label:'I can hardly do any work at all',value:4},
+        {label:'I can’t do any work at all',value:5},
+      ]},
+      { section: 'Section 8 — Driving' },
+      { text:'Driving', options:[
+        {label:'I can drive my car without any neck pain',value:0},
+        {label:'I can drive my car as long as I want with slight pain in my neck',value:1},
+        {label:'I can drive my car as long as I want with moderate pain in my neck',value:2},
+        {label:'I can’t drive my car as long as I want because of moderate pain in my neck',value:3},
+        {label:'I can hardly drive at all because of severe pain in my neck',value:4},
+        {label:'I can’t drive my car at all',value:5},
+      ]},
+      { section: 'Section 9 — Sleeping' },
+      { text:'Sleeping', options:[
+        {label:'I have no trouble sleeping',value:0},
+        {label:'My sleep is slightly disturbed (less than 1 hr sleepless)',value:1},
+        {label:'My sleep is mildly disturbed (1-2 hrs sleepless)',value:2},
+        {label:'My sleep is moderately disturbed (2-3 hrs sleepless)',value:3},
+        {label:'My sleep is greatly disturbed (3-5 hrs sleepless)',value:4},
+        {label:'My sleep is completely disturbed (5-7 hrs sleepless)',value:5},
+      ]},
+      { section: 'Section 10 — Recreation' },
+      { text:'Recreation', options:[
+        {label:'I am able to engage in all my recreation activities with no neck pain at all',value:0},
+        {label:'I am able to engage in all my recreation activities, with some pain in my neck',value:1},
+        {label:'I am able to engage in most, but not all of my usual recreation activities because of pain in my neck',value:2},
+        {label:'I am able to engage in a few of my usual recreation activities because of pain in my neck',value:3},
+        {label:'I can hardly do any recreation activities because of pain in my neck',value:4},
+        {label:'I can’t do any recreation activities at all',value:5},
+      ]},
     ]
   },
   'QuickDASH': {
@@ -716,17 +860,19 @@ const INSTRUMENTS = {
     nPatients: 38,
     color: '#2a7d4a',
     questions: [
-      { text:'Open a tight or new jar',                            note:'Item 1 — Activity',        options:['No difficulty','Mild difficulty','Moderate difficulty','Severe difficulty','Unable'],   dist:[5,16,31,32,16]  },
-      { text:'Do heavy household chores (e.g., washing walls or floors)', note:'Item 2 — Activity', options:['No difficulty','Mild difficulty','Moderate difficulty','Severe difficulty','Unable'],   dist:[3,11,28,36,22]  },
-      { text:'Carry a shopping bag or briefcase',                  note:'Item 3 — Activity',        options:['No difficulty','Mild difficulty','Moderate difficulty','Severe difficulty','Unable'],   dist:[7,18,32,30,13]  },
-      { text:'Wash your back',                                     note:'Item 4 — Activity',        options:['No difficulty','Mild difficulty','Moderate difficulty','Severe difficulty','Unable'],   dist:[8,16,28,31,17]  },
-      { text:'Use a knife to cut food',                            note:'Item 5 — Activity',        options:['No difficulty','Mild difficulty','Moderate difficulty','Severe difficulty','Unable'],   dist:[10,20,30,27,13] },
-      { text:'Recreational activities requiring force or impact through your arm (e.g., golf, tennis)', note:'Item 6 — Activity', options:['No difficulty','Mild difficulty','Moderate difficulty','Severe difficulty','Unable'], dist:[4,12,26,34,24]  },
-      { text:'Interfered with your normal social activities with family, friends, or others', note:'Item 7 — Social', options:['Not at all','Slightly','Moderately','Quite a bit','Extremely'],      dist:[14,22,30,24,10] },
-      { text:'Limited in your work or other regular daily activities', note:'Item 8 — Social',      options:['Not at all','Slightly','Moderately','Quite a bit','Extremely'],                        dist:[8,18,32,28,14]  },
-      { text:'Arm, shoulder, or hand pain',                        note:'Item 9 — Symptom',         options:['None','Mild','Moderate','Severe','Extreme'],                                           dist:[4,12,28,34,22]  },
-      { text:'Tingling (pins and needles) in your arm, shoulder, or hand', note:'Item 10 — Symptom',options:['None','Mild','Moderate','Severe','Extreme'],                                           dist:[18,24,28,22,8]  },
-      { text:'Difficulty sleeping due to arm, shoulder, or hand pain', note:'Item 11 — Symptom',   options:['No difficulty','Mild difficulty','Moderate difficulty','Severe difficulty','Unable to sleep'],dist:[12,20,28,26,14] },
+      { section: 'Please rate your ability to do the following activities in the last week.' },
+      { text:'Open a tight or new jar.',                                    options: opts5(['No difficulty','Mild difficulty','Moderate difficulty','Severe difficulty','Unable'],1) },
+      { text:'Do heavy household chores (e.g., wash walls, floors).',       options: opts5(['No difficulty','Mild difficulty','Moderate difficulty','Severe difficulty','Unable'],1) },
+      { text:'Carry a shopping bag or briefcase.',                         options: opts5(['No difficulty','Mild difficulty','Moderate difficulty','Severe difficulty','Unable'],1) },
+      { text:'Wash your back.',                                            options: opts5(['No difficulty','Mild difficulty','Moderate difficulty','Severe difficulty','Unable'],1) },
+      { text:'Use a knife to cut food.',                                   options: opts5(['No difficulty','Mild difficulty','Moderate difficulty','Severe difficulty','Unable'],1) },
+      { text:'Recreational activities in which you take some force or impact through your arm, shoulder or hand (e.g., golf, hammering, tennis, etc.).', options: opts5(['No difficulty','Mild difficulty','Moderate difficulty','Severe difficulty','Unable'],1) },
+      { text:'During the past week, to what extent has your arm, shoulder or hand problem interfered with your normal social activities with family, friends, neighbours or groups?', options: opts5(['Not at all','Slightly','Moderately','Quite a bit','Extremely'],1) },
+      { text:'During the past week, were you limited in your work or other regular daily activities as a result of your arm, shoulder or hand problem?', options: opts5(['Not limited at all','Slightly limited','Moderately limited','Very limited','Unable'],1) },
+      { section: 'Please rate the severity of the following symptoms in the last week.' },
+      { text:'Arm, shoulder or hand pain.',                                options: opts5(L5,1) },
+      { text:'Tingling (pins and needles) in your arm, shoulder or hand.', options: opts5(L5,1) },
+      { text:'During the past week, how much difficulty have you had sleeping because of the pain in your arm, shoulder or hand?', options: opts5(['No difficulty','Mild difficulty','Moderate difficulty','Severe difficulty','So much difficulty that I can’t sleep'],1) },
     ]
   },
   'NPRS + PSFS': {
@@ -738,27 +884,64 @@ const INSTRUMENTS = {
     nPatients: 284,
     color: '#5200d4',
     questions: [
-      { section: 'NPRS — Numeric Pain Rating Scale  ·  0 = no pain, 10 = worst pain  ·  Administered monthly' },
+      { section: 'NPRS — Numeric Pain Rating Scale', intro: 'On a scale of zero to 10, with zero meaning no pain and 10 meaning the worst pain possible. Administered monthly.' },
       {
         text: 'How would you rate your [body region] pain on average over the last 7 days?',
-        note: 'NPRS · Monthly',
-        options: ['0 — No pain','1','2','3','4','5','6','7','8','9','10 — Worst pain'],
-        dist: [2, 3, 8, 12, 18, 22, 16, 10, 5, 3, 1]
+        options: [
+          {label:'0 — No pain',value:0},{label:'1',value:1},{label:'2',value:2},{label:'3',value:3},{label:'4',value:4},
+          {label:'5 — Moderate pain',value:5},{label:'6',value:6},{label:'7',value:7},{label:'8',value:8},{label:'9',value:9},{label:'10 — Worst possible pain',value:10},
+        ]
       },
-      { section: 'PSFS — Patient-Specific Functional Scale  ·  Activity selection captured at baseline only; ability rating captured monthly' },
+      { section: 'PSFS — Patient-Specific Functional Scale', intro: 'Activity selection captured at baseline only; ability rating captured at baseline and monthly thereafter.' },
       {
         text: 'Please select the activity you find the most difficult or cannot do because of your [body region] pain.',
-        note: 'PSFS Activity Selection · Baseline only',
         baselineOnly: true,
-        options: ['Walking','Climbing stairs','Getting up and down from the floor','Getting up and down from a seat','Housework','Exercise','Providing care for family members'],
-        dist: [26, 20, 18, 14, 9, 9, 4]
+        options: ['Walking','Climbing stairs','Getting up and down from the floor','Getting up and down from a seat','Housework','Exercise','Providing care for family members'].map(label => ({label}))
       },
       {
         text: 'How would you rate your current ability to perform this activity?',
-        note: 'PSFS Ability Rating · Baseline + Monthly',
-        options: ['0 — Unable','1','2','3','4','5','6','7','8','9','10 — Fully able'],
-        dist: [6, 10, 14, 19, 18, 14, 10, 6, 2, 1, 0]
+        options: [
+          {label:'0 — Unable',value:0},{label:'1',value:1},{label:'2',value:2},{label:'3',value:3},{label:'4',value:4},
+          {label:'5',value:5},{label:'6',value:6},{label:'7',value:7},{label:'8',value:8},{label:'9',value:9},{label:'10 — Fully able',value:10},
+        ]
       },
+    ]
+  },
+  'PROMIS 6a': {
+    fullName: 'PROMIS Pain Interference — Short Form 6a',
+    bodyPart: 'Upper back',
+    cadence: 'Baseline, then every 3 months',
+    cadenceShort: 'Baseline + Q3M',
+    scoring: 'T-score (mean 50, SD 10) · Higher = more pain interference',
+    nPatients: 21,
+    color: '#a8487b',
+    questions: [
+      { section: 'Pain Interference — Short Form 6a', intro: 'Please respond to each question or statement by marking one box per row. In the past 7 days…' },
+      { text:'How much did pain interfere with your day to day activities?', options: opts5(['Not at all','A little bit','Somewhat','Quite a bit','Very much'],1) },
+      { text:'How much did pain interfere with work around the home?',       options: opts5(['Not at all','A little bit','Somewhat','Quite a bit','Very much'],1) },
+      { text:'How much did pain interfere with your ability to participate in social activities?', options: opts5(['Not at all','A little bit','Somewhat','Quite a bit','Very much'],1) },
+      { text:'How much did pain interfere with your household chores?',     options: opts5(['Not at all','A little bit','Somewhat','Quite a bit','Very much'],1) },
+      { text:'How much did pain interfere with the things you usually do for fun?', options: opts5(['Not at all','A little bit','Somewhat','Quite a bit','Very much'],1) },
+      { text:'How much did pain interfere with your enjoyment of social activities?', options: opts5(['Not at all','A little bit','Somewhat','Quite a bit','Very much'],1) },
+    ]
+  },
+  'PROMIS 6b': {
+    fullName: 'PROMIS Pain Interference — Short Form 6b',
+    bodyPart: 'Upper back',
+    cadence: 'Baseline, then every 3 months',
+    cadenceShort: 'Baseline + Q3M',
+    scoring: 'T-score (mean 50, SD 10) · Higher = more pain interference',
+    nPatients: 21,
+    color: '#c2185b',
+    questions: [
+      { section: 'Pain Interference — Short Form 6b', intro: 'Please respond to each item by marking one box per row. In the past 7 days…' },
+      { text:'How much did pain interfere with your enjoyment of life?',    options: opts5(['Not at all','A little bit','Somewhat','Quite a bit','Very much'],1) },
+      { text:'How much did pain interfere with your ability to concentrate?', options: opts5(['Not at all','A little bit','Somewhat','Quite a bit','Very much'],1) },
+      { text:'How much did pain interfere with your day to day activities?', options: opts5(['Not at all','A little bit','Somewhat','Quite a bit','Very much'],1) },
+      { text:'How much did pain interfere with your enjoyment of recreational activities?', options: opts5(['Not at all','A little bit','Somewhat','Quite a bit','Very much'],1) },
+      { text:'How much did pain interfere with doing your tasks away from home (e.g., getting groceries, running errands)?', options: opts5(['Not at all','A little bit','Somewhat','Quite a bit','Very much'],1) },
+      { section: 'In the past 7 days…' },
+      { text:'How often did pain keep you from socializing with others?',   options: opts5(['Never','Rarely','Sometimes','Often','Always'],1) },
     ]
   },
   'PGIC': {
@@ -766,29 +949,74 @@ const INSTRUMENTS = {
     bodyPart: 'Universal (all diagnoses)',
     cadence: 'Once, at program completion',
     cadenceShort: 'End of program',
-    scoring: '1 = Very much improved · 7 = Very much worse',
+    scoring: '1 = No change · 7 = A great deal better',
     nPatients: 63,
     color: '#555',
     questions: [
-      { text:'Since starting the Bold program, how would you describe the overall change in your pain and physical function?',
-        note:'Single-item global rating',
-        options:['1 — Very much improved','2 — Much improved','3 — Minimally improved','4 — No change','5 — Minimally worse','6 — Much worse','7 — Very much worse'],
-        dist:[24,38,19,11,5,2,1],
-        pgic: true
+      { text:'Since starting the Bold program, how would you describe the change (if any) in your activity limitations, symptoms, and overall quality of life related to your musculoskeletal condition?',
+        options:[
+          {label:'No change (or condition has gotten worse)',value:1},
+          {label:'Almost the same, hardly any change at all',value:2},
+          {label:'A little better, but no noticeable change',value:3},
+          {label:'Somewhat better, but the change has not made any real difference',value:4},
+          {label:'Moderately better, and a slight but noticeable change',value:5},
+          {label:'Better and a definite improvement that has made a real and worthwhile difference',value:6},
+          {label:'A great deal better and a considerable improvement that has made all the difference',value:7},
+        ]
       }
     ]
   }
 };
 
-const PGIC_COLORS = ['#2a7d32','#4caf50','#8bc34a','#9e9e9e','#ff9800','#f44336','#c62828'];
-
 function bpColor(bodyPart) {
   if (bodyPart.includes('Knee'))     return '#1a6fa8';
   if (bodyPart.includes('Hip'))      return '#7b4fa8';
-  if (bodyPart.includes('Lower back') || bodyPart.includes('back')) return '#d4890a';
+  if (bodyPart.includes('Lower back')) return '#d4890a';
+  if (bodyPart.includes('Upper back')) return '#a8487b';
   if (bodyPart.includes('Neck'))     return '#1a9688';
   if (bodyPart.includes('Shoulder') || bodyPart.includes('Arm') || bodyPart.includes('Hand')) return '#2a7d4a';
   return '#777';
+}
+
+function shortName(name) {
+  const parts = name.trim().split(/\s+/);
+  if (parts.length < 2) return name;
+  const last = parts[parts.length - 1].replace('.','');
+  return parts[0] + ' ' + last[0] + '.';
+}
+
+function maskMBI(mbi) {
+  const parts = mbi.split('-');
+  if (parts.length === 3) return '****-***-' + parts[2];
+  const last4 = mbi.replace(/-/g,'').slice(-4);
+  return '****-***-' + last4;
+}
+
+function phasePill(phase) {
+  const styles = {
+    'Calm':     'background:#e8f0fb;color:#1a4fa8',
+    'Build':    'background:#fef3e0;color:#d4890a',
+    'Maintain': 'background:#e6f4ea;color:#2a6e3a',
+  };
+  const s = styles[phase] || 'background:#f0f0f0;color:#555';
+  return `<span style="${s};font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;white-space:nowrap">${phase}</span>`;
+}
+
+const SVG_TREND_DOWN = `<svg width="14" height="14" viewBox="0 0 32 32" fill="none"><path d="M29 24L17 12L12 17L3 8" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M29 16V24H21" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const SVG_TREND_UP   = `<svg width="14" height="14" viewBox="0 0 32 32" fill="none"><path d="M29 7L17 19L12 14L3 23" stroke="#115E59" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M29 15V7H21" stroke="#115E59" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+function trendCell(delta, type) {
+  if (delta === null || delta === undefined) return '<span style="color:var(--color-gray-400)">—</span>';
+  if (delta === 0) return '<span style="color:var(--color-gray-500);font-size:12px">No change</span>';
+  if (type === 'pain') {
+    return delta > 0
+      ? `<span style="display:flex;align-items:center;gap:5px;color:#EF4444;font-size:12px;white-space:nowrap">${SVG_TREND_DOWN}Increasing</span>`
+      : `<span style="display:flex;align-items:center;gap:5px;color:#115E59;font-size:12px;white-space:nowrap">${SVG_TREND_UP}Decreasing</span>`;
+  } else {
+    return delta > 0
+      ? `<span style="display:flex;align-items:center;gap:5px;color:#115E59;font-size:12px;white-space:nowrap">${SVG_TREND_UP}More able</span>`
+      : `<span style="display:flex;align-items:center;gap:5px;color:#EF4444;font-size:12px;white-space:nowrap">${SVG_TREND_DOWN}Less able</span>`;
+  }
 }
 
 // ═══════════════════════════════════════════════════
@@ -796,11 +1024,13 @@ function bpColor(bodyPart) {
 // ═══════════════════════════════════════════════════
 const PATIENTS = [
   {
-    id:1, name:"May Johnson", age:72, sex:"F", mbi:"3L4-E71",
+    id:1, name:"May Johnson", age:72, sex:"F", mbi:"3L4M-E71-JK28",
+    state:"NY", pcp:"Dr. Chen", referringProvider:"Dr. Patel, MSK", dateAlignment:"Jan 10, 2026",
     painSite:"Knee", quarter:"Q2 of care", phase:"Build", phaseWeek:5,
     instrument:"KOOS JR", score:42, delta:-13,
     screening:"escalated", daysLeft:6, position:"Seated",
     dpw:3, classesCompleted:18, classesSkipped:4,
+    daysInProgram:90, lastActiveDay:"Today", psfsActivity:"Walking",
     alert:"NRS jumped from 4 to 7 (+3), exceeding the >2 guardrail. KOOS JR dropped from 55 to 42 (−13), a statistical outlier. Consider phase shift: Build → Calm.",
     outcomes:[
       { name:"KOOS JR", sub:"Knee · 0–100 scale",               prev:55,  curr:42,  delta:-13, thr:"≥ −10", flag:true,  dateBaseline:"Jan 18, 2026", dateCurr:"Apr 10, 2026" },
@@ -824,11 +1054,13 @@ const PATIENTS = [
     ]
   },
   {
-    id:2, name:"Winston Roe", age:68, sex:"M", mbi:"5K2-M89",
+    id:2, name:"Winston Roe", age:68, sex:"M", mbi:"5K2A-M89-RN41",
+    state:"NJ", pcp:"Dr. Morris", referringProvider:null, dateAlignment:"Jan 25, 2026",
     painSite:"Hip", quarter:"Q1 of care", phase:"Calm", phaseWeek:3,
     instrument:"HOOS JR", score:51, delta:-21,
     screening:"flagged", daysLeft:12, position:"Standing",
     dpw:2, classesCompleted:8, classesSkipped:2,
+    daysInProgram:75, lastActiveDay:"2 days ago", psfsActivity:"Getting up from a chair",
     alert:"HOOS JR dropped 21 points from baseline (72 → 51). Score decline exceeds the >10 pt guardrail. Recommend individual MD review.",
     outcomes:[
       { name:"HOOS JR", sub:"Hip · 0–100 scale",                prev:72,  curr:51,  delta:-21, thr:"≥ −10", flag:true,  dateBaseline:"Feb 4, 2026",  dateCurr:"Apr 10, 2026" },
@@ -847,11 +1079,13 @@ const PATIENTS = [
     ]
   },
   {
-    id:3, name:"James H.", age:58, sex:"M", mbi:"2L4-E77",
+    id:3, name:"James H.", age:58, sex:"M", mbi:"2L4B-E77-WT63",
+    state:"CT", pcp:null, referringProvider:"Dr. Kim, PT", dateAlignment:"Mar 5, 2026",
     painSite:"Lower back", quarter:"Q1 of care", phase:"Build", phaseWeek:2,
     instrument:"ODI", score:24, delta:-12,
     screening:"routine", daysLeft:11, position:"Reclined",
     dpw:3, classesCompleted:12, classesSkipped:1,
+    daysInProgram:36, lastActiveDay:"1 day ago", psfsActivity:"Bending to pick up objects",
     alert:"",
     outcomes:[
       { name:"ODI",  sub:"Lower back · 0–100%",                  prev:36,  curr:24,  delta:-12, thr:"≥ −10", flag:false, dateBaseline:"Mar 13, 2026", dateCurr:"Apr 9, 2026"  },
@@ -868,11 +1102,13 @@ const PATIENTS = [
     ]
   },
   {
-    id:4, name:"Elena W.", age:64, sex:"F", mbi:"9B2-P1Q",
-    painSite:"Hip", quarter:"Q2 of care", phase:"Calm", phaseWeek:7,
+    id:4, name:"Elena W.", age:64, sex:"F", mbi:"9B2C-P1Q-HD55",
+    state:"NY", pcp:"Dr. Nguyen", referringProvider:"Dr. Sullivan, Ortho", dateAlignment:"Jan 16, 2026",
+    painSite:"Hip", quarter:"Q2 of care", phase:"Maintain", phaseWeek:7,
     instrument:"HOOS JR", score:68, delta:8,
     screening:"audit", daysLeft:9, position:"Seated",
     dpw:4, classesCompleted:22, classesSkipped:0,
+    daysInProgram:84, lastActiveDay:"Today", psfsActivity:"Climbing stairs",
     alert:"",
     outcomes:[
       { name:"HOOS JR", sub:"Hip · 0–100 scale",                 prev:60,  curr:68,  delta:8,   thr:"≥ +10", flag:false, dateBaseline:"Jan 23, 2026", dateCurr:"Apr 10, 2026" },
@@ -889,11 +1125,13 @@ const PATIENTS = [
     ]
   },
   {
-    id:5, name:"Robert K.", age:71, sex:"M", mbi:"7T9-X8Z",
+    id:5, name:"Robert K.", age:71, sex:"M", mbi:"7T9D-X8Z-MK72",
+    state:"PA", pcp:"Dr. Williams", referringProvider:null, dateAlignment:"Nov 5, 2025",
     painSite:"Knee", quarter:"Q3 of care", phase:"Build", phaseWeek:9,
     instrument:"KOOS JR", score:67, delta:8,
     screening:"routine", daysLeft:14, position:"Standing",
     dpw:3, classesCompleted:28, classesSkipped:2,
+    daysInProgram:156, lastActiveDay:"1 day ago", psfsActivity:"Exercising",
     alert:"",
     outcomes:[
       { name:"KOOS JR", sub:"Knee · 0–100 scale",                prev:59,  curr:67,  delta:8,   thr:"≥ +10", flag:false, dateBaseline:"Nov 13, 2025", dateCurr:"Apr 9, 2026"  },
@@ -912,11 +1150,13 @@ const PATIENTS = [
     ]
   },
   {
-    id:6, name:"Sarah L.", age:42, sex:"F", mbi:"4R2-N10",
+    id:6, name:"Sarah L.", age:42, sex:"F", mbi:"4R2E-N10-SL89",
+    state:"NY", pcp:"Dr. Garcia", referringProvider:"Dr. Thompson, PT", dateAlignment:"Nov 25, 2025",
     painSite:"Lower back", quarter:"Q2 of care", phase:"Calm", phaseWeek:6,
     instrument:"ODI", score:38, delta:-4,
     screening:"escalated", daysLeft:5, position:"Reclined",
     dpw:2, classesCompleted:14, classesSkipped:3,
+    daysInProgram:136, lastActiveDay:"Today", psfsActivity:"Housework",
     alert:"Member reported slipping on wet pavement ~2 weeks ago. NPRS increased to 7 (from 4). PSFS decreased by 1.8. Possible new acute injury — recommend PCP notification.",
     outcomes:[
       { name:"ODI",  sub:"Lower back · 0–100%",                  prev:42,  curr:38,  delta:-4,  thr:"≥ −10", flag:false, dateBaseline:"Dec 4, 2025",  dateCurr:"Apr 10, 2026" },
@@ -966,6 +1206,7 @@ let currentPatient = null;
 let currentTab = 'overview';
 let draftRules = [];
 let selectedInstrument = null;
+let selectedMember = null;
 
 // ═══════════════════════════════════════════════════
 // NAVIGATION
@@ -973,6 +1214,7 @@ let selectedInstrument = null;
 function navigate(v) {
   view = v;
   selectedInstrument = null;
+  selectedMember = null;
   document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
   const el = document.getElementById('nav-' + v);
   if (el) el.classList.add('active');
@@ -982,7 +1224,7 @@ function navigate(v) {
 function renderMain() {
   const main = document.getElementById('main');
   if      (view === 'queue')           main.innerHTML = renderQueue();
-  else if (view === 'members')         main.innerHTML = renderMembers();
+  else if (view === 'members')         main.innerHTML = selectedMember ? renderMemberDetail(selectedMember) : renderMembers();
   else if (view === 'instruments')     main.innerHTML = selectedInstrument ? renderInstrumentDetail(selectedInstrument) : renderInstrumentsList();
   else if (view === 'standing-orders') main.innerHTML = renderSO();
 }
@@ -1024,7 +1266,7 @@ function renderQueue() {
       <table class="data-table">
         <thead><tr>
           <th style="width:36px"></th>
-          <th>Member</th><th>Instrument</th><th>Score / delta</th>
+          <th>Member</th><th>Pain region</th><th>Score / delta</th>
           <th>Screening</th><th>Days left</th><th></th>
         </tr></thead>
         <tbody>${buildTableBody(list, 7)}</tbody>
@@ -1041,10 +1283,11 @@ function patientRow(p) {
   const btn = p.screening==='routine'
     ? `<button class="btn btn-approve" onclick="event.stopPropagation();quickApprove(${p.id})">Approve</button>`
     : `<button class="btn btn-review"  onclick="event.stopPropagation();openPatient(${p.id})">Review ↗</button>`;
+  const c = bpColor(p.painSite);
   return `<tr class="${hi?'row-flagged':''}" onclick="openPatient(${p.id})">
     <td><input type="checkbox" onclick="event.stopPropagation()" style="accent-color:var(--color-purple-600);cursor:pointer"></td>
-    <td><div class="member-name">${p.name}</div><div class="member-sub">MBI ${p.mbi}</div></td>
-    <td>${instrumentCell(p)}</td>
+    <td><div class="member-name">${shortName(p.name)}</div><div class="member-sub">MBI ${maskMBI(p.mbi)}</div></td>
+    <td><span class="bp-chip" style="background:${c}18;color:${c}">${p.painSite}</span></td>
     <td><span class="score-main">${p.score}</span><span class="delta ${dc}">${ds}</span></td>
     <td>${scr}</td>
     <td ${dayStyle}>${p.daysLeft} days</td>
@@ -1055,7 +1298,7 @@ function patientRow(p) {
 function setFilter(f) { activeFilter=f; renderMain(); }
 function quickApprove() { toast('✓ Submission approved for CMS submission','success'); }
 
-const PAIN_REGION_ORDER = ['Knee','Hip','Lower back','Neck','Shoulder / Arm / Hand'];
+const PAIN_REGION_ORDER = ['Knee','Hip','Lower back','Upper back','Neck','Shoulder / Arm / Hand'];
 const FLAG_ORDER  = ['escalated','flagged','routine','audit'];
 const FLAG_LABELS = { escalated:'Escalated', flagged:'Flagged', routine:'AI Routine', audit:'Audit Sample' };
 const SORT_LABELS = { 'updated-new':'Last updated: new to old', 'updated-old':'Last updated: old to new', 'days-remaining':'Days remaining' };
@@ -1100,7 +1343,7 @@ function ctrlBar() {
       <div class="ctrl-dropdown" id="dd-group">
         <button class="ctrl-btn ${activeGroupBy!=='none'?'active':''}" onclick="toggleDropdown('dd-group')">
           Group by: <strong>${GROUP_LABELS[activeGroupBy]}</strong>
-          <span class="ctrl-btn-arrow">▾</span>
+          <svg class="ctrl-btn-arrow" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M26 12L16 22L6 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
         <div class="ctrl-menu">
           <div class="ctrl-menu-label">Group by</div>
@@ -1113,7 +1356,7 @@ function ctrlBar() {
       <div class="ctrl-dropdown" id="dd-sort">
         <button class="ctrl-btn ${activeSortBy!=='updated-new'?'active':''}" onclick="toggleDropdown('dd-sort')">
           Sort by: <strong>${SORT_LABELS[activeSortBy]}</strong>
-          <span class="ctrl-btn-arrow">▾</span>
+          <svg class="ctrl-btn-arrow" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M26 12L16 22L6 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
         <div class="ctrl-menu">
           <div class="ctrl-menu-label">Sort by</div>
@@ -1166,14 +1409,29 @@ function groupedRows(patients, colSpan, rowFn) {
 }
 
 function memberRow(p) {
-  const scr = { escalated:'<span class="badge b-escalated">Escalated</span>', flagged:'<span class="badge b-flagged">Flagged</span>', routine:'<span class="badge b-routine">AI routine</span>', audit:'<span class="badge b-audit">Audit sample</span>' }[p.screening];
-  const ds = p.daysLeft<=6 ? 'style="color:var(--color-red-600);font-weight:700"' : '';
+  const c = bpColor(p.painSite);
+  const baselineDate = p.outcomes && p.outcomes[0] ? p.outcomes[0].dateBaseline || '—' : '—';
+  const nprs  = p.outcomes ? p.outcomes.find(o => o.name === 'NPRS')  : null;
+  const psfs  = p.outcomes ? p.outcomes.find(o => o.name === 'PSFS')  : null;
+  const nDelta = nprs ? nprs.delta : null;
+  const sDelta = psfs ? psfs.delta : null;
   return `<tr onclick="openPatient(${p.id})">
-    <td><div class="member-name">${p.name}</div><div class="member-sub">MBI ${p.mbi}</div></td>
-    <td>${instrumentCell(p)}</td>
-    <td>${p._collDate || '—'}</td>
-    <td ${ds}>${p.daysLeft} days</td>
-    <td>${scr}</td>
+    <td><div class="member-name">${shortName(p.name)}</div><div class="member-sub">MBI ${maskMBI(p.mbi)}</div></td>
+    <td><span class="bp-chip" style="background:${c}18;color:${c}">${p.painSite}</span></td>
+    <td style="text-align:center">${p.age}</td>
+    <td style="text-align:center">${p.sex}</td>
+    <td>${p.state || '—'}</td>
+    <td style="white-space:nowrap">${p.pcp || '<span style="color:var(--color-gray-400)">—</span>'}</td>
+    <td style="white-space:nowrap">${p.referringProvider || '<span style="color:var(--color-gray-400)">—</span>'}</td>
+    <td style="white-space:nowrap">${p.dateAlignment || '—'}</td>
+    <td style="white-space:nowrap">${baselineDate}</td>
+    <td>${phasePill(p.phase)}</td>
+    <td style="text-align:center">${p.daysInProgram ?? '—'}</td>
+    <td style="text-align:center">${p.classesCompleted ?? '—'}</td>
+    <td style="white-space:nowrap;color:var(--color-gray-500);font-size:12px">${p.lastActiveDay || '—'}</td>
+    <td style="white-space:nowrap;font-size:12px;color:var(--color-gray-600)">${p.psfsActivity || '—'}</td>
+    <td>${trendCell(nDelta, 'pain')}</td>
+    <td>${trendCell(sDelta, 'function')}</td>
   </tr>`;
 }
 
@@ -1198,10 +1456,17 @@ function renderMembers() {
     </div>
     ${ctrlBar()}
     <div class="table-card">
-      <table class="data-table">
-        <thead><tr><th>Member</th><th>Instrument</th><th>Collection date</th><th>Days remaining</th><th>Status</th></tr></thead>
-        <tbody>${buildTableBody(PATIENTS.map((p,i) => ({...p, _collDate:`Apr ${10-i*2}, 2026`})), 5, memberRow)}</tbody>
-      </table>
+      <div style="overflow-x:auto">
+        <table class="data-table">
+          <thead><tr>
+            <th>Member</th><th>Pain region</th><th>Age</th><th>Sex</th><th>State</th>
+            <th>PCP</th><th>Referring provider</th><th>Alignment date</th><th>Baseline date</th><th>Phase</th>
+            <th>Days in program</th><th>Classes completed</th><th>Last active</th><th>PSFS activity</th>
+            <th>Pain level</th><th>Functional ability</th>
+          </tr></thead>
+          <tbody>${buildTableBody(PATIENTS, 16, memberRow)}</tbody>
+        </table>
+      </div>
     </div>`;
 }
 
@@ -1229,15 +1494,15 @@ function renderInstrumentsList() {
             <div class="inst-fullname">${inst.fullName}</div>
             <div class="inst-meta">
               <div class="inst-meta-row">
-                <span class="inst-meta-icon">📅</span>
+                <svg class="inst-meta-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="3" width="12" height="11" rx="1.5"/><line x1="2" y1="6.5" x2="14" y2="6.5"/><line x1="5.5" y1="1.5" x2="5.5" y2="4"/><line x1="10.5" y1="1.5" x2="10.5" y2="4"/></svg>
                 <span>${inst.cadence}</span>
               </div>
               <div class="inst-meta-row">
-                <span class="inst-meta-icon">❓</span>
+                <svg class="inst-meta-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6.25"/><path d="M6 6.3c0-1.1.9-2 2.1-2 1.1 0 2 .8 2 1.8 0 1.5-2.1 1.4-2.1 3.1" stroke-linecap="round"/><circle cx="8" cy="11.3" r="0.4" fill="currentColor" stroke="none"/></svg>
                 <span>${qCount} question${qCount!==1?'s':''}</span>
               </div>
               <div class="inst-meta-row">
-                <span class="inst-meta-icon">👥</span>
+                <svg class="inst-meta-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="6" cy="5.5" r="2.25"/><path d="M1.5 14c0-2.5 2-4.5 4.5-4.5s4.5 2 4.5 4.5"/><path d="M10.5 4.2c.95.25 1.65 1.1 1.65 2.1 0 1.05-.75 1.9-1.75 2.1" /><path d="M11.5 9.7c1.8.45 3 2 3 4.3"/></svg>
                 <span>n = ${inst.nPatients.toLocaleString()} patients</span>
               </div>
             </div>
@@ -1265,39 +1530,27 @@ function backToInstruments() {
 function renderInstrumentDetail(key) {
   const inst = INSTRUMENTS[key];
   const c    = bpColor(inst.bodyPart);
-  const qCount = inst.questions.filter(q => !q.section).length;
+  const qCount = inst.questions.filter(q => !q.section && !q.intro).length;
   let qIdx = 0;
 
   const questionsHtml = inst.questions.map(q => {
-    if (q.section) {
-      return `<div class="q-section-divider">${q.section}</div>`;
+    if (q.section || q.intro) {
+      return `${q.section ? `<div class="q-section-head">${q.section}</div>` : ''}${q.intro ? `<div class="q-intro">${q.intro}</div>` : ''}`;
     }
     qIdx++;
-    const barColor = q.pgic ? null : (inst.color !== '#555' ? inst.color : c !== '#777' ? c : '#888');
 
-    const barsHtml = q.options.map((opt, i) => {
-      const color  = q.pgic ? PGIC_COLORS[i] : barColor;
-      const n      = Math.round(q.dist[i] / 100 * inst.nPatients);
-      return `<div class="dist-row">
-        <div class="dist-label">${opt}</div>
-        <div class="dist-track"><div class="dist-fill" style="width:${q.dist[i]}%;background:${color}"></div></div>
-        <div class="dist-pct">${q.dist[i]}%</div>
-        <div class="dist-n">n=${n}</div>
-      </div>`;
-    }).join('');
+    const optsHtml = q.options.map(o => `
+      <div class="q-opt">
+        <span>${o.label}</span>
+        ${o.value !== undefined ? `<span class="q-opt-value">${o.value}</span>` : ''}
+      </div>`).join('');
 
-    return `<div class="q-block">
-      <div class="q-header">
-        <div class="q-num">Q${qIdx}</div>
-        <div>
-          <div class="q-text">${q.text}</div>
-          <div class="q-note" style="display:flex;align-items:center;gap:8px">
-            ${q.note}
-            ${q.baselineOnly ? `<span style="display:inline-flex;align-items:center;gap:3px;background:#fef3e0;color:#d4890a;font-size:10px;font-weight:600;padding:2px 7px;border-radius:var(--radius-full)">Baseline only</span>` : ''}
-          </div>
-        </div>
+    return `<div class="q-item">
+      <div class="q-item-text">
+        <span class="q-item-num">${qIdx}.</span>
+        <span>${q.text}${q.baselineOnly ? `<span class="q-baseline-tag">Baseline only</span>` : ''}</span>
       </div>
-      <div>${barsHtml}</div>
+      <div class="q-opts">${optsHtml}</div>
     </div>`;
   }).join('');
 
@@ -1309,7 +1562,7 @@ function renderInstrumentDetail(key) {
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
         <div class="page-title">${key}</div>
         <span class="bp-chip" style="background:${c}18;color:${c};font-size:12px">${inst.bodyPart}</span>
-        <span class="cadence-chip">📅 ${inst.cadence}</span>
+        <span class="cadence-chip">${inst.cadence}</span>
       </div>
       <div class="page-subtitle" style="margin-top:5px">${inst.fullName}</div>
     </div>
@@ -1319,10 +1572,8 @@ function renderInstrumentDetail(key) {
       <span><strong>${qCount}</strong> question${qCount!==1?'s':''}</span>
       <span>·</span>
       <span><strong>n = ${inst.nPatients.toLocaleString()}</strong> patients</span>
-      <span>·</span>
-      <span style="font-style:italic;color:#bbb">Aggregate data shown at enrollment / baseline</span>
     </div>
-    <div>${questionsHtml}</div>`;
+    <div class="inst-questions">${questionsHtml}</div>`;
 }
 
 // ═══════════════════════════════════════════════════
@@ -1375,36 +1626,24 @@ function nextVersion() {
 function openPatient(id) {
   currentPatient = PATIENTS.find(p => p.id===id);
   if (!currentPatient) return;
-  const p = currentPatient;
-  document.getElementById('m-name').textContent = p.name;
-  document.getElementById('m-meta').innerHTML = `${p.age} y/o · ${p.sex} · ${p.painSite} · ${p.quarter} <span class="phase-chip">${p.phase} wk ${p.phaseWeek}</span>`;
-  const alertEl = document.getElementById('m-alert');
-  if (p.alert) { alertEl.classList.remove('hidden'); alertEl.innerHTML = `<strong>Clinical alert:</strong> ${p.alert}`; }
-  else { alertEl.classList.add('hidden'); }
+  selectedMember = id;
   currentTab = 'overview';
-  document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.modal-tab')[0].classList.add('active');
-  renderTab();
-  document.getElementById('patient-modal').classList.remove('hidden');
+  view = 'members';
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  const navEl = document.getElementById('nav-members');
+  if (navEl) navEl.classList.add('active');
+  renderMain();
+  document.getElementById('main').scrollTop = 0;
 }
 
-function closeModal() { document.getElementById('patient-modal').classList.add('hidden'); currentPatient = null; }
-function onOverlayClick(e) { if (e.target===document.getElementById('patient-modal')) closeModal(); }
+function backToMembers() { selectedMember = null; currentPatient = null; currentTab = 'overview'; renderMain(); }
 
-function switchTab(tab, el) {
-  currentTab = tab;
-  document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
-  renderTab();
-}
+function switchTab(tab) { currentTab = tab; renderMain(); }
 
-function renderTab() {
-  const p = currentPatient;
-  const body = document.getElementById('m-body');
-
+function memberTabContent(p) {
   if (currentTab==='overview') {
-    body.innerHTML = `
-      <div class="section-head">Patient profile</div>
+    return `
+      <div class="section-head">Member profile</div>
       <div class="profile-grid">
         <div><div class="pf-label">Age</div><div class="pf-value">${p.age}</div></div>
         <div><div class="pf-label">Primary region</div><div class="pf-value">${p.painSite}</div></div>
@@ -1412,24 +1651,24 @@ function renderTab() {
         <div><div class="pf-label">Current phase</div><div class="pf-value"><span class="phase-chip">${p.phase} (wk ${p.phaseWeek})</span></div></div>
         <div><div class="pf-label">Days / week avg</div><div class="pf-value">${p.dpw}</div></div>
         <div><div class="pf-label">Classes completed</div><div class="pf-value">${p.classesCompleted}</div></div>
+        <div><div class="pf-label">Classes skipped</div><div class="pf-value">${p.classesSkipped}</div></div>
       </div>
-      <div style="margin-bottom:20px"><div class="pf-label">Classes skipped</div><div class="pf-value">${p.classesSkipped}</div></div>
       <div class="section-head">Phase change log</div>
       ${p.log.map(e=>`<div class="phase-log-entry"><div class="log-date">${e.date}</div><div class="log-text">${e.text}</div></div>`).join('')}`;
   }
-  else if (currentTab==='outcomes') {
-    body.innerHTML = `
+  if (currentTab==='outcomes') {
+    return `
       <div style="font-size:12px;color:#aaa;margin-bottom:12px">Quarterly outcomes — ${p.quarter.replace(' of care','')} <span style="font-size:11px">(★ = flagged)</span></div>
       <table class="outcome-tbl">
         <thead><tr><th>Measure</th><th>Baseline</th><th>Most recent</th><th>Change</th><th>Threshold</th><th></th></tr></thead>
         <tbody>${p.outcomes.map(o => {
           const ch = o.delta!==null ? (o.delta>0?`+${o.delta}`:`${o.delta}`) : '—';
           const cc = o.delta>0?'ch-pos':(o.delta<0?'ch-neg':'');
-          const dateStyle = `display:block;font-size:10px;color:var(--color-gray-400);font-weight:400;margin-top:2px`;
+          const ds = `display:block;font-size:10px;color:var(--color-gray-400);font-weight:400;margin-top:2px`;
           return `<tr>
             <td><div class="msr-name">${o.name}${o.flag?' <span style="color:var(--color-red-600)">★</span>':''}</div><div class="msr-sub">${o.sub}</div></td>
-            <td>${o.prev!==null?`<strong>${o.prev}</strong>`:'—'}${o.dateBaseline?`<span style="${dateStyle}">${o.dateBaseline}</span>`:''}</td>
-            <td><strong>${o.curr}</strong>${o.dateCurr?`<span style="${dateStyle}">${o.dateCurr}</span>`:''}</td>
+            <td>${o.prev!==null?`<strong>${o.prev}</strong>`:'—'}${o.dateBaseline?`<span style="${ds}">${o.dateBaseline}</span>`:''}</td>
+            <td><strong>${o.curr}</strong>${o.dateCurr?`<span style="${ds}">${o.dateCurr}</span>`:''}</td>
             <td class="${cc}">${ch}</td>
             <td style="color:var(--color-gray-300)">${o.thr}</td>
             <td>${o.flag?'<span class="badge b-escalated" style="font-size:10px">Flagged</span>':''}</td>
@@ -1437,8 +1676,8 @@ function renderTab() {
         }).join('')}</tbody>
       </table>`;
   }
-  else if (currentTab==='classes') {
-    body.innerHTML = `
+  if (currentTab==='classes') {
+    return `
       <div class="stats-row" style="margin-bottom:16px">
         <div class="stat-card" style="padding:10px 14px"><div class="stat-value" style="font-size:20px">${p.classesCompleted}</div><div class="stat-label">Completed</div></div>
         <div class="stat-card" style="padding:10px 14px"><div class="stat-value" style="font-size:20px">${p.classesSkipped}</div><div class="stat-label">Skipped</div></div>
@@ -1447,19 +1686,62 @@ function renderTab() {
       <div class="section-head">All classes — most recent first</div>
       ${p.classes.map(c=>`<div class="class-item"><div class="c-dot ${c.done?'done':'skip'}"></div><div class="c-name">${c.name}</div><div class="c-type">${c.type}</div><div class="c-date">${c.date}</div><span class="c-status ${c.done?'done':'skip'}">${c.done?'Completed':'Skipped'}</span></div>`).join('')}`;
   }
-  else if (currentTab==='actions') {
-    body.innerHTML = `
+  if (currentTab==='actions') {
+    return `
       <div class="section-head">Actions for ${p.name.split(' ')[0]}</div>
-      <div class="action-row" onclick="toggleCb(this)"><input type="checkbox" onclick="event.stopPropagation()"><div><div class="action-title">Change phase</div><div class="action-desc">Manually override the patient's current program phase</div></div></div>
-      <div class="action-row" onclick="toggleCb(this)"><input type="checkbox" onclick="event.stopPropagation()"><div><div class="action-title">Send patient outreach note</div><div class="action-desc">Trigger a care team outreach message to the patient</div></div></div>
-      <div class="action-row" onclick="toggleCb(this)"><input type="checkbox" onclick="event.stopPropagation()"><div><div class="action-title">Surface red flag screening</div><div class="action-desc">Flag for red flag screening on patient's next program login</div></div></div>
-      <div class="action-row" onclick="toggleCb(this)"><input type="checkbox" onclick="event.stopPropagation()"><div><div class="action-title">Mark for standing order updates</div><div class="action-desc">Queue this patient for standing order review by the care team</div></div></div>
-      <div class="action-row" onclick="openPCPDrawer()"><input type="checkbox" onclick="event.stopPropagation()"><div><div class="action-title">Send note to PCP</div><div class="action-desc">Compose a note to be sent to the patient's primary care physician</div></div></div>`;
+      <div class="action-row" onclick="toggleCb(this)"><input type="checkbox" onclick="event.stopPropagation()"><div><div class="action-title">Change phase</div><div class="action-desc">Manually override the member's current program phase</div></div></div>
+      <div class="action-row" onclick="toggleCb(this)"><input type="checkbox" onclick="event.stopPropagation()"><div><div class="action-title">Send member outreach note</div><div class="action-desc">Trigger a care team outreach message to the member</div></div></div>
+      <div class="action-row" onclick="toggleCb(this)"><input type="checkbox" onclick="event.stopPropagation()"><div><div class="action-title">Surface red flag screening</div><div class="action-desc">Flag for red flag screening on member's next program login</div></div></div>
+      <div class="action-row" onclick="toggleCb(this)"><input type="checkbox" onclick="event.stopPropagation()"><div><div class="action-title">Mark for standing order updates</div><div class="action-desc">Queue this member for standing order review by the care team</div></div></div>
+      <div class="action-row" onclick="openPCPDrawer()"><input type="checkbox" onclick="event.stopPropagation()"><div><div class="action-title">Send note to PCP</div><div class="action-desc">Compose a note to be sent to the member's primary care physician</div></div></div>`;
   }
+  return '';
+}
+
+function renderMemberDetail(id) {
+  const p = PATIENTS.find(px => px.id===id);
+  currentPatient = p;
+  const tabs = [
+    {key:'overview',label:'Overview'},
+    {key:'outcomes',label:'Outcome measures'},
+    {key:'classes', label:'Class history'},
+    {key:'actions', label:'Actions & approvals'},
+  ];
+  const screeningBadge = {
+    escalated: '<span class="badge b-escalated">Escalated</span>',
+    flagged:   '<span class="badge b-flagged">Flagged</span>',
+    routine:   '<span class="badge b-routine">AI Routine</span>',
+    audit:     '<span class="badge b-audit">Audit Sample</span>',
+  }[p.screening] || '';
+  return `
+    <div style="margin-bottom:18px">
+      <button class="btn btn-outline" onclick="backToMembers()" style="font-size:12px">← All members</button>
+    </div>
+    <div class="page-header" style="margin-bottom:0">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <div class="page-title">${p.name}</div>
+        ${screeningBadge}
+      </div>
+      <div class="page-subtitle" style="margin-top:4px">${p.age} y/o · ${p.sex} · ${p.painSite} · ${p.quarter} <span class="phase-chip">${p.phase} wk ${p.phaseWeek}</span></div>
+    </div>
+    ${p.alert ? `<div class="modal-alert" style="margin:14px 0 0">${p.alert}</div>` : ''}
+    <div style="margin-top:18px;background:var(--color-white);border:1px solid var(--color-gray-150);border-radius:var(--radius-lg);overflow:hidden">
+      <div class="modal-tabs" style="margin:0;padding:0 24px">
+        ${tabs.map(t=>`<div class="modal-tab ${currentTab===t.key?'active':''}" onclick="switchTab('${t.key}')">${t.label}</div>`).join('')}
+      </div>
+      <div class="modal-body">${memberTabContent(p)}</div>
+      <div class="modal-foot">
+        <button class="btn btn-outline" onclick="doExportCSV()">Export outcomes CSV</button>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-outline" onclick="openPCPDrawer()">Message PCP</button>
+          <button class="btn btn-green" onclick="doApprove()">Approve &amp; send to external org</button>
+        </div>
+      </div>
+    </div>`;
 }
 
 function toggleCb(row) { const cb=row.querySelector('input[type=checkbox]'); cb.checked=!cb.checked; }
-function doApprove() { toast('✓ Approved and sent to external org','success'); setTimeout(closeModal,300); }
+function doApprove() { toast('✓ Approved and sent to external org','success'); }
 function doExportCSV() { toast('Exporting outcomes CSV…',''); }
 
 // ═══════════════════════════════════════════════════
