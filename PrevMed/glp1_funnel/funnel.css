@@ -45,6 +45,7 @@
   --color-mint-400:  #00887a;
 
   --color-yellow-amber: #fbbf24;  /* funnel-only — not in @bold/web ⚠ */
+  --color-yellow-100:   #fef3c7;  /* funnel-only tooltip bg — ≈ Figma yellow-secondary; @bold/web closest $yellow---100 (#fefaea) ⚠ */
 
   /* Radii (match @bold/web $border-radius---xsmall|small|medium) */
   --radius-sm: 8px;    /* $border-radius---xsmall */

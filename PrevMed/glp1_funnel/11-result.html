@@ -25,7 +25,37 @@
     .rs-pay-label { font-size: 16px; font-weight: 600; line-height: 24px; color: var(--color-gray-900); }
     .rs-pay-note { font-size: 14px; font-style: italic; font-weight: 400; }
     .rs-pay-amt { font-size: 24px; font-weight: 600; line-height: 32px; letter-spacing: -0.5px; color: var(--color-gray-900); }
+    .rs-pay-amt--sm { font-size: 20px; line-height: 24px; letter-spacing: 0; }
     .rs-pay-sub { font-size: 16px; font-weight: 400; line-height: 24px; color: var(--color-gray-900); }
+
+    /* ── GLP-1 "Cost varies" value row + info popover ── */
+    .rs-pay-wrap { position: relative; }
+    .rs-pay-value { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .rs-info-btn {
+      flex-shrink: 0;
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 44px; height: 44px; margin: -10px -10px -10px 0; padding: 10px;
+      border: 0; background: none; color: var(--color-purple-600);
+      border-radius: 999px; cursor: pointer;
+    }
+    .rs-info-btn:focus-visible { outline: 2px solid var(--color-purple-600); outline-offset: 2px; }
+    .rs-info-ic { width: 24px; height: 24px; display: block; }
+    .rs-tip {
+      position: absolute; z-index: 30;
+      right: 12px; bottom: 64px;
+      width: min(280px, calc(100% - 24px));
+      background: var(--color-yellow-100); color: var(--color-gray-900);
+      font-size: 16px; line-height: 24px; padding: 12px;
+      border-radius: var(--radius-sm);
+      box-shadow: 0 4px 8px rgba(16,24,40,0.1), 0 2px 4px rgba(16,24,40,0.06);
+    }
+    .rs-tip::after {
+      content: ""; position: absolute; right: 24px; bottom: -7px;
+      width: 0; height: 0;
+      border-left: 8px solid transparent; border-right: 8px solid transparent;
+      border-top: 8px solid var(--color-yellow-100);
+    }
+    .rs-tip[hidden] { display: none; }
 
     /* ── Quote card ── */
     .rs-quote { background: var(--color-blue-100); border-radius: var(--radius-xl); padding: 12px; box-shadow: var(--shadow-xs); display: flex; gap: 12px; align-items: flex-start; }
@@ -94,23 +124,36 @@
       </div>
 
       <!-- What you'll pay -->
-      <div class="rs-pay">
-        <div class="rs-pay-badge">What you'll pay</div>
-        <div class="rs-pay-body">
-          <div class="rs-pay-col rs-pay-col--divided">
-            <p class="rs-pay-label">Initial visit</p>
-            <div>
-              <p class="rs-pay-amt">$0-25</p>
-              <p class="rs-pay-sub">out of pocket</p>
+      <div class="rs-pay-wrap">
+        <div class="rs-pay">
+          <div class="rs-pay-badge">What you'll pay</div>
+          <div class="rs-pay-body">
+            <div class="rs-pay-col rs-pay-col--divided">
+              <p class="rs-pay-label">Initial visit</p>
+              <div>
+                <p class="rs-pay-amt">$0-25</p>
+                <p class="rs-pay-sub">out of pocket</p>
+              </div>
+            </div>
+            <div class="rs-pay-col">
+              <p class="rs-pay-label">GLP-1s <span class="rs-pay-note">(if eligible)*</span></p>
+              <div class="rs-pay-value">
+                <p class="rs-pay-amt rs-pay-amt--sm">Cost varies</p>
+                <button class="rs-info-btn" type="button" aria-expanded="false"
+                        aria-controls="glp1-cost-tip" aria-label="How GLP-1 cost is determined">
+                  <svg class="rs-info-ic" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/>
+                    <circle cx="12" cy="8" r="1.1" fill="currentColor"/>
+                    <path d="M12 11v6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                  </svg>
+                </button>
+              </div>
             </div>
           </div>
-          <div class="rs-pay-col">
-            <p class="rs-pay-label">GLP-1s <span class="rs-pay-note">(if eligible)*</span></p>
-            <div>
-              <p class="rs-pay-amt">$50</p>
-              <p class="rs-pay-sub">monthly copay</p>
-            </div>
-          </div>
+        </div>
+        <!-- Info popover (revealed by the icon above) -->
+        <div class="rs-tip" id="glp1-cost-tip" role="tooltip" hidden>
+          Based on your answers, a GLP-1 may be covered under your standard Medicare Part D benefits, and the cost varies depending on your plan. We will confirm the cost with you in advance.
         </div>
       </div>
 
@@ -134,8 +177,8 @@
           <div class="cf-faq-answer">
             <ol>
               <li><strong>Meet with your Bold provider.</strong> Together, you'll determine whether a GLP-1 is suitable for you.</li>
-              <li><strong>Your provider will work with Medicare</strong> to get your prescription covered.</li>
-              <li><strong>If Medicare approves your prescription,</strong> you'll pay a $50 copay per month. <strong>If you aren't covered,</strong> your provider will focus on lifestyle support to help you lose weight without medication.</li>
+              <li><strong>Your provider will work with Medicare</strong> to get your prescription covered. You're not eligible for the $50/month copay through Medicare Bridge, but your GLP-1 is still covered through your standard Medicare Part D benefits. A care coordinator will confirm the cost with you, for free, before anything is prescribed.</li>
+              <li><strong>If you aren't covered,</strong> your provider will focus on lifestyle support to help you lose weight without medication.</li>
             </ol>
           </div>
         </div>
@@ -158,5 +201,35 @@
   </div>
 
   <script src="steps.js"></script>
+  <script>
+    /* ── Info popover: purple info icon reveals the GLP-1 cost explanation ── */
+    (function () {
+      var btn = document.querySelector('.rs-info-btn');
+      var tip = document.getElementById('glp1-cost-tip');
+      if (!btn || !tip) return;
+
+      function open() {
+        tip.hidden = false;
+        btn.setAttribute('aria-expanded', 'true');
+      }
+      function close() {
+        tip.hidden = true;
+        btn.setAttribute('aria-expanded', 'false');
+      }
+
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (tip.hidden) open(); else close();
+      });
+      // Clicking inside the tooltip shouldn't dismiss it
+      tip.addEventListener('click', function (e) { e.stopPropagation(); });
+      // Dismiss on outside click / tap
+      document.addEventListener('click', function () { if (!tip.hidden) close(); });
+      // Dismiss on Escape
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && !tip.hidden) { close(); btn.focus(); }
+      });
+    })();
+  </script>
 </body>
 </html>
