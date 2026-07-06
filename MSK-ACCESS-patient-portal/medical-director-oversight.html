@@ -166,6 +166,12 @@
 
     /* ─── TABLE ─── */
     .table-card { background: #fff; border: 1px solid #e8e8e4; border-radius: 8px; overflow: hidden; }
+    .members-table-scroll { overflow-x: auto; }
+    .members-table-scroll::-webkit-scrollbar { height: 4px; }
+    .members-table-scroll::-webkit-scrollbar-track { background: var(--color-gray-100); }
+    .members-table-scroll::-webkit-scrollbar-thumb { background: var(--color-gray-300); border-radius: 4px; }
+    .members-table-scroll th:first-child { min-width: 170px; }
+    .group-table-card { background: #fff; border: 1px solid #e8e8e4; border-radius: 8px; min-width: max-content; clip-path: inset(0 round 8px); }
     .data-table { width: 100%; border-collapse: collapse; }
     .data-table th {
       font-size: 10.5px; font-weight: 600; color: #aaa;
@@ -179,8 +185,23 @@
     .data-table tbody tr:last-child td { border-bottom: none; }
     .data-table tbody tr { cursor: pointer; transition: background 0.1s; }
     .data-table tbody tr:hover { background: #fafaf8; }
-    .data-table tbody tr.row-flagged { background: #f4f4f4; }
-    .data-table tbody tr.row-flagged:hover { background: #eeeeee; }
+    .data-table tbody tr.row-flagged { background: transparent; }
+    .data-table tbody tr.row-flagged:hover { background: #fafaf8; }
+    .col-sticky { position: sticky; left: 0; z-index: 2; background: #fff; box-shadow: 1px 0 0 var(--color-gray-200); }
+    .data-table thead .col-sticky { background: #fafaf8; z-index: 3; }
+    .col-picker-wrap { position: relative; display: inline-block; }
+    .col-picker-panel {
+      display: none; position: absolute; top: calc(100% + 4px); right: 0;
+      background: #fff; border: 1px solid var(--color-gray-200); border-radius: var(--radius-md);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.10); z-index: 200; padding: 8px 0; min-width: 200px;
+    }
+    .col-picker-wrap.open .col-picker-panel { display: block; }
+    .col-picker-label { font-size: 10.5px; font-weight: 700; color: var(--color-gray-400);
+      text-transform: uppercase; letter-spacing: 0.06em; padding: 6px 14px 4px; }
+    .col-picker-item { display: flex; align-items: center; gap: 8px; padding: 6px 14px;
+      font-size: 13px; color: var(--color-gray-700); cursor: pointer; user-select: none; }
+    .col-picker-item:hover { background: var(--color-gray-50); }
+    .col-picker-item input[type=checkbox] { accent-color: var(--color-purple-600); width: 13px; height: 13px; flex-shrink: 0; }
     .member-name { font-weight: 600; }
     .member-sub { font-size: 11px; color: #bbb; margin-top: 1px; }
     .score-main { font-weight: 600; }
@@ -292,6 +313,35 @@
     .msr-sub  { font-size: 10px; color: #bbb; margin-top: 1px; }
     .ch-pos { color: #27ae60; font-weight: 600; }
     .ch-neg { color: #c0392b; font-weight: 600; }
+
+    /* Outcome charts */
+    .outcome-charts { display: flex; flex-direction: column; gap: 0; }
+    .outcome-chart-card { padding: 20px 24px; border-bottom: 1px solid #f0f0ee; }
+    .outcome-chart-card:last-child { border-bottom: none; }
+    .chart-card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 14px; }
+    .chart-card-title { font-size: 13px; font-weight: 700; color: var(--color-gray-900); display: flex; align-items: center; gap: 6px; }
+    .chart-card-sub { font-size: 11px; color: var(--color-gray-400); margin-top: 3px; }
+    .chart-delta-badge { display: inline-flex; align-items: center; font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 20px; white-space: nowrap; }
+    .chart-delta-badge.pos  { background: #f0fdf4; color: #16a34a; }
+    .chart-delta-badge.neg  { background: #fef2f2; color: #dc2626; }
+    .chart-delta-badge.neu  { background: #f4f4f2; color: #6b7280; }
+    .chart-card-footer { display: flex; justify-content: space-between; font-size: 11px; color: var(--color-gray-400); margin-top: 8px; }
+    .chart-card-footer strong { color: var(--color-gray-700); font-weight: 600; }
+
+    /* Chart tooltip */
+    #chart-tip {
+      position: fixed; background: #1c1c1a; color: #fff;
+      font-size: 11px; font-weight: 600; font-family: inherit;
+      padding: 5px 10px; border-radius: 6px;
+      pointer-events: none; display: none; z-index: 9999;
+      transform: translate(-50%, calc(-100% - 10px));
+      white-space: nowrap; box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+    }
+    #chart-tip::after {
+      content: ''; position: absolute; top: 100%; left: 50%;
+      transform: translateX(-50%);
+      border: 5px solid transparent; border-top-color: #1c1c1a;
+    }
 
     /* Class history */
     .class-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid #f5f5f2; font-size: 12.5px; }
@@ -472,10 +522,14 @@
     .ctrl-menu-item.selected .ctrl-menu-check { opacity: 1; }
 
     /* ─── GROUP HEADER ROW ─── */
-    .group-header-row td { padding: 10px 16px 6px; background: var(--color-gray-50); border-bottom: 1px solid var(--color-gray-150); }
-    .group-header-row:not(:first-child) td { border-top: 2px solid var(--color-gray-150); }
-    .group-header { display: flex; align-items: center; gap: 8px; font-size: var(--font-size-2xs); font-weight: var(--font-weight-bold); color: var(--color-gray-500); text-transform: uppercase; letter-spacing: var(--letter-spacing-caps); }
-    .group-count { display: inline-flex; align-items: center; justify-content: center; background: var(--color-gray-200); color: var(--color-gray-600); font-size: var(--font-size-2xs); font-weight: var(--font-weight-semibold); min-width: 20px; height: 18px; border-radius: var(--radius-full); padding: 0 6px; }
+    .group-header-row td { padding: 0; border: none; background: transparent; }
+    .group-spacer-row td { height: 20px; padding: 0; border: none !important; background: transparent; }
+    .group-band { display: flex; align-items: center; gap: 8px; padding: 10px 14px 9px; background: var(--color-gray-50); border-top: 1px solid var(--color-gray-200); border-bottom: 1px solid var(--color-gray-200); }
+    .group-band svg { color: var(--color-gray-400); flex-shrink: 0; }
+    .group-band-label { font-size: 13px; font-weight: 700; color: var(--color-gray-800); }
+    .group-count { display: inline-flex; align-items: center; justify-content: center; background: var(--color-gray-200); color: var(--color-gray-600); font-size: 11px; font-weight: 600; min-width: 20px; height: 18px; border-radius: var(--radius-full); padding: 0 7px; }
+    .group-col-header th { font-size: 10.5px; font-weight: 600; color: #aaa; text-align: left; padding: 9px 16px; background: #fafaf8; text-transform: uppercase; letter-spacing: 0.06em; white-space: nowrap; border-bottom: 1px solid #f0f0ec; }
+    .group-col-header .col-sticky { background: #fafaf8; z-index: 3; }
 
     .hidden { display: none !important; }
     ::-webkit-scrollbar { width: 4px; }
@@ -994,27 +1048,27 @@ function maskMBI(mbi) {
 
 function phasePill(phase) {
   const styles = {
-    'Calm':     'background:#e8f0fb;color:#1a4fa8',
-    'Build':    'background:#fef3e0;color:#d4890a',
-    'Maintain': 'background:#e6f4ea;color:#2a6e3a',
+    'Calm':     'background:#EBF2FF;color:#162AB3',
+    'Build':    'background:#E6F7ED;color:#005C33',
+    'Maintain': 'background:#E0F8FF;color:#30565F',
   };
   const s = styles[phase] || 'background:#f0f0f0;color:#555';
   return `<span style="${s};font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;white-space:nowrap">${phase}</span>`;
 }
 
-const SVG_TREND_DOWN = `<svg width="14" height="14" viewBox="0 0 32 32" fill="none"><path d="M29 24L17 12L12 17L3 8" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M29 16V24H21" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-const SVG_TREND_UP   = `<svg width="14" height="14" viewBox="0 0 32 32" fill="none"><path d="M29 7L17 19L12 14L3 23" stroke="#115E59" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M29 15V7H21" stroke="#115E59" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const SVG_TREND_DOWN = `<svg width="14" height="14" viewBox="0 0 32 32" fill="none"><path d="M29 24L17 12L12 17L3 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M29 16V24H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const SVG_TREND_UP   = `<svg width="14" height="14" viewBox="0 0 32 32" fill="none"><path d="M29 7L17 19L12 14L3 23" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M29 15V7H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
 function trendCell(delta, type) {
   if (delta === null || delta === undefined) return '<span style="color:var(--color-gray-400)">—</span>';
   if (delta === 0) return '<span style="color:var(--color-gray-500);font-size:12px">No change</span>';
   if (type === 'pain') {
     return delta > 0
-      ? `<span style="display:flex;align-items:center;gap:5px;color:#EF4444;font-size:12px;white-space:nowrap">${SVG_TREND_DOWN}Increasing</span>`
-      : `<span style="display:flex;align-items:center;gap:5px;color:#115E59;font-size:12px;white-space:nowrap">${SVG_TREND_UP}Decreasing</span>`;
+      ? `<span style="display:flex;align-items:center;gap:5px;color:#EF4444;font-size:12px;white-space:nowrap">${SVG_TREND_UP}Increasing</span>`
+      : `<span style="display:flex;align-items:center;gap:5px;color:#007A44;font-size:12px;white-space:nowrap">${SVG_TREND_DOWN}Decreasing</span>`;
   } else {
     return delta > 0
-      ? `<span style="display:flex;align-items:center;gap:5px;color:#115E59;font-size:12px;white-space:nowrap">${SVG_TREND_UP}More able</span>`
+      ? `<span style="display:flex;align-items:center;gap:5px;color:#007A44;font-size:12px;white-space:nowrap">${SVG_TREND_UP}More able</span>`
       : `<span style="display:flex;align-items:center;gap:5px;color:#EF4444;font-size:12px;white-space:nowrap">${SVG_TREND_DOWN}Less able</span>`;
   }
 }
@@ -1060,7 +1114,7 @@ const PATIENTS = [
     instrument:"HOOS JR", score:51, delta:-21,
     screening:"flagged", daysLeft:12, position:"Standing",
     dpw:2, classesCompleted:8, classesSkipped:2,
-    daysInProgram:75, lastActiveDay:"2 days ago", psfsActivity:"Getting up from a chair",
+    daysInProgram:75, lastActiveDay:"2 days ago", psfsActivity:"Getting up and down from a seat",
     alert:"HOOS JR dropped 21 points from baseline (72 → 51). Score decline exceeds the >10 pt guardrail. Recommend individual MD review.",
     outcomes:[
       { name:"HOOS JR", sub:"Hip · 0–100 scale",                prev:72,  curr:51,  delta:-21, thr:"≥ −10", flag:true,  dateBaseline:"Feb 4, 2026",  dateCurr:"Apr 10, 2026" },
@@ -1085,7 +1139,7 @@ const PATIENTS = [
     instrument:"ODI", score:24, delta:-12,
     screening:"routine", daysLeft:11, position:"Reclined",
     dpw:3, classesCompleted:12, classesSkipped:1,
-    daysInProgram:36, lastActiveDay:"1 day ago", psfsActivity:"Bending to pick up objects",
+    daysInProgram:36, lastActiveDay:"1 day ago", psfsActivity:"Getting up and down from the floor",
     alert:"",
     outcomes:[
       { name:"ODI",  sub:"Lower back · 0–100%",                  prev:36,  curr:24,  delta:-12, thr:"≥ −10", flag:false, dateBaseline:"Mar 13, 2026", dateCurr:"Apr 9, 2026"  },
@@ -1131,7 +1185,7 @@ const PATIENTS = [
     instrument:"KOOS JR", score:67, delta:8,
     screening:"routine", daysLeft:14, position:"Standing",
     dpw:3, classesCompleted:28, classesSkipped:2,
-    daysInProgram:156, lastActiveDay:"1 day ago", psfsActivity:"Exercising",
+    daysInProgram:156, lastActiveDay:"1 day ago", psfsActivity:"Exercise",
     alert:"",
     outcomes:[
       { name:"KOOS JR", sub:"Knee · 0–100 scale",                prev:59,  curr:67,  delta:8,   thr:"≥ +10", flag:false, dateBaseline:"Nov 13, 2025", dateCurr:"Apr 9, 2026"  },
@@ -1170,6 +1224,231 @@ const PATIENTS = [
     ],
     log:[
       { date:"Dec 1, 2025", text:"System auto-advance · Initial: Calm · Program enrollment — initial phase assignment." },
+    ]
+  },
+  {
+    id:7, name:"Dorothy Park", age:75, sex:"F", mbi:"8HW2-K45-DP91",
+    state:"NY", pcp:"Dr. Okafor", referringProvider:"Dr. Lee, PT", dateAlignment:"Jan 18, 2026",
+    painSite:"Neck", quarter:"Q1 of care", phase:"Calm", phaseWeek:4,
+    instrument:"NDI", score:32, delta:-6,
+    screening:"routine", daysLeft:9, position:"Seated",
+    dpw:3, classesCompleted:14, classesSkipped:1,
+    daysInProgram:82, lastActiveDay:"Today", psfsActivity:"Exercise",
+    alert:"",
+    outcomes:[
+      { name:"NDI",  sub:"Neck · 0–100%",                         prev:38,  curr:32,  delta:-6,  thr:"≥ −10", flag:false, dateBaseline:"Jan 25, 2026", dateCurr:"Apr 10, 2026" },
+      { name:"NPRS", sub:"Pain · 0–10 (lower = better)",         prev:5,   curr:4,   delta:-1,  thr:"≤ +2",  flag:false, dateBaseline:"Jan 22, 2026", dateCurr:"Apr 10, 2026" },
+      { name:"PSFS", sub:"Function · 0–10 (higher = better)",    prev:5.0, curr:6.2, delta:1.2, thr:"≥ 0",   flag:false, dateBaseline:"Jan 22, 2026", dateCurr:"Apr 10, 2026" },
+    ],
+    classes:[
+      { name:"The Somatic Shift", type:"Mind-Body & Tension Release", date:"Apr 10, 2026", done:true },
+      { name:"Foundation First",  type:"Low-Impact & Mobility",       date:"Apr 7, 2026",  done:true },
+      { name:"Fluid Motion",      type:"Low-Impact & Mobility",       date:"Apr 3, 2026",  done:true },
+    ],
+    log:[{ date:"Jan 22, 2026", text:"System auto-advance · Initial: Calm · Program enrollment — initial phase assignment." }]
+  },
+  {
+    id:8, name:"Marcus Torres", age:63, sex:"M", mbi:"6NR3-Q71-MT84",
+    state:"NJ", pcp:"Dr. Shah", referringProvider:null, dateAlignment:"Feb 24, 2026",
+    painSite:"Shoulder / Arm / Hand", quarter:"Q1 of care", phase:"Build", phaseWeek:2,
+    instrument:"QuickDASH", score:42, delta:-6,
+    screening:"flagged", daysLeft:7, position:"Standing",
+    dpw:2, classesCompleted:9, classesSkipped:2,
+    daysInProgram:45, lastActiveDay:"3 days ago", psfsActivity:"Exercise",
+    alert:"NPRS increased from 6 to 8. Member reports increased shoulder pain after returning to work. Recommend follow-up.",
+    outcomes:[
+      { name:"QuickDASH", sub:"Shoulder/Arm/Hand · 0–100",          prev:48,  curr:42,  delta:-6,   thr:"≥ −10", flag:false, dateBaseline:"Mar 3, 2026",  dateCurr:"Apr 10, 2026" },
+      { name:"NPRS",      sub:"Pain · 0–10 (lower = better)",       prev:6,   curr:8,   delta:2,    thr:"≤ +2",  flag:true,  dateBaseline:"Mar 1, 2026",  dateCurr:"Apr 10, 2026" },
+      { name:"PSFS",      sub:"Function · 0–10 (higher = better)",  prev:4.5, curr:3.8, delta:-0.7, thr:"≥ 0",   flag:false, dateBaseline:"Mar 1, 2026",  dateCurr:"Apr 10, 2026" },
+    ],
+    classes:[
+      { name:"Resilient Body",      type:"Strength-Based Recovery", date:"Apr 7, 2026",  done:true  },
+      { name:"Foundation First",    type:"Low-Impact & Mobility",   date:"Apr 3, 2026",  done:true  },
+      { name:"Structural Strength", type:"Strength-Based Recovery", date:"Mar 28, 2026", done:false },
+    ],
+    log:[{ date:"Mar 1, 2026", text:"System auto-advance · Initial: Build · Program enrollment — initial phase assignment." }]
+  },
+  {
+    id:9, name:"Helen Vasquez", age:69, sex:"F", mbi:"1YB5-L62-HV37",
+    state:"PA", pcp:"Dr. Patel", referringProvider:"Dr. Novak, Ortho", dateAlignment:"Dec 19, 2025",
+    painSite:"Knee", quarter:"Q3 of care", phase:"Maintain", phaseWeek:10,
+    instrument:"KOOS JR", score:72, delta:17,
+    screening:"routine", daysLeft:13, position:"Seated",
+    dpw:4, classesCompleted:32, classesSkipped:1,
+    daysInProgram:112, lastActiveDay:"Today", psfsActivity:"Climbing stairs",
+    alert:"",
+    outcomes:[
+      { name:"KOOS JR", sub:"Knee · 0–100 scale",                 prev:55,  curr:72,  delta:17,  thr:"≥ +10", flag:false, dateBaseline:"Dec 26, 2025", dateCurr:"Apr 9, 2026" },
+      { name:"NPRS",    sub:"Pain · 0–10 (lower = better)",      prev:5,   curr:2,   delta:-3,  thr:"≤ +2",  flag:false, dateBaseline:"Dec 23, 2025", dateCurr:"Apr 9, 2026" },
+      { name:"PSFS",    sub:"Function · 0–10 (higher = better)", prev:5.2, curr:8.5, delta:3.3, thr:"≥ 0",   flag:false, dateBaseline:"Dec 23, 2025", dateCurr:"Apr 9, 2026" },
+    ],
+    classes:[
+      { name:"The Mobility Method", type:"Low-Impact & Mobility",   date:"Apr 9, 2026",  done:true },
+      { name:"Structural Strength", type:"Strength-Based Recovery", date:"Apr 5, 2026",  done:true },
+      { name:"Resilient Body",      type:"Strength-Based Recovery", date:"Apr 1, 2026",  done:true },
+      { name:"Foundation First",    type:"Low-Impact & Mobility",   date:"Mar 27, 2026", done:true },
+    ],
+    log:[
+      { date:"Mar 5, 2026",  text:"System auto-advance · Build → Maintain · KOOS JR exceeded +15 threshold." },
+      { date:"Dec 23, 2025", text:"System auto-advance · Initial: Calm · Program enrollment — initial phase assignment." },
+    ]
+  },
+  {
+    id:10, name:"George Benson", age:71, sex:"M", mbi:"4ZC7-T93-GB15",
+    state:"CT", pcp:"Dr. Warren", referringProvider:"Dr. Kim, PT", dateAlignment:"Feb 11, 2026",
+    painSite:"Hip", quarter:"Q1 of care", phase:"Build", phaseWeek:3,
+    instrument:"HOOS JR", score:48, delta:-7,
+    screening:"flagged", daysLeft:5, position:"Standing",
+    dpw:2, classesCompleted:10, classesSkipped:3,
+    daysInProgram:58, lastActiveDay:"2 days ago", psfsActivity:"Walking",
+    alert:"HOOS JR declined 7 points. NPRS trending up. Member reported increased stiffness after long periods of sitting.",
+    outcomes:[
+      { name:"HOOS JR", sub:"Hip · 0–100 scale",                 prev:55,  curr:48,  delta:-7,  thr:"≥ −10", flag:false, dateBaseline:"Feb 18, 2026", dateCurr:"Apr 10, 2026" },
+      { name:"NPRS",    sub:"Pain · 0–10 (lower = better)",     prev:4,   curr:6,   delta:2,   thr:"≤ +2",  flag:true,  dateBaseline:"Feb 15, 2026", dateCurr:"Apr 10, 2026" },
+      { name:"PSFS",    sub:"Function · 0–10 (higher = better)",prev:5.5, curr:4.2, delta:-1.3,thr:"≥ 0",   flag:false, dateBaseline:"Feb 15, 2026", dateCurr:"Apr 10, 2026" },
+    ],
+    classes:[
+      { name:"Hip & Heart",         type:"Targeted Relief",       date:"Apr 8, 2026",  done:false },
+      { name:"Foundation First",    type:"Low-Impact & Mobility", date:"Apr 4, 2026",  done:true  },
+      { name:"The Mobility Method", type:"Low-Impact & Mobility", date:"Mar 30, 2026", done:true  },
+    ],
+    log:[{ date:"Feb 15, 2026", text:"System auto-advance · Initial: Calm · Program enrollment — initial phase assignment." }]
+  },
+  {
+    id:11, name:"Alice Monroe", age:55, sex:"F", mbi:"3PD9-R84-AM26",
+    state:"NY", pcp:"Dr. Collins", referringProvider:null, dateAlignment:"Mar 19, 2026",
+    painSite:"Lower back", quarter:"Q1 of care", phase:"Calm", phaseWeek:1,
+    instrument:"ODI", score:40, delta:-4,
+    screening:"routine", daysLeft:11, position:"Reclined",
+    dpw:3, classesCompleted:6, classesSkipped:0,
+    daysInProgram:22, lastActiveDay:"Today", psfsActivity:"Getting up and down from the floor",
+    alert:"",
+    outcomes:[
+      { name:"ODI",  sub:"Lower back · 0–100%",                  prev:44,  curr:40,  delta:-4,  thr:"≥ −10", flag:false, dateBaseline:"Mar 26, 2026", dateCurr:"Apr 9, 2026" },
+      { name:"NPRS", sub:"Pain · 0–10 (lower = better)",        prev:5,   curr:4,   delta:-1,  thr:"≤ +2",  flag:false, dateBaseline:"Mar 23, 2026", dateCurr:"Apr 9, 2026" },
+      { name:"PSFS", sub:"Function · 0–10 (higher = better)",   prev:4.8, curr:5.5, delta:0.7, thr:"≥ 0",   flag:false, dateBaseline:"Mar 23, 2026", dateCurr:"Apr 9, 2026" },
+    ],
+    classes:[
+      { name:"Foundation First", type:"Low-Impact & Mobility",   date:"Apr 9, 2026", done:true },
+      { name:"Bulletproof Back", type:"Strength-Based Recovery", date:"Apr 5, 2026", done:true },
+    ],
+    log:[{ date:"Mar 23, 2026", text:"System auto-advance · Initial: Calm · Program enrollment — initial phase assignment." }]
+  },
+  {
+    id:12, name:"Thomas Reid", age:67, sex:"M", mbi:"7QF1-S57-TR68",
+    state:"MA", pcp:"Dr. Huang", referringProvider:"Dr. Santos, MSK", dateAlignment:"Jan 10, 2026",
+    painSite:"Upper back", quarter:"Q2 of care", phase:"Build", phaseWeek:6,
+    instrument:"PROMIS 6a", score:52, delta:-6,
+    screening:"routine", daysLeft:8, position:"Seated",
+    dpw:3, classesCompleted:20, classesSkipped:2,
+    daysInProgram:90, lastActiveDay:"1 day ago", psfsActivity:"Getting up and down from a seat",
+    alert:"",
+    outcomes:[
+      { name:"PROMIS 6a", sub:"Upper back · T-score (higher = more interference)", prev:58, curr:52, delta:-6, thr:"≥ −5", flag:false, dateBaseline:"Jan 17, 2026", dateCurr:"Apr 9, 2026" },
+      { name:"NPRS",      sub:"Pain · 0–10 (lower = better)",      prev:5,   curr:3,   delta:-2,  thr:"≤ +2",  flag:false, dateBaseline:"Jan 14, 2026", dateCurr:"Apr 9, 2026" },
+      { name:"PSFS",      sub:"Function · 0–10 (higher = better)", prev:4.0, curr:5.8, delta:1.8, thr:"≥ 0",   flag:false, dateBaseline:"Jan 14, 2026", dateCurr:"Apr 9, 2026" },
+    ],
+    classes:[
+      { name:"The Somatic Shift",   type:"Mind-Body & Tension Release", date:"Apr 9, 2026", done:true },
+      { name:"Structural Strength", type:"Strength-Based Recovery",     date:"Apr 5, 2026", done:true },
+      { name:"Foundation First",    type:"Low-Impact & Mobility",       date:"Apr 1, 2026", done:true },
+    ],
+    log:[
+      { date:"Mar 1, 2026",  text:"System auto-advance · Calm → Build · NPRS ≤3 sustained for 4 weeks." },
+      { date:"Jan 14, 2026", text:"System auto-advance · Initial: Calm · Program enrollment — initial phase assignment." },
+    ]
+  },
+  {
+    id:13, name:"Carla Figueroa", age:60, sex:"F", mbi:"5GJ4-W39-CF42",
+    state:"NJ", pcp:"Dr. Russo", referringProvider:"Dr. Park, PT", dateAlignment:"Dec 2, 2025",
+    painSite:"Neck", quarter:"Q3 of care", phase:"Maintain", phaseWeek:8,
+    instrument:"NDI", score:18, delta:-18,
+    screening:"audit", daysLeft:10, position:"Seated",
+    dpw:3, classesCompleted:30, classesSkipped:2,
+    daysInProgram:130, lastActiveDay:"Today", psfsActivity:"Providing care for family members",
+    alert:"",
+    outcomes:[
+      { name:"NDI",  sub:"Neck · 0–100%",                         prev:36,  curr:18,  delta:-18, thr:"≥ −10", flag:false, dateBaseline:"Dec 9, 2025",  dateCurr:"Apr 10, 2026" },
+      { name:"NPRS", sub:"Pain · 0–10 (lower = better)",         prev:6,   curr:2,   delta:-4,  thr:"≤ +2",  flag:false, dateBaseline:"Dec 6, 2025",  dateCurr:"Apr 10, 2026" },
+      { name:"PSFS", sub:"Function · 0–10 (higher = better)",    prev:4.5, curr:8.0, delta:3.5, thr:"≥ 0",   flag:false, dateBaseline:"Dec 6, 2025",  dateCurr:"Apr 10, 2026" },
+    ],
+    classes:[
+      { name:"The Somatic Shift", type:"Mind-Body & Tension Release", date:"Apr 10, 2026", done:true },
+      { name:"Fluid Motion",      type:"Low-Impact & Mobility",       date:"Apr 6, 2026",  done:true },
+      { name:"Foundation First",  type:"Low-Impact & Mobility",       date:"Apr 2, 2026",  done:true },
+    ],
+    log:[
+      { date:"Feb 20, 2026", text:"System auto-advance · Build → Maintain · NDI improvement sustained ≥ 15 points." },
+      { date:"Dec 6, 2025",  text:"System auto-advance · Initial: Calm · Program enrollment — initial phase assignment." },
+    ]
+  },
+  {
+    id:14, name:"Frank Owens", age:73, sex:"M", mbi:"2KH6-N82-FO55",
+    state:"NY", pcp:"Dr. Jackson", referringProvider:null, dateAlignment:"Feb 3, 2026",
+    painSite:"Knee", quarter:"Q1 of care", phase:"Build", phaseWeek:4,
+    instrument:"KOOS JR", score:38, delta:-7,
+    screening:"escalated", daysLeft:4, position:"Standing",
+    dpw:2, classesCompleted:11, classesSkipped:4,
+    daysInProgram:67, lastActiveDay:"Today", psfsActivity:"Climbing stairs",
+    alert:"NPRS increased to 7 (from 4). KOOS JR declined. Member reported new knee swelling after a long walk. Recommend PCP notification and possible phase adjustment.",
+    outcomes:[
+      { name:"KOOS JR", sub:"Knee · 0–100 scale",                 prev:45,  curr:38,  delta:-7,  thr:"≥ −10", flag:false, dateBaseline:"Feb 10, 2026", dateCurr:"Apr 10, 2026",
+        history:[{date:"Feb 10, 2026",score:45},{date:"Mar 10, 2026",score:41},{date:"Apr 10, 2026",score:38}] },
+      { name:"NPRS",    sub:"Pain · 0–10 (lower = better)",      prev:4,   curr:7,   delta:3,   thr:"≤ +2",  flag:true,  dateBaseline:"Feb 7, 2026",  dateCurr:"Apr 10, 2026",
+        history:[{date:"Feb 7, 2026",score:4},{date:"Mar 7, 2026",score:5},{date:"Apr 10, 2026",score:7}] },
+      { name:"PSFS",    sub:"Function · 0–10 (higher = better)", prev:5.0, curr:3.5, delta:-1.5,thr:"≥ 0",   flag:false, dateBaseline:"Feb 7, 2026",  dateCurr:"Apr 10, 2026",
+        history:[{date:"Feb 7, 2026",score:5.0},{date:"Mar 7, 2026",score:4.2},{date:"Apr 10, 2026",score:3.5}] },
+    ],
+    classes:[
+      { name:"Foundation First",    type:"Low-Impact & Mobility",   date:"Apr 10, 2026", done:true  },
+      { name:"The Mobility Method", type:"Low-Impact & Mobility",   date:"Apr 6, 2026",  done:false },
+      { name:"Resilient Body",      type:"Strength-Based Recovery", date:"Apr 2, 2026",  done:true  },
+    ],
+    log:[{ date:"Feb 7, 2026", text:"System auto-advance · Initial: Build · Program enrollment — initial phase assignment." }]
+  },
+  {
+    id:15, name:"Ruth Kim", age:78, sex:"F", mbi:"9BL8-M46-RK73",
+    state:"FL", pcp:"Dr. Alvarez", referringProvider:"Dr. Nguyen, Ortho", dateAlignment:"Mar 27, 2026",
+    painSite:"Hip", quarter:"Q1 of care", phase:"Calm", phaseWeek:1,
+    instrument:"HOOS JR", score:62, delta:0,
+    screening:"routine", daysLeft:12, position:"Seated",
+    dpw:2, classesCompleted:4, classesSkipped:1,
+    daysInProgram:14, lastActiveDay:"1 day ago", psfsActivity:"Getting up and down from a seat",
+    alert:"",
+    outcomes:[
+      { name:"HOOS JR", sub:"Hip · 0–100 scale",                 prev:null,curr:62,  delta:null,thr:"—",     flag:false, dateBaseline:"Apr 3, 2026",  dateCurr:null },
+      { name:"NPRS",    sub:"Pain · 0–10 (lower = better)",     prev:null,curr:5,   delta:0,   thr:"≤ +2",  flag:false, dateBaseline:"Mar 31, 2026", dateCurr:null },
+      { name:"PSFS",    sub:"Function · 0–10 (higher = better)",prev:null,curr:5.0, delta:0,   thr:"≥ 0",   flag:false, dateBaseline:"Mar 31, 2026", dateCurr:null },
+    ],
+    classes:[
+      { name:"Foundation First", type:"Low-Impact & Mobility", date:"Apr 9, 2026", done:true },
+      { name:"Hip & Heart",      type:"Targeted Relief",       date:"Apr 5, 2026", done:true },
+    ],
+    log:[{ date:"Mar 31, 2026", text:"System auto-advance · Initial: Calm · Program enrollment — initial phase assignment." }]
+  },
+  {
+    id:16, name:"David Lim", age:65, sex:"M", mbi:"6TM2-P91-DL34",
+    state:"TX", pcp:"Dr. Bennett", referringProvider:"Dr. Foster, PT", dateAlignment:"Nov 13, 2025",
+    painSite:"Lower back", quarter:"Q3 of care", phase:"Maintain", phaseWeek:11,
+    instrument:"ODI", score:22, delta:-16,
+    screening:"audit", daysLeft:11, position:"Standing",
+    dpw:4, classesCompleted:38, classesSkipped:1,
+    daysInProgram:148, lastActiveDay:"Today", psfsActivity:"Housework",
+    alert:"",
+    outcomes:[
+      { name:"ODI",  sub:"Lower back · 0–100%",                  prev:38,  curr:22,  delta:-16, thr:"≥ −10", flag:false, dateBaseline:"Nov 20, 2025", dateCurr:"Apr 10, 2026" },
+      { name:"NPRS", sub:"Pain · 0–10 (lower = better)",        prev:6,   curr:2,   delta:-4,  thr:"≤ +2",  flag:false, dateBaseline:"Nov 17, 2025", dateCurr:"Apr 10, 2026" },
+      { name:"PSFS", sub:"Function · 0–10 (higher = better)",   prev:4.2, curr:7.8, delta:3.6, thr:"≥ 0",   flag:false, dateBaseline:"Nov 17, 2025", dateCurr:"Apr 10, 2026" },
+    ],
+    classes:[
+      { name:"Bulletproof Back",    type:"Strength-Based Recovery", date:"Apr 10, 2026", done:true },
+      { name:"Core & Contour",      type:"Strength-Based Recovery", date:"Apr 6, 2026",  done:true },
+      { name:"The Mobility Method", type:"Low-Impact & Mobility",   date:"Apr 2, 2026",  done:true },
+      { name:"Foundation First",    type:"Low-Impact & Mobility",   date:"Mar 28, 2026", done:true },
+    ],
+    log:[
+      { date:"Feb 10, 2026", text:"System auto-advance · Build → Maintain · ODI improvement sustained ≥ 12 points." },
+      { date:"Nov 17, 2025", text:"System auto-advance · Initial: Calm · Program enrollment — initial phase assignment." },
     ]
   },
 ];
@@ -1262,16 +1541,26 @@ function renderQueue() {
       <button class="btn btn-outline ml-auto">Batch export</button>
     </div>
     ${ctrlBar()}
-    <div class="table-card">
-      <table class="data-table">
-        <thead><tr>
-          <th style="width:36px"></th>
-          <th>Member</th><th>Pain region</th><th>Score / delta</th>
-          <th>Screening</th><th>Days left</th><th></th>
-        </tr></thead>
-        <tbody>${buildTableBody(list, 7)}</tbody>
-      </table>
-    </div>`;
+    ${(()=>{
+      const h = `<th style="width:36px;min-width:36px"></th><th style="width:160px;min-width:160px">Member</th><th style="width:160px;min-width:160px">Pain region</th><th style="width:110px;min-width:110px">Score / delta</th><th style="width:130px;min-width:130px">Screening</th><th style="width:90px;min-width:90px">Days left</th><th style="width:110px;min-width:110px"></th>`;
+      const groups = getGroups(list);
+      if (groups) {
+        return groups.map((grp, i) => `
+          ${i > 0 ? '<div style="height:16px"></div>' : ''}
+          <div class="table-card">
+            <table class="data-table">
+              <thead><tr>${h}</tr></thead>
+              <tbody>
+                <tr class="group-header-row"><td colspan="7"><div class="group-band">
+                  ${GROUP_CHEVRON}<span class="group-band-label">${grp.label}</span><span class="group-count">${grp.patients.length}</span>
+                </div></td></tr>
+                ${grp.patients.map(patientRow).join('')}
+              </tbody>
+            </table>
+          </div>`).join('');
+      }
+      return `<div class="table-card"><table class="data-table"><thead><tr>${h}</tr></thead><tbody>${buildTableBody(list,7)}</tbody></table></div>`;
+    })()}`;
 }
 
 function patientRow(p) {
@@ -1286,7 +1575,7 @@ function patientRow(p) {
   const c = bpColor(p.painSite);
   return `<tr class="${hi?'row-flagged':''}" onclick="openPatient(${p.id})">
     <td><input type="checkbox" onclick="event.stopPropagation()" style="accent-color:var(--color-purple-600);cursor:pointer"></td>
-    <td><div class="member-name">${shortName(p.name)}</div><div class="member-sub">MBI ${maskMBI(p.mbi)}</div></td>
+    <td style="width:160px;max-width:160px;border-right:1px solid var(--color-gray-200)"><div class="member-name">${shortName(p.name)}</div><div class="member-sub">MBI ${maskMBI(p.mbi)}</div></td>
     <td><span class="bp-chip" style="background:${c}18;color:${c}">${p.painSite}</span></td>
     <td><span class="score-main">${p.score}</span><span class="delta ${dc}">${ds}</span></td>
     <td>${scr}</td>
@@ -1314,27 +1603,29 @@ function sortedPatients(patients) {
 }
 
 function buildTableBody(patients, colSpan, rowFn) {
-  const sorted = sortedPatients(patients);
-  if (activeGroupBy === 'pain-region')    return groupedRows(sorted, colSpan, rowFn);
-  if (activeGroupBy === 'flagged-status') return groupedRowsByFlag(sorted, colSpan, rowFn);
-  return sorted.map(p => (rowFn || patientRow)(p)).join('');
+  return sortedPatients(patients).map(p => (rowFn || patientRow)(p)).join('');
 }
 
-function groupedRowsByFlag(patients, colSpan, rowFn) {
-  rowFn = rowFn || patientRow;
-  const groups = {};
-  patients.forEach(p => {
-    if (!groups[p.screening]) groups[p.screening] = [];
-    groups[p.screening].push(p);
-  });
-  let html = '';
-  FLAG_ORDER.forEach(status => {
-    const grp = groups[status];
-    if (!grp) return;
-    html += `<tr class="group-header-row"><td colspan="${colSpan}"><div class="group-header">${FLAG_LABELS[status]} <span class="group-count">${grp.length}</span></div></td></tr>`;
-    html += grp.map(p => rowFn(p)).join('');
-  });
-  return html;
+const GROUP_CHEVRON = `<svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>`;
+
+function getGroups(patients) {
+  const sorted = sortedPatients(patients);
+  if (activeGroupBy === 'pain-region') {
+    const map = {};
+    sorted.forEach(p => { if (!map[p.painSite]) map[p.painSite] = []; map[p.painSite].push(p); });
+    const result = [];
+    PAIN_REGION_ORDER.forEach(site => { if (map[site]) result.push({ label: site, patients: map[site] }); });
+    Object.keys(map).forEach(site => { if (!PAIN_REGION_ORDER.includes(site)) result.push({ label: site, patients: map[site] }); });
+    return result;
+  }
+  if (activeGroupBy === 'flagged-status') {
+    const map = {};
+    sorted.forEach(p => { if (!map[p.screening]) map[p.screening] = []; map[p.screening].push(p); });
+    const result = [];
+    FLAG_ORDER.forEach(s => { if (map[s]) result.push({ label: FLAG_LABELS[s], patients: map[s] }); });
+    return result;
+  }
+  return null;
 }
 
 function ctrlBar() {
@@ -1378,61 +1669,69 @@ function toggleDropdown(id) {
 
 function setGroupBy(val) { activeGroupBy = val; document.querySelectorAll('.ctrl-dropdown').forEach(d => d.classList.remove('open')); renderMain(); }
 function setSortBy(val)  { activeSortBy  = val; document.querySelectorAll('.ctrl-dropdown').forEach(d => d.classList.remove('open')); renderMain(); }
+function isGrouped() { return activeGroupBy !== 'none'; }
+
+function toggleColPicker() {
+  const el = document.getElementById('col-picker');
+  if (el) el.classList.toggle('open');
+}
+function toggleMemberCol(key, checked) {
+  if (checked) hiddenMemberCols.delete(key);
+  else hiddenMemberCols.add(key);
+  renderMain();
+  const el = document.getElementById('col-picker');
+  if (el) el.classList.add('open');
+}
 
 document.addEventListener('click', e => {
   if (!e.target.closest('.ctrl-dropdown')) {
     document.querySelectorAll('.ctrl-dropdown').forEach(d => d.classList.remove('open'));
   }
+  if (!e.target.closest('.col-picker-wrap')) {
+    const el = document.getElementById('col-picker');
+    if (el) el.classList.remove('open');
+  }
 });
 
-function groupedRows(patients, colSpan, rowFn) {
-  rowFn = rowFn || patientRow;
-  const groups = {};
-  patients.forEach(p => {
-    if (!groups[p.painSite]) groups[p.painSite] = [];
-    groups[p.painSite].push(p);
-  });
-  let html = '';
-  PAIN_REGION_ORDER.forEach(site => {
-    const grp = groups[site];
-    if (!grp) return;
-    html += `<tr class="group-header-row"><td colspan="${colSpan}"><div class="group-header">${site} <span class="group-count">${grp.length}</span></div></td></tr>`;
-    html += grp.map(p => rowFn(p)).join('');
-  });
-  Object.keys(groups).forEach(site => {
-    if (!PAIN_REGION_ORDER.includes(site)) {
-      html += `<tr class="group-header-row"><td colspan="${colSpan}"><div class="group-header">${site} <span class="group-count">${groups[site].length}</span></div></td></tr>`;
-      html += groups[site].map(p => rowFn(p)).join('');
-    }
-  });
-  return html;
+
+const MEMBER_COL_DEFS = [
+  { key:'member',       label:'Member',    sticky:true },
+  { key:'painRegion',   label:'Pain region', width:'160px' },
+  { key:'age',          label:'Age' },
+  { key:'sex',          label:'Sex' },
+  { key:'baseline',     label:'Baseline date' },
+  { key:'phase',        label:'Phase' },
+  { key:'daysInProg',   label:'Days in program' },
+  { key:'classes',      label:'Classes completed' },
+  { key:'lastActive',   label:'Last active' },
+];
+let hiddenMemberCols = new Set();
+
+function memberCell(p, key, c, baselineDate, nDelta, sDelta) {
+  switch (key) {
+    case 'member':       return `<td class="col-sticky"><div class="member-name">${shortName(p.name)}</div><div class="member-sub">MBI ${maskMBI(p.mbi)}</div></td>`;
+    case 'painRegion':   return `<td style="width:160px;min-width:160px"><span class="bp-chip" style="background:${c}18;color:${c}">${p.painSite}</span></td>`;
+    case 'age':          return `<td style="text-align:center">${p.age}</td>`;
+    case 'sex':          return `<td style="text-align:center">${p.sex}</td>`;
+    case 'baseline':     return `<td style="white-space:nowrap">${baselineDate}</td>`;
+    case 'phase':        return `<td>${phasePill(p.phase)}</td>`;
+    case 'daysInProg':   return `<td style="text-align:center">${p.daysInProgram ?? '—'}</td>`;
+    case 'classes':      return `<td style="text-align:center">${p.classesCompleted ?? '—'}</td>`;
+    case 'lastActive':   return `<td style="white-space:nowrap;color:var(--color-gray-500);font-size:12px">${p.lastActiveDay || '—'}</td>`;
+    default: return '<td>—</td>';
+  }
 }
 
 function memberRow(p) {
   const c = bpColor(p.painSite);
   const baselineDate = p.outcomes && p.outcomes[0] ? p.outcomes[0].dateBaseline || '—' : '—';
-  const nprs  = p.outcomes ? p.outcomes.find(o => o.name === 'NPRS')  : null;
-  const psfs  = p.outcomes ? p.outcomes.find(o => o.name === 'PSFS')  : null;
+  const nprs   = p.outcomes ? p.outcomes.find(o => o.name === 'NPRS') : null;
+  const psfs   = p.outcomes ? p.outcomes.find(o => o.name === 'PSFS') : null;
   const nDelta = nprs ? nprs.delta : null;
   const sDelta = psfs ? psfs.delta : null;
-  return `<tr onclick="openPatient(${p.id})">
-    <td><div class="member-name">${shortName(p.name)}</div><div class="member-sub">MBI ${maskMBI(p.mbi)}</div></td>
-    <td><span class="bp-chip" style="background:${c}18;color:${c}">${p.painSite}</span></td>
-    <td style="text-align:center">${p.age}</td>
-    <td style="text-align:center">${p.sex}</td>
-    <td>${p.state || '—'}</td>
-    <td style="white-space:nowrap">${p.pcp || '<span style="color:var(--color-gray-400)">—</span>'}</td>
-    <td style="white-space:nowrap">${p.referringProvider || '<span style="color:var(--color-gray-400)">—</span>'}</td>
-    <td style="white-space:nowrap">${p.dateAlignment || '—'}</td>
-    <td style="white-space:nowrap">${baselineDate}</td>
-    <td>${phasePill(p.phase)}</td>
-    <td style="text-align:center">${p.daysInProgram ?? '—'}</td>
-    <td style="text-align:center">${p.classesCompleted ?? '—'}</td>
-    <td style="white-space:nowrap;color:var(--color-gray-500);font-size:12px">${p.lastActiveDay || '—'}</td>
-    <td style="white-space:nowrap;font-size:12px;color:var(--color-gray-600)">${p.psfsActivity || '—'}</td>
-    <td>${trendCell(nDelta, 'pain')}</td>
-    <td>${trendCell(sDelta, 'function')}</td>
-  </tr>`;
+  const visCols = MEMBER_COL_DEFS.filter(col => !hiddenMemberCols.has(col.key));
+  const cells = visCols.map(col => memberCell(p, col.key, c, baselineDate, nDelta, sDelta)).join('');
+  return `<tr onclick="openPatient(${p.id})">${cells}</tr>`;
 }
 
 function instrumentCell(p) {
@@ -1442,7 +1741,33 @@ function instrumentCell(p) {
 // ═══════════════════════════════════════════════════
 // ALL MEMBERS
 // ═══════════════════════════════════════════════════
+function colPickerBtn() {
+  const hiddenCount = hiddenMemberCols.size;
+  const label = hiddenCount ? `Columns <span style="background:var(--color-purple-600);color:#fff;border-radius:999px;font-size:10px;padding:1px 6px;margin-left:3px">${hiddenCount} hidden</span>` : 'Columns';
+  const items = MEMBER_COL_DEFS.filter(c => !c.sticky).map(col => `
+    <label class="col-picker-item">
+      <input type="checkbox" ${hiddenMemberCols.has(col.key) ? '' : 'checked'}
+        onchange="toggleMemberCol('${col.key}',this.checked);event.stopPropagation()">
+      ${col.label}
+    </label>`).join('');
+  return `
+    <div class="col-picker-wrap" id="col-picker">
+      <button class="ctrl-btn ${hiddenCount ? 'active' : ''}" onclick="toggleColPicker()">
+        ${label}
+      </button>
+      <div class="col-picker-panel">
+        <div class="col-picker-label">Show / hide columns</div>
+        ${items}
+      </div>
+    </div>`;
+}
+
 function renderMembers() {
+  const visCols = MEMBER_COL_DEFS.filter(col => !hiddenMemberCols.has(col.key));
+  const colSpan = visCols.length;
+  const headers = visCols.map(col =>
+    col.sticky ? `<th class="col-sticky">${col.label}</th>` : `<th${col.width ? ` style="width:${col.width};min-width:${col.width}"` : ''}>${col.label}</th>`
+  ).join('');
   return `
     <div class="page-header">
       <div class="page-title">All members</div>
@@ -1454,20 +1779,34 @@ function renderMembers() {
       <div class="stat-card"><div class="stat-value" style="color:#c0392b">6</div><div class="stat-label">Expiring &lt;5 days</div><div class="stat-sublabel">validity window</div></div>
       <div class="stat-card"><div class="stat-value" style="color:#2a5c24">204</div><div class="stat-label">On track</div><div class="stat-sublabel">no active flags</div></div>
     </div>
-    ${ctrlBar()}
-    <div class="table-card">
-      <div style="overflow-x:auto">
-        <table class="data-table">
-          <thead><tr>
-            <th>Member</th><th>Pain region</th><th>Age</th><th>Sex</th><th>State</th>
-            <th>PCP</th><th>Referring provider</th><th>Alignment date</th><th>Baseline date</th><th>Phase</th>
-            <th>Days in program</th><th>Classes completed</th><th>Last active</th><th>PSFS activity</th>
-            <th>Pain level</th><th>Functional ability</th>
-          </tr></thead>
-          <tbody>${buildTableBody(PATIENTS, 16, memberRow)}</tbody>
-        </table>
-      </div>
-    </div>`;
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+      ${ctrlBar()}
+      ${colPickerBtn()}
+    </div>
+    ${(()=>{
+      const groups = getGroups(PATIENTS);
+      if (groups) {
+        return `<div class="members-table-scroll">
+          ${groups.map((grp, i) => `
+            ${i > 0 ? '<div style="height:16px"></div>' : ''}
+            <div class="group-table-card">
+              <table class="data-table">
+                <thead><tr>${headers}</tr></thead>
+                <tbody>
+                  <tr class="group-header-row">
+                    <td style="position:sticky;left:0;z-index:3;background:var(--color-gray-50);padding:10px 14px 9px;border-top:1px solid var(--color-gray-200);border-bottom:1px solid var(--color-gray-200);box-shadow:1px 0 0 var(--color-gray-200)">
+                      <div style="display:flex;align-items:center;gap:8px">${GROUP_CHEVRON}<span class="group-band-label">${grp.label}</span><span class="group-count">${grp.patients.length}</span></div>
+                    </td>
+                    <td colspan="${colSpan - 1}" style="background:var(--color-gray-50);border-top:1px solid var(--color-gray-200);border-bottom:1px solid var(--color-gray-200);padding:0"></td>
+                  </tr>
+                  ${grp.patients.map(memberRow).join('')}
+                </tbody>
+              </table>
+            </div>`).join('')}
+        </div>`;
+      }
+      return `<div class="table-card"><div class="members-table-scroll"><table class="data-table"><thead><tr>${headers}</tr></thead><tbody>${buildTableBody(PATIENTS, colSpan, memberRow)}</tbody></table></div></div>`;
+    })()}`;
 }
 
 // ═══════════════════════════════════════════════════
@@ -1640,8 +1979,117 @@ function backToMembers() { selectedMember = null; currentPatient = null; current
 
 function switchTab(tab) { currentTab = tab; renderMain(); }
 
+function showChartTip(el, evt) {
+  const tip = document.getElementById('chart-tip');
+  if (!tip) return;
+  tip.textContent = el.dataset.label;
+  tip.style.display = 'block';
+  tip.style.left = evt.clientX + 'px';
+  tip.style.top  = evt.clientY + 'px';
+}
+function moveChartTip(evt) {
+  const tip = document.getElementById('chart-tip');
+  if (tip && tip.style.display === 'block') {
+    tip.style.left = evt.clientX + 'px';
+    tip.style.top  = evt.clientY + 'px';
+  }
+}
+function hideChartTip() {
+  const tip = document.getElementById('chart-tip');
+  if (tip) tip.style.display = 'none';
+}
+
+function renderOutcomeChart(o) {
+  const isHundred = ['KOOS JR','HOOS JR','ODI'].includes(o.name);
+  const yMax = isHundred ? 100 : 10;
+  const higherIsBetter = o.name !== 'NPRS';
+
+  const SEM = {
+    'NPRS':    { min: 'No pain',       max: 'Worst pain'    },
+    'PSFS':    { min: 'No function',   max: 'Full function' },
+    'KOOS JR': { min: 'Disabled',      max: 'No symptoms'   },
+    'HOOS JR': { min: 'Disabled',      max: 'No symptoms'   },
+    'ODI':     { min: 'No disability', max: 'Max disability'},
+  };
+  const sem = SEM[o.name] || {};
+
+  const pts = o.history ? o.history : [
+    ...(o.prev !== null && o.prev !== undefined ? [{date: o.dateBaseline, score: o.prev}] : []),
+    ...(o.curr !== null && o.curr !== undefined ? [{date: o.dateCurr || 'Now', score: o.curr}] : []),
+  ];
+  if (pts.length === 0) return '';
+
+  // Viewbox large enough that overflow:hidden clips nothing visible
+  const W = 520, H = 188;
+  const ml = 100, mr = 16, mt = 26, mb = 42;
+  const pw = W - ml - mr;   // 404
+  const ph = H - mt - mb;   // 120
+
+  const toY = s => mt + ph - (s / yMax) * ph;
+  const toX = i => pts.length === 1 ? ml + pw / 2 : ml + (i / (pts.length - 1)) * pw;
+
+  const improving = higherIsBetter ? (o.delta > 0) : (o.delta < 0);
+  const worsening = higherIsBetter ? (o.delta < 0) : (o.delta > 0);
+  const lineColor = o.flag ? '#dc2626' : improving ? '#16a34a' : worsening ? '#dc2626' : '#9ca3af';
+
+  const pathD = pts.map((pt, i) => `${i===0?'M':'L'}${toX(i).toFixed(1)},${toY(pt.score).toFixed(1)}`).join(' ');
+  const areaD = `${pathD} L${toX(pts.length-1).toFixed(1)},${(mt+ph).toFixed(1)} L${toX(0).toFixed(1)},${(mt+ph).toFixed(1)} Z`;
+
+  const yTicks = isHundred ? [0, 25, 50, 75, 100] : [0, 2, 4, 6, 8, 10];
+  const ch = o.delta !== null && o.delta !== undefined ? (o.delta > 0 ? `+${o.delta}` : `${o.delta}`) : '—';
+  const badgeClass = o.flag ? 'neg' : improving ? 'pos' : worsening ? 'neg' : 'neu';
+  const fmtDate = d => d ? d.replace(/, 202\d/, '') : '';
+
+  const baselineScore = pts[0].score;
+  const latestScore   = pts[pts.length - 1].score;
+  const latestDate    = pts[pts.length - 1].date;
+
+  return `
+    <div class="outcome-chart-card">
+      <div class="chart-card-header">
+        <div>
+          <div class="chart-card-title">${o.name}${o.flag ? ' <span style="color:#dc2626;font-weight:700">★</span>' : ''}</div>
+          <div class="chart-card-sub">${o.sub}</div>
+        </div>
+        <span class="chart-delta-badge ${badgeClass}">${ch} since baseline</span>
+      </div>
+      <svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;overflow:hidden">
+        ${yTicks.map(t => {
+          const y = toY(t);
+          const isMin = t === 0, isMax = t === yMax, isEdge = isMin || isMax;
+          const semLabel = isMin ? sem.min : (isMax ? sem.max : null);
+          const semY = isMin ? y - 5 : y + 13;
+          return `
+            <line x1="${ml}" y1="${y.toFixed(1)}" x2="${W-mr}" y2="${y.toFixed(1)}" stroke="${isEdge?'#e0e0dc':'#f0f0ee'}" stroke-width="${isEdge?1:0.75}"/>
+            <text x="${ml-8}" y="${(y+3.5).toFixed(1)}" text-anchor="end" font-family="inherit" font-size="10" fill="#bcbcb6">${t}</text>
+            ${semLabel ? `<text x="${ml-8}" y="${semY.toFixed(1)}" text-anchor="end" font-family="inherit" font-size="9" fill="#c8c8c2" font-style="italic">${semLabel}</text>` : ''}`;
+        }).join('')}
+        ${pts.length > 1 ? `
+          <path d="${areaD}" fill="${lineColor}" fill-opacity="0.08"/>
+          <path d="${pathD}" fill="none" stroke="${lineColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        ` : ''}
+        ${pts.map((pt, i) => {
+          const isEndpoint = i === 0 || i === pts.length - 1;
+          const tipLabel = `${pt.score} · ${fmtDate(pt.date)}`;
+          return `<circle cx="${toX(i).toFixed(1)}" cy="${toY(pt.score).toFixed(1)}" r="${isEndpoint?5:3.5}" fill="${lineColor}" stroke="#fff" stroke-width="2" style="cursor:default" data-label="${tipLabel}" onmouseenter="showChartTip(this,event)" onmousemove="moveChartTip(event)" onmouseleave="hideChartTip()"/>`;
+        }).join('')}
+        ${pts.map((pt, i) => `
+          <text x="${toX(i).toFixed(1)}" y="${(mt+ph+17).toFixed(1)}" text-anchor="middle" font-family="inherit" font-size="10" fill="#a8a8a2">${fmtDate(pt.date)}</text>
+        `).join('')}
+      </svg>
+      <div class="chart-card-footer">
+        <span>Baseline: <strong>${baselineScore}</strong> · ${o.dateBaseline}</span>
+        ${latestDate && latestDate !== o.dateBaseline ? `<span>Most recent: <strong>${latestScore}</strong> · ${latestDate}</span>` : ''}
+      </div>
+    </div>`;
+}
+
 function memberTabContent(p) {
   if (currentTab==='overview') {
+    const nprs  = p.outcomes ? p.outcomes.find(o => o.name === 'NPRS') : null;
+    const psfsO = p.outcomes ? p.outcomes.find(o => o.name === 'PSFS') : null;
+    const nDelta = nprs  ? nprs.delta  : null;
+    const sDelta = psfsO ? psfsO.delta : null;
     return `
       <div class="section-head">Member profile</div>
       <div class="profile-grid">
@@ -1653,28 +2101,23 @@ function memberTabContent(p) {
         <div><div class="pf-label">Classes completed</div><div class="pf-value">${p.classesCompleted}</div></div>
         <div><div class="pf-label">Classes skipped</div><div class="pf-value">${p.classesSkipped}</div></div>
       </div>
-      <div class="section-head">Phase change log</div>
+      <div class="section-head" style="margin-top:20px">Care details</div>
+      <div class="profile-grid">
+        <div><div class="pf-label">State</div><div class="pf-value">${p.state || '—'}</div></div>
+        <div><div class="pf-label">PCP</div><div class="pf-value">${p.pcp || '—'}</div></div>
+        <div><div class="pf-label">Referring provider</div><div class="pf-value">${p.referringProvider || '—'}</div></div>
+        <div><div class="pf-label">Alignment date</div><div class="pf-value">${p.dateAlignment || '—'}</div></div>
+        <div><div class="pf-label">PSFS activity</div><div class="pf-value">${p.psfsActivity || '—'}</div></div>
+        <div><div class="pf-label">Pain level</div><div class="pf-value">${trendCell(nDelta, 'pain')}</div></div>
+        <div><div class="pf-label">Functional ability</div><div class="pf-value">${trendCell(sDelta, 'function')}</div></div>
+      </div>
+      <div class="section-head" style="margin-top:20px">Phase change log</div>
       ${p.log.map(e=>`<div class="phase-log-entry"><div class="log-date">${e.date}</div><div class="log-text">${e.text}</div></div>`).join('')}`;
   }
   if (currentTab==='outcomes') {
     return `
-      <div style="font-size:12px;color:#aaa;margin-bottom:12px">Quarterly outcomes — ${p.quarter.replace(' of care','')} <span style="font-size:11px">(★ = flagged)</span></div>
-      <table class="outcome-tbl">
-        <thead><tr><th>Measure</th><th>Baseline</th><th>Most recent</th><th>Change</th><th>Threshold</th><th></th></tr></thead>
-        <tbody>${p.outcomes.map(o => {
-          const ch = o.delta!==null ? (o.delta>0?`+${o.delta}`:`${o.delta}`) : '—';
-          const cc = o.delta>0?'ch-pos':(o.delta<0?'ch-neg':'');
-          const ds = `display:block;font-size:10px;color:var(--color-gray-400);font-weight:400;margin-top:2px`;
-          return `<tr>
-            <td><div class="msr-name">${o.name}${o.flag?' <span style="color:var(--color-red-600)">★</span>':''}</div><div class="msr-sub">${o.sub}</div></td>
-            <td>${o.prev!==null?`<strong>${o.prev}</strong>`:'—'}${o.dateBaseline?`<span style="${ds}">${o.dateBaseline}</span>`:''}</td>
-            <td><strong>${o.curr}</strong>${o.dateCurr?`<span style="${ds}">${o.dateCurr}</span>`:''}</td>
-            <td class="${cc}">${ch}</td>
-            <td style="color:var(--color-gray-300)">${o.thr}</td>
-            <td>${o.flag?'<span class="badge b-escalated" style="font-size:10px">Flagged</span>':''}</td>
-          </tr>`;
-        }).join('')}</tbody>
-      </table>`;
+      <div style="font-size:12px;color:#aaa;margin:0 0 4px 24px">${p.quarter.replace(' of care','')} · ${p.outcomes.length} measure${p.outcomes.length!==1?'s':''} <span style="font-size:11px;margin-left:4px">(★ = flagged)</span></div>
+      <div class="outcome-charts">${p.outcomes.map(o => renderOutcomeChart(o)).join('')}</div>`;
   }
   if (currentTab==='classes') {
     return `
@@ -1842,5 +2285,6 @@ function toast(msg, type) {
 // ═══════════════════════════════════════════════════
 renderMain();
 </script>
+<div id="chart-tip"></div>
 </body>
 </html>
