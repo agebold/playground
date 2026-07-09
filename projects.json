@@ -136,6 +136,15 @@
       "category": "User Research"
     },
     {
+      "path": "PrevMed/weight_management_app",
+      "href": "PrevMed/weight_management_app/card-sort.html",
+      "name": "Weight Management App Card Sorting",
+      "desc": "Open card sort — group 30 GLP-1 / weight-management goals into categories that make sense to you",
+      "icon": "🗂️",
+      "author": "Tzu-Yi",
+      "category": "User Research"
+    },
+    {
       "path": "vision",
       "href": "vision/",
       "name": "Product Vision",
