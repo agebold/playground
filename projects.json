@@ -109,6 +109,15 @@
       "category": "Prototypes"
     },
     {
+      "path": "PrevMed/weight_management_app",
+      "href": "PrevMed/weight_management_app/mvp3-side-effect-prescription.html",
+      "name": "MVP3 — Side Effect & Prescription",
+      "desc": "Post-GLP-1-visit experience across 4 member stages — side-effect check-in with severity triage (self-care / care team in 48h / 911), prescription status, medication education & reminders. Left-side stage switcher.",
+      "icon": "🩹",
+      "author": "Tzu-Yi",
+      "category": "Prototypes"
+    },
+    {
       "path": "PrevMed/protein_guide",
       "href": "PrevMed/protein_guide/",
       "name": "Protein Guide",

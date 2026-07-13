@@ -1,0 +1,1913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MVP3 — Side Effect &amp; Prescription · Bold Weight Management</title>
+
+  <!-- Bold design system (loads when served from repo root; file falls back to self-contained styles below) -->
+  <link rel="stylesheet" href="/design-system/tokens.css" />
+  <link rel="stylesheet" href="/design-system/components.css" />
+  <!-- Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet" />
+  <!-- Phosphor icons -->
+  <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+
+  <style>
+    /* ============================================================
+       DESIGN TOKENS — Bold values (self-contained fallback)
+       ============================================================ */
+    :root {
+      /* ── Bold design-system tokens (values from Figma get_variable_defs) ── */
+      --color-purple-700:#3f00a8; --color-purple-600:#5200d4; --color-purple-500:#6333E8;
+      --color-purple-200:#a980ea; --color-purple-100:#eee6fb; --color-purple-50:#f6f1fe; --color-purple-ebf:#ebf0ff;
+      /* success / "confirmed" = Bold Mint ($green). Mapped onto the green-* names so it cascades. */
+      --color-green-700:#005b52; --color-green-600:#00b5a3; --color-green-50:#e6f8f6;
+      --color-mint-300:#00b5a3; --color-mint-100:#e6f8f6; --color-mint-700:#005b52;
+      /* caution / danger kept for medical signal (not in Figma scope) */
+      --color-red-700:#b91c1c; --color-red-600:#dc2626; --color-red-50:#fef2f2;
+      --color-amber-700:#b45309; --color-amber-600:#d97706; --color-amber-500:#f59e0b; --color-amber-50:#fffbeb;
+      --color-blue-600:#2563eb; --color-blue-50:#eff6ff;
+      /* neutrals → Bold ramp (all body text values ≥ AA on white) */
+      --color-ink:#140d26; --color-ink-200:#8a8693;
+      --color-gray-950:#140d26; --color-gray-900:#171717; --color-gray-700:#4d4d4d;
+      --color-gray-600:#525252; --color-gray-500:#737373; --color-gray-400:#acacac;
+      --color-gray-300:#e5e5e5; --color-gray-200:#e5e5e5; --color-gray-100:#f5f5f5;
+      --color-gray-50:#fafafa; --color-white:#ffffff;
+
+      --font-family:'Inter', system-ui, -apple-system, sans-serif;
+      --font-serif:'Source Serif 4', Georgia, 'Times New Roman', serif;
+      /* --fs-tag is the ONLY sub-14px size — matches Figma "Caption 2 Bold" (12px) for pill tags.
+         Intentional deviation from the 14px senior floor, approved by the user for pixel fidelity. */
+      --fs-tag:12px;
+      --fs-2xs:14px; --fs-xs:14px; --fs-sm:14px; --fs-md:15px; --fs-lg:16px;
+      --fs-xl:18px; --fs-2xl:20px; --fs-3xl:24px; --fs-4xl:28px; --fs-5xl:32px;
+      --fw-regular:400; --fw-medium:500; --fw-semibold:600; --fw-bold:700; --fw-extrabold:800;
+
+      --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-5:20px;
+      --space-6:24px; --space-7:32px; --space-8:40px; --space-9:48px;
+
+      --radius-xs:6px; --radius-sm:8px; --radius-md:12px; --radius-lg:16px;
+      --radius-xl:20px; --radius-2xl:24px; --radius-full:999px;
+
+      --shadow-xs:0 1px 2px rgba(16,24,40,0.05);
+      --shadow-sm:0 1px 3px rgba(16,24,40,0.1), 0 1px 2px rgba(16,24,40,0.06);
+      --shadow-md:0 4px 12px rgba(16,24,40,0.08);
+      --shadow-elev:0 12px 8px rgba(16,24,40,0.08), 0 4px 3px rgba(16,24,40,0.03);
+      --shadow-appt:0 -1px 4.8px rgba(16,24,40,0.1), 0 1px 2px rgba(16,24,40,0.06);
+      --shadow-lg:0 12px 40px rgba(0,0,0,0.14);
+      --shadow-purple:0 6px 20px rgba(82,0,212,0.28);
+    }
+
+    *,*::before,*::after{box-sizing:border-box;}
+    html{-webkit-text-size-adjust:100%;}
+    body{
+      margin:0; font-family:var(--font-family);
+      background:#efeaf7;
+      background-image:radial-gradient(1200px 600px at 15% -10%, #f3edff 0%, #efeaf7 45%, #e9e3f3 100%);
+      color:var(--color-gray-900); -webkit-font-smoothing:antialiased;
+      min-height:100vh; overflow-x:hidden;
+    }
+    a{color:var(--color-purple-600);}
+    button{font-family:inherit;}
+    :focus-visible{outline:3px solid var(--color-purple-500); outline-offset:2px; border-radius:4px;}
+
+    /* ============================================================
+       PAGE LAYOUT — sidebar (demo controls) + stage (phone)
+       ============================================================ */
+    .showcase{
+      display:grid; grid-template-columns:300px 1fr; min-height:100vh;
+    }
+    .sidebar{
+      position:sticky; top:0; align-self:start; height:100vh; overflow-y:auto;
+      background:var(--color-white); border-right:1px solid var(--color-gray-200);
+      padding:22px 18px 28px; display:flex; flex-direction:column; gap:18px; z-index:30;
+    }
+    .sidebar-brand{display:flex; align-items:center; gap:10px;}
+    .brand-mark{
+      width:34px; height:34px; border-radius:9px; flex:none;
+      background:linear-gradient(135deg,#5200d4,#6333E8); position:relative;
+    }
+    .brand-mark::before,.brand-mark::after{content:""; position:absolute; background:#fff; border-radius:2px;}
+    .brand-mark::before{left:9px; top:8px; width:4px; height:18px; transform:skewX(-12deg); box-shadow:6px 0 0 #fff, 12px 0 0 #fff;}
+    .brand-word{font-weight:var(--fw-extrabold); font-size:20px; letter-spacing:-0.5px; color:var(--color-gray-950);}
+    .sidebar-sub{font-size:var(--fs-xs); color:var(--color-gray-500); margin:2px 0 0; line-height:1.4;}
+
+    .sidebar-section-label{
+      font-size:var(--fs-2xs); font-weight:var(--fw-bold); letter-spacing:0.6px;
+      text-transform:uppercase; color:var(--color-gray-500); margin:4px 0 2px;
+    }
+    .demo-note{
+      font-size:var(--fs-xs); color:var(--color-gray-500); line-height:1.5;
+      background:var(--color-purple-50); border:1px solid var(--color-purple-100);
+      border-radius:var(--radius-sm); padding:10px 12px;
+    }
+    .stage-list{display:flex; flex-direction:column; gap:8px;}
+    .stage-btn{
+      display:flex; align-items:flex-start; gap:12px; text-align:left; width:100%;
+      background:var(--color-white); border:1.5px solid var(--color-gray-200);
+      border-radius:var(--radius-md); padding:12px 14px; cursor:pointer;
+      min-height:56px; transition:border-color .15s, background .15s, box-shadow .15s;
+    }
+    .stage-btn:hover{border-color:var(--color-purple-500); background:var(--color-purple-50);}
+    .stage-btn .num{
+      flex:none; width:26px; height:26px; border-radius:50%; background:var(--color-gray-100);
+      color:var(--color-gray-600); font-weight:var(--fw-bold); font-size:var(--fs-sm);
+      display:grid; place-items:center;
+    }
+    .stage-btn .st-title{font-weight:var(--fw-semibold); font-size:var(--fs-md); color:var(--color-gray-900); line-height:1.3;}
+    .stage-btn .st-desc{font-size:var(--fs-xs); color:var(--color-gray-500); line-height:1.35; margin-top:2px;}
+    .stage-btn[aria-current="true"]{
+      border-color:var(--color-purple-600); background:var(--color-purple-50);
+      box-shadow:0 0 0 1px var(--color-purple-600) inset;
+    }
+    .stage-btn[aria-current="true"] .num{background:var(--color-purple-600); color:#fff;}
+
+    .jump-list{display:flex; flex-wrap:wrap; gap:6px;}
+    .jump-link{
+      background:var(--color-gray-100); border:1px solid var(--color-gray-200);
+      color:var(--color-gray-700); border-radius:var(--radius-full);
+      padding:7px 12px; font-size:var(--fs-xs); font-weight:var(--fw-medium); cursor:pointer;
+      min-height:36px;
+    }
+    .jump-link:hover{background:var(--color-purple-50); border-color:var(--color-purple-500); color:var(--color-purple-700);}
+    /* demo context controls (segmented + toggle) */
+    .ctx-seg{display:inline-flex; background:var(--color-gray-100); border:1px solid var(--color-gray-200); border-radius:var(--radius-full); padding:3px; gap:2px;}
+    .ctx-seg button{border:none; background:transparent; border-radius:var(--radius-full); padding:7px 14px; min-height:36px;
+      font-size:var(--fs-xs); font-weight:var(--fw-semibold); color:var(--color-gray-600); cursor:pointer;}
+    .ctx-seg button[aria-pressed="true"]{background:var(--color-purple-600); color:#fff;}
+    .ctx-toggle{display:flex; align-items:center; gap:10px; font-size:var(--fs-sm); font-weight:var(--fw-medium); color:var(--color-gray-700); cursor:pointer; min-height:36px;}
+    .ctx-toggle input{width:18px; height:18px; accent-color:var(--color-purple-600); cursor:pointer;}
+    .ctx-note{margin:4px 0 0; font-size:var(--fs-xs); color:var(--color-gray-400); line-height:1.45;}
+    .sidebar-foot{margin-top:auto; font-size:var(--fs-xs); color:var(--color-gray-400); line-height:1.5;}
+
+    .stage{display:flex; align-items:flex-start; justify-content:center; padding:40px 24px 64px;}
+
+    /* ============================================================
+       PHONE FRAME
+       ============================================================ */
+    .iphone{
+      width:393px; height:852px; background:#140d26; border-radius:54px;
+      padding:12px; box-shadow:var(--shadow-lg); position:relative; flex:none;
+    }
+    .iphone-screen{
+      width:100%; height:100%; background:var(--color-gray-50); border-radius:44px;
+      overflow:hidden; position:relative; display:flex; flex-direction:column;
+    }
+    .iphone-island{
+      position:absolute; top:10px; left:50%; transform:translateX(-50%);
+      width:118px; height:32px; background:#000; border-radius:20px; z-index:50;
+    }
+    .statusbar{
+      height:52px; flex:none; display:flex; align-items:flex-end; justify-content:space-between;
+      padding:0 26px 6px; font-size:var(--fs-sm); font-weight:var(--fw-semibold); color:var(--color-gray-950);
+    }
+    .statusbar .sb-icons{display:flex; gap:6px; align-items:center;}
+
+    /* ============================================================
+       APP CHROME — topbar + tabbar
+       ============================================================ */
+    .app-topbar{
+      flex:none; height:56px; display:flex; align-items:center; justify-content:space-between;
+      padding:0 18px; background:var(--color-white); border-bottom:1px solid var(--color-gray-100);
+    }
+    .app-topbar .brand-word{font-size:18px;}
+    .topbar-brand{display:flex; align-items:center; gap:8px;}
+    .topbar-brand .brand-mark{width:26px; height:26px; border-radius:7px;}
+    .topbar-brand .brand-mark::before{left:7px; top:6px; width:3px; height:14px; box-shadow:5px 0 0 #fff, 10px 0 0 #fff;}
+    .topbar-actions{display:flex; align-items:center; gap:6px;}
+    .topbar-btn{
+      width:44px; height:44px; border:none; background:transparent; border-radius:50%;
+      display:grid; place-items:center; cursor:pointer; color:var(--color-gray-700); font-size:22px;
+    }
+    .topbar-btn:hover{background:var(--color-gray-100);}
+    .avatar{
+      width:40px; height:40px; border-radius:50%; overflow:hidden; border:none; cursor:pointer;
+      background:var(--color-purple-600); color:#fff; font-weight:var(--fw-bold); font-size:var(--fs-md);
+      display:grid; place-items:center; flex:none;
+    }
+    .avatar img{width:100%; height:100%; object-fit:cover;}
+    .avatar img.failed{display:none;}
+
+    .app-scroll{flex:1; overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch; max-width:100%;}
+    .app-scroll::-webkit-scrollbar{width:0;}
+    .scn{padding:20px 16px 28px; display:flex; flex-direction:column; gap:22px;}
+
+    .app-tabbar{
+      flex:none; display:grid; grid-template-columns:repeat(3,1fr); gap:2px;
+      background:var(--color-white); border-top:1px solid var(--color-gray-200);
+      padding:8px 6px 14px;
+    }
+    .app-tabbar button{
+      display:flex; flex-direction:column; align-items:center; gap:3px; border:none;
+      background:transparent; cursor:pointer; padding:6px 2px; border-radius:12px;
+      font-size:var(--fs-xs); font-weight:var(--fw-semibold); color:var(--color-gray-500);
+      min-height:52px;
+    }
+    .app-tabbar button i{font-size:24px;}
+    .app-tabbar button[aria-pressed="true"]{color:var(--color-purple-600);}
+    /* Health tab hidden by default (demo toggle reveals it). Bottom nav collapses to 2 even columns. */
+    body[data-health="hidden"] .app-tabbar{grid-template-columns:repeat(2,1fr);}
+    body[data-health="hidden"] .app-tabbar button[data-screen="health"],
+    body[data-health="hidden"] .jump-link[data-jump="health"]{display:none;}
+
+    /* ============================================================
+       SCREENS
+       ============================================================ */
+    .screen{display:none; flex:1; min-height:0; flex-direction:column;}
+    .screen.active{display:flex;}
+
+    /* stage-conditional visibility (CSS-driven; .stage-btn excluded) */
+    body[data-app-stage="stage1"] [data-stage]:not([data-stage~="stage1"]):not(.stage-btn),
+    body[data-app-stage="stage2"] [data-stage]:not([data-stage~="stage2"]):not(.stage-btn),
+    body[data-app-stage="stage3"] [data-stage]:not([data-stage~="stage3"]):not(.stage-btn),
+    body[data-app-stage="stage4"] [data-stage]:not([data-stage~="stage4"]):not(.stage-btn){display:none;}
+
+    /* ============================================================
+       BOLD COMPONENTS (self-contained fallback, Bold anatomy)
+       ============================================================ */
+    .bold-btn{
+      display:inline-flex; align-items:center; justify-content:center; gap:8px;
+      border:1.5px solid transparent; border-radius:var(--radius-md); cursor:pointer;
+      font-size:var(--fs-lg); font-weight:var(--fw-semibold); line-height:1;
+      padding:14px 18px; min-height:52px; text-decoration:none; transition:filter .15s, background .15s;
+    }
+    .bold-btn i{font-size:20px;}
+    .bold-btn-primary{background:var(--color-purple-600); color:#fff;}
+    .bold-btn-primary:hover{background:var(--color-purple-700);}
+    .bold-btn-outline{background:#fff; color:var(--color-ink); border-color:var(--color-gray-300); box-shadow:var(--shadow-xs);}
+    .bold-btn-outline:hover{border-color:var(--color-gray-400); background:var(--color-gray-50);}
+    .bold-btn-ghost{background:var(--color-gray-100); color:var(--color-gray-900); border-color:transparent;}
+    .bold-btn-ghost:hover{background:var(--color-gray-200);}
+    .bold-btn-danger{background:var(--color-red-600); color:#fff;}
+    .bold-btn-danger:hover{background:var(--color-red-700);}
+    .bold-btn-full{width:100%;}
+    .bold-btn-sm{min-height:44px; padding:10px 14px; font-size:var(--fs-md); border-radius:var(--radius-sm);}
+
+    .bold-card{
+      background:#fff; border:1px solid var(--color-gray-200); border-radius:var(--radius-lg);
+      box-shadow:var(--shadow-sm); padding:16px;
+    }
+    .bold-tag{
+      display:inline-flex; align-items:center; gap:4px; border-radius:var(--radius-full);
+      padding:4px 10px; font-size:var(--fs-tag); font-weight:var(--fw-semibold); line-height:1.33;
+      background:var(--color-gray-100); color:var(--color-gray-600);
+    }
+    .bold-tag i{font-size:16px;}
+    .bold-tag-green{background:var(--color-green-50); color:var(--color-green-700);}
+    .bold-tag-purple{background:var(--color-purple-100); color:var(--color-purple-700);}
+    .bold-tag-blue{background:var(--color-blue-50); color:var(--color-blue-600);}
+    .bold-tag-amber{background:var(--color-amber-50); color:var(--color-amber-700);}
+
+    /* typography helpers */
+    .eyebrow{
+      font-size:var(--fs-xs); font-weight:var(--fw-bold); letter-spacing:0.4px;
+      text-transform:uppercase; color:var(--color-gray-500); margin:0;
+    }
+    .home-stage{display:flex; flex-direction:column; gap:22px;}
+    .home-stage > header{display:flex; flex-direction:column;}
+    .h-greet{font-family:var(--font-serif); font-size:var(--fs-5xl); font-weight:var(--fw-semibold); letter-spacing:0; margin:0; line-height:1.25; color:var(--color-gray-900);}
+    .h-sub{font-size:var(--fs-lg); color:var(--color-gray-600); margin:8px 0 0; line-height:1.5;}
+    .sec-title{font-size:var(--fs-2xl); font-weight:var(--fw-bold); margin:0 0 12px; letter-spacing:-0.4px;}
+    .sec-title .muted{font-weight:var(--fw-medium); color:var(--color-gray-500); font-size:var(--fs-lg);}
+    .lede{font-size:var(--fs-lg); line-height:1.5; margin:0; color:var(--color-gray-700);}
+
+    /* image slot with graceful fallback */
+    .imgslot{position:relative; overflow:hidden; background:linear-gradient(135deg,#efe7ff,#e5edff); display:block;}
+    .imgslot img{width:100%; height:100%; object-fit:cover; display:block; position:relative; z-index:2;}
+    .imgslot img.failed{display:none;}
+    .imgslot .ph-fallback{position:absolute; inset:0; display:grid; place-items:center; color:var(--color-purple-500); font-size:34px; z-index:1;}
+
+    /* appointment / hero cards */
+    .badge-strip{
+      display:inline-flex; align-items:center; gap:8px; background:var(--color-green-600); color:#fff;
+      padding:8px 14px; border-radius:var(--radius-full); font-size:var(--fs-sm); font-weight:var(--fw-semibold);
+    }
+    .appt-card{position:relative; display:flex; gap:14px; align-items:flex-start;}
+    .appt-card .appt-body{flex:1; min-width:0;}
+    .appt-name{font-size:var(--fs-xl); font-weight:var(--fw-bold); margin:0; line-height:1.25;}
+    .appt-meta{display:flex; align-items:center; gap:8px; color:var(--color-gray-600); font-size:var(--fs-md); margin:8px 0 0;}
+    .appt-avatar{width:64px; height:64px; border-radius:var(--radius-md); flex:none;}
+    .appt-actions{display:flex; flex-wrap:wrap; gap:10px; margin-top:16px;}
+
+    /* to-do checklist cards */
+    .todo-item{
+      display:flex; align-items:center; gap:12px; width:100%; text-align:left;
+      background:#fff; border:1px solid var(--color-gray-200); border-radius:var(--radius-lg);
+      padding:16px; cursor:pointer; min-height:64px; box-shadow:var(--shadow-elev);
+    }
+    .todo-item:hover{border-color:var(--color-purple-200);}
+    .todo-item .ti-ico{
+      width:40px; height:40px; border-radius:50%; flex:none; display:grid; place-items:center;
+      background:var(--color-purple-100); color:var(--color-purple-600); font-size:24px;
+    }
+    .todo-item .ti-body{flex:1; min-width:0;}
+    .todo-item .ti-title{font-size:var(--fs-lg); font-weight:var(--fw-semibold); color:var(--color-gray-900); margin:0; line-height:1.4;}
+    .todo-item .ti-desc{font-size:var(--fs-md); color:var(--color-gray-700); margin:3px 0 0; line-height:1.4;}
+    .todo-item .ti-time{display:inline-flex; align-items:center; gap:4px; background:var(--color-gray-100); border-radius:var(--radius-full); padding:3px 8px; color:var(--color-gray-600); font-size:var(--fs-tag); font-weight:var(--fw-semibold); flex:none;}
+    .todo-item .ti-time i{font-size:16px;}
+    .todo-item.done{background:var(--color-gray-50); border-style:dashed;}
+    .todo-item.done .ti-ico{background:var(--color-green-50); color:var(--color-green-600);}
+    .todo-item.done .ti-title{color:var(--color-gray-500);}
+
+    /* medication / rx */
+    .med-empty{
+      display:flex; gap:14px; align-items:center; background:var(--color-gray-50);
+      border:1px dashed var(--color-gray-300); border-radius:var(--radius-lg); padding:18px 16px;
+    }
+    .med-empty .me-ico{width:48px; height:48px; border-radius:50%; background:#fff; border:1px solid var(--color-gray-200);
+      display:grid; place-items:center; color:var(--color-gray-400); font-size:24px; flex:none;}
+    .med-empty p{margin:0;}
+    .med-empty .me-title{font-size:var(--fs-lg); font-weight:var(--fw-semibold);}
+    .med-empty .me-desc{font-size:var(--fs-sm); color:var(--color-gray-500); margin-top:3px; line-height:1.4;}
+
+    .rx-hero{border:1px solid var(--color-gray-200); border-radius:var(--radius-lg); overflow:hidden; box-shadow:var(--shadow-sm); background:#fff;}
+    .rx-hero-head{display:flex; gap:14px; align-items:center; padding:16px;}
+    .rx-hero-img{width:60px; height:60px; border-radius:var(--radius-md); flex:none;}
+    .rx-hero-name{font-size:var(--fs-xl); font-weight:var(--fw-bold); margin:0; line-height:1.2;}
+    .rx-hero-sub{font-size:var(--fs-sm); color:var(--color-gray-600); margin:3px 0 0;}
+
+    /* status stepper (vertical) */
+    .stepper{list-style:none; margin:0; padding:0 16px 8px;}
+    .stepper li{display:flex; gap:14px; padding-bottom:4px;}
+    .stepper .sp-rail{display:flex; flex-direction:column; align-items:center; flex:none;}
+    .stepper .sp-dot{width:28px; height:28px; border-radius:50%; display:grid; place-items:center;
+      background:var(--color-gray-200); color:var(--color-gray-500); font-size:15px; flex:none;}
+    .stepper .sp-line{width:2px; flex:1; background:var(--color-gray-200); margin:2px 0;}
+    .stepper li:last-child .sp-line{display:none;}
+    .stepper .sp-body{padding-bottom:16px; flex:1;}
+    .stepper .sp-title{font-size:var(--fs-lg); font-weight:var(--fw-semibold); margin:2px 0 0; line-height:1.3;}
+    .stepper .sp-desc{font-size:var(--fs-sm); color:var(--color-gray-500); margin:3px 0 0; line-height:1.4;}
+    .stepper li.done .sp-dot{background:var(--color-green-600); color:#fff;}
+    .stepper li.done .sp-line{background:var(--color-green-600);}
+    .stepper li.current .sp-dot{background:var(--color-purple-600); color:#fff; box-shadow:0 0 0 4px var(--color-purple-100);}
+    .stepper li.current .sp-title{color:var(--color-purple-700);}
+    .rx-foot{padding:0 16px 16px; display:flex; flex-direction:column; gap:12px;}
+    .cost-line{display:flex; align-items:center; gap:8px; font-size:var(--fs-md); color:var(--color-gray-700); background:var(--color-purple-50);
+      border-radius:var(--radius-sm); padding:10px 12px;}
+    .cost-line strong{color:var(--color-purple-700);}
+
+    /* active med / dose card */
+    .dose-card{border:1px solid var(--color-gray-200); border-radius:var(--radius-lg); background:#fff; box-shadow:var(--shadow-sm); overflow:hidden;}
+    .dose-top{display:flex; gap:14px; align-items:center; padding:16px 16px 12px;}
+    .dose-pill-img{width:56px; height:56px; border-radius:var(--radius-md); flex:none;}
+    .dose-when{background:var(--color-purple-50); border-top:1px solid var(--color-purple-100); padding:14px 16px; display:flex; flex-direction:column; gap:10px;}
+    .dose-when .dw-row{display:flex; align-items:center; gap:8px; font-size:var(--fs-md); color:var(--color-gray-800);}
+    .dose-actions{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+    .taken-flag{display:flex; align-items:center; justify-content:center; gap:8px; background:var(--color-green-50);
+      color:var(--color-green-700); border-radius:var(--radius-md); padding:14px; font-weight:var(--fw-semibold); font-size:var(--fs-md); grid-column:1/-1;}
+
+    /* feeling check-in module */
+    .feel-card{background:linear-gradient(135deg,#fbf7ff,#f4f0ff); border:1px solid var(--color-purple-100);
+      border-radius:var(--radius-lg); padding:18px 16px;}
+    .feel-card .fc-q{font-size:var(--fs-xl); font-weight:var(--fw-bold); margin:0 0 3px;}
+    .feel-card .fc-sub{font-size:var(--fs-sm); color:var(--color-gray-600); margin:0 0 14px; line-height:1.4;}
+    .feel-actions{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+    .feel-choice{display:flex; flex-direction:column; align-items:center; gap:6px; text-align:center; cursor:pointer;
+      background:#fff; border:1.5px solid var(--color-gray-200); border-radius:var(--radius-md); padding:14px 10px; min-height:92px; justify-content:center;}
+    .feel-choice i{font-size:28px;}
+    .feel-choice.good i{color:var(--color-green-600);}
+    .feel-choice.off i{color:var(--color-amber-600);}
+    .feel-choice span{font-size:var(--fs-md); font-weight:var(--fw-semibold); line-height:1.25;}
+    .feel-choice:hover{border-color:var(--color-purple-500); background:var(--color-purple-50);}
+
+    /* "what's normal" side-by-side */
+    .normal-card{background:#fff; border:1px solid var(--color-gray-200); border-radius:var(--radius-lg); padding:16px; box-shadow:var(--shadow-xs);}
+    .normal-card ul{margin:10px 0 0; padding-left:18px;}
+    .normal-card li{font-size:var(--fs-md); color:var(--color-gray-700); line-height:1.5; margin-bottom:6px;}
+
+    /* acknowledgment reflection */
+    .ack-card{background:var(--color-purple-50); border:1px solid var(--color-purple-100); border-radius:var(--radius-lg); padding:16px;}
+    .ack-card .ack-head{display:flex; align-items:center; gap:8px; font-size:var(--fs-lg); font-weight:var(--fw-bold); color:var(--color-purple-700); margin:0 0 6px;}
+    .ack-card p{margin:0 0 6px; font-size:var(--fs-md); line-height:1.5; color:var(--color-gray-800);}
+    .ack-card .ack-em{font-size:var(--fs-sm); color:var(--color-gray-600);}
+
+    /* content cards row (for you today) */
+    .foryou-hero{border-radius:var(--radius-lg); overflow:hidden; border:1px solid var(--color-gray-200); box-shadow:var(--shadow-sm); background:#fff;}
+    .foryou-hero .fh-media{position:relative; aspect-ratio:16/10;}
+    .foryou-hero .fh-badge{position:absolute; top:10px; right:10px; z-index:5;}
+    .foryou-hero .fh-play{position:absolute; inset:0; display:grid; place-items:center; z-index:5;}
+    .foryou-hero .fh-play i{font-size:52px; color:#fff; text-shadow:0 2px 12px rgba(0,0,0,.4);}
+    .foryou-hero .fh-body{padding:14px 16px;}
+    .foryou-hero .fh-title{font-size:var(--fs-lg); font-weight:var(--fw-semibold); margin:0; line-height:1.35;}
+    .foryou-hero .fh-by{font-size:var(--fs-sm); color:var(--color-gray-500); margin:4px 0 0;}
+    .card-row{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+    .mini-card{border:1px solid var(--color-gray-200); border-radius:var(--radius-md); overflow:hidden; background:#fff; box-shadow:var(--shadow-xs); cursor:pointer; text-align:left;}
+    .mini-card .mc-media{aspect-ratio:16/10;}
+    .mini-card .mc-body{padding:10px 12px;}
+    .mc-tag{display:inline-flex; align-items:center; gap:6px; font-size:var(--fs-sm); font-weight:var(--fw-semibold); color:var(--color-gray-600);}
+    .mc-tag i{font-size:16px; color:var(--color-gray-500);}
+    .mini-card .mc-title{font-size:var(--fs-md); font-weight:var(--fw-semibold); color:var(--color-gray-900); margin:6px 0 0; line-height:1.4;}
+
+    /* FAQ */
+    .faq details{border-bottom:1px solid var(--color-gray-200);}
+    .faq summary{list-style:none; cursor:pointer; padding:16px 4px; font-size:var(--fs-lg); font-weight:var(--fw-medium);
+      display:flex; justify-content:space-between; align-items:center; gap:12px;}
+    .faq summary::-webkit-details-marker{display:none;}
+    .faq summary i{color:var(--color-gray-400); transition:transform .2s; flex:none;}
+    .faq details[open] summary i{transform:rotate(90deg);}
+    .faq .faq-a{padding:0 4px 16px; font-size:var(--fs-md); color:var(--color-gray-600); line-height:1.55;}
+
+    /* generic list row */
+    .list-row{display:flex; align-items:center; gap:14px; width:100%; text-align:left; background:#fff;
+      border:1px solid var(--color-gray-200); border-radius:var(--radius-md); padding:14px; cursor:pointer; min-height:60px;}
+    .list-row:hover{border-color:var(--color-purple-500);}
+    .list-row i.lead{font-size:22px; color:var(--color-purple-600); flex:none;}
+    .list-row .lr-body{flex:1; min-width:0;}
+    .list-row .lr-title{font-size:var(--fs-lg); font-weight:var(--fw-semibold); line-height:1.3;}
+    .list-row .lr-sub{font-size:var(--fs-sm); color:var(--color-gray-500); margin-top:2px; line-height:1.35;}
+    .list-row i.chev{color:var(--color-gray-400); flex:none;}
+
+    /* care team */
+    .person{display:flex; gap:12px; align-items:center; background:#fff; border:1px solid var(--color-gray-200);
+      border-radius:var(--radius-md); padding:12px 14px;}
+    .person .p-av{width:48px; height:48px; border-radius:50%; flex:none;}
+    .person .p-name{font-size:var(--fs-lg); font-weight:var(--fw-semibold); margin:0; line-height:1.2;}
+    .person .p-role{font-size:var(--fs-sm); color:var(--color-gray-500); margin:2px 0 0; line-height:1.35;}
+
+    /* stacked label spans need to be block so title + description stack */
+    .ti-body,.lr-body,.ot-body,.mc-body{display:block; flex:1; min-width:0;}
+    .ti-title,.ti-desc,.lr-title,.lr-sub,.ot-title,.ot-desc,.st-title,.st-desc,
+    .mc-tag,.mc-title,.sp-title,.sp-desc,.me-title,.me-desc{display:block;}
+    .opt-tile.sev .ot-title{display:flex;}
+
+    /* emergency footer line */
+    .emergency-line{font-size:var(--fs-md); color:var(--color-gray-700); text-align:center; line-height:1.5; margin:4px 0 0;}
+    .emergency-line a{color:var(--color-red-600); font-weight:var(--fw-bold); text-decoration:underline;}
+
+    /* back header */
+    .scn-back{flex:none; display:flex; align-items:center; gap:10px; padding:14px 12px; border-bottom:1px solid var(--color-gray-100); background:#fff;}
+    .scn-back button{width:40px; height:40px; border:none; background:transparent; border-radius:50%; display:grid; place-items:center; cursor:pointer; font-size:22px; color:var(--color-gray-800);}
+
+    /* ============================================================
+       FIGMA MEMBER-DASHBOARD COMPONENTS (node 584-7591)
+       ============================================================ */
+    /* logo-only post-auth nav header (member avatar + bell removed per spec) */
+    .nav-header{flex:none; height:64px; display:flex; align-items:center; padding:0 20px; background:#fff;}
+    .nav-header .brand{display:flex; align-items:center; gap:8px;}
+    .nav-header .brand-word{font-size:22px; font-weight:var(--fw-extrabold); letter-spacing:-0.5px; color:var(--color-ink);}
+
+    /* confirmed-appointment module: mint frame + white card + doctor-avatar notch */
+    .appt-confirm{position:relative; background:var(--color-mint-300); border-radius:var(--radius-lg) 49px var(--radius-lg) var(--radius-lg); display:flex; flex-direction:column;}
+    .appt-confirm .ac-badge{display:flex; align-items:center; gap:10px; padding:10px 16px 8px;}
+    .appt-confirm .ac-badge i{font-size:22px; color:#fff;}
+    .appt-confirm .ac-badge span{font-size:var(--fs-sm); font-weight:var(--fw-semibold); color:#fff;}
+    .appt-confirm .ac-card{background:#fff; border:1px solid var(--color-gray-200); border-radius:var(--radius-lg); box-shadow:var(--shadow-appt); overflow:hidden; width:100%;}
+    .appt-confirm .ac-info{padding:14px 88px 14px 16px; display:flex; flex-direction:column; gap:4px; min-height:64px; justify-content:center;}
+    .appt-confirm .ac-name{font-size:var(--fs-2xl); font-weight:var(--fw-semibold); color:var(--color-gray-900); margin:0; line-height:1.2;}
+    .appt-confirm .ac-when{display:flex; align-items:center; gap:8px; font-size:var(--fs-lg); color:var(--color-gray-900); margin:0;}
+    .appt-confirm .ac-when i{font-size:20px; color:var(--color-gray-700);}
+    .appt-confirm .ac-actions{background:var(--color-gray-100); display:flex; gap:8px; padding:4px 8px;}
+    .appt-confirm .ac-actions .bold-btn{min-height:44px; padding:10px 12px; font-size:var(--fs-lg); white-space:nowrap;}
+    .appt-confirm .ac-actions .bold-btn-primary{flex:1;}
+    .appt-confirm .ac-actions .bold-btn-outline{flex:none;}
+    .appt-confirm .ac-avatar{position:absolute; top:0; right:0; width:72px; height:72px; border-radius:50%; overflow:hidden; z-index:3; background:linear-gradient(135deg,#efe7ff,#e5edff);}
+    .appt-confirm .ac-avatar img{width:100%; height:100%; object-fit:cover;}
+    .appt-confirm .ac-avatar img.failed{display:none;}
+
+    /* callout card (Figma "To do" item): stepper bullet + title/tag row + description */
+    .callout{background:#fff; border:1px solid var(--color-gray-200); border-radius:var(--radius-lg); box-shadow:var(--shadow-elev); padding:16px; display:flex; gap:12px; align-items:flex-start; width:100%; text-align:left; cursor:pointer;}
+    .callout:hover{border-color:var(--color-purple-200);}
+    .callout .co-bullet{width:40px; height:40px; border-radius:50%; flex:none; display:grid; place-items:center; background:var(--color-purple-100); color:var(--color-purple-600); font-size:24px;}
+    .callout .co-body{flex:1; min-width:0; display:flex; flex-direction:column; gap:4px;}
+    .callout .co-titlerow{display:flex; align-items:center; justify-content:space-between; gap:8px;}
+    .callout .co-title{font-size:var(--fs-lg); font-weight:var(--fw-semibold); color:var(--color-gray-900); line-height:1.5;}
+    .callout .co-desc{font-size:var(--fs-lg); color:var(--color-gray-700); line-height:1.5; margin:0;}
+    .callout.done{box-shadow:none; background:var(--color-gray-50); border-style:dashed; cursor:default;}
+    .callout.done .co-bullet{background:var(--color-mint-100); color:var(--color-mint-300);}
+    .callout.done .co-title{color:var(--color-gray-500);}
+    .time-tag{display:inline-flex; align-items:center; gap:4px; background:var(--color-gray-100); border-radius:var(--radius-full); padding:3px 8px; font-size:var(--fs-tag); font-weight:var(--fw-semibold); color:var(--color-gray-600); flex:none; white-space:nowrap;}
+    .time-tag i{font-size:18px;}
+
+    /* FAQ card (Figma FAQs) */
+    .faq-card{background:#fff; border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); overflow:hidden;}
+    .faq-card details{border-top:0.5px solid var(--color-gray-200);}
+    .faq-card details:first-child{border-top:0;}
+    .faq-card summary{list-style:none; cursor:pointer; padding:16px 12px; font-size:var(--fs-lg); font-weight:var(--fw-regular); color:var(--color-gray-900); display:flex; justify-content:space-between; align-items:center; gap:8px; line-height:1.5;}
+    .faq-card summary::-webkit-details-marker{display:none;}
+    .faq-card summary i{color:var(--color-gray-400); font-size:20px; transition:transform .2s; flex:none;}
+    .faq-card details[open] summary i{transform:rotate(90deg);}
+    .faq-card .faq-a{padding:0 12px 16px; font-size:var(--fs-md); color:var(--color-gray-600); line-height:1.55;}
+
+    /* compact prescription-progress card (Figma node 15-992) — details open in a modal */
+    .rx-progress{background:var(--color-mint-300); border-radius:var(--radius-lg); display:flex; flex-direction:column;}
+    .rx-progress .rxp-badge{display:flex; align-items:center; gap:8px; padding:8px 14px;}
+    .rx-progress .rxp-badge i{font-size:18px; color:#fff;}
+    .rx-progress .rxp-badge span{font-size:var(--fs-sm); font-weight:var(--fw-semibold); color:#fff;}
+    .rx-progress .rxp-card{background:#fff; border:1px solid var(--color-gray-200); border-radius:var(--radius-lg); box-shadow:var(--shadow-appt); width:100%; padding:14px 16px 16px; display:flex; flex-direction:column; gap:12px;}
+    .rxp-bar{display:flex; gap:3px;}
+    .rxp-bar .rxp-seg{flex:1; height:6px; border-radius:var(--radius-full); background:var(--color-gray-200);}
+    .rxp-bar .rxp-seg.on{background:var(--color-purple-600);}
+    .rxp-step-title{font-size:var(--fs-2xl); font-weight:var(--fw-semibold); color:var(--color-gray-900); margin:0; line-height:1.2;}
+    .rxp-step-desc{font-size:var(--fs-lg); color:var(--color-gray-700); margin:0; line-height:1.4;}
+
+    /* ============================================================
+       HEALTH TAB (ported from prototype-merged, restyled to Bold)
+       ============================================================ */
+    .health-scn{gap:20px;}
+    .weekly-summary-card{background:linear-gradient(151deg, var(--color-purple-50) 0%, #fff 78%); border:1px solid var(--color-gray-200); border-radius:var(--radius-lg); padding:16px; display:flex; flex-direction:column; gap:14px; box-shadow:var(--shadow-xs);}
+    .weekly-summary-head{display:flex; align-items:baseline; justify-content:space-between; gap:12px;}
+    .weekly-summary-title{margin:0; font-size:var(--fs-3xl); font-weight:var(--fw-bold); color:var(--color-gray-950); line-height:1.2;}
+    .weekly-summary-range{font-size:var(--fs-md); font-weight:var(--fw-medium); color:var(--color-gray-500);}
+    .weekly-summary-lead{margin:0; font-size:var(--fs-lg); color:var(--color-gray-900); line-height:1.5;}
+    .weekly-summary-link{align-self:flex-start; background:none; border:0; padding:6px 0; min-height:44px; display:inline-flex; align-items:center; gap:6px; font-family:inherit; font-size:var(--fs-lg); font-weight:var(--fw-bold); color:var(--color-purple-600); cursor:pointer;}
+    .weekly-summary-link i{font-size:18px;}
+    .ws-leanmass-card{background:#fff; border:1px solid var(--color-gray-200); border-radius:var(--radius-lg); padding:14px; display:flex; flex-direction:column; gap:14px;}
+    .ws-leanmass-head{display:flex; align-items:center; justify-content:space-between; gap:12px;}
+    .ws-leanmass-title{margin:0; font-size:var(--fs-2xl); font-weight:var(--fw-bold); color:var(--color-gray-950); line-height:1;}
+    .ws-leanmass-stats{display:flex; align-items:stretch; gap:0;}
+    .ws-leanmass-stats--card{padding-top:4px;}
+    .ws-stat{flex:1 1 0; min-width:0; display:flex; flex-direction:column; gap:4px;}
+    .ws-stat-divider{border-left:1px solid var(--color-gray-200); padding-left:18px;}
+    .ws-stat-value{display:inline-flex; align-items:baseline; gap:4px; line-height:1.2;}
+    .ws-stat-num{font-size:26px; font-weight:var(--fw-extrabold); color:var(--color-gray-950); letter-spacing:-0.8px; line-height:30px;}
+    .ws-stat-num-positive{color:var(--color-mint-300);}
+    .ws-stat-unit{font-size:var(--fs-md); font-weight:var(--fw-semibold); color:var(--color-gray-600);}
+    .ws-stat-label{font-size:var(--fs-sm); font-weight:var(--fw-semibold); color:var(--color-gray-500); letter-spacing:0.4px; text-transform:uppercase;}
+    .score-pill{display:inline-flex; align-items:center; gap:5px; padding:5px 12px 5px 10px; background:var(--color-mint-100); color:var(--color-mint-700); border-radius:var(--radius-full); font-size:var(--fs-tag); font-weight:var(--fw-bold); letter-spacing:0.2px; white-space:nowrap;}
+    .score-pill i.ph-bold{font-size:13px;}
+    .bold-score-pill{display:inline-flex; align-items:center; padding:4px 10px; border-radius:var(--radius-full); font-size:var(--fs-sm); font-weight:var(--fw-semibold);}
+    .bold-score-mid{background:#fefce8; color:#92400e; border:1px solid #fde68a;}
+    .health-trainer-note{background:var(--color-mint-100); border-radius:var(--radius-md); padding:12px; display:flex; flex-direction:column; gap:6px;}
+    .health-trainer-head{display:flex; align-items:center; gap:10px;}
+    .health-trainer-avatar{width:32px; height:32px; margin:0; border-radius:50%; overflow:hidden; background:var(--color-gray-300); flex-shrink:0;}
+    .health-trainer-avatar img{width:100%; height:100%; object-fit:cover; display:block;}
+    .health-trainer-avatar img.failed{display:none;}
+    .health-trainer-title{margin:0; font-size:var(--fs-lg); font-weight:var(--fw-semibold); color:var(--color-mint-700); line-height:1;}
+    .health-trainer-body{margin:0; font-size:var(--fs-lg); color:var(--color-gray-900); line-height:1.5;}
+    .my-health-section{border-top:1px solid var(--color-gray-200); padding-top:20px; display:flex; flex-direction:column; gap:12px;}
+    .my-health-heading{margin:0; font-size:var(--fs-3xl); font-weight:var(--fw-bold); color:var(--color-gray-950); line-height:1.2;}
+    .my-health-sublabel{margin:-6px 0 0; font-size:var(--fs-md); font-weight:var(--fw-medium); color:var(--color-gray-500); line-height:1;}
+    .hm-row{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+    .hm-card{background:#fff; border:1px solid var(--color-gray-200); border-radius:var(--radius-md); padding:14px; text-align:left; font-family:inherit; width:100%; cursor:pointer; box-shadow:var(--shadow-xs);}
+    .hm-card:hover{background:var(--color-gray-50);}
+    .hm-label{display:flex; align-items:center; gap:6px; font-size:var(--fs-sm); color:var(--color-gray-500); margin:0 0 6px; text-transform:uppercase; letter-spacing:0.4px; font-weight:var(--fw-bold);}
+    .hm-label i{font-size:16px; color:var(--color-purple-600);}
+    .hm-value{font-size:var(--fs-2xl); font-weight:var(--fw-bold); color:var(--color-gray-950);}
+    .hm-unit{font-size:var(--fs-md); color:var(--color-gray-500); font-weight:var(--fw-semibold);}
+    .hm-progress{margin-top:8px; height:6px; border-radius:var(--radius-full); background:var(--color-gray-200); overflow:hidden;}
+    .hm-progress-fill{display:block; height:100%; border-radius:var(--radius-full); background:var(--color-purple-600);}
+    .hm-foot{margin:6px 0 0; font-size:var(--fs-sm); color:var(--color-gray-500);}
+    .bsr-metric{background:#fff; border:1px solid var(--color-gray-200); border-radius:var(--radius-lg); padding:18px 16px 12px; display:flex; flex-direction:column; gap:12px; box-shadow:var(--shadow-sm);}
+    .bsr-metric-head{display:flex; align-items:center; justify-content:space-between; gap:12px;}
+    .bsr-metric-head h3{display:flex; align-items:center; gap:8px; font-size:var(--fs-xl); font-weight:var(--fw-bold); color:var(--color-gray-950); margin:0; line-height:1;}
+    .bsr-metric-head h3 i{font-size:20px; color:var(--color-purple-600);}
+    .bsr-metric-value{margin:0; font-size:var(--fs-md); color:var(--color-gray-700); line-height:1.3;}
+    .bsr-metric-value strong{font-size:var(--fs-3xl); font-weight:var(--fw-extrabold); color:var(--color-gray-950); letter-spacing:-0.8px; margin-right:4px;}
+    .bsr-metric-eyebrow{font-size:var(--fs-md); font-weight:var(--fw-semibold); color:var(--color-gray-600); margin-right:4px;}
+    .bone-gauge{position:relative; padding:14px 0 4px;}
+    .bone-gauge-track{position:relative; display:flex; height:8px; width:100%; border-radius:var(--radius-full); overflow:visible; background:var(--color-gray-200);}
+    .bone-gauge-band{height:8px; flex:0 0 auto;}
+    .bone-gauge-band--normal{width:50%; background:rgba(0,181,163,0.55); border-radius:var(--radius-full) 0 0 var(--radius-full);}
+    .bone-gauge-band--osteopenia{width:30%; background:rgba(245,184,0,0.55);}
+    .bone-gauge-band--osteoporosis{width:20%; background:rgba(220,38,38,0.5); border-radius:0 var(--radius-full) var(--radius-full) 0;}
+    .bone-gauge-marker{position:absolute; top:-4px; width:16px; height:16px; border-radius:50%; background:var(--color-gray-950); transform:translateX(-50%); box-shadow:0 0 0 2px #fff;}
+    .bone-gauge-labels{display:flex; justify-content:space-between; margin-top:14px; font-size:var(--fs-sm); color:var(--color-gray-500); line-height:1.3;}
+    .bone-gauge-label-active{color:var(--color-gray-950); font-weight:var(--fw-bold);}
+    .bodycomp-legend{display:flex; gap:18px; font-size:var(--fs-sm); color:var(--color-gray-700); font-weight:var(--fw-semibold);}
+    .bodycomp-legend-item{display:inline-flex; align-items:center; gap:6px;}
+    .bodycomp-legend .dot{width:10px; height:10px; border-radius:50%; display:inline-block;}
+    .bodycomp-legend .dot-purple{background:var(--color-purple-600);}
+    .bodycomp-legend .dot-yellow{background:var(--color-amber-500);}
+    .bodycomp-chart{width:100%; height:96px; display:block;}
+    .bodycomp-baseline{stroke:var(--color-gray-200); stroke-width:1;}
+    .bodycomp-lean-line{fill:none; stroke:var(--color-purple-600); stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round;}
+    .bodycomp-fat-line{fill:none; stroke:var(--color-amber-500); stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round;}
+    .bodycomp-lean-dot{fill:var(--color-purple-600);}
+    .bodycomp-fat-dot{fill:var(--color-amber-500);}
+    .bodycomp-xaxis{display:flex; justify-content:space-between; font-size:var(--fs-sm); color:var(--color-gray-500); font-weight:var(--fw-medium);}
+    .bsr-gauge{position:relative; padding:16px 0 6px;}
+    .bsr-gauge-band{display:block; height:10px; border-radius:var(--radius-full); background:linear-gradient(to right,#bbf7d0 0% 40%,#fde68a 40% 70%,#fecaca 70% 100%);}
+    .bsr-gauge-dot{position:absolute; top:11px; width:20px; height:20px; background:#fff; border:3px solid var(--color-purple-600); border-radius:var(--radius-full); box-shadow:var(--shadow-sm); transform:translateX(-50%);}
+    .bsr-gauge-labels{display:flex; justify-content:space-between; margin-top:10px; font-size:var(--fs-sm); color:var(--color-gray-500);}
+    .bsr-gauge-labels i{font-style:normal;}
+    .bsr-gauge-labels i.is-current{color:var(--color-gray-950); font-weight:var(--fw-bold);}
+    .bsr-detail-body{margin:0; font-size:var(--fs-md); line-height:1.5; color:var(--color-gray-700);}
+    .health-chat-sticky{flex:none; padding:10px 16px 12px; background:var(--color-gray-50); border-top:1px solid var(--color-gray-100);}
+    .health-chat-sticky .bold-btn{background:#fff;}
+    .health-chat-sticky .bold-btn i.ph{font-size:20px;}
+    .scn-back button:hover{background:var(--color-gray-100);}
+    .scn-back .sb-title{font-size:var(--fs-xl); font-weight:var(--fw-bold);}
+
+    /* check-in flow */
+    .checkin-body{padding:22px 18px 28px; display:flex; flex-direction:column; gap:16px;}
+    .ci-q{font-size:var(--fs-3xl); font-weight:var(--fw-extrabold); letter-spacing:-0.5px; margin:0; line-height:1.2;}
+    .ci-help{font-size:var(--fs-md); color:var(--color-gray-600); margin:0; line-height:1.5;}
+    .opt-tile{display:flex; align-items:center; gap:14px; width:100%; text-align:left; background:#fff;
+      border:1.5px solid var(--color-gray-200); border-radius:var(--radius-md); padding:16px 16px; cursor:pointer; min-height:64px;}
+    .opt-tile:hover,.opt-tile[aria-pressed="true"]{border-color:var(--color-purple-600); background:var(--color-purple-50);}
+    .opt-tile i{font-size:26px; color:var(--color-purple-600); flex:none;}
+    .opt-tile .ot-title{font-size:var(--fs-lg); font-weight:var(--fw-semibold); line-height:1.3;}
+    .opt-tile .ot-desc{font-size:var(--fs-sm); color:var(--color-gray-500); margin-top:2px; line-height:1.35;}
+    .opt-tile.sev .ot-title{display:flex; align-items:center; gap:8px;}
+    .sev-dot{width:12px; height:12px; border-radius:50%; flex:none;}
+    .sev-dot.s1{background:var(--color-green-500,#22c55e);} .sev-dot.s2{background:var(--color-amber-500);} .sev-dot.s3{background:var(--color-red-600);}
+
+    /* triage result */
+    .triage{border-radius:var(--radius-lg); padding:18px 16px; border:1.5px solid;}
+    .triage .tr-head{display:flex; align-items:center; gap:10px; margin:0 0 8px;}
+    .triage .tr-head i{font-size:26px; flex:none;}
+    .triage .tr-title{font-size:var(--fs-xl); font-weight:var(--fw-bold); line-height:1.25; margin:0;}
+    .triage p{margin:0 0 8px; font-size:var(--fs-md); line-height:1.55; color:var(--color-gray-800);}
+    .triage ul{margin:6px 0 10px; padding-left:20px;}
+    .triage li{font-size:var(--fs-md); line-height:1.5; margin-bottom:6px; color:var(--color-gray-800);}
+    .triage.self{background:var(--color-green-50); border-color:#bbf7d0;}
+    .triage.self .tr-head{color:var(--color-green-700);}
+    .triage.concern{background:var(--color-amber-50); border-color:#fde68a;}
+    .triage.concern .tr-head{color:var(--color-amber-700);}
+    .triage.urgent{background:var(--color-amber-50); border-color:var(--color-amber-500);}
+    .triage.urgent .tr-head{color:var(--color-red-700);}
+    .triage.emergency{background:var(--color-red-50); border-color:#fecaca;}
+    .triage.emergency .tr-head{color:var(--color-red-700);}
+    .shared-chip{display:inline-flex; align-items:center; gap:6px; font-size:var(--fs-sm); font-weight:var(--fw-semibold);
+      color:var(--color-purple-700); background:#fff; border:1px solid var(--color-purple-100); border-radius:var(--radius-full); padding:6px 12px;}
+    /* structured-note preview — makes the provider handoff legible to the member */
+    .note-preview{display:flex; align-items:flex-start; gap:8px; margin-top:12px; padding:10px 12px;
+      background:var(--color-purple-50); border:1px solid var(--color-purple-100); border-radius:var(--radius-md);
+      font-size:var(--fs-sm); color:var(--color-purple-700); font-weight:var(--fw-medium); line-height:1.45;}
+    .note-preview i{flex:none; font-size:16px; margin-top:1px;}
+
+    /* high-risk-window reassurance (start / dose-increase weeks) */
+    .hrw-card{border:1px solid var(--color-purple-100); background:var(--color-purple-50); border-radius:var(--radius-lg); padding:16px;}
+    .hrw-card .hrw-head{display:flex; align-items:center; gap:8px; margin:0 0 6px; font-weight:var(--fw-bold); color:var(--color-purple-700); font-size:var(--fs-lg);}
+    .hrw-card .hrw-head i{font-size:22px;}
+    .hrw-card p{margin:0 0 6px; font-size:var(--fs-md); line-height:1.55; color:var(--color-gray-800);}
+    .hrw-card .hrw-foot{margin:8px 0 0; font-size:var(--fs-sm); color:var(--color-gray-500); line-height:1.5;}
+    .hrw-card .hrw-foot a{font-weight:var(--fw-bold);}
+
+    /* education week cards */
+    .week-card{border:1px solid var(--color-gray-200); border-radius:var(--radius-lg); background:#fff; padding:16px; box-shadow:var(--shadow-xs);}
+    .week-card .wc-top{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px;}
+    .week-card .wc-week{font-size:var(--fs-lg); font-weight:var(--fw-bold);}
+    .week-card p{margin:0; font-size:var(--fs-md); line-height:1.55; color:var(--color-gray-700);}
+    .week-card.now{border-color:var(--color-purple-600); box-shadow:0 0 0 1px var(--color-purple-600);}
+
+    /* toast */
+    .toast{position:absolute; left:50%; bottom:96px; transform:translateX(-50%) translateY(16px); z-index:80;
+      background:var(--color-gray-950); color:#fff; padding:12px 18px; border-radius:var(--radius-full);
+      font-size:var(--fs-md); font-weight:var(--fw-medium); box-shadow:var(--shadow-lg); opacity:0; pointer-events:none;
+      transition:opacity .25s, transform .25s; display:flex; align-items:center; gap:8px; max-width:86%;}
+    .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+    .toast i{color:var(--color-green-500,#22c55e);}
+
+    /* modal / bottom sheet */
+    .sheet-host{position:absolute; inset:0; z-index:70; display:none;}
+    .sheet-host.open{display:block;}
+    .sheet-scrim{position:absolute; inset:0; background:rgba(20,13,38,.5);}
+    .sheet{position:absolute; left:0; right:0; bottom:0; background:#fff; border-radius:24px 24px 0 0;
+      padding:8px 18px 24px; max-height:88%; overflow-y:auto; box-shadow:var(--shadow-lg);}
+    .sheet-handle{width:40px; height:5px; border-radius:3px; background:var(--color-gray-300); margin:8px auto 14px;}
+    .sheet h3{font-size:var(--fs-2xl); font-weight:var(--fw-bold); margin:0 0 6px;}
+    .sheet p{font-size:var(--fs-md); line-height:1.55; color:var(--color-gray-700); margin:0 0 12px;}
+
+    .hamburger{display:none;}
+
+    /* responsive */
+    @media (max-width:1040px){
+      .showcase{grid-template-columns:1fr;}
+      .sidebar{position:fixed; top:0; left:0; width:300px; transform:translateX(-100%); transition:transform .25s; box-shadow:var(--shadow-lg);}
+      body.nav-open .sidebar{transform:translateX(0);}
+      .nav-scrim{display:none; position:fixed; inset:0; background:rgba(20,13,38,.45); z-index:29;}
+      body.nav-open .nav-scrim{display:block;}
+      .hamburger{display:grid; place-items:center; position:fixed; top:16px; left:16px; z-index:40;
+        width:48px; height:48px; border-radius:50%; background:#fff; border:1px solid var(--color-gray-200);
+        box-shadow:var(--shadow-md); cursor:pointer; font-size:22px; color:var(--color-gray-800);}
+    }
+    @media (max-width:460px){
+      .showcase{display:block;}
+      .stage{display:block; padding:0;}
+      .iphone{width:100%; max-width:100%; height:100vh; min-height:100dvh; border-radius:0; padding:0;}
+      .iphone-screen{border-radius:0; max-width:100%;}
+      .iphone-island{display:none;}
+      .statusbar{display:none;}
+      .hamburger{top:10px; right:10px; left:auto;}
+    }
+    @media (prefers-reduced-motion:reduce){*{transition:none !important; animation:none !important;}}
+  </style>
+</head>
+<body data-app-stage="stage1" data-health="hidden">
+
+  <button class="hamburger" aria-label="Open demo menu" onclick="toggleNav(true)"><i class="ph ph-list"></i></button>
+  <div class="nav-scrim" onclick="toggleNav(false)"></div>
+
+  <div class="showcase">
+    <!-- ============ LEFT DEMO SIDEBAR ============ -->
+    <aside class="sidebar" aria-label="Prototype controls">
+      <div class="sidebar-brand">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <div>
+          <div class="brand-word">Bold</div>
+          <p class="sidebar-sub">MVP3 · Side effect &amp; prescription</p>
+        </div>
+      </div>
+
+      <p class="demo-note"><strong>Prototype demo.</strong> Switch a member's stage to see how the post-visit experience changes. This is one member (Carol) moving through her GLP-1 journey.</p>
+
+      <div>
+        <p class="sidebar-section-label">Member stage</p>
+        <div class="stage-list" role="group" aria-label="Member stage">
+          <button class="stage-btn" data-stage="stage1" aria-current="true" onclick="setStage('stage1')">
+            <span class="num">1</span>
+            <span><span class="st-title">1st doctor's appointment</span><span class="st-desc">Visit booked, no medication yet</span></span>
+          </button>
+          <button class="stage-btn" data-stage="stage2" aria-current="false" onclick="setStage('stage2')">
+            <span class="num">2</span>
+            <span><span class="st-title">Waiting for meds — first time</span><span class="st-desc">Prescribed, getting ready to start</span></span>
+          </button>
+          <button class="stage-btn" data-stage="stage3" aria-current="false" onclick="setStage('stage3')">
+            <span class="num">3</span>
+            <span><span class="st-title">Got the medication</span><span class="st-desc">On the med · side-effect support</span></span>
+          </button>
+          <button class="stage-btn" data-stage="stage4" aria-current="false" onclick="setStage('stage4')">
+            <span class="num">4</span>
+            <span><span class="st-title">Your visit is coming up</span><span class="st-desc">Follow-up check-in ahead</span></span>
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <p class="sidebar-section-label">Member context</p>
+        <div class="ctx-seg" role="group" aria-label="Medication form factor">
+          <button id="form-pill" aria-pressed="true" onclick="setForm('pill')">Daily pill</button>
+          <button id="form-pen" aria-pressed="false" onclick="setForm('pen')">Weekly pen</button>
+        </div>
+        <label class="ctx-toggle" style="margin-top:12px;">
+          <input type="checkbox" id="su-insulin-toggle" onchange="toggleSuInsulin(this.checked)">
+          On insulin or a sulfonylurea
+        </label>
+        <p class="ctx-note">Adds a “Low blood sugar” option to the symptom check-in.</p>
+      </div>
+
+      <div>
+        <p class="sidebar-section-label">View options</p>
+        <label class="ctx-toggle">
+          <input type="checkbox" id="health-tab-toggle" onchange="toggleHealthTab(this.checked)">
+          Show Health tab
+        </label>
+        <p class="ctx-note">Off by default. The Health tab (weight &amp; body-composition trends) is hidden from the bottom nav until you turn it on.</p>
+      </div>
+
+      <div>
+        <p class="sidebar-section-label">Jump to screen</p>
+        <div class="jump-list">
+          <button class="jump-link" onclick="showScreen('home')">Home</button>
+          <button class="jump-link" onclick="showScreen('care')">Care</button>
+          <button class="jump-link" data-jump="health" onclick="showScreen('health')">Health</button>
+          <button class="jump-link" onclick="openCheckin()">Feeling check-in</button>
+          <button class="jump-link" onclick="showScreen('meddetail')">Medication</button>
+          <button class="jump-link" onclick="showScreen('education')">What to expect</button>
+        </div>
+      </div>
+
+      <p class="sidebar-foot">Audience: adults 65+, Medicare-eligible.<br>Not an emergency service — no real-time monitoring.</p>
+    </aside>
+
+    <!-- ============ PHONE ============ -->
+    <div class="stage">
+      <div class="iphone">
+        <div class="iphone-island" aria-hidden="true"></div>
+        <div class="iphone-screen">
+          <div class="statusbar" aria-hidden="true">
+            <span>9:41</span>
+            <span class="sb-icons"><i class="ph-fill ph-cell-signal-full"></i><i class="ph-fill ph-wifi-high"></i><i class="ph-fill ph-battery-full"></i></span>
+          </div>
+
+          <!-- ========================= HOME / TODAY ========================= -->
+          <section class="screen active" data-screen="home" aria-label="Home">
+            <div class="nav-header">
+              <div class="brand"><span class="brand-mark" aria-hidden="true"></span><span class="brand-word">BOLD</span></div>
+            </div>
+
+            <div class="app-scroll">
+              <div class="scn" id="home-scn">
+
+                <!-- ---------- STAGE 1 ---------- -->
+                <div data-stage="stage1" class="home-stage">
+                  <header>
+                    <h1 class="h-greet">Hi Carol!</h1>
+                    <p class="h-sub">Your upcoming weight loss appointment is confirmed.</p>
+                  </header>
+
+                  <div class="appt-confirm">
+                    <div class="ac-badge"><i class="ph-fill ph-check-circle"></i><span>Appointment Confirmed</span></div>
+                    <div class="ac-card">
+                      <div class="ac-info">
+                        <p class="ac-name">Dr. Mitul Desai, MD</p>
+                        <p class="ac-when"><i class="ph ph-calendar-blank"></i> Mon, Nov 3 at 9:00am</p>
+                      </div>
+                      <div class="ac-actions">
+                        <button class="bold-btn bold-btn-primary" onclick="toast('Added to your calendar')"><i class="ph ph-calendar-plus"></i> Add to calendar</button>
+                        <button class="bold-btn bold-btn-outline" onclick="showScreen('care')">See details</button>
+                      </div>
+                    </div>
+                    <figure class="ac-avatar" aria-hidden="true"><img src="images/clinician-rivera.jpg" alt="" onerror="this.classList.add('failed')"></figure>
+                  </div>
+
+                  <div>
+                    <h2 class="sec-title">To do <span class="muted">(1/4 done)</span></h2>
+                    <p class="h-sub" style="margin:0 0 14px;">Optional steps to personalize your care.</p>
+                    <div style="display:flex; flex-direction:column; gap:12px;">
+                      <button class="callout" onclick="toast('Opens measurement guide')">
+                        <span class="co-bullet"><i class="ph ph-ruler"></i></span>
+                        <span class="co-body">
+                          <span class="co-titlerow"><span class="co-title">Share your measurements</span><span class="time-tag"><i class="ph ph-clock"></i> 5 min</span></span>
+                          <span class="co-desc">Waist and height help your doctor plan your care</span>
+                        </span>
+                      </button>
+                      <button class="callout" onclick="toast('Opens sit-to-stand check')">
+                        <span class="co-bullet"><i class="ph ph-pulse"></i></span>
+                        <span class="co-body">
+                          <span class="co-titlerow"><span class="co-title">Your first movement check</span><span class="time-tag"><i class="ph ph-clock"></i> 1 min</span></span>
+                          <span class="co-desc">A simple sit-to-stand to see where you're starting from</span>
+                        </span>
+                      </button>
+                      <button class="callout" onclick="toast('Opens fitness plan questions')">
+                        <span class="co-bullet"><i class="ph ph-person-simple-tai-chi"></i></span>
+                        <span class="co-body">
+                          <span class="co-titlerow"><span class="co-title">Get your fitness plan</span><span class="time-tag"><i class="ph ph-clock"></i> 5 min</span></span>
+                          <span class="co-desc">A few quick questions to get a plan tailored to you</span>
+                        </span>
+                      </button>
+                      <div class="callout done" aria-disabled="true">
+                        <span class="co-bullet"><i class="ph-fill ph-check-circle"></i></span>
+                        <span class="co-body"><span class="co-title">Insurance coverage confirmed</span></span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h2 class="sec-title">Your medication</h2>
+                    <div class="med-empty">
+                      <span class="me-ico"><i class="ph ph-pill"></i></span>
+                      <div>
+                        <p class="me-title">No prescriptions yet</p>
+                        <p class="me-desc">If Dr. Desai prescribes a GLP-1, it'll show up here — with how to take it, what to expect, and side-effect support the day it arrives.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h2 class="sec-title">For you today</h2>
+                    <div class="foryou-hero" role="button" tabindex="0" onclick="toast('Plays welcome video')" onkeydown="if(event.key==='Enter')toast('Plays welcome video')">
+                      <div class="fh-media">
+                        <figure class="imgslot" style="position:absolute; inset:0;"><img src="https://images.unsplash.com/photo-1584515933487-779824d29309?auto=format&fit=crop&w=800&q=60" alt="" onerror="this.classList.add('failed')"><span class="ph-fallback"><i class="ph ph-play-circle"></i></span></figure>
+                        <span class="fh-badge bold-tag"><i class="ph ph-clock"></i> 3 min</span>
+                        <span class="fh-play"><i class="ph-fill ph-play-circle"></i></span>
+                      </div>
+                      <div class="fh-body">
+                        <span class="mc-tag"><i class="ph ph-play-circle"></i> Video</span>
+                        <p class="fh-title">Welcome to your weight loss program</p>
+                        <p class="fh-by">Dr. Sandeep Palakodeti, M.D., M.P.H.</p>
+                      </div>
+                    </div>
+                    <div class="card-row" style="margin-top:12px;">
+                      <button class="mini-card" onclick="showScreen('education')">
+                        <figure class="imgslot mc-media" aria-hidden="true"><img src="images/article-glp1-aging.jpg" alt="" onerror="this.classList.add('failed')"><span class="ph-fallback"><i class="ph ph-article"></i></span></figure>
+                        <span class="mc-body"><span class="mc-tag"><i class="ph ph-book-open"></i> Resources</span><span class="mc-title">Weight management for seniors: what to know</span></span>
+                      </button>
+                      <button class="mini-card" onclick="showScreen('education')">
+                        <figure class="imgslot mc-media" aria-hidden="true"><img src="images/article-coverage.jpg" alt="" onerror="this.classList.add('failed')"><span class="ph-fallback"><i class="ph ph-article"></i></span></figure>
+                        <span class="mc-body"><span class="mc-tag"><i class="ph ph-book-open"></i> Resources</span><span class="mc-title">How Bold Care helps you stay strong</span></span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h2 class="sec-title">FAQ</h2>
+                    <div class="faq-card">
+                      <details><summary>What to expect in the appointment <i class="ph ph-caret-right"></i></summary><p class="faq-a">You'll meet your Bold doctor by video. They'll review your health, answer your questions, and decide together whether a GLP-1 is a good fit — it's a conversation, not a commitment.</p></details>
+                      <details><summary>What is included in my personalized Care Plan? <i class="ph ph-caret-right"></i></summary><p class="faq-a">A plan built around you: nutrition that's practical, movement that's doable at your pace, and — if it's right for you — medication with your provider staying in the loop.</p></details>
+                      <details><summary>Will I have any co-pay or co-insurance fees associated with my appointments? <i class="ph ph-caret-right"></i></summary><p class="faq-a">78% of Bold patients pay $0 out of pocket. We check your Medicare coverage before your visit so there are no surprises.</p></details>
+                      <details><summary>Does Bold Care offer primary care? <i class="ph ph-caret-right"></i></summary><p class="faq-a">Bold Care focuses on preventive, healthy-aging care and coordinates with your primary doctor — we work with your PCP, not around them.</p></details>
+                    </div>
+                  </div>
+
+                  <p class="emergency-line">Bold isn't an emergency service. If this is a medical emergency, <a href="tel:911">call 911</a>.</p>
+                </div>
+
+                <!-- ---------- STAGE 2 ---------- -->
+                <div data-stage="stage2" class="home-stage">
+                  <header>
+                    <h1 class="h-greet">Hi Carol!</h1>
+                    <p class="h-sub">One quick signature and your prescription gets moving — here's what happens next.</p>
+                  </header>
+
+                  <div>
+                    <h2 class="sec-title">Your prescription</h2>
+                    <div class="rx-progress">
+                      <div class="rxp-badge"><i class="ph ph-prescription"></i><span>Prescription progress</span></div>
+                      <div class="rxp-card">
+                        <div class="rxp-bar" id="rxp-bar">
+                          <span class="rxp-seg"></span><span class="rxp-seg"></span><span class="rxp-seg"></span><span class="rxp-seg"></span>
+                        </div>
+                        <div>
+                          <p class="rxp-step-title" id="rxp-title">Consent form</p>
+                          <p class="rxp-step-desc" id="rxp-desc">Sign the consent form so we can send your prescription.</p>
+                        </div>
+                        <button class="bold-btn bold-btn-outline bold-btn-full" onclick="openSheet('rxdetails')">See details <i class="ph ph-caret-right"></i></button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h2 class="sec-title">To do</h2>
+                    <div style="display:flex; flex-direction:column; gap:10px;">
+                      <button class="todo-item" onclick="showScreen('education')">
+                        <span class="ti-ico"><i class="ph ph-book-open-text"></i></span>
+                        <span class="ti-body"><span class="ti-title">See what to expect in Week 1</span><span class="ti-desc">A short read so nothing catches you off guard</span></span>
+                        <span class="ti-time"><i class="ph ph-clock"></i> 2 min</span>
+                      </button>
+                      <button class="todo-item" onclick="toast('Reminder set — we\'ll text you')">
+                        <span class="ti-ico"><i class="ph ph-bell-ringing"></i></span>
+                        <span class="ti-body"><span class="ti-title">Set up your daily reminder</span><span class="ti-desc">We'll text you when it's time to take your pill</span></span>
+                        <span class="ti-time"><i class="ph ph-clock"></i> 1 min</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h2 class="sec-title">For you today</h2>
+                    <div class="foryou-hero" role="button" tabindex="0" onclick="toast('Plays video')" onkeydown="if(event.key==='Enter')toast('Plays video')">
+                      <div class="fh-media">
+                        <figure class="imgslot" style="position:absolute; inset:0;"><img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=800&q=60" alt="" onerror="this.classList.add('failed')"><span class="ph-fallback"><i class="ph ph-play-circle"></i></span></figure>
+                        <span class="fh-badge bold-tag"><i class="ph ph-clock"></i> 4 min</span>
+                        <span class="fh-play"><i class="ph-fill ph-play-circle"></i></span>
+                      </div>
+                      <div class="fh-body">
+                        <span class="mc-tag"><i class="ph ph-play-circle"></i> Video</span>
+                        <p class="fh-title">The importance of maintaining muscle while on GLP-1</p>
+                        <p class="fh-by">Bold fitness team</p>
+                      </div>
+                    </div>
+                    <div class="card-row" style="margin-top:12px;">
+                      <button class="mini-card" onclick="toast('Opens Bold fitness classes')">
+                        <figure class="imgslot mc-media" aria-hidden="true"><span class="ph-fallback"><i class="ph ph-barbell"></i></span></figure>
+                        <span class="mc-body"><span class="mc-tag"><i class="ph ph-barbell"></i> Classes</span><span class="mc-title">Fitness classes</span></span>
+                      </button>
+                      <button class="mini-card" onclick="showScreen('education')">
+                        <figure class="imgslot mc-media" aria-hidden="true"><span class="ph-fallback"><i class="ph ph-play-circle"></i></span></figure>
+                        <span class="mc-body"><span class="mc-tag"><i class="ph ph-play-circle"></i> Video</span><span class="mc-title">What to expect in your GLP-1 journey</span></span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h2 class="sec-title">FAQ</h2>
+                    <div class="faq-card">
+                      <details><summary>What should I expect when I start my GLP-1? <i class="ph ph-caret-right"></i></summary><p class="faq-a">Your dose starts low and goes up slowly. Mild nausea is the most common early feeling and usually eases within a few weeks.</p></details>
+                      <details><summary>How will I get my medication? <i class="ph ph-caret-right"></i></summary><p class="faq-a">Once your consent is signed and insurance clears, we send it to your pharmacy and text you when it's ready to pick up.</p></details>
+                      <details><summary>How do I take my first dose? <i class="ph ph-caret-right"></i></summary><p class="faq-a">We'll walk you through it step by step the day it arrives — the best time of day, and what to take it with.</p></details>
+                      <details><summary>What if my insurance needs more time? <i class="ph ph-caret-right"></i></summary><p class="faq-a">Coverage can take up to 6 days. The program mails you a formal approval or denial letter, and your care coordinator can help if anything stalls.</p></details>
+                    </div>
+                  </div>
+
+                  <p class="emergency-line">Questions about your prescription? <a href="#" onclick="showScreen('care');return false;" style="color:var(--color-purple-600)">Message your care team</a>. In an emergency, <a href="tel:911">call 911</a>.</p>
+                </div>
+
+                <!-- ---------- STAGE 3 ---------- -->
+                <div data-stage="stage3" class="home-stage">
+                  <header>
+                    <h1 class="h-greet">Hi Carol!</h1>
+                    <p class="h-sub">Week 1 of your GLP-1 — you're getting started. Take it one day at a time.</p>
+                  </header>
+
+                  <!-- acknowledgment reflection (shown after a not-great check-in) — tier-aware -->
+                  <div class="ack-card" id="ack-card" style="display:none;">
+                    <p class="ack-head"><i class="ph-fill ph-hand-heart"></i> We heard you</p>
+                    <p id="ack-text">You told us you're not feeling your best today.</p>
+                    <p id="ack-body">Take it easy today — rest is part of getting started. This was shared with Dr. Desai.</p>
+                    <p class="ack-em">If this becomes an emergency, <a href="tel:911" style="color:var(--color-red-600); font-weight:700;">call 911</a>.</p>
+                  </div>
+
+                  <!-- side-by-side: feeling check-in + what's normal -->
+                  <div>
+                    <h2 class="sec-title">To do</h2>
+                    <div class="feel-card">
+                      <p class="fc-q">How are you feeling today?</p>
+                      <p class="fc-sub">A quick check-in. If something's off, we'll help right away.</p>
+                      <div class="feel-actions">
+                        <button class="feel-choice good" onclick="feelWell()"><i class="ph-fill ph-smiley"></i><span>I'm doing well</span></button>
+                        <button class="feel-choice off" onclick="openCheckin('symptom')"><i class="ph-fill ph-first-aid-kit"></i><span>Something's bothering me</span></button>
+                      </div>
+                    </div>
+                    <div class="normal-card" style="margin-top:12px;">
+                      <span class="bold-tag bold-tag-purple"><i class="ph ph-info"></i> What's normal this week</span>
+                      <ul>
+                        <li>Mild nausea is common when you start — it usually eases within a few weeks.</li>
+                        <li>Eat small, frequent meals and go easy on greasy foods.</li>
+                        <li>Sip water through the day. Ginger tea can settle your stomach.</li>
+                      </ul>
+                      <button class="bold-btn bold-btn-outline bold-btn-sm bold-btn-full" style="margin-top:6px;" onclick="showScreen('education')">See the full week-by-week guide</button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h2 class="sec-title">For you today</h2>
+                    <div class="foryou-hero" role="button" tabindex="0" onclick="toast('Plays video')" onkeydown="if(event.key==='Enter')toast('Plays video')">
+                      <div class="fh-media">
+                        <figure class="imgslot" style="position:absolute; inset:0;"><img src="https://images.unsplash.com/photo-1584515933487-779824d29309?auto=format&fit=crop&w=800&q=60" alt="" onerror="this.classList.add('failed')"><span class="ph-fallback"><i class="ph ph-play-circle"></i></span></figure>
+                        <span class="fh-badge bold-tag"><i class="ph ph-clock"></i> 4 min</span>
+                        <span class="fh-play"><i class="ph-fill ph-play-circle"></i></span>
+                      </div>
+                      <div class="fh-body">
+                        <span class="mc-tag"><i class="ph ph-play-circle"></i> Video</span>
+                        <p class="fh-title">What to expect in your GLP-1 journey</p>
+                        <p class="fh-by">Dr. Sandeep Palakodeti, M.D., M.P.H.</p>
+                      </div>
+                    </div>
+                    <div class="card-row" style="margin-top:12px;">
+                      <button class="mini-card" onclick="toast('Opens Bold fitness classes')">
+                        <figure class="imgslot mc-media" aria-hidden="true"><span class="ph-fallback"><i class="ph ph-barbell"></i></span></figure>
+                        <span class="mc-body"><span class="mc-tag"><i class="ph ph-barbell"></i> Classes</span><span class="mc-title">Fitness classes</span></span>
+                      </button>
+                      <button class="mini-card" onclick="showScreen('education')">
+                        <figure class="imgslot mc-media" aria-hidden="true"><span class="ph-fallback"><i class="ph ph-play-circle"></i></span></figure>
+                        <span class="mc-body"><span class="mc-tag"><i class="ph ph-play-circle"></i> Video</span><span class="mc-title">The importance of maintaining muscle while on GLP-1</span></span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h2 class="sec-title">FAQ</h2>
+                    <div class="faq-card">
+                      <details><summary>How do I deal with a side effect? <i class="ph ph-caret-right"></i></summary><p class="faq-a">Most early side effects are mild and manageable at home — small meals, fluids, ginger tea. Tap <strong>How are you feeling?</strong> to log one and get guidance right away.</p></details>
+                      <details><summary>What if I experience a serious side effect? <i class="ph ph-caret-right"></i></summary><p class="faq-a">Severe or lasting symptoms should be looked at the same day. The check-in routes you to your care team — and there's always a 911 path for a true emergency.</p></details>
+                      <details><summary>What if I miss a dose? <i class="ph ph-caret-right"></i></summary><p class="faq-a">It won't undo your progress. Open your medication in Care for the missed-dose guide, and never double up to catch up.</p></details>
+                    </div>
+                  </div>
+
+                  <p class="emergency-line">Bold isn't an emergency service. If this is a medical emergency, <a href="tel:911">call 911</a>.</p>
+                </div>
+
+                <!-- ---------- STAGE 4 ---------- -->
+                <div data-stage="stage4" class="home-stage">
+                  <header>
+                    <h1 class="h-greet">Hi Carol!</h1>
+                    <p class="h-sub">Your check-in with Dr. Desai is in 3 days. Here's how to get ready.</p>
+                  </header>
+
+                  <div class="appt-confirm">
+                    <div class="ac-badge"><i class="ph-fill ph-calendar-check"></i><span>Check-in coming up</span></div>
+                    <div class="ac-card">
+                      <div class="ac-info">
+                        <p class="ac-name">Follow-up · Dr. Desai</p>
+                        <p class="ac-when"><i class="ph ph-calendar-blank"></i> Thu, Nov 27 at 9:30am</p>
+                      </div>
+                      <div class="ac-actions">
+                        <button class="bold-btn bold-btn-primary" onclick="toast('Added to your calendar')"><i class="ph ph-calendar-plus"></i> Add to calendar</button>
+                        <button class="bold-btn bold-btn-outline" onclick="showScreen('care')">See details</button>
+                      </div>
+                    </div>
+                    <figure class="ac-avatar" aria-hidden="true"><img src="images/clinician-rivera.jpg" alt="" onerror="this.classList.add('failed')"></figure>
+                  </div>
+
+                  <div>
+                    <h2 class="sec-title">To do</h2>
+                    <div style="display:flex; flex-direction:column; gap:10px;">
+                      <button class="todo-item" onclick="openCheckin('feel')">
+                        <span class="ti-ico"><i class="ph ph-first-aid-kit"></i></span>
+                        <span class="ti-body"><span class="ti-title">Share how you've been feeling</span><span class="ti-desc">Dr. Desai will see this before your visit</span></span>
+                        <span class="ti-time"><i class="ph ph-clock"></i> 1 min</span>
+                      </button>
+                      <button class="todo-item" onclick="toast('Opens measurement guide')">
+                        <span class="ti-ico"><i class="ph ph-ruler"></i></span>
+                        <span class="ti-body"><span class="ti-title">Take your measurements</span><span class="ti-desc">Waist and weight help track fat loss, not just the scale</span></span>
+                        <span class="ti-time"><i class="ph ph-clock"></i> 3 min</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h2 class="sec-title">For you today</h2>
+                    <div class="foryou-hero" role="button" tabindex="0" onclick="toast('Plays video')" onkeydown="if(event.key==='Enter')toast('Plays video')">
+                      <div class="fh-media">
+                        <figure class="imgslot" style="position:absolute; inset:0;"><img src="https://images.unsplash.com/photo-1579126038374-6064e9370f0f?auto=format&fit=crop&w=800&q=60" alt="" onerror="this.classList.add('failed')"><span class="ph-fallback"><i class="ph ph-play-circle"></i></span></figure>
+                        <span class="fh-badge bold-tag"><i class="ph ph-clock"></i> 4 min</span>
+                        <span class="fh-play"><i class="ph-fill ph-play-circle"></i></span>
+                      </div>
+                      <div class="fh-body">
+                        <span class="mc-tag"><i class="ph ph-play-circle"></i> Video</span>
+                        <p class="fh-title">Making your GLP-1 results last</p>
+                        <p class="fh-by">Bold Care team</p>
+                      </div>
+                    </div>
+                    <div class="card-row" style="margin-top:12px;">
+                      <button class="mini-card" onclick="toast('Opens Bold fitness classes')">
+                        <figure class="imgslot mc-media" aria-hidden="true"><span class="ph-fallback"><i class="ph ph-barbell"></i></span></figure>
+                        <span class="mc-body"><span class="mc-tag"><i class="ph ph-barbell"></i> Classes</span><span class="mc-title">Fitness classes</span></span>
+                      </button>
+                      <button class="mini-card" onclick="showScreen('education')">
+                        <figure class="imgslot mc-media" aria-hidden="true"><span class="ph-fallback"><i class="ph ph-play-circle"></i></span></figure>
+                        <span class="mc-body"><span class="mc-tag"><i class="ph ph-play-circle"></i> Video</span><span class="mc-title">The importance of maintaining muscle while on GLP-1</span></span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h2 class="sec-title">FAQ</h2>
+                    <div class="faq-card">
+                      <details><summary>What happens at my follow-up visit? <i class="ph ph-caret-right"></i></summary><p class="faq-a">You and Dr. Desai review how you're tolerating the medication and your measurements, then decide the next step together.</p></details>
+                      <details><summary>Will my dose change? <i class="ph ph-caret-right"></i></summary><p class="faq-a">Maybe. Going up, staying put, or easing back are all normal — it depends on how you're doing, not on hitting a number.</p></details>
+                      <details><summary>How is my progress measured? <i class="ph ph-caret-right"></i></summary><p class="faq-a">By the kind of weight you're losing — fat down, muscle and bone protected — not just the number on the scale.</p></details>
+                      <details><summary>What if I want to pause or stop? <i class="ph ph-caret-right"></i></summary><p class="faq-a">That's your call, always with your provider. We'll talk through it and how to keep your progress if you do.</p></details>
+                    </div>
+                  </div>
+
+                  <p class="emergency-line">Bold isn't an emergency service. If this is a medical emergency, <a href="tel:911">call 911</a>.</p>
+                </div>
+
+              </div>
+            </div>
+
+            <nav class="app-tabbar" aria-label="Main tabs">
+              <button data-screen="home" aria-pressed="true" onclick="showScreen('home')"><i class="ph-fill ph-house"></i>Home</button>
+              <button data-screen="care" aria-pressed="false" onclick="showScreen('care')"><i class="ph ph-stethoscope"></i>Care</button>
+              <button data-screen="health" aria-pressed="false" onclick="showScreen('health')"><i class="ph ph-chart-bar"></i>Health</button>
+            </nav>
+          </section>
+
+          <!-- ========================= CARE ========================= -->
+          <section class="screen" data-screen="care" aria-label="Care">
+            <div class="app-topbar"><span class="brand-word" style="font-size:20px;">Care</span></div>
+            <div class="app-scroll">
+              <div class="scn">
+
+                <!-- appointment (stage-aware) -->
+                <div>
+                  <p class="eyebrow">Coming up</p>
+                  <div class="bold-card" style="margin-top:8px;">
+                    <div class="appt-card">
+                      <figure class="imgslot appt-avatar" aria-hidden="true"><img src="images/clinician-rivera.jpg" alt="" onerror="this.classList.add('failed')"><span class="ph-fallback"><i class="ph-fill ph-user"></i></span></figure>
+                      <div class="appt-body">
+                        <p class="appt-name" data-stage-text="appt-title">Weight loss appointment</p>
+                        <p class="appt-meta"><i class="ph ph-calendar-blank"></i> <span data-stage-text="appt-date">Mon, Nov 3 · 9:00am</span></p>
+                        <p class="appt-meta" style="margin-top:4px;"><i class="ph ph-user"></i> Dr. Desai</p>
+                        <p style="margin-top:8px;"><a href="#" onclick="toast('Reschedule flow');return false;" style="font-weight:600; text-decoration:underline;">Reschedule</a></p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- prescription (stage-aware: empty / status / active) -->
+                <div>
+                  <div style="display:flex; align-items:center; justify-content:space-between;">
+                    <p class="eyebrow">Prescription</p>
+                    <span class="bold-tag bold-tag-green"><i class="ph-fill ph-seal-check"></i> FDA approved</span>
+                  </div>
+                  <div style="margin-top:8px;">
+                    <!-- empty -->
+                    <div data-stage="stage1" class="care-rx">
+                      <div class="med-empty">
+                        <span class="me-ico"><i class="ph ph-pill"></i></span>
+                        <div><p class="me-title">No prescriptions yet</p><p class="me-desc">You'll see your GLP-1 here after your appointment, if it's right for you.</p></div>
+                      </div>
+                    </div>
+                    <!-- awaiting -->
+                    <div data-stage="stage2" class="care-rx">
+                      <button class="list-row" onclick="showScreen('home')">
+                        <i class="ph ph-pill lead"></i>
+                        <span class="lr-body"><span class="lr-title">Wegovy® tablet · 7 mg</span><span class="lr-sub">Consent needed — tap to finish</span></span>
+                        <span class="bold-tag bold-tag-amber">Action needed</span>
+                      </button>
+                    </div>
+                    <!-- active -->
+                    <div data-stage="stage3 stage4" class="care-rx">
+                      <button class="list-row" onclick="showScreen('meddetail')">
+                        <figure class="imgslot" style="width:44px;height:44px;border-radius:10px;flex:none;" aria-hidden="true"><img src="images/rx-pill.jpg" alt="" onerror="this.classList.add('failed')"><span class="ph-fallback"><i class="ph ph-pill"></i></span></figure>
+                        <span class="lr-body"><span class="lr-title">Wegovy® tablet · 7 mg</span><span class="lr-sub">Once a day · <span data-stage-text="rx-status">on track</span></span></span>
+                        <i class="ph ph-caret-right chev"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- symptom history (active stages) -->
+                <div data-stage="stage3 stage4">
+                  <p class="eyebrow">Your check-ins</p>
+                  <div class="bold-card" style="margin-top:8px; padding:6px 4px;" id="symptom-history">
+                    <p style="padding:14px 12px; margin:0; color:var(--color-gray-500); font-size:var(--fs-md);">No check-ins logged yet. Tap <strong>How are you feeling?</strong> on Today to share how you're doing.</p>
+                  </div>
+                  <button class="bold-btn bold-btn-outline bold-btn-full bold-btn-sm" style="margin-top:10px;" onclick="openCheckin()"><i class="ph ph-first-aid-kit"></i> How are you feeling?</button>
+                </div>
+
+                <!-- care team -->
+                <div>
+                  <p class="eyebrow">Your care team</p>
+                  <div style="display:flex; flex-direction:column; gap:10px; margin-top:8px;">
+                    <div class="person">
+                      <figure class="imgslot p-av" aria-hidden="true"><img src="images/clinician-rivera.jpg" alt="" onerror="this.classList.add('failed')"><span class="ph-fallback"><i class="ph-fill ph-user"></i></span></figure>
+                      <div><p class="p-name">Dr. Desai, MD</p><p class="p-role">Weight management provider · 18 yrs</p></div>
+                    </div>
+                    <div class="person">
+                      <figure class="imgslot p-av" aria-hidden="true"><img src="images/coordinator-patel.jpg" alt="" onerror="this.classList.add('failed')"><span class="ph-fallback"><i class="ph-fill ph-headset"></i></span></figure>
+                      <div style="flex:1;">
+                        <p class="p-name">Ali Neuwirth</p>
+                        <p class="p-role">Bold Care Coordinator · scheduling, coverage &amp; refills</p>
+                      </div>
+                    </div>
+                    <a class="bold-btn bold-btn-outline bold-btn-full" href="tel:+18005550100"><i class="ph ph-phone-call"></i> Call care team · (800) 555-0100</a>
+                    <p style="font-size:var(--fs-sm); color:var(--color-gray-500); text-align:center; margin:0;">Mon–Fri · 7am–5pm PT · We reply to messages within 48 hours.</p>
+                  </div>
+                </div>
+
+                <p class="emergency-line">Bold isn't an emergency service and no one is watching a live feed. If this is a medical emergency, <a href="tel:911">call 911</a>.</p>
+              </div>
+            </div>
+            <nav class="app-tabbar" aria-label="Main tabs">
+              <button data-screen="home" aria-pressed="false" onclick="showScreen('home')"><i class="ph ph-house"></i>Home</button>
+              <button data-screen="care" aria-pressed="true" onclick="showScreen('care')"><i class="ph-fill ph-stethoscope"></i>Care</button>
+              <button data-screen="health" aria-pressed="false" onclick="showScreen('health')"><i class="ph ph-chart-bar"></i>Health</button>
+            </nav>
+          </section>
+
+          <!-- ========================= HEALTH ========================= -->
+          <section class="screen" data-screen="health" aria-label="Health">
+            <div class="app-topbar"><span class="brand-word" style="font-size:20px;">Health</span></div>
+            <div class="app-scroll">
+              <div class="scn health-scn">
+
+                <!-- Weekly summary — body-composition narrative -->
+                <article class="weekly-summary-card" aria-label="This week's summary">
+                  <header class="weekly-summary-head">
+                    <h2 class="weekly-summary-title">Weekly summary</h2>
+                    <span class="weekly-summary-range">May 22–28</span>
+                  </header>
+                  <p class="weekly-summary-lead">Your lean mass held steady and your body fat is down 4.2% over the last 8 weeks.</p>
+
+                  <div class="ws-leanmass-card">
+                    <div class="ws-leanmass-head">
+                      <h3 class="ws-leanmass-title">Lean mass</h3>
+                      <span class="score-pill"><i class="ph-bold ph-check" aria-hidden="true"></i> Holding strong</span>
+                    </div>
+                    <div class="ws-leanmass-stats">
+                      <div class="ws-stat"><div class="ws-stat-value"><span class="ws-stat-num">103</span><span class="ws-stat-unit">lbs</span></div><div class="ws-stat-label">Lean mass</div></div>
+                      <div class="ws-stat ws-stat-divider"><div class="ws-stat-value"><span class="ws-stat-num ws-stat-num-positive">−4.2</span><span class="ws-stat-unit">%</span></div><div class="ws-stat-label">Body fat lost</div></div>
+                    </div>
+                  </div>
+
+                  <aside class="health-trainer-note" aria-label="Note from your care team">
+                    <div class="health-trainer-head">
+                      <figure class="health-trainer-avatar" aria-hidden="true"><img src="images/clinician-rivera.jpg" alt="" onerror="this.classList.add('failed')"></figure>
+                      <p class="health-trainer-title">You are on the right track!</p>
+                    </div>
+                    <p class="health-trainer-body">Your daily protein has been on target, and you've moved at least 20 minutes each day. Both help muscle stay put while fat goes down.</p>
+                  </aside>
+
+                  <button type="button" class="weekly-summary-link" onclick="toast('Opens strength assessment')">Assess my strength <i class="ph-bold ph-arrow-right" aria-hidden="true"></i></button>
+                </article>
+
+                <!-- My health -->
+                <section class="my-health-section" aria-labelledby="my-health-heading">
+                  <h2 id="my-health-heading" class="my-health-heading">My health</h2>
+                  <p class="my-health-sublabel">Today</p>
+
+                  <div class="hm-row">
+                    <button class="hm-card" type="button" onclick="toast('Opens movement detail')">
+                      <p class="hm-label"><i class="ph ph-person-simple-walk" aria-hidden="true"></i> Movement</p>
+                      <div class="hm-value">23 <span class="hm-unit">min</span></div>
+                      <div class="hm-progress" role="progressbar" aria-valuenow="23" aria-valuemin="0" aria-valuemax="30" aria-label="Movement: 23 of 30 minutes today"><span class="hm-progress-fill" style="width:77%;"></span></div>
+                      <p class="hm-foot">of 30 min today</p>
+                    </button>
+                    <button class="hm-card" type="button" onclick="toast('Opens protein detail')">
+                      <p class="hm-label"><i class="ph ph-egg" aria-hidden="true"></i> Protein</p>
+                      <div class="hm-value">84 <span class="hm-unit">g</span></div>
+                      <div class="hm-progress" role="progressbar" aria-valuenow="84" aria-valuemin="0" aria-valuemax="100" aria-label="Protein: 84 of 100 grams today"><span class="hm-progress-fill" style="width:84%;"></span></div>
+                      <p class="hm-foot">of 100 g today</p>
+                    </button>
+                  </div>
+
+                  <!-- Bone density -->
+                  <article class="bsr-metric" aria-label="Bone density">
+                    <header class="bsr-metric-head">
+                      <h3><i class="ph ph-bone" aria-hidden="true"></i> Bone density</h3>
+                      <span class="score-pill">Stable</span>
+                    </header>
+                    <p class="bsr-metric-value"><span class="bsr-metric-eyebrow">T-score</span> <strong>−0.8</strong></p>
+                    <div class="bone-gauge" aria-hidden="true">
+                      <div class="bone-gauge-track">
+                        <span class="bone-gauge-band bone-gauge-band--normal"></span>
+                        <span class="bone-gauge-band bone-gauge-band--osteopenia"></span>
+                        <span class="bone-gauge-band bone-gauge-band--osteoporosis"></span>
+                        <span class="bone-gauge-marker" style="left:27%;"></span>
+                      </div>
+                      <div class="bone-gauge-labels">
+                        <span class="bone-gauge-label bone-gauge-label-active">Normal</span>
+                        <span class="bone-gauge-label">Osteopenia</span>
+                        <span class="bone-gauge-label">Osteoporosis</span>
+                      </div>
+                    </div>
+                  </article>
+
+                  <!-- Lean mass 8-week trend -->
+                  <article class="bsr-metric" aria-label="Lean mass and body fat over 8 weeks">
+                    <header class="bsr-metric-head">
+                      <h3>Lean mass</h3>
+                      <span class="score-pill"><i class="ph-bold ph-check" aria-hidden="true"></i> Holding strong</span>
+                    </header>
+                    <div class="bodycomp-legend" aria-hidden="true">
+                      <span class="bodycomp-legend-item"><span class="dot dot-purple"></span> Lean mass (lbs)</span>
+                      <span class="bodycomp-legend-item"><span class="dot dot-yellow"></span> Body fat (%)</span>
+                    </div>
+                    <svg class="bodycomp-chart" viewBox="0 0 320 90" preserveAspectRatio="none" role="img" aria-label="Lean mass holding flat near 103 lbs while body fat trends down over 8 weeks.">
+                      <line x1="0" y1="45" x2="320" y2="45" class="bodycomp-baseline"></line>
+                      <polyline class="bodycomp-fat-line" points="5,12 55,22 105,28 155,38 205,48 255,58 305,66"></polyline>
+                      <polyline class="bodycomp-lean-line" points="5,52 55,50 105,52 155,50 205,52 255,50 305,52"></polyline>
+                      <circle class="bodycomp-fat-dot" cx="305" cy="66" r="4"></circle>
+                      <circle class="bodycomp-lean-dot" cx="305" cy="52" r="4"></circle>
+                    </svg>
+                    <div class="bodycomp-xaxis" aria-hidden="true"><span>Wk 1</span><span>Wk 4</span><span>Now</span></div>
+                    <div class="ws-leanmass-stats ws-leanmass-stats--card">
+                      <div class="ws-stat"><div class="ws-stat-value"><span class="ws-stat-num">103</span><span class="ws-stat-unit">lbs</span></div><div class="ws-stat-label">Lean mass</div></div>
+                      <div class="ws-stat ws-stat-divider"><div class="ws-stat-value"><span class="ws-stat-num ws-stat-num-positive">−4.2</span><span class="ws-stat-unit">%</span></div><div class="ws-stat-label">Body fat lost</div></div>
+                    </div>
+                  </article>
+
+                  <!-- Waist-to-height ratio -->
+                  <article class="bsr-metric" data-metric="waist-height" aria-label="Waist-to-height ratio">
+                    <header class="bsr-metric-head">
+                      <h3>Waist-to-height ratio</h3>
+                      <span class="bold-score-pill bold-score-mid">Slightly high</span>
+                    </header>
+                    <p class="bsr-metric-value"><strong>0.53</strong></p>
+                    <div class="ws-leanmass-stats ws-leanmass-stats--card">
+                      <div class="ws-stat"><div class="ws-stat-value"><span class="ws-stat-num ws-stat-num-positive">−0.02</span></div><div class="ws-stat-label">In 8 weeks</div></div>
+                    </div>
+                    <div class="bsr-gauge" role="img" aria-label="Waist-to-height ratio 0.53, in the borderline range">
+                      <span class="bsr-gauge-band"></span>
+                      <span class="bsr-gauge-dot" style="left:55%;"></span>
+                      <div class="bsr-gauge-labels"><i>&lt;0.50</i><i class="is-current">0.50–0.60</i><i>0.60+</i></div>
+                    </div>
+                    <p class="bsr-detail-body">A signal of visceral fat. Lower is better.</p>
+                  </article>
+
+                  <button type="button" class="bold-btn bold-btn-outline bold-btn-full" onclick="toast('Opens full body scan report')">See full report</button>
+                </section>
+              </div>
+            </div>
+
+            <div class="health-chat-sticky">
+              <button type="button" class="bold-btn bold-btn-outline bold-btn-full" onclick="toast('Opens chat about your health')" aria-label="Chat with Bold about my health"><i class="ph ph-chat-circle-dots" aria-hidden="true"></i> Chat about my health</button>
+            </div>
+
+            <nav class="app-tabbar" aria-label="Main tabs">
+              <button data-screen="home" aria-pressed="false" onclick="showScreen('home')"><i class="ph ph-house"></i>Home</button>
+              <button data-screen="care" aria-pressed="false" onclick="showScreen('care')"><i class="ph ph-stethoscope"></i>Care</button>
+              <button data-screen="health" aria-pressed="true" onclick="showScreen('health')"><i class="ph-fill ph-chart-bar"></i>Health</button>
+            </nav>
+          </section>
+
+          <!-- ========================= MEDICATION DETAIL ========================= -->
+          <section class="screen" data-screen="meddetail" aria-label="Medication detail">
+            <div class="scn-back"><button aria-label="Back" onclick="showScreen('care')"><i class="ph ph-caret-left"></i></button><span class="sb-title">Your medication</span></div>
+            <div class="app-scroll"><div class="scn">
+              <div class="rx-hero">
+                <div class="rx-hero-head">
+                  <figure class="imgslot rx-hero-img" aria-hidden="true"><img src="images/rx-pill.jpg" alt="" onerror="this.classList.add('failed')"><span class="ph-fallback"><i class="ph ph-pill"></i></span></figure>
+                  <div><p class="rx-hero-name" id="md-name">Wegovy® tablet</p><p class="rx-hero-sub" id="md-sub">Semaglutide · 7 mg, once a day</p><p class="rx-hero-sub"><i class="ph ph-stethoscope"></i> Prescribed by Dr. Desai</p></div>
+                </div>
+              </div>
+
+              <div>
+                <p class="eyebrow">How to take it</p>
+                <div class="bold-card" style="margin-top:8px;">
+                  <p class="lede" style="font-size:var(--fs-md); margin:0;" id="md-howto">Take <strong>one tablet each morning</strong> with a sip of water, at least 30 minutes before your first food, drink, or other pills. Try to take it at the same time each day.</p>
+                </div>
+              </div>
+
+              <div>
+                <p class="eyebrow">What to expect this week</p>
+                <div class="week-card now" style="margin-top:8px;">
+                  <div class="wc-top"><span class="wc-week" id="md-week-label">Week 1 · 7 mg</span><span class="bold-tag bold-tag-purple">You're here</span></div>
+                  <p id="md-week1">You're getting started. Mild nausea and a smaller appetite are common right now. Eat small meals and stay hydrated. If nausea is severe, lasts more than a few days, or comes with vomiting, use <strong>How are you feeling?</strong> to tell your care team.</p>
+                </div>
+                <button class="bold-btn bold-btn-outline bold-btn-full bold-btn-sm" style="margin-top:10px;" onclick="showScreen('education')">See the full week-by-week guide</button>
+              </div>
+
+              <div style="display:flex; flex-direction:column; gap:10px;">
+                <button class="list-row" onclick="openCheckin()"><i class="ph ph-first-aid-kit lead"></i><span class="lr-body"><span class="lr-title">How are you feeling?</span><span class="lr-sub">Log a side effect and get guidance</span></span><i class="ph ph-caret-right chev"></i></button>
+                <button class="list-row" onclick="openSheet('missed')"><i class="ph ph-clock-countdown lead"></i><span class="lr-body"><span class="lr-title">Missed-dose guide</span><span class="lr-sub">What to do if you forget a day</span></span><i class="ph ph-caret-right chev"></i></button>
+                <button class="list-row" onclick="toast('Refill requested — Ali will confirm')"><i class="ph ph-package lead"></i><span class="lr-body"><span class="lr-title">Request a refill</span><span class="lr-sub">Your Care Coordinator handles the pharmacy</span></span><i class="ph ph-caret-right chev"></i></button>
+              </div>
+
+              <p class="emergency-line">Dose changes are always your provider's call. In an emergency, <a href="tel:911">call 911</a>.</p>
+            </div></div>
+          </section>
+
+          <!-- ========================= EDUCATION (what to expect) ========================= -->
+          <section class="screen" data-screen="education" aria-label="What to expect">
+            <div class="scn-back"><button aria-label="Back" onclick="showScreen('home')"><i class="ph ph-caret-left"></i></button><span class="sb-title">What to expect</span></div>
+            <div class="app-scroll"><div class="scn">
+              <header><h1 class="h-greet" style="font-size:var(--fs-3xl)">Starting your GLP-1</h1><p class="h-sub">Your dose goes up slowly — "start low, go slow." Here's what most people feel, week by week. Everyone's different, and your provider adjusts your plan to you.</p></header>
+
+              <div class="week-card now">
+                <div class="wc-top"><span class="wc-week">Weeks 1–4 · low starting dose</span><span class="bold-tag bold-tag-purple">You're here</span></div>
+                <p>This is your body adjusting. Mild nausea is the most common feeling, and your appetite may drop. Eat small, frequent meals, skip greasy foods, and keep water nearby. Ginger tea helps many people.</p>
+              </div>
+              <div class="week-card">
+                <div class="wc-top"><span class="wc-week">Weeks 5–8 · first step up</span><span class="bold-tag"><i class="ph ph-calendar-dots"></i> Check-in around week 3</span></div>
+                <p>Nausea can peak briefly after a dose increase, then settle. Around week 3 of each cycle, your provider reviews how you're doing and decides whether to move up, stay, or ease back. All three are normal — it's not going backward.</p>
+              </div>
+              <div class="week-card">
+                <div class="wc-top"><span class="wc-week">Weeks 9–12</span></div>
+                <p>For most people, nausea has eased and appetite settles at a lower level. This is a good time to lean into protein and gentle strength work so you lose fat while protecting muscle.</p>
+              </div>
+              <div class="week-card">
+                <div class="wc-top"><span class="wc-week">Months 3+</span></div>
+                <p>Steadier days. Some people notice constipation as a newer side effect — more fiber, fluids, and movement help. Your visits shift to every 1–2 months.</p>
+              </div>
+
+              <div class="normal-card">
+                <span class="bold-tag bold-tag-amber"><i class="ph ph-warning"></i> When to reach out</span>
+                <ul>
+                  <li>Nausea so bad you can't keep food or water down for a day</li>
+                  <li>Vomiting more than twice in a day, or signs of dehydration</li>
+                  <li>Severe stomach pain that spreads to your back — <strong>call 911</strong></li>
+                </ul>
+                <button class="bold-btn bold-btn-primary bold-btn-full bold-btn-sm" onclick="openCheckin()"><i class="ph ph-first-aid-kit"></i> How are you feeling?</button>
+              </div>
+            </div></div>
+          </section>
+
+          <!-- ========================= CHECK-IN FLOW ========================= -->
+          <section class="screen" data-screen="checkin" aria-label="Feeling check-in">
+            <div class="scn-back">
+              <button aria-label="Back" id="ci-back" onclick="checkinBack()"><i class="ph ph-caret-left"></i></button>
+              <span class="sb-title">How are you feeling?</span>
+            </div>
+            <div class="app-scroll"><div class="checkin-body" id="checkin-body"><!-- rendered by JS --></div></div>
+          </section>
+
+          <!-- ========================= PROFILE ========================= -->
+          <section class="screen" data-screen="profile" aria-label="Profile">
+            <div class="scn-back"><button aria-label="Back" onclick="showScreen('home')"><i class="ph ph-caret-left"></i></button><span class="sb-title">Profile</span></div>
+            <div class="app-scroll"><div class="scn">
+              <div style="display:flex; align-items:center; gap:14px;">
+                <figure class="imgslot" style="width:64px;height:64px;border-radius:50%;flex:none;" aria-hidden="true"><img src="images/user-margaret.jpg" alt="" onerror="this.classList.add('failed')"><span class="ph-fallback"><i class="ph-fill ph-user"></i></span></figure>
+                <div><p class="appt-name">Carol Bennett</p><p class="p-role">Medicare-eligible · CA</p></div>
+              </div>
+              <div>
+                <p class="eyebrow">Account</p>
+                <div style="display:flex; flex-direction:column; gap:8px; margin-top:8px;">
+                  <button class="list-row"><i class="ph ph-user-circle lead"></i><span class="lr-body"><span class="lr-title">Personal info</span></span><i class="ph ph-caret-right chev"></i></button>
+                  <button class="list-row"><i class="ph ph-shield-check lead"></i><span class="lr-body"><span class="lr-title">Medicare &amp; coverage</span><span class="lr-sub">78% of members pay $0</span></span><i class="ph ph-caret-right chev"></i></button>
+                  <button class="list-row" onclick="showScreen('meddetail')"><i class="ph ph-pill lead"></i><span class="lr-body"><span class="lr-title">GLP-1 prescription</span></span><i class="ph ph-caret-right chev"></i></button>
+                  <button class="list-row"><i class="ph ph-bell lead"></i><span class="lr-body"><span class="lr-title">Reminders &amp; notifications</span></span><i class="ph ph-caret-right chev"></i></button>
+                  <button class="list-row"><i class="ph ph-stethoscope lead"></i><span class="lr-body"><span class="lr-title">Share with my primary doctor</span><span class="lr-sub">Dr. Robert Hayes</span></span><i class="ph ph-caret-right chev"></i></button>
+                </div>
+              </div>
+              <button class="bold-btn bold-btn-outline bold-btn-full"><i class="ph ph-sign-out"></i> Sign out</button>
+            </div></div>
+          </section>
+
+          <!-- ========================= SHEETS / TOAST ========================= -->
+          <div class="sheet-host" id="sheet-rxdetails" aria-hidden="true">
+            <div class="sheet-scrim" onclick="closeSheet()"></div>
+            <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="rxdetails-title">
+              <div class="sheet-handle" aria-hidden="true"></div>
+              <h3 id="rxdetails-title">Your prescription</h3>
+              <div class="rx-hero-head" style="padding:0 0 14px;">
+                <figure class="imgslot rx-hero-img" aria-hidden="true"><img src="images/rx-pill.jpg" alt="" onerror="this.classList.add('failed')"><span class="ph-fallback"><i class="ph ph-pill"></i></span></figure>
+                <div>
+                  <p class="rx-hero-name" id="rx2-name">Wegovy® tablet</p>
+                  <p class="rx-hero-sub" id="rx2-sub">Semaglutide · 7 mg, once a day · Dr. Desai</p>
+                </div>
+              </div>
+              <ol class="stepper" id="rx-stepper" style="padding:0 0 8px;">
+                <li class="current" id="rx-step-consent"><span class="sp-rail"><span class="sp-dot">1</span><span class="sp-line"></span></span><span class="sp-body"><span class="sp-title">Consent form</span><span class="sp-desc">Sign the consent form so we can send your prescription.</span></span></li>
+                <li id="rx-step-rx"><span class="sp-rail"><span class="sp-dot">2</span><span class="sp-line"></span></span><span class="sp-body"><span class="sp-title">Medication prescribed</span><span class="sp-desc">Dr. Desai sends your GLP-1 to the pharmacy.</span></span></li>
+                <li id="rx-step-insurance"><span class="sp-rail"><span class="sp-dot">3</span><span class="sp-line"></span></span><span class="sp-body"><span class="sp-title">Insurance processing</span><span class="sp-desc">We check your coverage (Bridge or Part D). This can take up to 6 days — the program mails you a formal approval or denial letter.</span></span></li>
+                <li id="rx-step-ready"><span class="sp-rail"><span class="sp-dot">4</span></span><span class="sp-body"><span class="sp-title">Ready to pick up</span><span class="sp-desc">We'll text you when it's ready. $50 at your pharmacy — Medicare covers the rest.</span></span></li>
+              </ol>
+              <div class="cost-line" style="margin-bottom:12px;"><i class="ph-fill ph-shield-check" style="color:var(--color-purple-600)"></i> <span><strong>$50/month.</strong> Medicare covers the rest.</span></div>
+              <button class="bold-btn bold-btn-primary bold-btn-full" id="rx-sign-btn" onclick="signConsent()"><i class="ph ph-signature"></i> Sign consent form</button>
+            </div>
+          </div>
+
+          <div class="sheet-host" id="sheet-missed" aria-hidden="true">
+            <div class="sheet-scrim" onclick="closeSheet()"></div>
+            <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="missed-title">
+              <div class="sheet-handle" aria-hidden="true"></div>
+              <h3 id="missed-title">Missed a dose?</h3>
+              <p id="missed-body">It happens — a missed dose won't undo your progress. Here's what to do with your daily Wegovy® tablet:</p>
+              <div class="normal-card" style="margin-bottom:12px;">
+                <ul style="margin:0; padding-left:20px;">
+                  <li style="margin-bottom:8px; line-height:1.5;" id="missed-li1"><strong>Missed today?</strong> Skip it and take your next tablet tomorrow at your usual time. Don't take two to catch up.</li>
+                  <li style="line-height:1.5;" id="missed-li2"><strong>Missed several days in a row?</strong> Don't restart on your own — message your care team and they'll help you start again safely.</li>
+                </ul>
+              </div>
+              <button class="bold-btn bold-btn-primary bold-btn-full" onclick="closeSheet();toast('Got it — logged as a missed dose')"><i class="ph ph-check"></i> Got it</button>
+              <button class="bold-btn bold-btn-outline bold-btn-full" style="margin-top:10px;" onclick="closeSheet();showScreen('care')">Message my care team</button>
+            </div>
+          </div>
+
+          <div class="toast" id="toast" role="status" aria-live="polite"><i class="ph-fill ph-check-circle"></i> <span id="toast-text"></span></div>
+
+        </div><!-- /iphone-screen -->
+      </div><!-- /iphone -->
+    </div><!-- /stage -->
+  </div><!-- /showcase -->
+
+  <script>
+  /* ================= STATE ================= */
+  const APP = { stage:'stage1', taken:false, checkins:[], rxSigned:false, onSuInsulin:false, form:'pill', rxStep:0 };
+  /* compact prescription-progress card states (index → current step) */
+  const RX_STEPS = [
+    { title:'Consent form',         desc:'Sign the consent form so we can send your prescription.' },
+    { title:'Medication prescribed', desc:'Dr. Desai sends your GLP-1 to the pharmacy.' },
+    { title:'Insurance processing',  desc:'We check your coverage (Bridge or Part D). This can take up to 6 days.' },
+    { title:'Ready to pick up',      desc:"We'll text you when it's ready. $50 at your pharmacy." }
+  ];
+  function renderRxProgress(){
+    const t=document.getElementById('rxp-title'); if(!t) return;
+    const s=RX_STEPS[APP.rxStep]||RX_STEPS[0];
+    t.textContent=s.title;
+    const d=document.getElementById('rxp-desc'); if(d) d.textContent=s.desc;
+    document.querySelectorAll('#rxp-bar .rxp-seg').forEach((seg,i)=>seg.classList.toggle('on', i<=APP.rxStep));
+  }
+  let RETURN_SCREEN = 'home';
+
+  const STAGE_TEXT = {
+    stage1:{ 'appt-title':'Weight loss appointment', 'appt-date':'Mon, Nov 3 · 9:00am', 'rx-status':'on track' },
+    stage2:{ 'appt-title':'Weight loss appointment', 'appt-date':'Mon, Nov 3 · 9:00am', 'rx-status':'on track' },
+    stage3:{ 'appt-title':'GLP-1 start check-in', 'appt-date':'Thu, Nov 27 · 9:30am', 'rx-status':'Week 1 · on track' },
+    stage4:{ 'appt-title':'30-min follow-up', 'appt-date':'Thu, Nov 27 · 9:30am', 'rx-status':'Week 4 · on track' }
+  };
+
+  const CARE_PHONE = '+18005550100';
+
+  /* tier → triage card style + head icon (color is never the only signal: icon + text differ too) */
+  const TIER = {
+    self:      {cls:'self',      icon:'ph-check-circle'},
+    concern:   {cls:'concern',   icon:'ph-first-aid-kit'},
+    urgent:    {cls:'urgent',    icon:'ph-warning'},
+    emergency: {cls:'emergency', icon:'ph-warning-octagon'}
+  };
+
+  /* medication config — first-dose experience branches by form factor (pill vs pen) */
+  const MED = {
+    pill:{ name:'Wegovy® tablet', doseLine:'Wegovy® tablet · 7 mg', doseSub:'Once a day, in the morning',
+      rx2Name:'Wegovy® tablet', rx2Sub:'Semaglutide · 7 mg, once a day · Dr. Desai',
+      mdName:'Wegovy® tablet', mdSub:'Semaglutide · 7 mg, once a day', icon:'ph-pill',
+      doseTitle:"Today's dose", remind:'We reminded you by text at 8:00am.',
+      howto:'Take <strong>one tablet each morning</strong> with a sip of water, at least 30 minutes before your first food, drink, or other pills. Try to take it at the same time each day.',
+      weekLabel:'Week 1 · 7 mg',
+      week1:"You're getting started. Mild nausea and a smaller appetite are common right now. Eat small meals and stay hydrated. If nausea is severe, lasts more than a few days, or comes with vomiting, use <strong>How are you feeling?</strong> to tell your care team.",
+      missedTitle:'Missed a dose?', missedBody:"It happens — a missed dose won't undo your progress. Here's what to do with your daily Wegovy® tablet:",
+      missed1:"<strong>Missed today?</strong> Skip it and take your next tablet tomorrow at your usual time. Don't take two to catch up.",
+      missed2:"<strong>Missed several days in a row?</strong> Don't restart on your own — message your care team and they'll help you start again safely." },
+    pen:{ name:'Wegovy® pen', doseLine:'Wegovy® pen · 0.25 mg', doseSub:'Once a week · your injection day',
+      rx2Name:'Wegovy® pen', rx2Sub:'Semaglutide · 0.25 mg, once a week · Dr. Desai',
+      mdName:'Wegovy® pen', mdSub:'Semaglutide · 0.25 mg, once a week', icon:'ph-syringe',
+      doseTitle:"This week's dose", remind:"We reminded you by text — it's your weekly injection day.",
+      howto:'Give <strong>one injection once a week</strong> on the same day each week — into your belly, thigh, or upper arm. Pick a slightly different spot each time. It works with or without food.',
+      weekLabel:'Week 1 · 0.25 mg',
+      week1:"You're getting started. In the first days after your injection, mild nausea and a smaller appetite are common. Eat small meals and stay hydrated. If nausea is severe, lasts more than a few days, or comes with vomiting, use <strong>How are you feeling?</strong> to tell your care team.",
+      missedTitle:'Missed your weekly dose?', missedBody:"It happens — a missed dose won't undo your progress. Here's what to do with your weekly Wegovy® pen:",
+      missed1:"<strong>More than 2 days until your next dose?</strong> Take the missed one as soon as you remember, then stay on your usual day.",
+      missed2:"<strong>Less than 2 days until your next dose?</strong> Skip it and take your next one on your regular day. Don't double up — message your care team if you're unsure." }
+  };
+
+  function setForm(form){
+    APP.form = form;
+    const m = MED[form];
+    document.getElementById('form-pill').setAttribute('aria-pressed', form==='pill'?'true':'false');
+    document.getElementById('form-pen').setAttribute('aria-pressed', form==='pen'?'true':'false');
+    const set=(id,html)=>{ const el=document.getElementById(id); if(el) el.innerHTML=html; };
+    set('rx2-name', m.rx2Name); set('rx2-sub', m.rx2Sub);
+    set('md-name', m.mdName); set('md-sub', m.mdSub); set('md-howto', m.howto);
+    set('md-week-label', m.weekLabel); set('md-week1', m.week1);
+    set('missed-title', m.missedTitle); set('missed-body', m.missedBody);
+    set('missed-li1', m.missed1); set('missed-li2', m.missed2);
+  }
+  function toggleSuInsulin(on){ APP.onSuInsulin = !!on; }
+  function toggleHealthTab(on){
+    document.body.setAttribute('data-health', on ? 'shown' : 'hidden');
+    // If we're hiding the tab while its screen is open, fall back to Home.
+    if(!on){
+      const active = document.querySelector('.screen.active');
+      if(active && active.dataset.screen==='health') showScreen('home');
+    }
+  }
+
+  /* ================= SYMPTOM MODEL ================= */
+  /* PROVISIONAL — product translation of the GLP-1 Side-Effect Escalation Mapping (Bold Care
+     Guideline v1.0 §10/§12), copy from mvp3-side-effect-messages.md. Level→tier routing and the
+     middle tiers are NOT yet cleared for ship — pending Dr. Deeb clinical sign-off.
+     The severity a member picks IS the triage signal (no long survey). noBenign = no self-care level. */
+  const SYMPTOMS = {
+    nausea:{ label:'Nausea', icon:'ph-drop', levels:[
+      {sev:'Mild', desc:'I can still eat and drink', tier:'self', chip:'shared',
+       title:'This is common — and it usually eases.',
+       lead:"About 1 in 3 people feel some nausea when they start or increase a dose. It's your body adjusting, and it tends to settle over the next few weeks. Here's what helps many people:",
+       tips:['Eat small meals through the day instead of big ones','Go easy on greasy or fried foods','Sip water often — ginger tea settles many stomachs','Anti-nausea medicine is an option — just ask your care team']},
+      {sev:'Moderate', desc:"It's affecting my meals — I'm eating much less", tier:'concern', hold:'dose', chip:'sent',
+       title:"Let's get your care team's eyes on this.",
+       lead:"Nausea this strong is worth a closer look. <strong>Hold your next dose</strong> until your care team weighs in — that's a safe pause, not a setback. Small sips of water and bland foods can help in the meantime.",
+       note:"We've sent this to Dr. Desai. Ali, your care coordinator, will reach out within 48 hours."},
+      {sev:'Severe', desc:"I can't keep food or water down", tier:'urgent', hold:'dose',
+       title:'This one needs care today.',
+       lead:"Not keeping food or water down can wear you out fast. <strong>Hold your next dose</strong> and reach your care team today. If you feel faint, very weak, or dizzy, call 911 — that's the fastest help.",
+       note:"We've flagged this for Dr. Desai as urgent."}
+    ]},
+    vomiting:{ label:'Vomiting', icon:'ph-thermometer', levels:[
+      {sev:'Once', desc:'Once, and I can keep fluids down', tier:'self', chip:'shared',
+       title:'This can happen — and it usually settles.',
+       lead:"Throwing up once is uncomfortable, but it often passes as your body adjusts. The main thing is staying hydrated. Here's what helps:",
+       tips:['Take small sips of water or an electrolyte drink (broth, coconut water)','Rest your stomach, then try small, bland foods','Go easy on greasy or heavy meals']},
+      {sev:'A couple times', desc:'A couple of times today', tier:'concern', hold:'dose', chip:'sent',
+       title:"Let's loop in your care team.",
+       lead:"Throwing up a couple of times is worth a look, mostly so you don't get dehydrated. <strong>Hold your next dose</strong> until your care team weighs in — that's a safe pause, not a setback. Keep sipping fluids for now.",
+       note:"We've sent this to Dr. Desai. Ali, your care coordinator, will reach out within 48 hours."},
+      {sev:'More than twice', desc:"More than twice, or I can't keep fluids down", tier:'urgent', hold:'dose',
+       title:'This one needs care today.',
+       lead:"Throwing up this much can dry you out quickly. <strong>Hold your next dose</strong> and reach your care team today. If you feel faint, dizzy, or very weak, call 911 — that's the fastest help.",
+       note:"We've flagged this for Dr. Desai as urgent."}
+    ]},
+    diarrhea:{ label:'Diarrhea', icon:'ph-toilet', levels:[
+      {sev:'Mild', desc:'A couple of loose stools, feeling okay', tier:'self', chip:'shared',
+       title:'Common early on — and manageable.',
+       lead:"A few loose stools happen as your body adjusts, and it usually settles. Staying hydrated is the main thing. Here's what helps:",
+       tips:['Drink extra fluids with electrolytes (broth, coconut water)','Try bland foods — banana, rice, applesauce, toast','Over-the-counter loperamide can help — just ask your care team']},
+      {sev:'Several times', desc:'Several times today, with some cramping', tier:'self', chip:'shared', actKind:'message',
+       title:'Keep an eye on this one.',
+       lead:"Several loose stools with cramping is still usually manageable at home with fluids and bland foods. If it keeps up more than a day or two, tell your care team so they can help. Staying hydrated matters most right now."},
+      {sev:'Severe', desc:'More than 5 times, or I see blood', tier:'urgent', hold:'dose',
+       title:"Let's get this looked at today.",
+       lead:"Diarrhea this often — or any blood — needs your care team's eyes today. <strong>Hold your next dose</strong>, reach out to them now, and keep drinking fluids. If you feel faint or very weak, call 911.",
+       note:"We've flagged this for Dr. Desai as urgent."}
+    ]},
+    constipation:{ label:'Constipation', icon:'ph-hourglass', levels:[
+      {sev:'Mild', desc:"A day or two, but I'm okay", tier:'self', chip:'shared',
+       title:'Common — and usually easy to ease.',
+       lead:"Going less often can happen as things slow down in your system. Small daily habits usually get things moving. Here's what helps:",
+       tips:['Drink more water through the day','Add fiber slowly — fruit, veggies, whole grains','A short walk or gentle movement helps','A stool softener like MiraLAX is usually fine — just ask your care team']},
+      {sev:'A few days', desc:'A few days and uncomfortable', tier:'self', chip:'shared', actKind:'message',
+       title:'Worth staying on top of.',
+       lead:"A few uncomfortable days is still usually manageable with fluids, fiber, and gentle movement. Give those a day or two. If nothing changes, tell your care team and they'll help you take the next step."},
+      {sev:'More than 3 days', desc:'More than 3 days, with pain or bloating', tier:'urgent', hold:'dose',
+       title:"Let's get this checked today.",
+       lead:"More than three days with pain or bloating is worth your care team's attention today. <strong>Hold your next dose</strong> and reach out to them now. If the pain becomes severe, call 911.",
+       note:"We've flagged this for Dr. Desai as urgent."}
+    ]},
+    gallbladder:{ label:'Belly pain, right side', icon:'ph-warning-circle', noBenign:true,
+      q:"Tell us about the belly pain under your right ribs.", levels:[
+      {sev:'Noticeable', desc:'Pain under my right ribs, or after meals', tier:'concern', hold:'dose', chip:'sent', actKind:'call-message',
+       title:"Let's have your care team take a look.",
+       lead:"Pain under your right ribs — especially after meals — is something we want to check, not wait on. Reach your care team today so they can arrange a scan. <strong>Hold your next dose</strong> until they've weighed in.",
+       note:"We've flagged this for Dr. Desai."},
+      {sev:'Getting worse', desc:'That pain is getting stronger or lasting longer', tier:'urgent', hold:'dose',
+       title:"If it's getting worse, don't wait.",
+       lead:"Pain that's stronger or lasting longer needs your care team today. Reach them now, and <strong>hold your next dose</strong>. If fever or chills start, call 911.",
+       note:"We've flagged this for Dr. Desai as urgent."},
+      {sev:'With fever or yellowing', desc:'That pain plus fever, chills, or yellow skin or eyes', tier:'emergency', hold:'med',
+       title:'This needs urgent care now.',
+       lead:"Belly pain with fever, chills, or yellowing of your skin or eyes can be serious. <strong>Call 911 or go to the nearest ER now.</strong> Hold your medication until a clinician says it's okay to restart."}
+    ]},
+    hypoglycemia:{ label:'Low blood sugar', icon:'ph-heartbeat', condition:'su-insulin',
+      q:'Tell us about the low blood sugar.', levels:[
+      {sev:'Mild', desc:'Shaky or sweaty, but I can treat it', tier:'self', chip:'shared', actKind:'callteam-done',
+       title:'You can treat this right now.',
+       lead:"Feeling shaky, sweaty, or dizzy can mean your blood sugar is low. Here's the simple fix, called the Rule of 15:",
+       tips:['Have 15 grams of fast sugar — 4 oz of juice, or 3–4 glucose tablets','Wait 15 minutes — do you still feel shaky, sweaty, or dizzy?','If so, have 15 grams of fast sugar once more, then eat a small snack'],
+       note:"Still feel low after treating it twice? Call your care team now. If you feel like you might pass out, call 911."},
+      {sev:'It keeps happening', desc:'Several lows this week', tier:'concern', chip:'sent',
+       title:"Let's tell your care team.",
+       lead:"Lows that keep happening are worth your care team's review. Any medicine changes are their call — not something to change on your own. Keep fast sugar nearby for now.",
+       note:"We've sent this to Dr. Desai. Ali, your care coordinator, will reach out within 48 hours."},
+      {sev:'Passed out or seizure', desc:'Someone passed out or had a seizure', tier:'emergency',
+       title:'This is an emergency — call 911.',
+       lead:"If someone with low blood sugar passes out or has a seizure, call 911 right away. Don't give food or drink to someone who isn't fully awake. If they have a glucagon kit and you know how to use it, use it now."}
+    ]},
+    pain:{ label:'Severe stomach pain', icon:'ph-warning-octagon', noBenign:true,
+      q:'Tell us about your stomach pain.', levels:[
+      {sev:'Bad and constant', desc:"Bad stomach pain that won't ease", tier:'urgent', hold:'med',
+       title:"Don't wait on this one.",
+       lead:"Bad stomach pain that won't ease is something we take seriously. <strong>Hold your medication now</strong> and reach your care team today so they can check it. If the pain gets severe or spreads to your back, call 911.",
+       note:"We've flagged this for Dr. Desai as urgent."},
+      {sev:'With nausea or vomiting', desc:'That pain plus nausea or vomiting', tier:'urgent', hold:'med',
+       title:'Reach your care team today.',
+       lead:"Stomach pain along with nausea or vomiting needs a proper look. <strong>Hold your medication</strong> and contact your care team today. If the pain becomes severe or spreads to your back, call 911 right away.",
+       note:"We've flagged this for Dr. Desai as urgent."},
+      {sev:'Spreading to my back', desc:'Severe pain spreading to my back', tier:'emergency', hold:'med',
+       title:'This needs urgent care now.',
+       lead:"Severe stomach pain, especially if it spreads to your back, can be serious. <strong>Call 911 or go to the nearest ER now.</strong> Hold your medication until a clinician tells you it's okay to restart."}
+    ]},
+    other:{ label:'Something else', icon:'ph-chat-circle-text', freeform:true }
+  };
+
+  let draft = { symptom:null, level:null };
+
+  /* ================= NAV ================= */
+  function showScreen(name){
+    document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('active', s.dataset.screen===name));
+    document.querySelectorAll('.app-tabbar button').forEach(b=>{
+      const on = b.dataset.screen===name; b.setAttribute('aria-pressed', on?'true':'false');
+    });
+    const sc = document.querySelector('.screen.active .app-scroll'); if(sc) sc.scrollTop=0;
+    toggleNav(false);
+  }
+  function toggleNav(open){ document.body.classList.toggle('nav-open', open===true?true:(open===false?false:!document.body.classList.contains('nav-open'))); }
+
+  function setStage(stage){
+    APP.stage = stage;
+    document.body.setAttribute('data-app-stage', stage); // CSS handles visibility
+    document.querySelectorAll('.stage-btn').forEach(b=>b.setAttribute('aria-current', b.dataset.stage===stage?'true':'false'));
+    // stage text swaps
+    const t = STAGE_TEXT[stage]||{};
+    document.querySelectorAll('[data-stage-text]').forEach(el=>{ const k=el.dataset.stageText; if(t[k]!=null) el.textContent=t[k]; });
+    updateAckCard();
+    showScreen('home');
+  }
+
+  /* ================= FEELING CHECK-IN ================= */
+  function openCheckin(step){ RETURN_SCREEN='home'; draft={symptom:null, level:null, duration:null}; showScreen('checkin'); renderCheckin(step||'feel'); }
+  let ciStep='feel';
+  function checkinBack(){
+    if(ciStep==='symptom'){ renderCheckin('feel'); }
+    else if(ciStep==='severity'){ renderCheckin('symptom'); }
+    else if(ciStep==='followup'){ renderCheckin('severity'); }
+    else if(ciStep==='triage'){
+      const s=SYMPTOMS[draft.symptom];
+      if(s && s.freeform){ renderCheckin('symptom'); }
+      else if(draft.level && (draft.level.tier==='concern'||draft.level.tier==='urgent')){ renderCheckin('followup'); }
+      else { renderCheckin('severity'); }
+    }
+    else { showScreen('home'); }
+  }
+  function renderCheckin(step){
+    ciStep=step;
+    const b=document.getElementById('checkin-body');
+    if(step==='feel'){
+      b.innerHTML = `
+        <h1 class="ci-q">How are you feeling today, Carol?</h1>
+        <p class="ci-help">A quick check-in. If something's off, we'll point you to the right help right away.</p>
+        <button class="opt-tile" onclick="feelWell()"><i class="ph-fill ph-smiley" style="color:var(--color-green-600)"></i><span class="ot-body"><span class="ot-title">I'm doing well</span><span class="ot-desc">No side effects to report today</span></span></button>
+        <button class="opt-tile" onclick="renderCheckin('symptom')"><i class="ph-fill ph-first-aid-kit" style="color:var(--color-amber-600)"></i><span class="ot-body"><span class="ot-title">Something's bothering me</span><span class="ot-desc">I have a side effect I want to tell you about</span></span></button>`;
+    }
+    else if(step==='symptom'){
+      let tiles='';
+      Object.keys(SYMPTOMS).forEach(k=>{ const s=SYMPTOMS[k];
+        if(s.condition==='su-insulin' && !APP.onSuInsulin) return; // conditional: only if med list qualifies
+        tiles += `<button class="opt-tile" onclick="pickSymptom('${k}')"><i class="ph ${s.icon}"></i><span class="ot-body"><span class="ot-title">${s.label}</span></span><i class="ph ph-caret-right" style="color:var(--color-gray-400)"></i></button>`; });
+      b.innerHTML = `<h1 class="ci-q">What's bothering you?</h1><p class="ci-help">Pick the one that fits best. You can log another after.</p>${tiles}`;
+    }
+    else if(step==='severity'){
+      const s=SYMPTOMS[draft.symptom];
+      const dots = s.noBenign ? ['s2','s3','s3'] : ['s1','s2','s3']; // no-benign symptoms never show a green dot
+      let tiles='';
+      s.levels.forEach((lv,i)=>{ const dot=dots[i]||'s3';
+        tiles += `<button class="opt-tile sev" onclick="pickLevel(${i})"><span class="ot-body"><span class="ot-title"><span class="sev-dot ${dot}"></span>${lv.sev}</span><span class="ot-desc">${lv.desc}</span></span></button>`; });
+      const q = s.q || `How bad is your ${s.label.toLowerCase()}?`;
+      b.innerHTML = `<h1 class="ci-q">${q}</h1><p class="ci-help">Choose the one that sounds most like today.</p>${tiles}`;
+    }
+    else if(step==='followup'){
+      // one hard-coded follow-up on escalated tiers → structured note for the provider (not free chat)
+      const opts=['Since today','A day or two','3 days or more'];
+      const tiles=opts.map(o=>`<button class="opt-tile" onclick="pickDuration('${o}')"><span class="ot-body"><span class="ot-title">${o}</span></span></button>`).join('');
+      b.innerHTML = `<h1 class="ci-q">How long has this been going on?</h1><p class="ci-help">One quick question so your care team has what they need.</p>${tiles}`;
+    }
+    else if(step==='triage'){ renderTriage(); }
+  }
+  function pickSymptom(k){
+    draft.symptom=k; draft.duration=null; const s=SYMPTOMS[k];
+    if(s.freeform){
+      draft.level={sev:'Note', tier:'concern', freeform:true, chip:'sent',
+        title:'Thanks for telling us.',
+        lead:"We've shared your note with your care team so they can help. If it's bothering you a lot or feels urgent, reach out to them directly. If it's an emergency, call 911.",
+        note:"We've sent this to Dr. Desai as a note. Ali, your care coordinator, will reach out within 48 hours."};
+      renderCheckin('triage'); return;
+    }
+    renderCheckin('severity');
+  }
+  function pickLevel(i){
+    draft.level=SYMPTOMS[draft.symptom].levels[i];
+    const t=draft.level.tier;
+    if(t==='concern'||t==='urgent'){ renderCheckin('followup'); } else { renderCheckin('triage'); }
+  }
+  function pickDuration(d){ draft.duration=d; renderCheckin('triage'); }
+
+  /* triage action buttons — default by tier, with per-level overrides for the copy that differs */
+  function actBtns(tier, lv){
+    const done=`<button class="bold-btn bold-btn-primary bold-btn-full" onclick="finishCheckin()">Done</button>`;
+    const edu=`<button class="bold-btn bold-btn-outline bold-btn-full" onclick="showScreen('education')">See what to expect this week</button>`;
+    const msg=`<button class="bold-btn bold-btn-outline bold-btn-full" onclick="showScreen('care')"><i class="ph ph-chat-circle-text"></i> Message my care team</button>`;
+    const callTeam=(k)=>`<a class="bold-btn bold-btn-${k} bold-btn-full" href="tel:${CARE_PHONE}"><i class="ph-fill ph-phone-call"></i> Call care team</a>`;
+    const call911=(k)=>`<a class="bold-btn bold-btn-${k} bold-btn-full" href="tel:911"><i class="ph ph-phone-call"></i> Call 911</a>`;
+    const backToday=`<button class="bold-btn bold-btn-outline bold-btn-full" onclick="finishCheckin()">Back to Today</button>`;
+    if(lv.actKind==='message') return msg+done;
+    if(lv.actKind==='call-message') return callTeam('primary')+msg;
+    if(lv.actKind==='callteam-done') return callTeam('outline')+done;
+    if(tier==='self') return edu+done;
+    if(tier==='concern') return msg+done;
+    if(tier==='urgent') return callTeam('primary')+call911('outline');
+    return call911('danger')+backToday; // emergency
+  }
+
+  function renderTriage(){
+    const s=SYMPTOMS[draft.symptom], lv=draft.level, tier=lv.tier, t=TIER[tier];
+    logCheckin(s.label, lv.sev, tier);
+    const tips = lv.tips ? `<ul>${lv.tips.map(x=>`<li>${x}</li>`).join('')}</ul>` : '';
+    const note = lv.note ? `<p>${lv.note}</p>` : '';
+    const chip = lv.chip==='sent' ? `<span class="shared-chip"><i class="ph ph-paper-plane-tilt"></i> Sent to Dr. Desai as a note</span>`
+               : lv.chip==='shared' ? `<span class="shared-chip"><i class="ph ph-paper-plane-tilt"></i> Shared with Dr. Desai</span>` : '';
+    // structured-survey → provider-note handoff, made visible to the member
+    const preview = (draft.duration && (tier==='concern'||tier==='urgent'))
+      ? `<div class="note-preview"><i class="ph ph-note-pencil"></i> Note to Dr. Desai: ${s.label} · ${lv.sev.toLowerCase()} · ${draft.duration.toLowerCase()}</div>` : '';
+    const emgFoot = (tier==='urgent'||tier==='emergency')
+      ? `<p class="ci-help" style="text-align:center;">Bold isn't an emergency service and can't watch in real time — 911 is the fastest help.</p>` : '';
+    document.getElementById('checkin-body').innerHTML = `
+      <div class="triage ${t.cls}">
+        <div class="tr-head"><i class="ph-fill ${t.icon}"></i><p class="tr-title">${lv.title}</p></div>
+        <p>${lv.lead}</p>
+        ${tips}${note}${chip}${preview}
+      </div>
+      ${emgFoot}
+      ${actBtns(tier, lv)}`;
+  }
+
+  function feelWell(){
+    logCheckin('Feeling well','—','well');
+    RETURN_SCREEN='home'; showScreen('checkin'); ciStep='well';
+    document.getElementById('checkin-body').innerHTML = `
+      <div class="triage self">
+        <div class="tr-head"><i class="ph-fill ph-smiley"></i><p class="tr-title">Good to hear, Carol.</p></div>
+        <p>Steady days like this are exactly what the plan is built for. Dr. Desai will see this in your check-ins.</p>
+        <span class="shared-chip"><i class="ph ph-paper-plane-tilt"></i> Dr. Desai can see you're doing well</span>
+      </div>
+      <button class="bold-btn bold-btn-primary bold-btn-full" onclick="finishCheckin(true)">Back to Today</button>`;
+    // clear any prior "we heard you" reflection since today is good
+    APP.lastNegative=false;
+  }
+
+  function logCheckin(label, sev, tier){
+    const entry={label, sev, tier, when:'Today, 2:15pm', duration:draft.duration||null};
+    APP.checkins.unshift(entry);
+    if(tier!=='well'){ APP.lastNegative={label,sev,tier}; }
+    renderSymptomHistory();
+    return entry;
+  }
+  function renderSymptomHistory(){
+    const host=document.getElementById('symptom-history'); if(!host) return;
+    if(!APP.checkins.length){ return; }
+    host.innerHTML = APP.checkins.slice(0,5).map(c=>{
+      const map={well:['bold-tag-green','ph-smiley','Doing well'],self:['bold-tag-blue','ph-check-circle',c.sev],concern:['bold-tag-amber','ph-first-aid-kit',c.sev],urgent:['bold-tag-amber','ph-warning',c.sev],emergency:['','ph-warning-octagon',c.sev]};
+      const m=map[c.tier]||map.self;
+      return `<div style="display:flex;align-items:center;gap:12px;padding:12px;border-bottom:1px solid var(--color-gray-100);">
+        <i class="ph-fill ${m[1]}" style="font-size:22px;color:var(--color-purple-600);flex:none;"></i>
+        <div style="flex:1;min-width:0;"><p style="margin:0;font-weight:600;font-size:var(--fs-md);">${c.label}</p><p style="margin:2px 0 0;font-size:var(--fs-sm);color:var(--color-gray-500);">${c.when}</p></div>
+        <span class="bold-tag ${m[0]}">${m[2]}</span></div>`;
+    }).join('');
+  }
+
+  function finishCheckin(good){
+    showScreen('home');
+    updateAckCard();
+  }
+  function updateAckCard(){
+    const card=document.getElementById('ack-card'); if(!card) return;
+    if(APP.lastNegative){
+      const n=APP.lastNegative;
+      const escalated = (n.tier==='concern'||n.tier==='urgent'||n.tier==='emergency');
+      document.getElementById('ack-text').textContent = `You told us about ${n.label.toLowerCase()} (${n.sev.toLowerCase()}) today.`;
+      document.getElementById('ack-body').innerHTML = escalated
+        ? "This was sent to Dr. Desai, and your care team will reach out within 48 hours. There's nothing else you need to do right now."
+        : 'Take it easy today — rest is part of getting started. This was shared with Dr. Desai.';
+      card.style.display='';
+    } else {
+      card.style.display='none';
+    }
+  }
+
+  /* ================= RX CONSENT ================= */
+  function signConsent(){
+    APP.rxSigned=true;
+    const consent=document.getElementById('rx-step-consent');
+    const rx=document.getElementById('rx-step-rx');
+    const ins=document.getElementById('rx-step-insurance');
+    const btn=document.getElementById('rx-sign-btn');
+    const check='<i class="ph-bold ph-check"></i>';
+    if(consent){ consent.classList.remove('current'); consent.classList.add('done'); consent.querySelector('.sp-dot').innerHTML=check; }
+    if(rx){ rx.classList.add('done'); rx.querySelector('.sp-dot').innerHTML=check; }
+    if(ins){ ins.classList.add('current'); }
+    if(btn){ btn.outerHTML = `<div class="cost-line" style="background:var(--color-mint-100);color:var(--color-mint-700);"><i class="ph-fill ph-check-circle"></i> Consent signed. Your prescription is on its way — we'll text you when it's ready.</div>`; }
+    APP.rxStep = 2; renderRxProgress(); // advance the compact card underneath (→ Insurance processing, 3/4)
+    toast('Consent signed');
+  }
+
+  /* ================= SHEETS + TOAST ================= */
+  function openSheet(name){ const h=document.getElementById('sheet-'+name); if(h){ h.classList.add('open'); h.setAttribute('aria-hidden','false'); } }
+  function closeSheet(){ document.querySelectorAll('.sheet-host').forEach(h=>{h.classList.remove('open'); h.setAttribute('aria-hidden','true');}); }
+  let toastT;
+  function toast(msg){ const t=document.getElementById('toast'); document.getElementById('toast-text').textContent=msg; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),2200); }
+
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeSheet(); toggleNav(false); } });
+
+  /* ================= INIT ================= */
+  setStage('stage1');
+  setForm('pill');
+  renderRxProgress();
+  </script>
+</body>
+</html>
