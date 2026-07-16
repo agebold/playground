@@ -72,6 +72,8 @@
     }
     a{color:var(--color-purple-600);}
     button{font-family:inherit;}
+    /* the hidden attribute must win over component display rules (.bold-tag, .todo-item set display) */
+    [hidden]{display:none !important;}
     :focus-visible{outline:3px solid var(--color-purple-500); outline-offset:2px; border-radius:4px;}
 
     /* ============================================================
@@ -491,17 +493,59 @@
     .faq-card details[open] summary i{transform:rotate(90deg);}
     .faq-card .faq-a{padding:0 12px 16px; font-size:var(--fs-md); color:var(--color-gray-600); line-height:1.55;}
 
-    /* compact prescription-progress card (Figma node 15-992) — details open in a modal */
-    .rx-progress{background:var(--color-mint-300); border-radius:var(--radius-lg); display:flex; flex-direction:column;}
-    .rx-progress .rxp-badge{display:flex; align-items:center; gap:8px; padding:8px 14px;}
-    .rx-progress .rxp-badge i{font-size:18px; color:#fff;}
-    .rx-progress .rxp-badge span{font-size:var(--fs-sm); font-weight:var(--fw-semibold); color:#fff;}
-    .rx-progress .rxp-card{background:#fff; border:1px solid var(--color-gray-200); border-radius:var(--radius-lg); box-shadow:var(--shadow-appt); width:100%; padding:14px 16px 16px; display:flex; flex-direction:column; gap:12px;}
-    .rxp-bar{display:flex; gap:3px;}
-    .rxp-bar .rxp-seg{flex:1; height:6px; border-radius:var(--radius-full); background:var(--color-gray-200);}
-    .rxp-bar .rxp-seg.on{background:var(--color-purple-600);}
-    .rxp-step-title{font-size:var(--fs-2xl); font-weight:var(--fw-semibold); color:var(--color-gray-900); margin:0; line-height:1.2;}
-    .rxp-step-desc{font-size:var(--fs-lg); color:var(--color-gray-700); margin:0; line-height:1.4;}
+    /* prescription waiting card (Figma node 67:12599) — clean white card, whole card opens the details modal */
+    .rx-card{position:relative; overflow:hidden; width:100%; text-align:left; background:#fff;
+      border:1px solid var(--color-gray-200); border-radius:var(--radius-lg); box-shadow:var(--shadow-elev);
+      padding:16px; display:flex; flex-direction:column; gap:16px; cursor:pointer;}
+    .rx-card:hover{border-color:var(--color-purple-200);}
+    .rx-card .rx-glow{position:absolute; right:-90px; bottom:-90px; width:200px; height:200px; border-radius:50%;
+      background:radial-gradient(circle, rgba(82,0,212,.10), rgba(82,0,212,0) 70%); pointer-events:none;}
+    .rx-card .rx-card-head{display:flex; align-items:flex-start; gap:10px; position:relative;}
+    .rx-card .rx-card-titles{flex:1; min-width:0; display:flex; flex-direction:column; gap:4px;}
+    .rx-card .rxp-time{flex:none; white-space:nowrap;}
+    .rxp-step-title{font-size:var(--fs-xl); font-weight:var(--fw-semibold); color:var(--color-gray-900); margin:0; line-height:1.3;}
+    .rxp-step-desc{font-size:var(--fs-md); color:var(--color-gray-600); margin:0; line-height:1.5;}
+
+    /* @bold/web Progress (color=gradient) — wrapper + inner(clip) + fill(translateX). Purple gradient per Figma. */
+    .progress{position:relative; background:var(--color-gray-200); border-radius:var(--radius-full); overflow:hidden;}
+    .progress .progress-inner{border-radius:inherit; overflow:hidden;}
+    .progress .fill{display:block; height:8px; border-radius:var(--radius-full);
+      background:linear-gradient(to right, var(--color-purple-600), var(--color-purple-500));
+      transform:translateX(0); transition:transform .5s ease;}
+    /* shimmer sheen while a step is still processing (color is not the only signal — title/badge say so too) */
+    .progress .fill.shimmering{position:relative;}
+    .progress .fill.shimmering::after{content:""; position:absolute; inset:0;
+      background:linear-gradient(100deg, transparent 20%, rgba(255,255,255,.55) 50%, transparent 80%);
+      transform:translateX(-100%); animation:rxp-shimmer 1.6s ease-in-out infinite;}
+    @keyframes rxp-shimmer{ to{ transform:translateX(100%);} }
+
+    /* first-dose confirmation row */
+    .todo-item.firstdose{margin-top:12px; cursor:default;}
+    .todo-item.firstdose:hover{border-color:var(--color-gray-200);}
+    .todo-item .ti-cta{flex:none; align-self:center; min-height:40px;}
+
+    /* stage-3 medication check-in module (Figma node 39:3822) — white card + warm yellow glow; collapses to green on "doing well" */
+    .checkin-card{position:relative; overflow:hidden; background:#fff; border:1px solid var(--color-gray-200);
+      border-radius:var(--radius-lg); box-shadow:var(--shadow-elev); padding:16px;
+      display:flex; flex-direction:column; gap:16px;
+      transition:background .3s ease, border-color .3s ease, max-height .45s ease, padding .3s ease, opacity .3s ease, margin .3s ease;
+      max-height:400px;}
+    .checkin-card .ci-glow{position:absolute; right:-70px; bottom:-70px; width:240px; height:240px; border-radius:50%;
+      background:radial-gradient(circle, rgba(245,158,11,.22), rgba(245,158,11,0) 70%); pointer-events:none;}
+    .checkin-card .cc-primary{position:relative; display:flex; flex-direction:column; gap:4px;}
+    .checkin-card .cc-title{font-size:var(--fs-lg); font-weight:var(--fw-semibold); color:var(--color-gray-900); margin:0; line-height:1.3;}
+    .checkin-card .cc-sub{font-size:var(--fs-md); color:var(--color-gray-600); margin:0; line-height:1.5;}
+    .checkin-btns{position:relative; display:flex; flex-wrap:wrap; gap:8px;}
+    .checkin-btn{display:inline-flex; align-items:center; justify-content:center; gap:6px; min-height:44px;
+      padding:6px 14px; background:#fff; border:1px solid var(--color-gray-300); border-radius:var(--radius-sm);
+      box-shadow:var(--shadow-appt); font-size:var(--fs-sm); font-weight:var(--fw-semibold); color:var(--color-gray-900); cursor:pointer;}
+    .checkin-btn i{font-size:18px; color:var(--color-gray-900);}
+    .checkin-btn:hover{border-color:var(--color-purple-500); background:var(--color-purple-50);}
+    /* collapsed "good to hear" success state — pale mint, dark text, filled teal check, no border */
+    .checkin-card.is-well{background:var(--color-green-50); border-color:transparent; gap:0; padding:14px 16px;}
+    .checkin-card .cc-well{display:flex; align-items:center; gap:10px; font-size:var(--fs-lg); font-weight:var(--fw-semibold); color:var(--color-gray-900);}
+    .checkin-card .cc-well i{font-size:22px; color:var(--color-green-600); flex:none;}
+    .checkin-card.fade-out{opacity:0; max-height:0; padding-top:0; padding-bottom:0; margin-top:0; border-width:0;}
 
     /* ============================================================
        HEALTH TAB (ported from prototype-merged, restyled to Bold)
@@ -628,6 +672,51 @@
       background:var(--color-purple-50); border:1px solid var(--color-purple-100); border-radius:var(--radius-md);
       font-size:var(--fs-sm); color:var(--color-purple-700); font-weight:var(--fw-medium); line-height:1.45;}
     .note-preview i{flex:none; font-size:16px; margin-top:1px;}
+    .note-preview span{min-width:0;}
+
+    /* ---- multi-symptom check-in additions ---- */
+    /* multi-select intake: the aria-pressed state reuses the existing .opt-tile purple treatment;
+       a check indicator carries the signal too (never colour alone) */
+    .opt-tile .ot-check{color:var(--color-gray-300); font-size:24px; flex:none;}
+    .opt-tile[aria-pressed="true"] .ot-check{color:var(--color-purple-600);}
+    .ci-continue{position:sticky; bottom:0; margin-top:8px; box-shadow:0 -10px 16px -10px rgba(30,10,60,.12);}
+    .bold-btn:disabled{opacity:.45; cursor:not-allowed;}
+    /* per-symptom progress cue in the severity sequence */
+    .ci-progress{margin:0; font-size:var(--fs-sm); font-weight:var(--fw-bold); letter-spacing:.04em;
+      text-transform:uppercase; color:var(--color-purple-600);}
+    /* consolidated-result framing */
+    .tri-summary{margin:0; font-size:var(--fs-md); color:var(--color-gray-700); line-height:1.5;}
+    .tri-most{display:flex; align-items:center; gap:6px; margin:0 0 4px; font-size:var(--fs-sm);
+      font-weight:var(--fw-bold); letter-spacing:.03em; text-transform:uppercase; color:var(--color-gray-600);}
+    /* one de-duplicated medication instruction */
+    .dose-banner{display:flex; align-items:flex-start; gap:10px; margin:12px 0; padding:12px 14px;
+      border-radius:var(--radius-md); font-size:var(--fs-md); line-height:1.5;}
+    .dose-banner i{font-size:22px; flex:none; margin-top:1px;}
+    .dose-banner .db-label{display:block; font-size:var(--fs-sm); font-weight:var(--fw-bold);
+      letter-spacing:.03em; text-transform:uppercase; margin-bottom:2px;}
+    .dose-banner.dose{background:var(--color-amber-50); border:1.5px solid var(--color-amber-500); color:var(--color-amber-700);}
+    .dose-banner.med{background:var(--color-red-50); border:1.5px solid var(--color-red-600); color:var(--color-red-700);}
+    /* "Also noted" — progressive disclosure for secondary symptoms */
+    .also-noted{border:1px solid var(--color-gray-200); border-radius:var(--radius-lg); overflow:hidden; background:#fff;}
+    .also-noted .an-label{display:flex; align-items:center; gap:8px; margin:0; padding:12px 14px;
+      font-size:var(--fs-sm); font-weight:var(--fw-bold); letter-spacing:.03em; text-transform:uppercase;
+      color:var(--color-gray-600); background:var(--color-gray-50); border-bottom:1px solid var(--color-gray-200);}
+    .also-item{border-bottom:1px solid var(--color-gray-100);}
+    .also-item:last-child{border-bottom:none;}
+    .also-item summary{list-style:none; cursor:pointer; display:flex; align-items:center;
+      justify-content:space-between; gap:12px; padding:14px; min-height:56px;}
+    .also-item summary::-webkit-details-marker{display:none;}
+    .also-item .ai-head{display:flex; align-items:center; gap:10px; min-width:0; flex:1;}
+    .also-item .ai-head i{font-size:22px; color:var(--color-purple-600); flex:none;}
+    .also-item .ai-label{font-size:var(--fs-lg); font-weight:var(--fw-semibold); line-height:1.3;}
+    .also-item .ai-head .bold-tag{flex:none;}
+    .also-item .ai-chev{color:var(--color-gray-400); flex:none; transition:transform .2s;}
+    .also-item[open] .ai-chev{transform:rotate(90deg);}
+    .also-item .ai-body{padding:0 14px 14px;}
+    .also-item .ai-body p{margin:0 0 8px; font-size:var(--fs-md); line-height:1.55; color:var(--color-gray-800);}
+    .also-item .ai-body ul{margin:6px 0 0; padding-left:20px;}
+    .also-item .ai-body li{font-size:var(--fs-md); line-height:1.5; margin-bottom:6px; color:var(--color-gray-800);}
+    @media (prefers-reduced-motion: reduce){ .also-item .ai-chev{transition:none;} }
 
     /* high-risk-window reassurance (start / dose-increase weeks) */
     .hrw-card{border:1px solid var(--color-purple-100); background:var(--color-purple-50); border-radius:var(--radius-lg); padding:16px;}
@@ -708,20 +797,24 @@
       <div>
         <p class="sidebar-section-label">Member stage</p>
         <div class="stage-list" role="group" aria-label="Member stage">
-          <button class="stage-btn" data-stage="stage1" aria-current="true" onclick="setStage('stage1')">
+          <button class="stage-btn" data-state="appointment" aria-current="true" onclick="goToState('appointment')">
             <span class="num">1</span>
             <span><span class="st-title">1st doctor's appointment</span><span class="st-desc">Visit booked, no medication yet</span></span>
           </button>
-          <button class="stage-btn" data-stage="stage2" aria-current="false" onclick="setStage('stage2')">
+          <button class="stage-btn" data-state="creating" aria-current="false" onclick="goToState('creating')">
             <span class="num">2</span>
-            <span><span class="st-title">Waiting for meds — first time</span><span class="st-desc">Prescribed, getting ready to start</span></span>
+            <span><span class="st-title">Creating prescription</span><span class="st-desc">Provider preparing your order</span></span>
           </button>
-          <button class="stage-btn" data-stage="stage3" aria-current="false" onclick="setStage('stage3')">
+          <button class="stage-btn" data-state="insurance" aria-current="false" onclick="goToState('insurance')">
             <span class="num">3</span>
-            <span><span class="st-title">Got the medication</span><span class="st-desc">On the med · side-effect support</span></span>
+            <span><span class="st-title">Processing insurance</span><span class="st-desc">Coverage &amp; cost being checked · confirm 1st dose</span></span>
           </button>
-          <button class="stage-btn" data-stage="stage4" aria-current="false" onclick="setStage('stage4')">
+          <button class="stage-btn" data-state="onmed" aria-current="false" onclick="goToState('onmed')">
             <span class="num">4</span>
+            <span><span class="st-title">On the medication</span><span class="st-desc">Check-in &amp; side-effect support</span></span>
+          </button>
+          <button class="stage-btn" data-state="followup" aria-current="false" onclick="goToState('followup')">
+            <span class="num">5</span>
             <span><span class="st-title">Your visit is coming up</span><span class="st-desc">Follow-up check-in ahead</span></span>
           </button>
         </div>
@@ -891,23 +984,28 @@
                 <div data-stage="stage2" class="home-stage">
                   <header>
                     <h1 class="h-greet">Hi Carol!</h1>
-                    <p class="h-sub">One quick signature and your prescription gets moving — here's what happens next.</p>
+                    <p class="h-sub">It's a good time to learn how GLP-1s work while your medication is on its way.</p>
                   </header>
 
                   <div>
                     <h2 class="sec-title">Your prescription</h2>
-                    <div class="rx-progress">
-                      <div class="rxp-badge"><i class="ph ph-prescription"></i><span>Prescription progress</span></div>
-                      <div class="rxp-card">
-                        <div class="rxp-bar" id="rxp-bar">
-                          <span class="rxp-seg"></span><span class="rxp-seg"></span><span class="rxp-seg"></span><span class="rxp-seg"></span>
-                        </div>
-                        <div>
-                          <p class="rxp-step-title" id="rxp-title">Consent form</p>
-                          <p class="rxp-step-desc" id="rxp-desc">Sign the consent form so we can send your prescription.</p>
-                        </div>
-                        <button class="bold-btn bold-btn-outline bold-btn-full" onclick="openSheet('rxdetails')">See details <i class="ph ph-caret-right"></i></button>
-                      </div>
+                    <button class="rx-card" type="button" onclick="openSheet('rxdetails')" aria-haspopup="dialog" aria-label="Prescription status — tap for details">
+                      <span class="rx-glow" aria-hidden="true"></span>
+                      <span class="rx-card-head">
+                        <span class="rx-card-titles">
+                          <span class="rxp-step-title" id="rxp-title">Creating prescription</span>
+                          <span class="rxp-step-desc" id="rxp-desc">Your provider is preparing your prescription.</span>
+                        </span>
+                        <span class="bold-tag bold-tag-purple rxp-time" id="rxp-time" hidden>3 to 6 days</span>
+                      </span>
+                      <span class="progress" aria-hidden="true"><span class="progress-inner"><span class="fill fill--gradient shimmering" id="rxp-fill"></span></span></span>
+                    </button>
+
+                    <!-- first-dose confirmation — surfaces only on the Processing-insurance step -->
+                    <div class="todo-item firstdose" id="firstdose-cta" hidden>
+                      <span class="ti-ico"><i class="ph ph-pill"></i></span>
+                      <span class="ti-body"><span class="ti-title">Start my 1st dose</span><span class="ti-desc">Mark as done to unlock side-effect monitoring.</span></span>
+                      <button class="bold-btn bold-btn-primary bold-btn-sm ti-cta" onclick="confirmDose()">Done</button>
                     </div>
                   </div>
 
@@ -984,14 +1082,17 @@
                   <!-- side-by-side: feeling check-in + what's normal -->
                   <div>
                     <h2 class="sec-title">To do</h2>
-                    <div class="feel-card">
-                      <p class="fc-q">How are you feeling today?</p>
-                      <p class="fc-sub">A quick check-in. If something's off, we'll help right away.</p>
-                      <div class="feel-actions">
-                        <button class="feel-choice good" onclick="feelWell()"><i class="ph-fill ph-smiley"></i><span>I'm doing well</span></button>
-                        <button class="feel-choice off" onclick="openCheckin('symptom')"><i class="ph-fill ph-first-aid-kit"></i><span>Something's bothering me</span></button>
+                    <section id="checkin-module" class="checkin-card" aria-label="Medication check-in">
+                      <span class="ci-glow" aria-hidden="true"></span>
+                      <div class="cc-primary">
+                        <p class="cc-title">How are you feeling on the medication?</p>
+                        <p class="cc-sub">A quick check-in to keep you safe.</p>
                       </div>
-                    </div>
+                      <div class="checkin-btns">
+                        <button class="checkin-btn" type="button" onclick="doingWell()"><i class="ph ph-smiley" aria-hidden="true"></i> I'm doing well</button>
+                        <button class="checkin-btn" type="button" onclick="openCheckin('symptom')"><i class="ph ph-plus" aria-hidden="true"></i> Log side effects</button>
+                      </div>
+                    </section>
                     <div class="normal-card" style="margin-top:12px;">
                       <span class="bold-tag bold-tag-purple"><i class="ph ph-info"></i> What's normal this week</span>
                       <ul>
@@ -1475,13 +1576,11 @@
                 </div>
               </div>
               <ol class="stepper" id="rx-stepper" style="padding:0 0 8px;">
-                <li class="current" id="rx-step-consent"><span class="sp-rail"><span class="sp-dot">1</span><span class="sp-line"></span></span><span class="sp-body"><span class="sp-title">Consent form</span><span class="sp-desc">Sign the consent form so we can send your prescription.</span></span></li>
-                <li id="rx-step-rx"><span class="sp-rail"><span class="sp-dot">2</span><span class="sp-line"></span></span><span class="sp-body"><span class="sp-title">Medication prescribed</span><span class="sp-desc">Dr. Desai sends your GLP-1 to the pharmacy.</span></span></li>
-                <li id="rx-step-insurance"><span class="sp-rail"><span class="sp-dot">3</span><span class="sp-line"></span></span><span class="sp-body"><span class="sp-title">Insurance processing</span><span class="sp-desc">We check your coverage (Bridge or Part D). This can take up to 6 days — the program mails you a formal approval or denial letter.</span></span></li>
-                <li id="rx-step-ready"><span class="sp-rail"><span class="sp-dot">4</span></span><span class="sp-body"><span class="sp-title">Ready to pick up</span><span class="sp-desc">We'll text you when it's ready. $50 at your pharmacy — Medicare covers the rest.</span></span></li>
+                <li class="current" id="rxm-creating"><span class="sp-rail"><span class="sp-dot">1</span><span class="sp-line"></span></span><span class="sp-body"><span class="sp-title">Creating prescription</span><span class="sp-desc">Your provider is prescribing your medication and will send it to the pharmacy soon.</span></span></li>
+                <li id="rxm-insurance"><span class="sp-rail"><span class="sp-dot">2</span></span><span class="sp-body"><span class="sp-title">Processing insurance</span><span class="sp-desc">Your insurance is processing your prescription. We'll show your final cost before you pick it up — it usually won't change, and if it ever does, it's your choice whether to pick it up. No surprises.</span></span></li>
               </ol>
-              <div class="cost-line" style="margin-bottom:12px;"><i class="ph-fill ph-shield-check" style="color:var(--color-purple-600)"></i> <span><strong>$50/month.</strong> Medicare covers the rest.</span></div>
-              <button class="bold-btn bold-btn-primary bold-btn-full" id="rx-sign-btn" onclick="signConsent()"><i class="ph ph-signature"></i> Sign consent form</button>
+              <div class="cost-line" style="margin-bottom:12px;"><i class="ph-fill ph-shield-check" style="color:var(--color-purple-600)"></i> <span><strong>$50/month.</strong> Medicare covers the rest — and we'll confirm the exact cost before pickup.</span></div>
+              <button class="bold-btn bold-btn-primary bold-btn-full" onclick="closeSheet()"><i class="ph ph-check"></i> Got it</button>
             </div>
           </div>
 
@@ -1512,19 +1611,38 @@
   <script>
   /* ================= STATE ================= */
   const APP = { stage:'stage1', taken:false, checkins:[], rxSigned:false, onSuInsulin:false, form:'pill', rxStep:0 };
-  /* compact prescription-progress card states (index → current step) */
+  /* Prescription waiting sub-steps shown in the stage-2 card + rx-details modal.
+     value = Progress fill fraction (0–1); processing = show the shimmer (still ongoing). */
   const RX_STEPS = [
-    { title:'Consent form',         desc:'Sign the consent form so we can send your prescription.' },
-    { title:'Medication prescribed', desc:'Dr. Desai sends your GLP-1 to the pharmacy.' },
-    { title:'Insurance processing',  desc:'We check your coverage (Bridge or Part D). This can take up to 6 days.' },
-    { title:'Ready to pick up',      desc:"We'll text you when it's ready. $50 at your pharmacy." }
+    { key:'creating',  title:'Creating prescription', badge:null,          value:0.5,  processing:true,
+      desc:"Your provider is creating your medication order — it'll be sent to the pharmacy soon." },
+    { key:'insurance', title:'Processing insurance',  badge:'3 to 6 days', value:0.85, processing:true,
+      desc:'Your insurance is checking your coverage and final cost.' }
   ];
   function renderRxProgress(){
     const t=document.getElementById('rxp-title'); if(!t) return;
     const s=RX_STEPS[APP.rxStep]||RX_STEPS[0];
     t.textContent=s.title;
     const d=document.getElementById('rxp-desc'); if(d) d.textContent=s.desc;
-    document.querySelectorAll('#rxp-bar .rxp-seg').forEach((seg,i)=>seg.classList.toggle('on', i<=APP.rxStep));
+    const badge=document.getElementById('rxp-time');
+    if(badge){ if(s.badge){ badge.textContent=s.badge; badge.hidden=false; } else { badge.hidden=true; } }
+    // @bold/web Progress: fill is revealed by translateX; shimmer only while processing
+    const fill=document.getElementById('rxp-fill');
+    if(fill){ fill.style.transform=`translateX(-${Math.round((1-s.value)*100)}%)`; fill.classList.toggle('shimmering', !!s.processing); }
+    // "Start my 1st dose" shows only on the Processing-insurance step (member confirms once they have it)
+    const cta=document.getElementById('firstdose-cta');
+    if(cta) cta.hidden = !(s.key==='insurance' && !APP.taken);
+    updateRxModal(s.key);
+  }
+  /* rx-details modal reflects the current waiting step (current vs. done vs. upcoming) */
+  function updateRxModal(currentKey){
+    const order=['creating','insurance'];
+    const ci=order.indexOf(currentKey); // -1 once ready → both done
+    order.forEach((k,i)=>{
+      const li=document.getElementById('rxm-'+k); if(!li) return;
+      li.classList.toggle('current', i===ci);
+      li.classList.toggle('done', ci===-1 || i<ci);
+    });
   }
   let RETURN_SCREEN = 'home';
 
@@ -1697,7 +1815,13 @@
     other:{ label:'Something else', icon:'ph-chat-circle-text', freeform:true }
   };
 
-  let draft = { symptom:null, level:null };
+  /* Episode model — a member can report several side effects in one check-in.
+     queue: symptom keys chosen at intake · items: [{key,symptom,level}] once rated · idx: severity cursor. */
+  let draft = { queue:[], items:[], idx:0, duration:null, logged:false, loggedCount:0, result:null };
+  const TIER_RANK = { self:0, concern:1, urgent:2, emergency:3 };
+  const HOLD_RANK = { none:0, dose:1, med:2 };
+  /* clinical tie-break when two symptoms share the top tier — red-flags govern first */
+  const PRIORITY = ['pain','gallbladder','hypoglycemia','vomiting','diarrhea','nausea','constipation','other'];
 
   /* ================= NAV ================= */
   function showScreen(name){
@@ -1713,7 +1837,6 @@
   function setStage(stage){
     APP.stage = stage;
     document.body.setAttribute('data-app-stage', stage); // CSS handles visibility
-    document.querySelectorAll('.stage-btn').forEach(b=>b.setAttribute('aria-current', b.dataset.stage===stage?'true':'false'));
     // stage text swaps
     const t = STAGE_TEXT[stage]||{};
     document.querySelectorAll('[data-stage-text]').forEach(el=>{ const k=el.dataset.stageText; if(t[k]!=null) el.textContent=t[k]; });
@@ -1721,18 +1844,77 @@
     showScreen('home');
   }
 
+  /* ---- demo journey: one clickable entry per Figma screen (sidebar controls) ---- */
+  const JOURNEY = {
+    appointment: { stage:'stage1' },
+    creating:    { stage:'stage2', rxStep:0, taken:false },
+    insurance:   { stage:'stage2', rxStep:1, taken:false },
+    onmed:       { stage:'stage3', taken:true },
+    followup:    { stage:'stage4' },
+  };
+  function goToState(key){
+    const j=JOURNEY[key]||JOURNEY.appointment;
+    if(j.rxStep!=null) APP.rxStep=j.rxStep;
+    if(j.taken!=null)  APP.taken=j.taken;
+    setStage(j.stage);
+    // aria-current AFTER setStage (demo sidebar buttons key off data-state)
+    document.querySelectorAll('.stage-btn').forEach(b=>b.setAttribute('aria-current', b.dataset.state===key?'true':'false'));
+    renderRxProgress();
+    renderCheckinModule(); // restore the check-in module fresh so the demo is replayable
+  }
+
+  /* ---- first-dose confirmation → switches the prescription module into the check-in ---- */
+  function confirmDose(){
+    APP.taken=true;
+    toast('First dose confirmed — nice work');
+    goToState('onmed');
+  }
+
+  /* ---- stage-3 check-in module (yellow) + the "doing well" micro-interaction ---- */
+  function renderCheckinModule(){
+    const m=document.getElementById('checkin-module'); if(!m) return;
+    m.className='checkin-card'; m.hidden=false; m.style.removeProperty('display');
+    m.innerHTML = `
+      <span class="ci-glow" aria-hidden="true"></span>
+      <div class="cc-primary">
+        <p class="cc-title">How are you feeling on the medication?</p>
+        <p class="cc-sub">A quick check-in to keep you safe.</p>
+      </div>
+      <div class="checkin-btns">
+        <button class="checkin-btn" type="button" onclick="doingWell()"><i class="ph ph-smiley" aria-hidden="true"></i> I'm doing well</button>
+        <button class="checkin-btn" type="button" onclick="openCheckin('symptom')"><i class="ph ph-plus" aria-hidden="true"></i> Log side effects</button>
+      </div>`;
+  }
+  function doingWell(){
+    logCheckin('Feeling well','—','well');
+    APP.lastNegative=false; updateAckCard();
+    const m=document.getElementById('checkin-module'); if(!m) return;
+    // collapse the choices, turn green, confirm — then fade the whole module out after 3s
+    m.innerHTML = `<div class="cc-well"><i class="ph-fill ph-check-circle" aria-hidden="true"></i><span>Good to hear that you're doing well!</span></div>`;
+    m.classList.add('is-well');
+    setTimeout(()=>{ m.classList.add('fade-out'); }, 3000);
+    setTimeout(()=>{ if(m.classList.contains('fade-out')){ m.hidden=true; } }, 3000 + 460);
+  }
+
   /* ================= FEELING CHECK-IN ================= */
-  function openCheckin(step){ RETURN_SCREEN='home'; draft={symptom:null, level:null, duration:null}; showScreen('checkin'); renderCheckin(step||'feel'); }
+  function openCheckin(step){ RETURN_SCREEN='home'; draft={queue:[], items:[], idx:0, duration:null, logged:false, loggedCount:0, result:null}; showScreen('checkin'); renderCheckin(step||'feel'); }
   let ciStep='feel';
   function checkinBack(){
     if(ciStep==='symptom'){ renderCheckin('feel'); }
-    else if(ciStep==='severity'){ renderCheckin('symptom'); }
-    else if(ciStep==='followup'){ renderCheckin('severity'); }
+    else if(ciStep==='severity'){
+      // step back to the previous ratable symptom (skipping freeform), else to the multi-select
+      let p=draft.idx-1; while(p>=0 && SYMPTOMS[draft.queue[p]].freeform) p--;
+      if(p>=0){ draft.idx=p; renderCheckin('severity'); } else { renderCheckin('symptom'); }
+    }
+    else if(ciStep==='followup'){
+      const p=lastRatableIdx();
+      if(p>=0){ draft.idx=p; renderCheckin('severity'); } else { renderCheckin('symptom'); }
+    }
     else if(ciStep==='triage'){
-      const s=SYMPTOMS[draft.symptom];
-      if(s && s.freeform){ renderCheckin('symptom'); }
-      else if(draft.level && (draft.level.tier==='concern'||draft.level.tier==='urgent')){ renderCheckin('followup'); }
-      else { renderCheckin('severity'); }
+      // undo the episode log so re-entry doesn't double-count, then return to the last input step
+      undoEpisodeLog();
+      if(anyEscalated()){ renderCheckin('followup'); }
+      else { const p=lastRatableIdx(); if(p>=0){ draft.idx=p; renderCheckin('severity'); } else { renderCheckin('symptom'); } }
     }
     else { showScreen('home'); }
   }
@@ -1747,44 +1929,75 @@
         <button class="opt-tile" onclick="renderCheckin('symptom')"><i class="ph-fill ph-first-aid-kit" style="color:var(--color-amber-600)"></i><span class="ot-body"><span class="ot-title">Something's bothering me</span><span class="ot-desc">I have a side effect I want to tell you about</span></span></button>`;
     }
     else if(step==='symptom'){
+      // MULTI-SELECT: members routinely have several side effects at once. Collect them all in one pass,
+      // then triage once — the platform sorts out what matters most (design brief: "give one clear guidance").
       let tiles='';
       Object.keys(SYMPTOMS).forEach(k=>{ const s=SYMPTOMS[k];
         if(s.condition==='su-insulin' && !APP.onSuInsulin) return; // conditional: only if med list qualifies
-        tiles += `<button class="opt-tile" onclick="pickSymptom('${k}')"><i class="ph ${s.icon}"></i><span class="ot-body"><span class="ot-title">${s.label}</span></span><i class="ph ph-caret-right" style="color:var(--color-gray-400)"></i></button>`; });
-      b.innerHTML = `<h1 class="ci-q">What's bothering you?</h1><p class="ci-help">Pick the one that fits best. You can log another after.</p>${tiles}`;
+        const sel = draft.queue.includes(k);
+        tiles += `<button class="opt-tile multi" type="button" aria-pressed="${sel}" onclick="toggleSymptom('${k}')"><i class="ph ${s.icon}"></i><span class="ot-body"><span class="ot-title">${s.label}</span></span><i class="ph ${sel?'ph-check-circle':'ph-circle'} ot-check" aria-hidden="true"></i></button>`; });
+      const n=draft.queue.length;
+      const cta = n ? `Continue${n>1?` with ${n}`:''}` : 'Pick what you’re feeling';
+      b.innerHTML = `<h1 class="ci-q">What’s bothering you?</h1><p class="ci-help">Pick everything you’re feeling — we’ll figure out what matters most. There’s no wrong answer.</p>${tiles}
+        <button class="bold-btn bold-btn-primary bold-btn-full ci-continue" onclick="startSeverity()" ${n?'':'disabled'}>${cta}</button>`;
     }
     else if(step==='severity'){
-      const s=SYMPTOMS[draft.symptom];
+      const key=draft.queue[draft.idx], s=SYMPTOMS[key];
       const dots = s.noBenign ? ['s2','s3','s3'] : ['s1','s2','s3']; // no-benign symptoms never show a green dot
       let tiles='';
       s.levels.forEach((lv,i)=>{ const dot=dots[i]||'s3';
         tiles += `<button class="opt-tile sev" onclick="pickLevel(${i})"><span class="ot-body"><span class="ot-title"><span class="sev-dot ${dot}"></span>${lv.sev}</span><span class="ot-desc">${lv.desc}</span></span></button>`; });
+      // light progress cue only when the member is rating more than one symptom
+      const prog = draft.queue.length>1 ? `<p class="ci-progress">${s.label} · ${draft.idx+1} of ${draft.queue.length}</p>` : '';
       const q = s.q || `How bad is your ${s.label.toLowerCase()}?`;
-      b.innerHTML = `<h1 class="ci-q">${q}</h1><p class="ci-help">Choose the one that sounds most like today.</p>${tiles}`;
+      b.innerHTML = `${prog}<h1 class="ci-q">${q}</h1><p class="ci-help">Choose the one that sounds most like today.</p>${tiles}`;
     }
     else if(step==='followup'){
-      // one hard-coded follow-up on escalated tiers → structured note for the provider (not free chat)
+      // ONE hard-coded follow-up for the whole episode on escalated tiers → structured note for the provider
       const opts=['Since today','A day or two','3 days or more'];
       const tiles=opts.map(o=>`<button class="opt-tile" onclick="pickDuration('${o}')"><span class="ot-body"><span class="ot-title">${o}</span></span></button>`).join('');
       b.innerHTML = `<h1 class="ci-q">How long has this been going on?</h1><p class="ci-help">One quick question so your care team has what they need.</p>${tiles}`;
     }
-    else if(step==='triage'){ renderTriage(); }
+    else if(step==='triage'){ renderConsolidatedTriage(); }
   }
-  function pickSymptom(k){
-    draft.symptom=k; draft.duration=null; const s=SYMPTOMS[k];
-    if(s.freeform){
-      draft.level={sev:'Note', tier:'concern', freeform:true, chip:'sent',
-        title:'Thanks for telling us.',
-        lead:"We've shared your note with your care team so they can help. If it's bothering you a lot or feels urgent, reach out to them directly. If it's an emergency, call 911.",
-        note:"We've sent this to Dr. Desai as a note. Ali, your care coordinator, will reach out within 48 hours."};
-      renderCheckin('triage'); return;
+  // canned note item for the freeform "Something else" option — no severity screen
+  function freeformLevel(){
+    return {sev:'Note', tier:'concern', freeform:true, chip:'sent',
+      title:'Thanks for telling us.',
+      lead:"We've shared your note with your care team so they can help. If it's bothering you a lot or feels urgent, reach out to them directly. If it's an emergency, call 911.",
+      note:"We've sent this to Dr. Desai as a note. Ali, your care coordinator, will reach out within 48 hours."};
+  }
+  function toggleSymptom(k){
+    const i=draft.queue.indexOf(k);
+    if(i>=0){ draft.queue.splice(i,1); } else { draft.queue.push(k); } // preserve selection order
+    renderCheckin('symptom'); // re-render to update pressed state + Continue label
+  }
+  function startSeverity(){
+    if(!draft.queue.length) return;
+    draft.items=[]; draft.idx=0; draft.duration=null; draft.logged=false;
+    advanceSeverity();
+  }
+  // walk the queue: rate each symptom in turn, skipping freeform (which carries a canned note).
+  // items are keyed by queue position so re-rating after a back-step overwrites cleanly (no dupes).
+  function advanceSeverity(){
+    while(draft.idx<draft.queue.length && SYMPTOMS[draft.queue[draft.idx]].freeform){
+      const k=draft.queue[draft.idx];
+      draft.items[draft.idx] = {key:k, symptom:SYMPTOMS[k].label, level:freeformLevel()};
+      draft.idx++;
     }
-    renderCheckin('severity');
+    if(draft.idx<draft.queue.length){ renderCheckin('severity'); }
+    else if(anyEscalated()){ renderCheckin('followup'); }
+    else { renderCheckin('triage'); }
   }
+  // duration is asked once per episode, and only when a real (non-freeform) symptom escalates
+  function anyEscalated(){ return draft.items.some(it=>it && !it.level.freeform && (it.level.tier==='concern'||it.level.tier==='urgent')); }
+  // index of the last ratable (non-freeform) symptom in the queue, or -1 if none
+  function lastRatableIdx(){ let p=draft.queue.length-1; while(p>=0 && SYMPTOMS[draft.queue[p]].freeform) p--; return p; }
   function pickLevel(i){
-    draft.level=SYMPTOMS[draft.symptom].levels[i];
-    const t=draft.level.tier;
-    if(t==='concern'||t==='urgent'){ renderCheckin('followup'); } else { renderCheckin('triage'); }
+    const key=draft.queue[draft.idx], s=SYMPTOMS[key];
+    draft.items[draft.idx] = {key, symptom:s.label, level:s.levels[i]};
+    draft.idx++;
+    advanceSeverity();
   }
   function pickDuration(d){ draft.duration=d; renderCheckin('triage'); }
 
@@ -1805,26 +2018,130 @@
     return call911('danger')+backToday; // emergency
   }
 
-  function renderTriage(){
-    const s=SYMPTOMS[draft.symptom], lv=draft.level, tier=lv.tier, t=TIER[tier];
-    logCheckin(s.label, lv.sev, tier);
-    const tips = lv.tips ? `<ul>${lv.tips.map(x=>`<li>${x}</li>`).join('')}</ul>` : '';
-    const note = lv.note ? `<p>${lv.note}</p>` : '';
-    const chip = lv.chip==='sent' ? `<span class="shared-chip"><i class="ph ph-paper-plane-tilt"></i> Sent to Dr. Desai as a note</span>`
-               : lv.chip==='shared' ? `<span class="shared-chip"><i class="ph ph-paper-plane-tilt"></i> Shared with Dr. Desai</span>` : '';
-    // structured-survey → provider-note handoff, made visible to the member
-    const preview = (draft.duration && (tier==='concern'||tier==='urgent'))
-      ? `<div class="note-preview"><i class="ph ph-note-pencil"></i> Note to Dr. Desai: ${s.label} · ${lv.sev.toLowerCase()} · ${draft.duration.toLowerCase()}</div>` : '';
-    const emgFoot = (tier==='urgent'||tier==='emergency')
-      ? `<p class="ci-help" style="text-align:center;">Bold isn't an emergency service and can't watch in real time — 911 is the fastest help.</p>` : '';
-    document.getElementById('checkin-body').innerHTML = `
+  /* ---- consolidate the episode into one prioritized result ---- */
+  function computeResult(){
+    const items = draft.items.slice();
+    // governing symptom = highest tier; ties broken by clinical PRIORITY (red-flags govern)
+    const sorted = items.slice().sort((a,b)=>{
+      const t = TIER_RANK[b.level.tier]-TIER_RANK[a.level.tier];
+      if(t!==0) return t;
+      return PRIORITY.indexOf(a.key)-PRIORITY.indexOf(b.key);
+    });
+    const governing = sorted[0];
+    const maxHold = items.reduce((m,it)=>Math.max(m, HOLD_RANK[it.level.hold||'none']),0);
+    return {
+      items, sorted, governing,
+      topTier: governing.level.tier,
+      maxHold,
+      escalated: items.some(it=>it.level.tier!=='self'),
+      anyEmergency: items.some(it=>it.level.tier==='emergency'),
+      others: sorted.slice(1),
+      count: items.length,
+    };
+  }
+
+  /* the "Also noted" progressive-disclosure list — secondary symptoms stay available, not overwhelming */
+  function renderAlsoNoted(others){
+    const rows = others.map(it=>{
+      const lv=it.level;
+      const tagCls = lv.tier==='self' ? 'bold-tag-green' : (lv.tier==='concern'||lv.tier==='urgent') ? 'bold-tag-amber' : 'bold-tag-blue';
+      const tips = lv.tips ? `<ul>${lv.tips.map(x=>`<li>${x}</li>`).join('')}</ul>` : '';
+      const note = lv.note ? `<p>${lv.note}</p>` : '';
+      return `<details class="also-item">
+        <summary>
+          <span class="ai-head"><i class="ph ${SYMPTOMS[it.key].icon}"></i><span class="ai-label">${it.symptom}</span><span class="bold-tag ${tagCls}">${lv.sev}</span></span>
+          <i class="ph ph-caret-right ai-chev" aria-hidden="true"></i>
+        </summary>
+        <div class="ai-body"><p>${lv.lead}</p>${tips}${note}</div>
+      </details>`;
+    }).join('');
+    return `<div class="also-noted"><p class="an-label"><i class="ph ph-list-checks"></i> Also noted — tap any to see what helps</p>${rows}</div>`;
+  }
+
+  function renderConsolidatedTriage(){
+    if(!draft.logged) logEpisode();
+    const r=draft.result, g=r.governing, gl=g.level, tier=r.topTier, t=TIER[tier];
+    const multi=r.count>1;
+    const body=document.getElementById('checkin-body');
+    const names=r.sorted.map(it=>it.symptom.toLowerCase());
+    const nameList = names.length===1 ? names[0]
+      : names.length===2 ? `${names[0]} and ${names[1]}`
+      : `${names.slice(0,-1).join(', ')}, and ${names[names.length-1]}`;
+
+    // EMERGENCY: nothing else matters in this moment — lead only with 911, minimize the rest
+    if(r.anyEmergency){
+      const otherLine = r.others.length
+        ? `<p class="ci-help" style="text-align:center;">You also told us about ${r.others.map(o=>o.symptom.toLowerCase()).join(', ')} — let the 911 dispatcher or your care team know.</p>` : '';
+      body.innerHTML = `
+        ${multi?`<p class="tri-summary">You told us about <strong>${nameList}</strong>. One of these needs help right now.</p>`:''}
+        <div class="triage emergency">
+          <div class="tr-head"><i class="ph-fill ${t.icon}"></i><p class="tr-title">${gl.title}</p></div>
+          <p>${gl.lead}</p>
+        </div>
+        <p class="emergency-line">Bold isn't an emergency service and can't watch in real time — <a href="tel:911">911</a> is the fastest help.</p>
+        ${otherLine}
+        ${actBtns('emergency', gl)}`;
+      return;
+    }
+
+    const gTips = gl.tips ? `<ul>${gl.tips.map(x=>`<li>${x}</li>`).join('')}</ul>` : '';
+    const gNote = gl.note ? `<p>${gl.note}</p>` : '';
+    // one de-duplicated medication instruction, stated once (only when several symptoms are in play)
+    const doseBanner = (multi && r.maxHold>0) ? `
+      <div class="dose-banner ${r.maxHold===2?'med':'dose'}" role="note">
+        <i class="ph-fill ph-pause-circle" aria-hidden="true"></i>
+        <span><span class="db-label">About your medication</span>${r.maxHold===2
+          ? "Hold your medication until a clinician says it's okay to restart."
+          : "Hold your next dose until your care team weighs in — a safe pause, not a setback."}</span>
+      </div>` : '';
+    // chip: keep the governing level's own wording for a single symptom; consolidate for many
+    const chip = !multi && gl.chip==='sent' ? `<span class="shared-chip"><i class="ph ph-paper-plane-tilt"></i> Sent to Dr. Desai as a note</span>`
+               : !multi && gl.chip==='shared' ? `<span class="shared-chip"><i class="ph ph-paper-plane-tilt"></i> Shared with Dr. Desai</span>`
+               : !multi ? ''
+               : r.escalated ? `<span class="shared-chip"><i class="ph ph-paper-plane-tilt"></i> Sent to Dr. Desai</span>`
+               : `<span class="shared-chip"><i class="ph ph-paper-plane-tilt"></i> Shared with Dr. Desai</span>`;
+    // one consolidated provider-note preview
+    const preview = multi
+      ? `<div class="note-preview"><i class="ph ph-note-pencil"></i><span>Note to Dr. Desai: ${r.sorted.map(it=>`${it.symptom.toLowerCase()} · ${it.level.sev.toLowerCase()}`).join('; ')}${draft.duration?` · ${draft.duration.toLowerCase()}`:''}</span></div>`
+      : (draft.duration && (tier==='concern'||tier==='urgent'))
+        ? `<div class="note-preview"><i class="ph ph-note-pencil"></i><span>Note to Dr. Desai: ${g.symptom} · ${gl.sev.toLowerCase()} · ${draft.duration.toLowerCase()}</span></div>` : '';
+    const summary = multi ? `<p class="tri-summary">You told us about <strong>${nameList}</strong> today. Here’s what matters most — the rest is below.</p>` : '';
+    const mostLabel = multi ? `<p class="tri-most"><i class="ph-fill ph-arrow-bend-down-right" aria-hidden="true"></i> Most important — ${g.symptom.toLowerCase()}</p>` : '';
+    const alsoNoted = r.others.length ? renderAlsoNoted(r.others) : '';
+    const emgFoot = (tier==='urgent')
+      ? `<p class="emergency-line">Bold isn't an emergency service and can't watch in real time — <a href="tel:911">911</a> is the fastest help.</p>` : '';
+
+    body.innerHTML = `
+      ${summary}
       <div class="triage ${t.cls}">
-        <div class="tr-head"><i class="ph-fill ${t.icon}"></i><p class="tr-title">${lv.title}</p></div>
-        <p>${lv.lead}</p>
-        ${tips}${note}${chip}${preview}
+        <div class="tr-head"><i class="ph-fill ${t.icon}"></i><p class="tr-title">${gl.title}</p></div>
+        ${mostLabel}
+        <p>${gl.lead}</p>
+        ${gTips}${gNote}${doseBanner}${preview}${chip}
       </div>
+      ${alsoNoted}
       ${emgFoot}
-      ${actBtns(tier, lv)}`;
+      ${actBtns(tier, gl)}`;
+  }
+
+  /* log the whole episode once — records each symptom in history, one consolidated home reflection */
+  function logEpisode(){
+    const r=computeResult(); draft.result=r;
+    r.sorted.forEach(it=>APP.checkins.unshift({label:it.symptom, sev:it.level.sev, tier:it.level.tier, when:'Today, 2:15pm', duration:draft.duration||null}));
+    draft.loggedCount=r.sorted.length; draft.logged=true;
+    APP.lastNegative = {
+      items: r.sorted.map(it=>({label:it.symptom, sev:it.level.sev, tier:it.level.tier})),
+      governingTier: r.topTier, count: r.count,
+    };
+    renderSymptomHistory();
+  }
+  function undoEpisodeLog(){
+    if(!draft.logged) return;
+    APP.checkins.splice(0, draft.loggedCount||0);
+    draft.logged=false; draft.loggedCount=0; draft.result=null;
+    const last=APP.checkins.find(c=>c.tier!=='well');
+    APP.lastNegative = last ? {items:[{label:last.label,sev:last.sev,tier:last.tier}], governingTier:last.tier, count:1} : false;
+    renderSymptomHistory();
   }
 
   function feelWell(){
@@ -1841,12 +2158,10 @@
     APP.lastNegative=false;
   }
 
+  // single-entry logger — only the "I'm doing well" path uses this now (symptoms go through logEpisode)
   function logCheckin(label, sev, tier){
-    const entry={label, sev, tier, when:'Today, 2:15pm', duration:draft.duration||null};
-    APP.checkins.unshift(entry);
-    if(tier!=='well'){ APP.lastNegative={label,sev,tier}; }
+    APP.checkins.unshift({label, sev, tier, when:'Today, 2:15pm', duration:null});
     renderSymptomHistory();
-    return entry;
   }
   function renderSymptomHistory(){
     const host=document.getElementById('symptom-history'); if(!host) return;
@@ -1867,12 +2182,25 @@
   }
   function updateAckCard(){
     const card=document.getElementById('ack-card'); if(!card) return;
-    if(APP.lastNegative){
-      const n=APP.lastNegative;
-      const escalated = (n.tier==='concern'||n.tier==='urgent'||n.tier==='emergency');
-      document.getElementById('ack-text').textContent = `You told us about ${n.label.toLowerCase()} (${n.sev.toLowerCase()}) today.`;
+    const n=APP.lastNegative;
+    if(n){
+      const items=n.items||[];
+      const escalated = n.governingTier && n.governingTier!=='self' && n.governingTier!=='well';
+      let text;
+      if(n.count>1){
+        const names=items.map(i=>i.label.toLowerCase());
+        const nameList = names.length===2 ? `${names[0]} and ${names[1]}`
+          : `${names.slice(0,-1).join(', ')}, and ${names[names.length-1]}`;
+        text = `You told us about ${n.count} things today — ${nameList}.`;
+      } else {
+        const i=items[0]||{label:'a symptom',sev:''};
+        text = `You told us about ${i.label.toLowerCase()}${i.sev && i.sev!=='—' ? ` (${i.sev.toLowerCase()})` : ''} today.`;
+      }
+      document.getElementById('ack-text').textContent = text;
       document.getElementById('ack-body').innerHTML = escalated
-        ? "This was sent to Dr. Desai, and your care team will reach out within 48 hours. There's nothing else you need to do right now."
+        ? (n.count>1
+            ? "The most important one was sent to Dr. Desai, and your care team will reach out within 48 hours. There's nothing else you need to do right now."
+            : "This was sent to Dr. Desai, and your care team will reach out within 48 hours. There's nothing else you need to do right now.")
         : 'Take it easy today — rest is part of getting started. This was shared with Dr. Desai.';
       card.style.display='';
     } else {
@@ -1880,21 +2208,6 @@
     }
   }
 
-  /* ================= RX CONSENT ================= */
-  function signConsent(){
-    APP.rxSigned=true;
-    const consent=document.getElementById('rx-step-consent');
-    const rx=document.getElementById('rx-step-rx');
-    const ins=document.getElementById('rx-step-insurance');
-    const btn=document.getElementById('rx-sign-btn');
-    const check='<i class="ph-bold ph-check"></i>';
-    if(consent){ consent.classList.remove('current'); consent.classList.add('done'); consent.querySelector('.sp-dot').innerHTML=check; }
-    if(rx){ rx.classList.add('done'); rx.querySelector('.sp-dot').innerHTML=check; }
-    if(ins){ ins.classList.add('current'); }
-    if(btn){ btn.outerHTML = `<div class="cost-line" style="background:var(--color-mint-100);color:var(--color-mint-700);"><i class="ph-fill ph-check-circle"></i> Consent signed. Your prescription is on its way — we'll text you when it's ready.</div>`; }
-    APP.rxStep = 2; renderRxProgress(); // advance the compact card underneath (→ Insurance processing, 3/4)
-    toast('Consent signed');
-  }
 
   /* ================= SHEETS + TOAST ================= */
   function openSheet(name){ const h=document.getElementById('sheet-'+name); if(h){ h.classList.add('open'); h.setAttribute('aria-hidden','false'); } }
@@ -1905,9 +2218,8 @@
   document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeSheet(); toggleNav(false); } });
 
   /* ================= INIT ================= */
-  setStage('stage1');
   setForm('pill');
-  renderRxProgress();
+  goToState('appointment');
   </script>
 </body>
 </html>
