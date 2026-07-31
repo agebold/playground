@@ -40,6 +40,7 @@ jobs:
             MSK-ACCESS/package-lock.json
             _main/check-ins/package-lock.json
             _main/pain-scale/package-lock.json
+            _main/MSK-ACCESS-enrollment/package-lock.json
 
       - name: Install MSK-ACCESS dependencies
         if: hashFiles('MSK-ACCESS/package-lock.json') != ''
@@ -61,11 +62,18 @@ jobs:
       - name: Build pain-scale
         run: cd _main/pain-scale && npm run build
 
+      - name: Install MSK-ACCESS-enrollment dependencies
+        run: cd _main/MSK-ACCESS-enrollment && npm install
+
+      - name: Build MSK-ACCESS-enrollment
+        run: cd _main/MSK-ACCESS-enrollment && npm run build
+
       - name: Assemble deployment folder
         run: |
           mkdir -p _deploy/MSK-ACCESS
           mkdir -p _deploy/check-ins
           mkdir -p _deploy/pain-scale
+          mkdir -p _deploy/MSK-ACCESS-enrollment
           # Always copy static content from main
           cp -r _main/dynamic-header _deploy/ 2>/dev/null || true
           cp -r _main/vision _deploy/ 2>/dev/null || true
@@ -82,6 +90,7 @@ jobs:
           cp -r MSK-ACCESS/dist/. _deploy/MSK-ACCESS/ 2>/dev/null || true
           cp -r _main/check-ins/dist/. _deploy/check-ins/ 2>/dev/null || true
           cp -r _main/pain-scale/dist/. _deploy/pain-scale/ 2>/dev/null || true
+          cp -r _main/MSK-ACCESS-enrollment/dist/. _deploy/MSK-ACCESS-enrollment/ 2>/dev/null || true
 
       - name: Generate index from projects.json
         run: cd _main && node scripts/generate-index.js > ../_deploy/index.html
