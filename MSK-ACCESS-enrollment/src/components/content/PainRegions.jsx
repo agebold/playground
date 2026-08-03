@@ -69,37 +69,11 @@ function RegionFocus({ selectedRegions, focusedRegion, setFocusedRegion, onNext,
   )
 }
 
-// ─── Step 3: Pain chronicity ──────────────────────────────────────────────────
-function PainChronicity({ regionLabel, questionNum, chronicity, setChronicity, onNext, onBack }) {
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <OnboardingHeader showBack progress={2} totalSteps={10} logoSrc={boldLogo} onBack={onBack} />
-      <OnboardingScreen cta={<PurpleButton onClick={onNext} disabled={!chronicity}>Continue</PurpleButton>}>
-        <QuestionHeader
-          questionNum={questionNum}
-          question={<>When did your <strong>{regionLabel.toLowerCase()}</strong> pain symptoms first start?</>}
-        />
-        <RadioOption
-          label="Within the past 3 months"
-          selected={chronicity === 'acute'}
-          onSelect={() => setChronicity('acute')}
-        />
-        <RadioOption
-          label="More than 3 months ago"
-          selected={chronicity === 'chronic'}
-          onSelect={() => setChronicity('chronic')}
-        />
-      </OnboardingScreen>
-    </div>
-  )
-}
-
 // ─── Combined flow ────────────────────────────────────────────────────────────
 export default function PainRegions({ onBack, onNavigate, setSelectedRegionLabel }) {
-  const [step, setStep] = useState('regions')      // 'regions' | 'focus' | 'chronicity'
+  const [step, setStep] = useState('regions')      // 'regions' | 'focus'
   const [selected, setSelected] = useState(new Set())
   const [focusedRegion, setFocusedRegion] = useState(null)
-  const [chronicity, setChronicity] = useState(null)
 
   // Resolve the label for the currently focused region
   const getFocusedLabel = (currentFocus = focusedRegion) => {
@@ -107,20 +81,19 @@ export default function PainRegions({ onBack, onNavigate, setSelectedRegionLabel
     return REGIONS.find(r => r.id === id)?.label ?? ''
   }
 
-  // After region selection: no pain reported skips straight to the eligibility result;
-  // otherwise skip the focus step if only one region was selected
+  // After region selection: no pain reported, or only one region selected,
+  // skips straight to the eligibility result; otherwise show the focus step first
   const handleRegionsContinue = () => {
     if (selected.has('none')) {
       onNavigate('eligibility-verdict')
       return
     }
-    setFocusedRegion(null)
-    setChronicity(null)
     if (selected.size > 1) {
+      setFocusedRegion(null)
       setStep('focus')
     } else {
       setSelectedRegionLabel(getFocusedLabel())
-      setStep('chronicity')
+      onNavigate('eligibility-verdict')
     }
   }
 
@@ -137,37 +110,16 @@ export default function PainRegions({ onBack, onNavigate, setSelectedRegionLabel
 
   const handleFocusContinue = () => {
     setSelectedRegionLabel(getFocusedLabel())
-    setStep('chronicity')
-  }
-
-  if (step === 'focus') {
-    return (
-      <RegionFocus
-        selectedRegions={selected}
-        focusedRegion={focusedRegion}
-        setFocusedRegion={setFocusedRegion}
-        onNext={handleFocusContinue}
-        onBack={() => setStep('regions')}
-      />
-    )
-  }
-
-  const handleChroniCity = () => {
-    if (chronicity === 'acute') {
-      onNavigate('ineligible')
-    } else {
-      onNavigate('eligibility-verdict')
-    }
+    onNavigate('eligibility-verdict')
   }
 
   return (
-    <PainChronicity
-      regionLabel={getFocusedLabel()}
-      questionNum={selected.size > 1 ? '3' : '2'}
-      chronicity={chronicity}
-      setChronicity={setChronicity}
-      onNext={handleChroniCity}
-      onBack={() => setStep(selected.size > 1 ? 'focus' : 'regions')}
+    <RegionFocus
+      selectedRegions={selected}
+      focusedRegion={focusedRegion}
+      setFocusedRegion={setFocusedRegion}
+      onNext={handleFocusContinue}
+      onBack={() => setStep('regions')}
     />
   )
 }

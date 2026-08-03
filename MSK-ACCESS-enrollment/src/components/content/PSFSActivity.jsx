@@ -33,7 +33,7 @@ export default function PSFSActivity({ onNext, onBack, selectedRegionLabel }) {
       <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
         <OnboardingHeader showBack progress={8} totalSteps={10} logoSrc={boldLogo} onBack={() => setStep('select')} />
         <OnboardingScreen cta={<PurpleButton onClick={onNext} disabled={rating === null}>Continue</PurpleButton>}>
-          <QuestionHeader questionNum="5" question="How would you rate your current ability to perform this activity?" />
+          <QuestionHeader questionNum="4" question="How would you rate your current ability to perform this activity?" />
 
           {/* Selected activity card */}
           <div style={{
@@ -94,7 +94,7 @@ export default function PSFSActivity({ onNext, onBack, selectedRegionLabel }) {
       <OnboardingHeader showBack progress={8} totalSteps={10} logoSrc={boldLogo} onBack={onBack} />
       <OnboardingScreen cta={<PurpleButton onClick={() => selected && setStep('rate')} disabled={!selected}>Continue</PurpleButton>}>
         <QuestionHeader
-          questionNum="4"
+          questionNum="3"
           question={<>Please select the activity you find the most difficult or cannot do because of your <strong>{painPhrase}</strong>.</>}
         />
         {activities.map(a => (

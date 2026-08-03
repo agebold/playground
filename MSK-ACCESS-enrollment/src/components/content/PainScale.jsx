@@ -13,7 +13,7 @@ export default function PainScale({ onNext, onBack, selectedRegionLabel }) {
       <OnboardingHeader showBack progress={7} totalSteps={10} logoSrc={boldLogo} onBack={onBack} />
       <OnboardingScreen cta={<PurpleButton onClick={onNext} disabled={value === null}>Continue</PurpleButton>}>
         <QuestionHeader
-          questionNum="3"
+          questionNum="2"
           question={<>How would you rate your <strong>{painPhrase}</strong> on average over the last 7 days?</>}
         />
 

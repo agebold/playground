@@ -11,7 +11,7 @@ function DaysScreen({ selectedDays, toggle, onNext, onBack }) {
       <OnboardingHeader showBack progress={5} totalSteps={10} logoSrc={boldLogo} onBack={onBack} />
       <OnboardingScreen cta={<PurpleButton onClick={onNext}>Continue</PurpleButton>}>
         <QuestionHeader
-          questionNum="7"
+          questionNum="6"
           question="What days do you prefer to exercise?"
           sublabel="We'll send reminders on these days to help you get moving! We've preselected our most popular days."
         />
@@ -43,7 +43,7 @@ function TimeScreen({ time, setTime, onNext, onBack }) {
       <OnboardingHeader showBack progress={6} totalSteps={10} logoSrc={boldLogo} onBack={onBack} />
       <OnboardingScreen cta={<PurpleButton onClick={onNext}>Continue</PurpleButton>}>
         <QuestionHeader
-          questionNum="8"
+          questionNum="7"
           question="What time of day do you like to exercise?"
           sublabel="We'll send you reminders at this time! We've preselected our most popular time."
         />

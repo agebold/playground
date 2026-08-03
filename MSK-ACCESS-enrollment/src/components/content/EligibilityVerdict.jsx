@@ -24,7 +24,7 @@ export default function EligibilityVerdict({ onBack, onNavigate }) {
         <div style={{ background: C.bg, borderRadius: 14, padding: '16px', marginBottom: 8 }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             {[
-              'Covered the Centers for Medicare and Medicaid Services',
+              'Covered by the Centers for Medicare and Medicaid Services',
               '$0 cost to you',
               'Personalized plan for your specific condition',
             ].map((text, i) => (
