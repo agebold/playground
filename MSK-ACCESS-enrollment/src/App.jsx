@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import ContentArea from './components/ContentArea.jsx'
+import UserbrainCallout from './components/UserbrainCallout.jsx'
 import { C } from './components/content/shared.jsx'
-import { getAllSteps, getNextStep, getPrevStep } from './data/navigationStructure.js'
+import { getAllSteps, getNextStep, getPrevStep, getStepIndex } from './data/navigationStructure.js'
 
 const allSteps = getAllSteps()
 const PROTOTYPE_END = { id: 'prototype-end', viewType: 'mobile', canToggle: false }
@@ -11,6 +12,7 @@ export default function App({ startStepId, endStepId }) {
   const [currentStep, setCurrentStep] = useState(startStep)
   const [resetKey, setResetKey] = useState(0)
   const [selectedRegionLabel, setSelectedRegionLabel] = useState('')
+  const [calloutDismissed, setCalloutDismissed] = useState(false)
 
   const handleNext = () => {
     if (currentStep.id === endStepId) {
@@ -36,7 +38,16 @@ export default function App({ startStepId, endStepId }) {
     setCurrentStep(startStep)
     setSelectedRegionLabel('')
     setResetKey(k => k + 1)
+    setCalloutDismissed(false)
   }
+
+  const handleContentInteraction = () => {
+    if (currentStep.id === startStep.id) setCalloutDismissed(true)
+  }
+
+  const showCallout = currentStep.id === startStep.id && !calloutDismissed
+  const currentStepIndex = getStepIndex(currentStep.id)
+  const showSecondCallout = currentStepIndex >= getStepIndex('pain-scale') && currentStepIndex < getStepIndex('reminders')
 
   return (
     <div style={{
@@ -67,15 +78,30 @@ export default function App({ startStepId, endStepId }) {
       >
         Restart prototype
       </button>
-      <ContentArea
-        key={resetKey}
-        step={currentStep}
-        onNext={handleNext}
-        onBack={handleBack}
-        onNavigate={handleNavigate}
-        selectedRegionLabel={selectedRegionLabel}
-        setSelectedRegionLabel={setSelectedRegionLabel}
+      <UserbrainCallout
+        show={showCallout}
+        message="Please make sure to read through the user testing instructions before interacting with the prototype!"
+        onDismiss={() => setCalloutDismissed(true)}
       />
+      <UserbrainCallout
+        show={showSecondCallout}
+        side="left"
+        message="Remember to think out loud — what's clear, what's confusing, anything you're noticing about each of these steps."
+      />
+      <div
+        style={{ display: 'flex', flex: 1, minHeight: 0 }}
+        onClick={handleContentInteraction}
+      >
+        <ContentArea
+          key={resetKey}
+          step={currentStep}
+          onNext={handleNext}
+          onBack={handleBack}
+          onNavigate={handleNavigate}
+          selectedRegionLabel={selectedRegionLabel}
+          setSelectedRegionLabel={setSelectedRegionLabel}
+        />
+      </div>
     </div>
   )
 }
