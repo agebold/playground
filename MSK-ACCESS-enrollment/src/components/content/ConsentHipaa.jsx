@@ -95,7 +95,7 @@ export default function ConsentHipaa({ onNext, onBack }) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: C.white }}>
-      <OnboardingHeader showBack onBack={onBack} logoSrc={boldLogo} />
+      <OnboardingHeader showBack onBack={onBack} logoSrc={boldLogo} progress={12} totalSteps={15} />
       <OnboardingScreen cta={<PurpleButton onClick={onNext} disabled={!checked}>Continue</PurpleButton>}>
         <div style={{ marginBottom: 16 }}>
           <h2 style={{ fontSize: 20, fontWeight: 600, color: C.text, margin: '0 0 4px' }}>Your privacy matters</h2>

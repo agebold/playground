@@ -17,7 +17,7 @@ export default function AccountCreation({ onNext, onBack }) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <OnboardingHeader showBack progress={9} totalSteps={10} logoSrc={boldLogo} onBack={onBack} />
+      <OnboardingHeader showBack progress={15} totalSteps={15} logoSrc={boldLogo} onBack={onBack} />
       <OnboardingScreen cta={
         <>
           <PurpleButton onClick={onNext}>I agree</PurpleButton>

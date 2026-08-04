@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react'
 import boldLogomark from '../../assets/bold-logomark.png'
 
 // ─── Design tokens ───────────────────────────────────────────────────────────
@@ -119,6 +120,23 @@ export function PhoneFrame({ children, statusBarBg }) {
 
 // ─── Onboarding header (back + Bold wordmark + optional progress) ─────────────
 export function OnboardingHeader({ showBack = true, progress, totalSteps, onBack, logoSrc }) {
+  const targetPercent = progress !== undefined ? (progress / (totalSteps || 10)) * 100 : 0
+  const [barPercent, setBarPercent] = useState(() =>
+    progress !== undefined ? Math.max(0, ((progress - 1) / (totalSteps || 10)) * 100) : 0
+  )
+  const mountedRef = useRef(false)
+
+  useEffect(() => {
+    if (progress === undefined) return
+    if (!mountedRef.current) {
+      mountedRef.current = true
+      const raf = requestAnimationFrame(() => setBarPercent(targetPercent))
+      return () => cancelAnimationFrame(raf)
+    }
+    setBarPercent(targetPercent)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [progress, totalSteps])
+
   return (
     <div style={{ flexShrink: 0 }}>
       <div style={{
@@ -155,8 +173,8 @@ export function OnboardingHeader({ showBack = true, progress, totalSteps, onBack
         <div style={{ height: 3, background: C.bg }}>
           <div style={{
             height: '100%', background: C.purple,
-            width: `${(progress / (totalSteps || 10)) * 100}%`,
-            transition: 'width 0.3s ease',
+            width: `${barPercent}%`,
+            transition: 'width 0.4s ease',
           }}/>
         </div>
       )}

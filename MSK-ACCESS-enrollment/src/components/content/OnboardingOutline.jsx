@@ -17,7 +17,7 @@ const steps = [
 export default function OnboardingOutline({ onNext, onNavigate }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: C.white }}>
-      <OnboardingHeader showBack progress={3} totalSteps={14} logoSrc={boldLogo} onBack={() => onNavigate('eligibility-verdict')} />
+      <OnboardingHeader showBack progress={4} totalSteps={15} logoSrc={boldLogo} onBack={() => onNavigate('eligibility-verdict')} />
       <OnboardingScreen cta={<PurpleButton onClick={onNext}>Let's get started!</PurpleButton>}>
         <h2 style={{ fontSize: 22, fontWeight: 600, color: C.text, marginBottom: 8, lineHeight: 1.2 }}>
           Here's how we'll build your personalized program

@@ -5,7 +5,7 @@ import { C, OnboardingHeader, OnboardingScreen, PurpleButton } from './shared.js
 export default function EligibilityVerdict({ onBack, onNavigate }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: C.white }}>
-      <OnboardingHeader showBack={true} onBack={onBack} progress={2} totalSteps={14} logoSrc={boldLogo} />
+      <OnboardingHeader showBack={true} onBack={onBack} progress={3} totalSteps={15} logoSrc={boldLogo} />
       <OnboardingScreen cta={<PurpleButton onClick={() => onNavigate('onboarding-outline')}>Continue</PurpleButton>}>
         {/* Left-aligned hero */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left', padding: '24px 0 28px' }}>

@@ -10,7 +10,7 @@ export default function PainScale({ onNext, onBack, selectedRegionLabel }) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <OnboardingHeader showBack progress={7} totalSteps={10} logoSrc={boldLogo} onBack={onBack} />
+      <OnboardingHeader showBack progress={5} totalSteps={15} logoSrc={boldLogo} onBack={onBack} />
       <OnboardingScreen cta={<PurpleButton onClick={onNext} disabled={value === null}>Continue</PurpleButton>}>
         <QuestionHeader
           questionNum="2"

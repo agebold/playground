@@ -31,7 +31,7 @@ function RegionSelection({ selected, setSelected, onNext, onBack }) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <OnboardingHeader showBack progress={2} totalSteps={10} logoSrc={boldLogo} onBack={onBack} />
+      <OnboardingHeader showBack progress={1} totalSteps={15} logoSrc={boldLogo} onBack={onBack} />
       <OnboardingScreen cta={<PurpleButton onClick={onNext} disabled={!canContinue}>Continue</PurpleButton>}>
         <QuestionHeader questionNum="1" question="Where do you currently experience pain?" sublabel="Choose all that apply." />
         {REGIONS.map(r => (
@@ -53,7 +53,7 @@ function RegionFocus({ selectedRegions, focusedRegion, setFocusedRegion, onNext,
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <OnboardingHeader showBack progress={2} totalSteps={10} logoSrc={boldLogo} onBack={onBack} />
+      <OnboardingHeader showBack progress={2} totalSteps={15} logoSrc={boldLogo} onBack={onBack} />
       <OnboardingScreen cta={<PurpleButton onClick={onNext} disabled={!focusedRegion}>Continue</PurpleButton>}>
         <QuestionHeader questionNum="2" question="Which area would you like to focus on first?" />
         {options.map(r => (

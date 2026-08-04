@@ -7,7 +7,7 @@ export default function Preferences({ onNext, onBack }) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <OnboardingHeader showBack progress={4} totalSteps={10} logoSrc={boldLogo} onBack={onBack} />
+      <OnboardingHeader showBack progress={8} totalSteps={15} logoSrc={boldLogo} onBack={onBack} />
       <OnboardingScreen cta={<PurpleButton onClick={onNext} disabled={!answer}>Continue</PurpleButton>}>
         <QuestionHeader questionNum="5" question="What position do you prefer for exercising?" />
         <RadioOption label="Seated" selected={answer === 'seated'} onSelect={() => setAnswer('seated')} />

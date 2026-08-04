@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
 import { PhoneFrame, SafariBrowserChrome } from './content/shared.jsx'
 
 import FacebookAd from './content/FacebookAd.jsx'
@@ -73,45 +72,36 @@ export default function ContentArea({ step, onNext, onBack, onNavigate, selected
       overflow: 'auto',
       minHeight: 0,
     }}>
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={step.id}
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -16 }}
-          transition={{ duration: 0.22, ease: 'easeOut' }}
-          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}
-        >
-          {isDesktop ? (
-            <SafariBrowserChrome>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
+        {isDesktop ? (
+          <SafariBrowserChrome>
+            {Component ? (
+              <Component
+                onNext={onNext}
+                onBack={onBack}
+                onNavigate={onNavigate}
+                selectedRegionLabel={selectedRegionLabel}
+                setSelectedRegionLabel={setSelectedRegionLabel}
+              />
+            ) : <div style={{ padding: 40, color: '#999' }}>No content</div>}
+          </SafariBrowserChrome>
+        ) : (
+          <div style={{ transform: 'scale(0.82)', transformOrigin: 'center center' }}>
+            <PhoneFrame statusBarBg={statusBarBg}>
               {Component ? (
                 <Component
                   onNext={onNext}
                   onBack={onBack}
                   onNavigate={onNavigate}
+                  onSubStepChange={step.id === 'check-eligibility' ? setEligibilitySubStep : undefined}
                   selectedRegionLabel={selectedRegionLabel}
                   setSelectedRegionLabel={setSelectedRegionLabel}
                 />
               ) : <div style={{ padding: 40, color: '#999' }}>No content</div>}
-            </SafariBrowserChrome>
-          ) : (
-            <div style={{ transform: 'scale(0.82)', transformOrigin: 'center center' }}>
-              <PhoneFrame statusBarBg={statusBarBg}>
-                {Component ? (
-                  <Component
-                    onNext={onNext}
-                    onBack={onBack}
-                    onNavigate={onNavigate}
-                    onSubStepChange={step.id === 'check-eligibility' ? setEligibilitySubStep : undefined}
-                    selectedRegionLabel={selectedRegionLabel}
-                    setSelectedRegionLabel={setSelectedRegionLabel}
-                  />
-                ) : <div style={{ padding: 40, color: '#999' }}>No content</div>}
-              </PhoneFrame>
-            </div>
-          )}
-        </motion.div>
-      </AnimatePresence>
+            </PhoneFrame>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

@@ -31,7 +31,7 @@ export default function PSFSActivity({ onNext, onBack, selectedRegionLabel }) {
   if (step === 'rate') {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-        <OnboardingHeader showBack progress={8} totalSteps={10} logoSrc={boldLogo} onBack={() => setStep('select')} />
+        <OnboardingHeader showBack progress={7} totalSteps={15} logoSrc={boldLogo} onBack={() => setStep('select')} />
         <OnboardingScreen cta={<PurpleButton onClick={onNext} disabled={rating === null}>Continue</PurpleButton>}>
           <QuestionHeader questionNum="4" question="How would you rate your current ability to perform this activity?" />
 
@@ -41,8 +41,13 @@ export default function PSFSActivity({ onNext, onBack, selectedRegionLabel }) {
             background: C.white, border: `1.5px solid ${C.border}`,
             borderRadius: 12, marginBottom: 20, overflow: 'hidden',
           }}>
-            <div style={{ width: 80, flexShrink: 0 }}>
-              <img src={selectedActivity?.img} alt={selectedActivity?.label} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+            <div style={{ width: 80, height: 64, flexShrink: 0, overflow: 'hidden', background: C.bg }}>
+              <img
+                src={selectedActivity?.img}
+                alt=""
+                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                onError={e => { e.target.style.display = 'none' }}
+              />
             </div>
             <div style={{ display: 'flex', alignItems: 'center', padding: '12px 14px' }}>
               <span style={{ fontSize: 15, fontWeight: 500, color: C.text, lineHeight: 1.4 }}>
@@ -91,7 +96,7 @@ export default function PSFSActivity({ onNext, onBack, selectedRegionLabel }) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <OnboardingHeader showBack progress={8} totalSteps={10} logoSrc={boldLogo} onBack={onBack} />
+      <OnboardingHeader showBack progress={6} totalSteps={15} logoSrc={boldLogo} onBack={onBack} />
       <OnboardingScreen cta={<PurpleButton onClick={() => selected && setStep('rate')} disabled={!selected}>Continue</PurpleButton>}>
         <QuestionHeader
           questionNum="3"
@@ -109,8 +114,13 @@ export default function PSFSActivity({ onNext, onBack, selectedRegionLabel }) {
               overflow: 'hidden',
             }}
           >
-            <div style={{ width: 80, flexShrink: 0 }}>
-              <img src={a.img} alt={a.label} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+            <div style={{ width: 80, height: 64, flexShrink: 0, overflow: 'hidden', background: C.bg }}>
+              <img
+                src={a.img}
+                alt=""
+                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                onError={e => { e.target.style.display = 'none' }}
+              />
             </div>
             <div style={{ display: 'flex', alignItems: 'center', padding: '12px 14px' }}>
               <span style={{ fontSize: 15, color: C.text, lineHeight: 1.4 }}>{a.label}</span>

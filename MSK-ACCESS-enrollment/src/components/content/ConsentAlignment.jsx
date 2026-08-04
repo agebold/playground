@@ -30,7 +30,7 @@ export default function ConsentAlignment({ onNext, onBack }) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: C.white }}>
-      <OnboardingHeader showBack onBack={onBack} logoSrc={boldLogo} />
+      <OnboardingHeader showBack onBack={onBack} logoSrc={boldLogo} progress={13} totalSteps={15} />
       <OnboardingScreen cta={<PurpleButton onClick={onNext} disabled={!checked}>Continue</PurpleButton>}>
         <p style={{ fontSize: 18, color: C.text, lineHeight: 1.4, margin: '0 0 16px' }}>
           Please confirm a few things before you join the Bold musculoskeletal pain program through Medicare ACCESS.

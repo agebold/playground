@@ -8,7 +8,7 @@ const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 function DaysScreen({ selectedDays, toggle, onNext, onBack }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: C.white }}>
-      <OnboardingHeader showBack progress={5} totalSteps={10} logoSrc={boldLogo} onBack={onBack} />
+      <OnboardingHeader showBack progress={9} totalSteps={15} logoSrc={boldLogo} onBack={onBack} />
       <OnboardingScreen cta={<PurpleButton onClick={onNext}>Continue</PurpleButton>}>
         <QuestionHeader
           questionNum="6"
@@ -40,7 +40,7 @@ function TimeScreen({ time, setTime, onNext, onBack }) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: C.white }}>
-      <OnboardingHeader showBack progress={6} totalSteps={10} logoSrc={boldLogo} onBack={onBack} />
+      <OnboardingHeader showBack progress={10} totalSteps={15} logoSrc={boldLogo} onBack={onBack} />
       <OnboardingScreen cta={<PurpleButton onClick={onNext}>Continue</PurpleButton>}>
         <QuestionHeader
           questionNum="7"
@@ -96,7 +96,7 @@ function TimeScreen({ time, setTime, onNext, onBack }) {
 function ConsentScreen({ onAgree, onSkip, onBack }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: C.white }}>
-      <OnboardingHeader showBack progress={7} totalSteps={10} logoSrc={boldLogo} onBack={onBack} />
+      <OnboardingHeader showBack progress={11} totalSteps={15} logoSrc={boldLogo} onBack={onBack} />
       <OnboardingScreen cta={
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           <PurpleButton onClick={onAgree}>I agree</PurpleButton>
