@@ -80,7 +80,6 @@ jobs:
           cp -r _main/user-research _deploy/ 2>/dev/null || true
           cp -r _main/PrevMed/care_plan _deploy/PrevMed/ 2>/dev/null || true
           cp -r _main/design-system _deploy/ 2>/dev/null || true
-          cp -r _main/telehealth _deploy/ 2>/dev/null || true
           cp -r _main/weight-clinic-sprint _deploy/ 2>/dev/null || true
           cp -r _main/MSK-ACCESS-patient-portal _deploy/ 2>/dev/null || true
           cp -r _main/ACCESS-landing-page _deploy/ 2>/dev/null || true

@@ -136,15 +136,6 @@
       "category": "Prototypes"
     },
     {
-      "path": "telehealth",
-      "href": "telehealth/",
-      "name": "Telehealth",
-      "desc": "Telehealth video call interface and flow",
-      "icon": "🎥",
-      "author": "Tzu-Yi",
-      "category": "Prototypes"
-    },
-    {
       "path": "user-research",
       "href": "user-research/",
       "name": "Research Tools",
