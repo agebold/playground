@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MSK ACCESS Enrollment — User Testing</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy: #001d56;
+      --purple: #5200d4;
+      --purple-light: #ede9ff;
+      --bg: #f5f5f5;
+      --white: #ffffff;
+      --text: #171717;
+      --muted: #6B7280;
+      --border: #e5e5e5;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    header {
+      background: var(--navy);
+      padding: 20px 40px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    header .badge {
+      background: rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.7);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+
+    header h1 {
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .hero {
+      background: var(--navy);
+      color: white;
+      padding: 56px 40px 72px;
+      text-align: center;
+    }
+
+    .hero .label {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 16px;
+    }
+
+    .hero h2 {
+      font-size: clamp(26px, 4vw, 40px);
+      font-weight: 700;
+      line-height: 1.25;
+      margin-bottom: 16px;
+      letter-spacing: -0.5px;
+    }
+
+    .hero p {
+      font-size: 17px;
+      color: rgba(255,255,255,0.7);
+      max-width: 560px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 56px 40px 64px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    .prototypes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+      margin-bottom: 48px;
+    }
+
+    .proto-card {
+      background: var(--white);
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      text-decoration: none;
+      color: inherit;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .proto-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 32px rgba(0,29,86,0.10);
+    }
+
+    .proto-card:focus-visible {
+      outline: 3px solid var(--purple);
+      outline-offset: 2px;
+    }
+
+    .proto-tag {
+      display: inline-flex;
+      align-self: flex-start;
+      background: var(--purple-light);
+      color: var(--purple);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+
+    .proto-headline {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .proto-desc {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .proto-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--purple);
+      margin-top: 4px;
+    }
+
+    .proto-cta svg { transition: transform 0.15s ease; }
+    .proto-card:hover .proto-cta svg { transform: translateX(4px); }
+
+    .info-box {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .info-box h4 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .info-box p {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 20px 40px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>MSK ACCESS Enrollment</h1>
+    <span class="badge">User Testing</span>
+  </header>
+
+  <div class="hero">
+    <div class="label">Comparison Stimulus</div>
+    <h2>Does skipping the red-flag screening<br>change how enrollment feels?</h2>
+    <p>Two click-through prototypes of the same MSK ACCESS enrollment &amp; onboarding flow — one starts at the very beginning, the other picks up right after the red-flag safety screening. Same screens, same copy, different starting point.</p>
+  </div>
+
+  <main>
+    <div class="section-label">Two Prototypes</div>
+
+    <div class="prototypes-grid">
+
+      <a href="full-flow.html" class="proto-card">
+        <span class="proto-tag">Prototype 1</span>
+        <div class="proto-headline">Full flow</div>
+        <div class="proto-desc">Starts at the Facebook ad and runs the entire path through eligibility, red-flag screening, and onboarding — ending once the member's plan is built.</div>
+        <div class="proto-cta">
+          Open prototype
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+      </a>
+
+      <a href="post-red-flag.html" class="proto-card">
+        <span class="proto-tag">Prototype 2</span>
+        <div class="proto-headline">Post red-flag screening</div>
+        <div class="proto-desc">Starts right after the red-flag / safety screening step, at pain regions — skipping acquisition, eligibility, and the screening itself.</div>
+        <div class="proto-cta">
+          Open prototype
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+      </a>
+
+    </div>
+
+    <div class="section-label">Testing Notes</div>
+    <div class="info-box">
+      <h4>Facilitator sidebar removed</h4>
+      <p>Unlike the source MSK ACCESS demo, these prototypes have no step-navigator sidebar — participants only see the device frame and the in-screen Continue / Back controls, so upcoming step labels (like "Ineligible") aren't visible ahead of time. Each prototype ends at Plan Results with a simple completion screen.</p>
+    </div>
+  </main>
+
+  <footer>
+    MSK ACCESS Enrollment · Internal use only — not for distribution
+  </footer>
+
+</body>
+</html>

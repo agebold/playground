@@ -64,6 +64,15 @@
       "category": "Prototypes"
     },
     {
+      "path": "MSK-ACCESS-enrollment",
+      "href": "MSK-ACCESS-enrollment/",
+      "name": "MSK ACCESS Enrollment",
+      "desc": "2 user-testing prototypes of the MSK ACCESS enrollment flow — full flow vs. starting post red-flag screening",
+      "icon": "📝",
+      "author": "Monica",
+      "category": "Prototypes"
+    },
+    {
       "path": "PrevMed/clinic_funnel",
       "href": "PrevMed/clinic_funnel/",
       "name": "Clinic Funnel",

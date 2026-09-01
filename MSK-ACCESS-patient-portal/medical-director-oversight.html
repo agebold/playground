@@ -187,7 +187,7 @@
     .data-table tbody tr:hover { background: #fafaf8; }
     .data-table tbody tr.row-flagged { background: transparent; }
     .data-table tbody tr.row-flagged:hover { background: #fafaf8; }
-    .col-sticky { position: sticky; left: 0; z-index: 2; background: #fff; box-shadow: 1px 0 0 var(--color-gray-200); }
+    .col-sticky { position: sticky; left: 0; z-index: 2; background: #fff; box-shadow: 1px 0 0 var(--color-gray-300), 4px 0 8px rgba(0,0,0,0.05); }
     .data-table thead .col-sticky { background: #fafaf8; z-index: 3; }
     .col-picker-wrap { position: relative; display: inline-block; }
     .col-picker-panel {
@@ -1233,7 +1233,7 @@ const PATIENTS = [
     instrument:"NDI", score:32, delta:-6,
     screening:"routine", daysLeft:9, position:"Seated",
     dpw:3, classesCompleted:14, classesSkipped:1,
-    daysInProgram:82, lastActiveDay:"Today", psfsActivity:"Exercise",
+    daysInProgram:82, lastActiveDay:"Today", psfsActivity:"Turning head while driving",
     alert:"",
     outcomes:[
       { name:"NDI",  sub:"Neck · 0–100%",                         prev:38,  curr:32,  delta:-6,  thr:"≥ −10", flag:false, dateBaseline:"Jan 25, 2026", dateCurr:"Apr 10, 2026" },
@@ -1254,7 +1254,7 @@ const PATIENTS = [
     instrument:"QuickDASH", score:42, delta:-6,
     screening:"flagged", daysLeft:7, position:"Standing",
     dpw:2, classesCompleted:9, classesSkipped:2,
-    daysInProgram:45, lastActiveDay:"3 days ago", psfsActivity:"Exercise",
+    daysInProgram:45, lastActiveDay:"3 days ago", psfsActivity:"Reaching overhead",
     alert:"NPRS increased from 6 to 8. Member reports increased shoulder pain after returning to work. Recommend follow-up.",
     outcomes:[
       { name:"QuickDASH", sub:"Shoulder/Arm/Hand · 0–100",          prev:48,  curr:42,  delta:-6,   thr:"≥ −10", flag:false, dateBaseline:"Mar 3, 2026",  dateCurr:"Apr 10, 2026" },
@@ -1300,7 +1300,7 @@ const PATIENTS = [
     instrument:"HOOS JR", score:48, delta:-7,
     screening:"flagged", daysLeft:5, position:"Standing",
     dpw:2, classesCompleted:10, classesSkipped:3,
-    daysInProgram:58, lastActiveDay:"2 days ago", psfsActivity:"Walking",
+    daysInProgram:58, lastActiveDay:"2 days ago", psfsActivity:"Walking long distances",
     alert:"HOOS JR declined 7 points. NPRS trending up. Member reported increased stiffness after long periods of sitting.",
     outcomes:[
       { name:"HOOS JR", sub:"Hip · 0–100 scale",                 prev:55,  curr:48,  delta:-7,  thr:"≥ −10", flag:false, dateBaseline:"Feb 18, 2026", dateCurr:"Apr 10, 2026" },
@@ -1321,7 +1321,7 @@ const PATIENTS = [
     instrument:"ODI", score:40, delta:-4,
     screening:"routine", daysLeft:11, position:"Reclined",
     dpw:3, classesCompleted:6, classesSkipped:0,
-    daysInProgram:22, lastActiveDay:"Today", psfsActivity:"Getting up and down from the floor",
+    daysInProgram:22, lastActiveDay:"Today", psfsActivity:"Getting up from the floor",
     alert:"",
     outcomes:[
       { name:"ODI",  sub:"Lower back · 0–100%",                  prev:44,  curr:40,  delta:-4,  thr:"≥ −10", flag:false, dateBaseline:"Mar 26, 2026", dateCurr:"Apr 9, 2026" },
@@ -1341,7 +1341,7 @@ const PATIENTS = [
     instrument:"PROMIS 6a", score:52, delta:-6,
     screening:"routine", daysLeft:8, position:"Seated",
     dpw:3, classesCompleted:20, classesSkipped:2,
-    daysInProgram:90, lastActiveDay:"1 day ago", psfsActivity:"Getting up and down from a seat",
+    daysInProgram:90, lastActiveDay:"1 day ago", psfsActivity:"Sitting at desk for work",
     alert:"",
     outcomes:[
       { name:"PROMIS 6a", sub:"Upper back · T-score (higher = more interference)", prev:58, curr:52, delta:-6, thr:"≥ −5", flag:false, dateBaseline:"Jan 17, 2026", dateCurr:"Apr 9, 2026" },
@@ -1365,7 +1365,7 @@ const PATIENTS = [
     instrument:"NDI", score:18, delta:-18,
     screening:"audit", daysLeft:10, position:"Seated",
     dpw:3, classesCompleted:30, classesSkipped:2,
-    daysInProgram:130, lastActiveDay:"Today", psfsActivity:"Providing care for family members",
+    daysInProgram:130, lastActiveDay:"Today", psfsActivity:"Reading for extended periods",
     alert:"",
     outcomes:[
       { name:"NDI",  sub:"Neck · 0–100%",                         prev:36,  curr:18,  delta:-18, thr:"≥ −10", flag:false, dateBaseline:"Dec 9, 2025",  dateCurr:"Apr 10, 2026" },
@@ -1389,15 +1389,12 @@ const PATIENTS = [
     instrument:"KOOS JR", score:38, delta:-7,
     screening:"escalated", daysLeft:4, position:"Standing",
     dpw:2, classesCompleted:11, classesSkipped:4,
-    daysInProgram:67, lastActiveDay:"Today", psfsActivity:"Climbing stairs",
+    daysInProgram:67, lastActiveDay:"Today", psfsActivity:"Walking up stairs",
     alert:"NPRS increased to 7 (from 4). KOOS JR declined. Member reported new knee swelling after a long walk. Recommend PCP notification and possible phase adjustment.",
     outcomes:[
-      { name:"KOOS JR", sub:"Knee · 0–100 scale",                 prev:45,  curr:38,  delta:-7,  thr:"≥ −10", flag:false, dateBaseline:"Feb 10, 2026", dateCurr:"Apr 10, 2026",
-        history:[{date:"Feb 10, 2026",score:45},{date:"Mar 10, 2026",score:41},{date:"Apr 10, 2026",score:38}] },
-      { name:"NPRS",    sub:"Pain · 0–10 (lower = better)",      prev:4,   curr:7,   delta:3,   thr:"≤ +2",  flag:true,  dateBaseline:"Feb 7, 2026",  dateCurr:"Apr 10, 2026",
-        history:[{date:"Feb 7, 2026",score:4},{date:"Mar 7, 2026",score:5},{date:"Apr 10, 2026",score:7}] },
-      { name:"PSFS",    sub:"Function · 0–10 (higher = better)", prev:5.0, curr:3.5, delta:-1.5,thr:"≥ 0",   flag:false, dateBaseline:"Feb 7, 2026",  dateCurr:"Apr 10, 2026",
-        history:[{date:"Feb 7, 2026",score:5.0},{date:"Mar 7, 2026",score:4.2},{date:"Apr 10, 2026",score:3.5}] },
+      { name:"KOOS JR", sub:"Knee · 0–100 scale",                 prev:45,  curr:38,  delta:-7,  thr:"≥ −10", flag:false, dateBaseline:"Feb 10, 2026", dateCurr:"Apr 10, 2026" },
+      { name:"NPRS",    sub:"Pain · 0–10 (lower = better)",      prev:4,   curr:7,   delta:3,   thr:"≤ +2",  flag:true,  dateBaseline:"Feb 7, 2026",  dateCurr:"Apr 10, 2026" },
+      { name:"PSFS",    sub:"Function · 0–10 (higher = better)", prev:5.0, curr:3.5, delta:-1.5,thr:"≥ 0",   flag:false, dateBaseline:"Feb 7, 2026",  dateCurr:"Apr 10, 2026" },
     ],
     classes:[
       { name:"Foundation First",    type:"Low-Impact & Mobility",   date:"Apr 10, 2026", done:true  },
@@ -1413,7 +1410,7 @@ const PATIENTS = [
     instrument:"HOOS JR", score:62, delta:0,
     screening:"routine", daysLeft:12, position:"Seated",
     dpw:2, classesCompleted:4, classesSkipped:1,
-    daysInProgram:14, lastActiveDay:"1 day ago", psfsActivity:"Getting up and down from a seat",
+    daysInProgram:14, lastActiveDay:"1 day ago", psfsActivity:"Getting in and out of car",
     alert:"",
     outcomes:[
       { name:"HOOS JR", sub:"Hip · 0–100 scale",                 prev:null,curr:62,  delta:null,thr:"—",     flag:false, dateBaseline:"Apr 3, 2026",  dateCurr:null },
@@ -1433,7 +1430,7 @@ const PATIENTS = [
     instrument:"ODI", score:22, delta:-16,
     screening:"audit", daysLeft:11, position:"Standing",
     dpw:4, classesCompleted:38, classesSkipped:1,
-    daysInProgram:148, lastActiveDay:"Today", psfsActivity:"Housework",
+    daysInProgram:148, lastActiveDay:"Today", psfsActivity:"Lifting objects",
     alert:"",
     outcomes:[
       { name:"ODI",  sub:"Lower back · 0–100%",                  prev:38,  curr:22,  delta:-16, thr:"≥ −10", flag:false, dateBaseline:"Nov 20, 2025", dateCurr:"Apr 10, 2026" },
@@ -1542,7 +1539,7 @@ function renderQueue() {
     </div>
     ${ctrlBar()}
     ${(()=>{
-      const h = `<th style="width:36px;min-width:36px"></th><th style="width:160px;min-width:160px">Member</th><th style="width:160px;min-width:160px">Pain region</th><th style="width:110px;min-width:110px">Score / delta</th><th style="width:130px;min-width:130px">Screening</th><th style="width:90px;min-width:90px">Days left</th><th style="width:110px;min-width:110px"></th>`;
+      const h = `<th style="width:36px"></th><th>Member</th><th>Pain region</th><th>Score / delta</th><th>Screening</th><th>Days left</th><th></th>`;
       const groups = getGroups(list);
       if (groups) {
         return groups.map((grp, i) => `
@@ -1575,7 +1572,7 @@ function patientRow(p) {
   const c = bpColor(p.painSite);
   return `<tr class="${hi?'row-flagged':''}" onclick="openPatient(${p.id})">
     <td><input type="checkbox" onclick="event.stopPropagation()" style="accent-color:var(--color-purple-600);cursor:pointer"></td>
-    <td style="width:160px;max-width:160px;border-right:1px solid var(--color-gray-200)"><div class="member-name">${shortName(p.name)}</div><div class="member-sub">MBI ${maskMBI(p.mbi)}</div></td>
+    <td style="width:120px;max-width:120px;border-right:1px solid var(--color-gray-200)"><div class="member-name">${shortName(p.name)}</div><div class="member-sub">MBI ${maskMBI(p.mbi)}</div></td>
     <td><span class="bp-chip" style="background:${c}18;color:${c}">${p.painSite}</span></td>
     <td><span class="score-main">${p.score}</span><span class="delta ${dc}">${ds}</span></td>
     <td>${scr}</td>
@@ -1695,29 +1692,43 @@ document.addEventListener('click', e => {
 
 
 const MEMBER_COL_DEFS = [
-  { key:'member',       label:'Member',    sticky:true },
-  { key:'painRegion',   label:'Pain region', width:'160px' },
+  { key:'member',       label:'Member',              sticky:true },
+  { key:'painRegion',   label:'Pain region', width:'140px' },
   { key:'age',          label:'Age' },
   { key:'sex',          label:'Sex' },
+  { key:'state',        label:'State' },
+  { key:'pcp',          label:'PCP' },
+  { key:'referring',    label:'Referring provider' },
+  { key:'alignment',    label:'Alignment date' },
   { key:'baseline',     label:'Baseline date' },
   { key:'phase',        label:'Phase' },
   { key:'daysInProg',   label:'Days in program' },
   { key:'classes',      label:'Classes completed' },
   { key:'lastActive',   label:'Last active' },
+  { key:'psfsActivity', label:'PSFS activity', width:'160px' },
+  { key:'painLevel',    label:'Pain level' },
+  { key:'funcAbility',  label:'Functional ability' },
 ];
 let hiddenMemberCols = new Set();
 
 function memberCell(p, key, c, baselineDate, nDelta, sDelta) {
   switch (key) {
     case 'member':       return `<td class="col-sticky"><div class="member-name">${shortName(p.name)}</div><div class="member-sub">MBI ${maskMBI(p.mbi)}</div></td>`;
-    case 'painRegion':   return `<td style="width:160px;min-width:160px"><span class="bp-chip" style="background:${c}18;color:${c}">${p.painSite}</span></td>`;
+    case 'painRegion':   return `<td style="width:140px;max-width:140px"><span class="bp-chip" style="background:${c}18;color:${c}">${p.painSite}</span></td>`;
     case 'age':          return `<td style="text-align:center">${p.age}</td>`;
     case 'sex':          return `<td style="text-align:center">${p.sex}</td>`;
+    case 'state':        return `<td>${p.state || '—'}</td>`;
+    case 'pcp':          return `<td style="white-space:nowrap">${p.pcp || '<span style="color:var(--color-gray-400)">—</span>'}</td>`;
+    case 'referring':    return `<td style="white-space:nowrap">${p.referringProvider || '<span style="color:var(--color-gray-400)">—</span>'}</td>`;
+    case 'alignment':    return `<td style="white-space:nowrap">${p.dateAlignment || '—'}</td>`;
     case 'baseline':     return `<td style="white-space:nowrap">${baselineDate}</td>`;
     case 'phase':        return `<td>${phasePill(p.phase)}</td>`;
     case 'daysInProg':   return `<td style="text-align:center">${p.daysInProgram ?? '—'}</td>`;
     case 'classes':      return `<td style="text-align:center">${p.classesCompleted ?? '—'}</td>`;
     case 'lastActive':   return `<td style="white-space:nowrap;color:var(--color-gray-500);font-size:12px">${p.lastActiveDay || '—'}</td>`;
+    case 'psfsActivity': return `<td style="width:160px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;color:var(--color-gray-600)">${p.psfsActivity || '—'}</td>`;
+    case 'painLevel':    return `<td>${trendCell(nDelta, 'pain')}</td>`;
+    case 'funcAbility':  return `<td>${trendCell(sDelta, 'function')}</td>`;
     default: return '<td>—</td>';
   }
 }
@@ -1766,7 +1777,7 @@ function renderMembers() {
   const visCols = MEMBER_COL_DEFS.filter(col => !hiddenMemberCols.has(col.key));
   const colSpan = visCols.length;
   const headers = visCols.map(col =>
-    col.sticky ? `<th class="col-sticky">${col.label}</th>` : `<th${col.width ? ` style="width:${col.width};min-width:${col.width}"` : ''}>${col.label}</th>`
+    col.sticky ? `<th class="col-sticky">${col.label}</th>` : `<th${col.width ? ` style="width:${col.width}"` : ''}>${col.label}</th>`
   ).join('');
   return `
     <div class="page-header">
@@ -1794,7 +1805,7 @@ function renderMembers() {
                 <thead><tr>${headers}</tr></thead>
                 <tbody>
                   <tr class="group-header-row">
-                    <td style="position:sticky;left:0;z-index:3;background:var(--color-gray-50);padding:10px 14px 9px;border-top:1px solid var(--color-gray-200);border-bottom:1px solid var(--color-gray-200);box-shadow:1px 0 0 var(--color-gray-200)">
+                    <td style="position:sticky;left:0;z-index:3;background:var(--color-gray-50);padding:10px 14px 9px;border-top:1px solid var(--color-gray-200);border-bottom:1px solid var(--color-gray-200);box-shadow:1px 0 0 var(--color-gray-300),4px 0 8px rgba(0,0,0,0.05)">
                       <div style="display:flex;align-items:center;gap:8px">${GROUP_CHEVRON}<span class="group-band-label">${grp.label}</span><span class="group-count">${grp.patients.length}</span></div>
                     </td>
                     <td colspan="${colSpan - 1}" style="background:var(--color-gray-50);border-top:1px solid var(--color-gray-200);border-bottom:1px solid var(--color-gray-200);padding:0"></td>
