@@ -4,6 +4,67 @@ Dated record of what the team agreed to do, drop, or defer. Newest first.
 
 ---
 
+## 2026-08-04 — Added approach D: an agent conversation, with the LLM confined to phrasing
+
+`mvp4-side-effect-triage.html` now carries a fourth approach alongside A/B/C. The member taps "Report a side effect", a bottom sheet opens, and an agent asks a couple of basic questions then only the follow-ups those answers make relevant, closing with an agent-written summary. Goal: make reporting effortless and never a wall of text. Guardrail: **the agent must not diagnose** — it reflects, states the care team's rule, and hands the decision to the member.
+
+- **Hybrid engine, deliberately lopsided.** An LLM (`claude-opus-5`, `effort: low`) rewords *questions and reflections only*. It never sees a tier, never sees the disposition, and is never asked to decide anything. Every clinical decision comes from the same deterministic spine A/B/C use. A new `tools/phrase-proxy.mjs` holds the API key — a browser never should — and the page calls localhost. **With the layer off, or the proxy down, the flow is identical and the disposition is byte-identical**; only the wording changes. Verified by an offline-parity test.
+
+- **The no-diagnosis guardrail is code, not copy discipline.** `assertSafePhrasing()` discards any reworded string that exceeds a length cap, contains markup, introduces a digit absent from the original, turns one question into two, or matches a banned pattern (`you have`, `this is`, `sounds like`, `probably`, `diagnos`, `pancreatit`, `gallstone`, `obstruction`, `infection`, `dehydrat`, `serious`, `emergency`). Nine adversarial strings are asserted rejected. This matters more for D than for A/B/C: a conversational agent carries more perceived authority than a form, and FDA's CDS guidance weighs "the level of automation and time-critical nature" of the decision and names automation bias.
+
+- **The summary splits along the guardrail.** "What you told me" is agent-narrated. "What you need" — tier label, title, basis line, lead, dose instruction, safety net, teach-back — is rendered verbatim from the spine. The LLM may introduce a disposition but never author one.
+
+- **Only ask what changes the outcome.** Duration is asked only when something has escalated to `concern`/`urgent` (asking a member with mild nausea how many days it's been changes nothing). The companion gate still fires at *any* severity whenever a GI symptom is on the table — the fix that closes the Figma's hole. An emergency-tier answer ends the conversation immediately, per STCC's stop-at-the-first-positive.
+
+- **The severity question carries the red flag.** Rather than spending a turn on a separate red-flag question, the most severe option is present as a chip in the same turn. A `D_CHIPS`/`D_RECAP` lockstep test asserts every chip list matches its symptom's level count and that the last chip is the most severe tier — a drifted list would silently map a tap to the wrong tier.
+
+- **Three copy-deck gaps closed in D only** (A/B/C stay as reviewed): free text for "Something else" now reaches the provider note in the member's own words; low blood sugar is offered only to members on insulin or a sulfonylurea (deck flag #3); and the caregiver line — *"Don't give food or drink to someone who isn't fully awake. If they have a glucagon kit and you know how to use it, use it now."* **⚠️ That safety line is still absent from A/B/C — worth backporting.**
+
+**Verification:** 44 spine assertions (unchanged — D moved no tier), 81 D assertions, 3 pronoun-handling assertions. Reading level of D's strings: grade 1.8. Sub-14px fonts: none. Touch targets ≥44px. Sheet is `role="dialog" aria-modal="true"` with a focus trap, Escape always closes (an emergency locks the scrim but never the keyboard), and the transcript is `aria-live="polite"`.
+
+**Design-system gaps re-flagged:** still no danger variant on `Banner`/`Notification`, still no bottom-sheet component (ported from mvp3 again), `$orange` still has no `---500`, and the chat bubble / answer chip / typing indicator are all net-new.
+
+**Open:** the chip-count guideline (≤5 for judgement questions) is deliberately broken by the 8-item symptom picker — that list is recognition, not a choice among alternatives, so the rule doesn't apply. Flagging it rather than quietly exempting it.
+
+## 2026-08-04 — Side-effect triage architecture: 4-tier ladder, same-day routing, companion-symptom gate
+
+Built `mvp4-side-effect-triage.html` — three escalation architectures over one shared clinical spine, toggleable for comparison. Symptom rows transcribed from the clinician escalation table (7 symptoms × 3 tiers). The decisions below are **product inferences pending Dr. Deeb sign-off**, and are annotated as such in the file.
+
+- **Adopted a 4-tier ladder** (`self` / `concern` / `urgent` / `emergency`) rather than the source table's 3, because Bold has exactly four actors who can act: 911, urgent care/ED, the Bold care team, and the member. Tier keys match `mvp3-side-effect-messages.md` so the copy deck still applies. *(Modelled on the Schmitt-Thompson disposition ladder, the de facto US nurse-triage standard.)*
+
+- **The urgent tier routes to urgent care / ED — not to a Bold callback.** The Figma had urgent reading *"care team will call to check in with you in 72 hr. You must stop your medication or search for emergency care,"* which asks the member to choose between stopping a drug and going to the ER with no clinician involved, and calls it a three-day follow-up. Bold's care team is Mon–Fri 7am–5pm PT with no real-time monitoring, so it cannot be the safety net for anything same-day. Urgent now names a destination that is actually open, and the care-team notification runs in parallel rather than instead.
+
+- **Replaced "72 hr" with the source table's own windows: 24–48h (urgent), 12–24h (emergent).** The 72-hour figure contradicted the clinician document. This also closes the SLA placeholder flagged in `mvp3-side-effect-messages.md` (flag #5) — though the *real* commitment still needs ops confirmation.
+
+- **One consolidated disposition; highest acuity wins.** The Figma stacked a mint "Thanks for sharing" card and a red "Call 911" card on the same screen. Telephone-triage standard is a single disposition — *"Give the caller the higher acuity disposition of the two."* Secondary symptoms move into an "Also noted" accordion.
+
+- **Added a companion-symptom gate** — dizzy / mixed up / unusually weak / no urine today — asked whenever any GI symptom is reported **at any severity**, not only after something already escalated. Any hit upgrades to urgent. This implements the GLP-1 expert-consensus trigger literally (*"persistent vomiting with dizziness, confusion, or fatigue"* — Gorgojo-Martínez et al., *J Clin Med* 2022;12(1):145) and closes the flow's biggest safety hole: a stoic member reporting "mild nausea" was never asked whether they could still pass urine. Grounded in the older-adult under-reporting evidence — attributing a symptom to age carries OR 4.3 of not mentioning it to a doctor (Sarkisian 2003).
+
+- **Kept the symptom list to the source table's 7.** Atypical presentations are captured as the companion follow-up rather than as new top-level rows, so nothing is added to the clinician's list without sign-off.
+
+- **Severity uses behavioural anchors only — no 0–10 scale anywhere.** Verbal/functional anchors outperform numeric rating scales in this population, and a self-rated number is the input stoicism distorts most.
+
+- **Corrected the medical-signal palette.** `mvp3` used Tailwind hexes (`#b91c1c`, `#dc2626`, `#f59e0b`, `#fffbeb`) that are not Bold tokens. mvp4 uses the real `@bold/web` ramp (`$red---500/300/100`, `$orange`, `$yellow`, `$green`), all four tier palettes contrast-verified 5.25:1–8.60:1.
+
+**Design-system gaps surfaced** (worth raising upstream on `agebold/agebold-web`): `Banner` has no red/danger colour (`yellow | blue | purple` only) and `Notification` is `gold` only — so a clinical emergency treatment has no `@bold/web` component; `$orange` has no `---500` shade, so orange cannot carry accessible text; `FieldRadioButtons.icon` offers only `check|cross|heart|thumbs-down|thumbs-up`, so severity indicators are net-new; there is no bottom-sheet component.
+
+**Open, and not a design problem:** Bold has no 24/7 clinical coverage. The flow routes safely, but a member reporting a `concern`-tier symptom on a Friday evening waits until Monday for a human. That is an operational gap to put to the clinical team, not something copy can fix. Related: `mvp3-side-effect-prescription.html` was registered in `projects.json` but missing from `index.html`; both are now listed.
+
+## 2026-06-30 — Refreshed the Bold Care GLP-1 guideline to the current v1.0 (supersedes 2026-03-15 ingestion)
+
+The clinical source of truth was replaced with the current **v1.0, effective 2026-06-30** guideline (CMO Dr. Sandeep Palakodeti), ingested to [[raw/2026-06-30-bold-care-glp1-weight-management-guideline]] and reconciled into [[clinical-protocol]] on 2026-07-17. Same "v1.0" label as the prior copy, but the text materially changed. Product-relevant deltas:
+
+- **Oral GLP-1s now in the formulary** — *Wegovy HD* and *Foundayo* tablets, both Bridge-covered. This **resolves** the long-standing pill-preference conflict ([[findings]] #2, [[principles]] #4, [[value-props]] #1): the top-preferred form factor is now genuinely offered, not just injectables. Form-factor copy may lead with a daily-oral option where clinically appropriate. *(Guideline §6, §7 titration.)*
+- **Coverage model made explicit — Bridge ($50/mo copay) vs. Part D (variable cost).** OSA and MASH join T2DM as Part D coverage triggers; Part D users must be told cost *before* prescribing. Reinforces [[principles]] #11 (cost is a feature). *(Guideline §2.)*
+- **Per-drug missed-dose rules** (injectables: miss 1 = hold dose, miss 2 = down-titrate; Foundayo oral: don't double up, >7 days = reinitiate lower) — now a Day-0 support surface, already built into `mvp3-side-effect-prescription.html`. *(Guideline §7.)*
+- **Suspected pancreatitis** added as a side-effect / escalation row (hold med, don't restart, emergent ER). Feeds the L1→L3 side-effect escalation mapping in `mvp3-side-effect-messages.md`. *(Guideline §12.)*
+- **Baseline labs changed** — added CBC and TSH; "lifestyle changes ≥1 month before meds" prerequisite; Chair Stand / calf circumference moved from baseline to §8 monitoring (triggered at >5% weight loss). *(Guideline §5, §8.)*
+- **Protein minimum stated as 0.5 g/kg/day** (target 1.4–1.6); the ~1.0–1.2 g/kg/day figure now reads as a de-escalation / sarcopenia threshold, not the mandatory floor. *(Guideline §8.1, §2.3, §7.)*
+- **GLP-1 Visit** step names **Dosespot** (prescribing) + a **GLP-1 consent form**; Phase-1 chart is tagged GLP-1-eligible. Mirrored by the app's prescription-status surface. *(Guideline §13.)*
+- **Contrave dropped** from the in-scope AOM formulary (now only an off-label-combination escalation example, §10.2). Discontinuation adds a **12-month ≥10% weight-loss target** and a **muscle-mass-loss taper** criterion. *(Guideline §14.)*
+
+Downstream artifacts already aligned to this version at ingestion time: the GLP-1 funnel LP (`PrevMed/glp1_funnel/00-lp.html` — Foundayo®/Wegovy® tablets, $50 Bridge, Part D for T2DM/OSA, "never compounded", Bridge eligibility criteria), `mvp3-side-effect-messages.md`, and `mvp3-side-effect-prescription.html`. No conflicts surfaced beyond the pill-preference tension, which this update *closes*.
+
 ## 2026-05-26 — Adopted a Health Score module (intentional deviation from [[findings]] #7)
 
 The Health page in `prototype-merged.html` now leads with a Whoop-style weekly Health Score module (0–100 ring, plain-English status word, 2-sentence summary, and a "Chat about this week's insight" text button that routes into the Home chat with a scripted opener). Tapping the module opens a `health-score-detail` screen with a weekly trend chart, the three body-comp drilldown chips (Muscle / Body fat / Bone density), and a "how this is measured" explainer. The trend chart lives **only** in the detail view — not on the Health page itself.
@@ -49,7 +110,7 @@ Two Dovetail outputs from the same 4-participant bullseye sprint (the report + t
 - **Adopt the Clinic team's "Pre-GLP-1s" positioning doc as the interim brand voice and copy bank.** Governs the marketing site + lifecycle communications between now and the Q3 GLP-1 launch. *(Source: 2026-05-20 positioning doc; see [[positioning]] for distilled rules.)*
 - **Lead with weight, position energy and pain as contributing factors** — not as competing value props. Backed by Clinic onboarding free-response data: Weight Management = 50% (486/965), Energy & Fatigue = 12%, pain-related = 6%. *(Source: 2026-05-20 positioning doc; [[findings]] #22–23.)*
 - **Address three sub-audiences at once during the interim:** people on GLP-1s, people curious about GLP-1s, and people who want to lose weight without a GLP-1. After Q3 launch this collapses. *(Source: 2026-05-20 positioning doc.)*
-- **Surface "86% of Bold patients pay $0 out of pocket" as a standout proof point.** Pair with any "Covered by Medicare" claim. *(Source: 2026-05-20 positioning doc; [[findings]] #21; [[principles]] #11.)*
+- **Surface "78% of Bold patients pay $0 out of pocket" as a standout proof point.** Pair with any "Covered by Medicare" claim. *(Source: 2026-05-20 positioning doc, which stated 86%; figure corrected to 78% on 2026-06-26 per user — [[findings]] #21; [[principles]] #11; authoritative source `.claude/skills/bold-pricing-messaging`.)*
 - **"Bold doesn't default to prescribing you another medication" / "Not a place to get GLP-1s" are PRE-GLP-1 ONLY.** Both must be retired at Q3 launch — flagged in [[positioning]] and [[open-questions]] so the rewrite doesn't get missed.
 - **Adopt the six user-need → copy mappings** ("Help me lose weight without getting weaker," "Don't make me figure it out from scratch," "Don't make me log every bite," "Make the exercise feel doable for my body," "Show me progress that means something," "Tell me why the clinician matters") as the canonical job-to-be-done framing for app copy. *(Source: 2026-05-20 positioning doc; see [[positioning]] § User-need → copy bank.)*
 

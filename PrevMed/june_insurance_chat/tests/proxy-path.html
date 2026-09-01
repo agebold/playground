@@ -1,0 +1,141 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"></head><body><div id="out">running</div>
+<img src="/__delay=24" alt="" width="1" height="1" style="position:absolute;opacity:0">
+<iframe id="f" src="../index.html" style="width:1400px;height:1000px;border:0"></iframe>
+<script>
+var R=[],pass=0,fail=0;
+function ok(n,c,d){ if(c){pass++;}else{fail++;R.push('FAIL '+n+(d!==undefined?' :: '+JSON.stringify(d):''));} }
+function sleep(ms){return new Promise(function(r){setTimeout(r,ms);});}
+function fin(x){ document.getElementById('out').textContent=(x?x+'\n':'')+'RESULT '+pass+' passed, '+fail+' failed\n'+R.join('\n'); }
+(async function(){
+  var f=document.getElementById('f'),W,D;
+  for(var i=0;i<60;i++){ await sleep(200); W=f.contentWindow; D=W.document; if(W.__june) break; }
+  ok('booted', !!W.__june); if(!W.__june) return fin();
+  var P=W.__june.panel, E=W.__june.engine;
+  var $=function(s){return D.querySelector(s);};
+  var $$=function(s){return Array.prototype.slice.call(D.querySelectorAll(s));};
+  function chips(){ return $$('#chatChips .Chip'); }
+  function chip(t){ return chips().filter(function(b){return b.textContent.toLowerCase().indexOf(t)>-1;})[0]; }
+  async function wait(t){ for(var i=0;i<70;i++){ await sleep(100); if(chip(t)) return chip(t);} return null; }
+  async function waitSel(s){ for(var i=0;i<70;i++){ await sleep(100); if($(s)) return $(s);} return null; }
+  function thread(){ return $('#chatThread').textContent; }
+
+  // wait for knowledge seeding so the prompt carries a knowledge block
+  for(var s0=0;s0<40;s0++){ await sleep(250); if((await W.JuneRAG.listDocs()).length>=4) break; }
+
+  /* ---- 1. proxy detection ---- */
+  P.cfg.transport='proxy'; P.cfg.proxyUrl='http://localhost:8788'; P.cfg.fastMode=true; P.cfg.latencyMs=0;
+  P.cfg.proxySecret='shared-secret-under-test';
+  P.probeProxy();
+  for(var i2=0;i2<40;i2++){ await sleep(150); if(P.proxyInfo.proxy) break; }
+  ok('detect() found the proxy', P.proxyInfo.proxy===true, P.proxyInfo);
+  ok('detect() read /health', P.proxyInfo.info && P.proxyInfo.info.anthropic===true, P.proxyInfo.info);
+  ok('resolved transport is proxy', P.get().transport==='proxy', P.get().transport);
+  ok('status line names the proxy kind', /via (local proxy|Cloudflare Worker)/.test($('#pStatusText').textContent),
+     $('#pStatusText').textContent);
+  ok('pverifyLive gated on creds', P.get().pverifyLive===false, 'off until the checkbox is set');
+  P.cfg.pverifyLive=true;
+  ok('pverifyLive enabled once creds reported', P.get().pverifyLive===true);
+
+  /* ---- 2. a real model turn through the proxy ---- */
+  $('#btnStart').click();
+  await wait("let's do it");
+  $('#chatInput').value='tell me about CHIPS please';
+  $('#chatComposer').dispatchEvent(new W.Event('submit',{cancelable:true,bubbles:true}));
+  for(var i3=0;i3<70;i3++){ await sleep(150); if(/Which card do you have/.test(thread())) break; }
+  ok('model reply rendered via proxy', /Which card do you have/.test(thread()), thread().slice(-160));
+  // The step's own chips must survive a typed aside — replacing them with the
+  // model's suggestions would strand the member away from the real question.
+  ok("step's chips survive a typed aside", !!chip("let's do it") && !!chip('not now'),
+     chips().map(function(b){return b.textContent;}));
+  ok('model chips did not hijack the footer', !chip('original medicare'),
+     chips().map(function(b){return b.textContent;}));
+  ok('chip directive stripped from the bubble', thread().indexOf('[[chips')===-1);
+  var last = P.logs.filter(function(l){return /turn · model/.test(l.msg);}).pop();
+  ok('logged as a model turn', !!last, P.logs.slice(-3).map(function(l){return l.msg;}));
+  ok('turn reports latency', last && /\d+ms/.test(last.msg), last && last.msg);
+  ok('turn carried the knowledge block', last && last.extra && last.extra.knowledge
+     && last.extra.knowledge.mode==='inline', last && last.extra && last.extra.knowledge);
+  ok('turn reports a system prompt size', last && last.extra && last.extra.systemChars>1000,
+     last && last.extra && last.extra.systemChars);
+  ok('turn reports usage', last && last.extra && last.extra.usage && last.extra.usage.output_tokens===5,
+     last && last.extra && last.extra.usage);
+
+  /* the deployed Worker requires X-June-Key, so the client must send it */
+  var probe = await fetch('http://localhost:8788/chat', {
+    method:'POST',
+    headers: W.JuneBrain.proxyHeaders({ proxySecret:'shared-secret-under-test' }),
+    body: JSON.stringify({ messages:[{role:'user',content:'plain'}] })
+  }).then(function(r){ return r.json(); });
+  ok('proxyHeaders sends X-June-Key', probe._mock && probe._mock.juneKey==='shared-secret-under-test',
+     probe._mock && probe._mock.juneKey);
+  ok('proxyHeaders omits it when unset',
+     !('X-June-Key' in W.JuneBrain.proxyHeaders({})), W.JuneBrain.proxyHeaders({}));
+
+  /* ---- 3. guardrail rejects an invented number, even from the model ---- */
+  $('#chatInput').value='BADNUM what will it cost';
+  $('#chatComposer').dispatchEvent(new W.Event('submit',{cancelable:true,bubbles:true}));
+  for(var i4=0;i4<70;i4++){ await sleep(150); if(/78% of Bold patients/.test(thread())) break; }
+  ok('invented figure never reached the member', thread().indexOf('4321')===-1, 'leaked $4321');
+  ok('scripted copy used instead', /78% of Bold patients pay \$0 out of pocket/.test(thread()));
+  var rej = P.logs.filter(function(l){return /guardrail/.test(l.msg);}).pop();
+  ok('guardrail logged the rejection', !!rej, P.logs.slice(-3).map(function(l){return l.msg;}));
+  ok('guardrail names what it caught', rej && /invented a dollar figure \(\$4321\)/.test(rej.msg), rej && rej.msg);
+  ok('rejected text kept for inspection', rej && rej.extra && /4321/.test(rej.extra.rejected||''), rej && rej.extra);
+
+  /* ---- 3b. legitimate numbers must now SURVIVE the guardrail ----
+     The original rule rejected any digit not already in context, so a reply
+     mentioning 988, "2 minutes" or a plan year was replaced with scripted copy —
+     which is what made June look incoherent. */
+  $('#chatInput').value='GOODNUM tell me about timing';
+  $('#chatComposer').dispatchEvent(new W.Event('submit',{cancelable:true,bubbles:true}));
+  for(var g=0;g<70;g++){ await sleep(150); if(/2 minutes/.test(thread())) break; }
+  ok('duration survived the guardrail', /about 2 minutes/i.test(thread()), thread().slice(-200));
+  ok('plan year survived', /2026 plan/.test(thread()));
+  ok('crisis line survived', /988/.test(thread()));
+  var goodTurn = P.logs.filter(function(l){return /turn · model/.test(l.msg);}).pop();
+  ok('it came from the model, not the scripted fallback', !!goodTurn && !/guardrail/.test(goodTurn.msg),
+     goodTurn && goodTurn.msg);
+
+  /* ---- 4. model may PROPOSE a write; the app validates it ---- */
+  $('#chatInput').value='SETFIELD change my plan';
+  $('#chatComposer').dispatchEvent(new W.Event('submit',{cancelable:true,bubbles:true}));
+  for(var i5=0;i5<70;i5++){ await sleep(150); if(E.state.carrier==='Humana') break; }
+  ok('validated set_field applied', E.state.carrier==='Humana', E.state.carrier);
+
+  /* ---- 5. live pVerify through the proxy ---- */
+  var out = await W.PVerify.verify({
+    payerName:'Aetna', firstName:'Kathleen', lastName:'Kwan', dob:'05/14/1958',
+    memberId:'H12345678', wantsGlp1:true, live:true, proxyUrl:'http://localhost:8788',
+    proxySecret:'shared-secret-under-test'
+  });
+  ok('live source reported', out.source==='live', out.source);
+  ok('live response normalized', out.result.outcome==='hmo_referral', out.result.outcome);
+  ok('live carrier read from response', out.result.carrier==='LiveCarrier', out.result.carrier);
+  ok('live isHmo flag read', out.result.isHmo===true);
+  ok('live request carried the member ID', out.request.subscriber.memberID==='H12345678', out.request.subscriber);
+  ok('live request used the memberId key', out.request._lookupKey==='memberId');
+  ok('live pVerify call carried the secret', out.result.raw._juneKey==='shared-secret-under-test',
+     out.result.raw._juneKey);
+
+  /* ---- 6. a failing live check must NOT block the member ---- */
+  var bad = await W.PVerify.verify({
+    payerName:'Aetna', firstName:'K', lastName:'K', dob:'05/14/1958',
+    memberId:'FAIL0000', live:true, proxyUrl:'http://localhost:8788'
+  });
+  ok('live failure is caught', bad.source==='live-failed', bad.source);
+  ok('live failure degrades to pending, not an error', bad.result.outcome==='pending_back_office', bad.result.outcome);
+  ok('live failure records why', !!bad.error, bad.error);
+
+  /* ---- 7. proxy down => graceful fall back to scripted ---- */
+  P.cfg.proxyUrl='http://localhost:9999';
+  P.probeProxy();
+  for(var i6=0;i6<30;i6++){ await sleep(150); if(!P.proxyInfo.proxy) break; }
+  ok('detect() reports proxy down', P.proxyInfo.proxy===false);
+  ok('transport degrades to none', P.get().transport==='none', P.get().transport);
+  $('#chatInput').value='how much does this cost';
+  $('#chatComposer').dispatchEvent(new W.Event('submit',{cancelable:true,bubbles:true}));
+  for(var i7=0;i7<60;i7++){ await sleep(150); if((thread().match(/78% of Bold patients/g)||[]).length>=2) break; }
+  ok('still answers with the proxy down', (thread().match(/78% of Bold patients/g)||[]).length>=2);
+  fin();
+})().catch(function(e){ fin('DRIVER ERROR: '+(e&&e.stack||e)); });
+</script></body></html>

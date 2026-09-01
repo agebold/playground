@@ -1,0 +1,509 @@
+response,total_count,tags
+,366,tier0.blank
+Weight loss,38,desire.weight_loss
+Losing weight,13,desire.weight_loss
+Lose weight,7,desire.weight_loss
+Weight,6,desire.weight_loss
+Lose weight and keep it off,4,desire.weight_loss;desire.maintenance
+Side effects,4,question.side_effects
+Keeping it off,3,desire.maintenance
+Not sure,3,tier0.nonanswer
+Weight management,3,desire.weight_loss
+GLP-1,2,desire.medication_interest
+How to keep weight off,2,desire.weight_loss;desire.maintenance
+How to lose weight and keep it off,2,desire.weight_loss;desire.maintenance
+How to lose weight fast,2,desire.weight_loss
+How to lose weight,2,desire.weight_loss
+Keep it off,2,desire.maintenance
+Losing weight and keeping it off,2,desire.weight_loss;desire.maintenance
+Maintaining weight loss,2,desire.weight_loss;desire.maintenance
+Nothing,2,tier0.nonanswer
+Side affects,2,question.side_effects
+Weight loss management,2,desire.weight_loss
+weight loss,2,desire.weight_loss
+.how to stop eating at night and when I am tense,1,desire.appetite_control
+15 lbs off,1,desire.weight_loss;desire.specific_target;segment.modest_goal
+2 things… FOUNDAYO caused constipation and I only want to lose 8-10 lbs. is this appropriate?,1,desire.weight_loss;desire.specific_target;desire.medication_interest;question.side_effects;segment.modest_goal
+A healthy diet plan,1,desire.plan_guidance
+A pill for weight loss,1,desire.weight_loss;desire.medication_interest;question.modality
+A you help with high inflammation and parasites?,1,desire.disease_control
+About what I can take to help me lose the weight’ about my digestive problems also,1,desire.weight_loss
+Achesx,1,desire.pain_mobility
+Affordable weight loss that may take some of the strain off of my back and legs,1,desire.weight_loss;desire.pain_mobility;question.cost_coverage
+All about the medicine,1,question.how_it_works
+"Always tired, always on the verge of tears, don’t care to venture out on the one day that I’m off",1,desire.energy
+Am I ok to do this program,1,unmapped
+Am I safe to take your product?,1,question.safety
+An ppotential side effects; expectations.,1,question.side_effects
+An you help me lose weight,1,desire.weight_loss
+"As I have been aging, I have been getting shorter, which I understand is normal. The problem is my weight hasn’t gone down with my height. I don’t want to be skinny, just healthier, looking and feeling.",1,desire.weight_loss;desire.pain_mobility;desire.appearance;concern.age
+Balance,1,desire.pain_mobility
+Being able to get to a healthier weight and hoping that will help with my other aging problems,1,desire.weight_loss;concern.age
+Being able to lose about 15 lbs,1,desire.weight_loss;desire.specific_target;segment.modest_goal
+"Being stuck at a weight, scale won’t move",1,desire.weight_loss;concern.plateau_switcher
+"Belly Fat, weight",1,desire.weight_loss;desire.belly
+Belly fat,1,desire.weight_loss;desire.belly
+Belly hangover,1,desire.weight_loss;desire.belly
+Best eating and exercising plan,1,desire.plan_guidance
+Best foods for weight loss,1,desire.weight_loss;desire.plan_guidance
+Better way to help myself loose and keep it off I’m in need of help,1,desire.weight_loss;desire.maintenance
+Bloating and fatigue,1,desire.energy
+Busting through my plateau to get to my goal I’ve lost 64 pounds and need to lose 12 more!,1,desire.weight_loss;desire.specific_target;concern.plateau_switcher;segment.maintenance_phase
+Can you drink alcohol at all on program?,1,unmapped
+Can’t loose weight no matter what I try,1,desire.weight_loss;concern.tried_everything
+"Chronic back pain, 7 surgeries, rod & pins in my back with arthritis. Arthritis in my knee.",1,desire.pain_mobility
+Compound glp1 is no longer working very very slow losing weight,1,desire.weight_loss;desire.medication_interest;concern.plateau_switcher
+Consistency with balanced eating,1,desire.pain_mobility;desire.plan_guidance
+Control my diabetes,1,desire.disease_control
+Control snacking throughout the day,1,desire.appetite_control
+Cost & dosage,1,question.cost_coverage
+Cravings,1,desire.appetite_control
+Curb appetite and alcohol consumption,1,desire.appetite_control
+"Curbing sweet cravings, increase energy.",1,desire.energy;desire.appetite_control
+Currently on tirzepitide and getting close to my weight goal but want to maintain after reaching my goal,1,desire.weight_loss;desire.specific_target;desire.maintenance;desire.medication_interest;segment.current_glp1;segment.maintenance_phase
+"Despite my very best efforts my weight continues to climb.  I have been on weight watchers, Atkinson, noom, and keto …. If I loose some weight it comes back within a few months.   I’m frustrated and worried.",1,desire.weight_loss;concern.side_effect_fear;concern.tried_everything
+Diet  is this successful for weight loss,1,desire.weight_loss;desire.plan_guidance
+Diet,1,desire.plan_guidance
+Difficulty losing weight at 73 yrs old,1,desire.weight_loss;concern.age
+Discuss overall treatment,1,unmapped
+Do you accept Tricare for Life Express Scripts for pharmacy,1,desire.maintenance;question.cost_coverage;question.duration
+Don’t know what to ask,1,tier0.nonanswer
+Eating better and exercising,1,desire.plan_guidance
+Eating plan,1,desire.plan_guidance
+Eligibility for GLP1,1,desire.medication_interest;question.eligibility
+Emotional eating,1,desire.appetite_control
+"Emotional over-eating, sugar addiction,
+WW & KETO are the only two ways I’ve ever lost weight. 
+NOT EATING ENOUGH",1,desire.weight_loss;desire.appetite_control;concern.tried_everything
+Energy I feel I am lagging the want to get things done,1,desire.energy
+Fatty liver,1,desire.disease_control
+Food choices and exercise,1,desire.plan_guidance
+Food,1,desire.plan_guidance
+Former failures and self sabatoge,1,concern.tried_everything
+Foundayo for weight loss,1,desire.weight_loss;desire.medication_interest
+General information concerning this medicine,1,question.how_it_works
+Get 12 lbs off and keep off.  Also have more energy,1,desire.weight_loss;desire.specific_target;desire.maintenance;desire.energy;segment.modest_goal
+Get about 30 lbs off and feel betta bout myself,1,desire.weight_loss;desire.specific_target
+Get control of my eating,1,desire.appetite_control
+Get healthy,1,desire.general_health
+Get my energy back and lose weight.  Hoping it will help my arthritis.,1,desire.weight_loss;desire.energy;desire.pain_mobility
+Get my energy back my confidence,1,desire.energy;desire.appearance
+Get to a healthy weight.,1,desire.weight_loss
+Getting back on Zepbound,1,desire.medication_interest;segment.current_glp1;segment.lapsed
+Getting down to 240 pounds,1,desire.weight_loss;desire.specific_target
+Getting on glp,1,desire.medication_interest;question.eligibility
+Glp-1,1,desire.medication_interest
+Good diet plan and how to keep weight off. Heathy aging,1,desire.weight_loss;desire.maintenance;desire.plan_guidance;concern.age
+Hard to lose weight,1,desire.weight_loss
+Hard to make the scale move down,1,concern.plateau_switcher
+Has this been approved & is it safe? Not just something made up and thrown together for $$$?,1,question.cost_coverage;question.safety;concern.skepticism_trust
+He,1,tier0.nonanswer
+Healthy eating,1,desire.plan_guidance
+Healthy living to an old age.,1,desire.general_health;concern.age
+Help in prioritizing a healthy diet.,1,desire.plan_guidance
+Help,1,unmapped
+High BP; high cholesterol; inflammation,1,desire.disease_control
+Hiw to lose weight and keep it off,1,desire.weight_loss;desire.maintenance
+How I can get the weight off and keep it off.,1,desire.weight_loss;desire.maintenance
+How To lose and maintain the weight,1,desire.weight_loss;desire.maintenance
+How and what I can do lose weight and KEEP it off.,1,desire.weight_loss;desire.maintenance
+How best to manage weight during use of glp1 and keep weight off,1,desire.weight_loss;desire.maintenance;desire.medication_interest
+"How can I loose weight, I'm working out but my weight is still the same.",1,desire.weight_loss
+"How can I lose—I am always hungry!
+Don’t know what to eat",1,desire.weight_loss;desire.plan_guidance;desire.appetite_control
+How do I regain the strength in my arms & legs,1,desire.pain_mobility;desire.muscle_strength
+How does this work.,1,question.how_it_works
+How long to lose weight and the cost,1,desire.weight_loss;question.cost_coverage;question.duration
+How much should I lose,1,desire.weight_loss;question.cost_coverage
+How much weight can I lose?,1,desire.weight_loss;question.cost_coverage
+How my health will be affected by weight loss,1,desire.weight_loss
+How safe is it?  Will it caused the skeleton face?,1,question.safety;question.side_effects;concern.side_effect_fear
+How the drug works,1,desire.medication_interest;question.how_it_works
+How the weight loss medication works.,1,desire.weight_loss;desire.medication_interest;question.how_it_works
+How this affects blood pressure,1,desire.disease_control;question.how_it_works
+How to continue to lose and maintain,1,desire.weight_loss;desire.maintenance
+How to get GLP-1 covered by Medicare,1,desire.medication_interest;question.cost_coverage
+How to get rid of huge  gut,1,desire.weight_loss
+How to get weight I can afford,1,desire.weight_loss;question.cost_coverage
+How to have more energy and feel good when trying to walk every day,1,desire.energy;desire.pain_mobility;desire.appearance
+"How to help me lose 50 pounds. I’m scared of the GLP one medication, but I’m willing to try the pill.",1,desire.weight_loss;desire.specific_target;desire.medication_interest;question.modality;concern.side_effect_fear;concern.injection_aversion;segment.naive_curious
+How to keep the weight off.,1,desire.weight_loss;desire.maintenance
+How to loose it and about hormones,1,desire.weight_loss;desire.disease_control
+How to loose it and not gain it back,1,desire.weight_loss;desire.maintenance;concern.tried_everything
+"How to loose my 50-60lbs, will I keep it off, I don't do strict diets well.",1,desire.weight_loss;desire.specific_target;desire.maintenance;desire.plan_guidance
+How to lose it and keep it off,1,desire.weight_loss;desire.maintenance
+"How to lose the weight and keep it off,start having more energy and feeling better with more good sleep",1,desire.weight_loss;desire.maintenance;desire.energy
+How to lose their weight and keep it off,1,desire.weight_loss;desire.maintenance
+How to lose weight & keep it off & how to eat better,1,desire.weight_loss;desire.maintenance;desire.plan_guidance
+How to lose weight and keep it off.,1,desire.weight_loss;desire.maintenance
+How to lose weight at this age without using a GLP1,1,desire.weight_loss;concern.age
+How to lose weight at this age,1,desire.weight_loss;concern.age
+How to lose weight when stuck.,1,desire.weight_loss;concern.plateau_switcher
+How to loss weight the fastest.,1,desire.weight_loss
+How to lower my Cholesterol,1,desire.disease_control
+How to maintain muscle,1,desire.maintenance;desire.muscle_strength
+How to maintain once I’ve lost,1,desire.maintenance;segment.maintenance_phase
+How to manage my weight,1,desire.weight_loss
+How to pose and keep it.,1,unmapped
+"How to safely lose and keep the weight off.  When I stop taking diet pills, I stay hungry all the time and I constantly eat.",1,desire.weight_loss;desire.maintenance;desire.plan_guidance;desire.appetite_control;question.modality;question.duration
+How to shrink waist and stomach,1,desire.weight_loss;desire.belly
+How to stop binge eating,1,desire.appetite_control
+How to stop craving sugar?,1,desire.appetite_control
+How to stop the food noise,1,desire.plan_guidance;desire.appetite_control
+How to take it off and keep it off.,1,desire.maintenance
+How to take lbs off and keep it off,1,desire.weight_loss;desire.maintenance
+"How weight effect my pain, history of very high blood pressure with weight gain. Family heart disease, stroke and diabetes, thyroid, obesity history",1,desire.weight_loss;desire.pain_mobility;desire.disease_control;concern.comorbidity_safety
+How will this effect my body?,1,question.how_it_works
+I am a 74 year-old woman who cannot seem to lose weight the GPL-1’s seem to be the only way that I can lose this weight for God,1,desire.weight_loss;concern.age
+I am active for my age and eat healthy but cannot drop the 10 pounds. I am not used to a belly like I have and I am uncomfortable. Its not a huge amount but I spend so much time abd energy on this. .,1,desire.weight_loss;desire.specific_target;desire.belly;desire.energy;desire.appearance;concern.age;segment.modest_goal
+I am in a wheelchair,1,desire.pain_mobility
+I am not sute,1,tier0.nonanswer
+I am pre diabetic and never want to be diabetic I crave chocolate often,1,desire.disease_control;desire.appetite_control
+I am stuck with my weight loss even with still taking the GLP shots.  I have lost 30 pounds.  The dosage has only changed once.,1,desire.weight_loss;desire.specific_target;desire.medication_interest;question.modality;concern.plateau_switcher;segment.current_glp1;segment.maintenance_phase
+"I broke my L3 and my L1, I never fully recovered but I walk on my treadmill 1/2 mile a day. I keep my calories under 1200 a day. I can’t lose weight.",1,desire.weight_loss;desire.pain_mobility;desire.plan_guidance;question.cost_coverage;concern.tried_everything
+I can’t lose weight,1,desire.weight_loss;concern.tried_everything
+I can’t take injectable Semaglutide or tirzepatide,1,question.modality;concern.injection_aversion
+I desperately need estradiol & testosterone replacement therapy plus weight loss,1,desire.weight_loss;question.interactions
+"I do not want to take one that makes me feel nauseous or down. This has been my experience with Wegovy and a generic one I took in the past. Plus, Wegovy did not curve my appetite.",1,desire.appetite_control;question.side_effects;concern.side_effect_fear
+I don't lose weight no matter I try.,1,desire.weight_loss
+I don’t have energy or ambition daily   My weight is my problem,1,desire.weight_loss;desire.energy
+I don’t like restrictive diets,1,desire.plan_guidance
+I don’t want anything that will make me feel bad or interfere with my letrozole (cancer medication),1,desire.disease_control;question.interactions;concern.side_effect_fear;concern.comorbidity_safety
+"I exercise 3-4x a week, but still struggle with weight loss. Stuck at 163. Very frustrated",1,desire.weight_loss;desire.plan_guidance;concern.plateau_switcher;concern.tried_everything
+"I feel I am far overweight. I need to lose weight.  It may help my back pain, inflammation, and decrease triglyceride level. Exercise is difficult because I hurt so badly. Vicious cycle.",1,desire.weight_loss;desire.pain_mobility;desire.disease_control;desire.plan_guidance
+I had 4 Cancers & I need to lose weight I,1,desire.weight_loss;desire.disease_control;concern.comorbidity_safety
+I had gastric bypass in 2002 lost 180lb I had to exercise everyday. When I had a hernia repair and extra skin removed I could no longer work out. Slowly I began to gain again. Now my hernia is back bigger than before and my weight keeps going up.,1,desire.weight_loss;desire.specific_target;desire.appearance;desire.plan_guidance;concern.comorbidity_safety;segment.maintenance_phase
+I had several surgeries which put me out of commission for over a year and weight gain due to inactivity need to lose weight so I can begin to exercise again,1,desire.weight_loss;desire.plan_guidance
+I have Parkinson’s disease and my medication,1,question.interactions;concern.comorbidity_safety
+I have a hiatal hernia 7cm,1,concern.comorbidity_safety
+I have a rare spinal condition,1,desire.pain_mobility;concern.comorbidity_safety
+"I have back pain, left leg pain , been referral to a surgeon. Unable to exercise gain about 60 pounds. I know if I lose weight it will help me lower my back& leg pain.",1,desire.weight_loss;desire.specific_target;desire.pain_mobility;desire.plan_guidance
+I have been following a diet given to me by a weight management doctor. I have been on it since October of last year. I weighed 168 and now weigh 144. I have not lost any weight in the last few months. I do not eat meat and have stayed close to my diet.,1,desire.weight_loss;desire.plan_guidance;segment.maintenance_phase
+I have been on tirzepitide for 6 months with a 35 pound loss. I need to get on maintenance so I don’t gain back weight,1,desire.weight_loss;desire.specific_target;desire.maintenance;desire.medication_interest;segment.current_glp1
+"I have lost 10 pounds but would like to lose another 10, but have plateaued at current weight. I’d like to  maintain muscle and lose fat. I exercise a lot. I have Hashimotos thyrouditis controlled with thyroid med",1,desire.weight_loss;desire.specific_target;desire.maintenance;desire.muscle_strength;desire.disease_control;desire.plan_guidance;concern.plateau_switcher;concern.comorbidity_safety;segment.maintenance_phase;segment.modest_goal
+"I have no thyroid and take Armour thyroid medication. 
+I have extreme difficulty losing weight and keeping my weight level.",1,desire.weight_loss;desire.disease_control;question.interactions;concern.comorbidity_safety
+"I have osteoarthritis with recent hip replacement surgery, strenuous aerobic exercise is not an option",1,desire.pain_mobility;desire.plan_guidance
+I have pain All the time and I think if I could loose around 75pds I would feel better and not be in so much pain all the time and I can't walk or stand for long periods of time and I think if I could loose the weight I could get around better thank you,1,desire.weight_loss;desire.pain_mobility
+"I have total hip replacement, I do walk 5 thousand 3 days a week and do Pilates 3 days a week and weight still stays on, I want to lose 20 lbs.  Zepbound does this glp1 cause hair lose?",1,desire.weight_loss;desire.specific_target;desire.pain_mobility;desire.plan_guidance;desire.medication_interest;question.side_effects;concern.side_effect_fear;segment.modest_goal
+I just want to drop thirty pounds,1,desire.weight_loss
+I just want to lose about 35-40 lbs.,1,desire.weight_loss;desire.specific_target
+I just want to lose weight and feel better,1,desire.weight_loss
+I need help at my age,1,concern.age
+I need to Lose20 lb .. my knee are hurting because of the weight,1,desire.weight_loss;desire.pain_mobility
+I need to lose 40 # and get rid of my belly,1,desire.weight_loss;desire.specific_target;desire.belly
+I need to lose a few pounds. I’m losing my energy and my strength and my eating habits for the last 15 months. I’ve been absolutely crazy. I wanna feel better. I wanna sleep better.,1,desire.weight_loss;desire.energy;desire.muscle_strength;segment.modest_goal
+I need to lose about 20 pounds and I am having difficulty doing so,1,desire.weight_loss;desire.specific_target;segment.modest_goal
+I need to lose weight asap. I'm facing knee replacements. I've been told to drop my weight. In hopes of avoiding surgery,1,desire.weight_loss;desire.pain_mobility
+I no would just love to be able to lose the weight and keep it off,1,desire.weight_loss;desire.maintenance
+I really need to loose weight and the diet has to be kidney friendly since my kidney level is stage 3 and my goal is to prevent it from going above that stage if I can with diet which will help keep my diabetes level in pre-diabetes hopefully.,1,desire.weight_loss;desire.disease_control;desire.plan_guidance;desire.general_health;concern.comorbidity_safety
+I started taking Ozempic 2.0 for several years to manage my diabetic but I have gained 25 lbs.,1,desire.weight_loss;desire.specific_target;desire.disease_control;desire.medication_interest
+I take a glp-1,1,desire.medication_interest;segment.current_glp1
+"I take several Parkinson’s Disease medications, am I allowed to take GLP-1?",1,desire.medication_interest;question.interactions;concern.comorbidity_safety
+"I took terzepitide for 5 months in 2024, but the monthly fee forJumpstart ($325/month) plus the cost of the compounded drug became too expensive.  I lost weight (down to 215), tolerated the drug, and was comfortable with the routine.
+My primary care MD",1,desire.weight_loss;desire.medication_interest;question.cost_coverage;concern.affordability;segment.lapsed;segment.maintenance_phase
+I tried tirzepitide by iinjsection for several months. Horrible eczema allergic reaction.,1,question.side_effects;concern.injection_aversion
+I want an effective medication to loose weight that I can afford with my Medicare.,1,desire.weight_loss;desire.medication_interest;question.cost_coverage;concern.affordability
+I want something safe,1,question.safety
+I want something that works and is sustainable,1,desire.maintenance
+I want to eat less and feel full,1,desire.appetite_control
+I want to loose weight because I have alot of back pain  my insurance quitcovering Zepbound so would like to find out what you have  to help with weight and pain,1,desire.weight_loss;desire.pain_mobility;desire.medication_interest;question.cost_coverage;concern.affordability
+I want to loose weight without hair loss or muscle loss,1,desire.weight_loss;desire.muscle_strength;question.side_effects;concern.side_effect_fear
+"I want to lose 40 lbs.  I feel terrible, sluggish, constipated, heartburn, lethargic…",1,desire.weight_loss;desire.specific_target;desire.energy;desire.disease_control
+I want to lose excess weight and keep it off,1,desire.weight_loss;desire.maintenance
+I want to lose weight and get some energy,1,desire.weight_loss;desire.energy
+I want to lose weight as quickly as possible but safely.I tried the shot before but it didnt  work for me.,1,desire.weight_loss;question.modality
+I want to lose weight,1,desire.weight_loss
+I want to use my endocrinologist to balance all my needs,1,desire.pain_mobility
+"I was taking wegovy, for 3 months and the insurance didn’t cover me any more, do to government changes on the plan. I have Medicare and Tri-Care for life, I see you said here I was eligible for the medicar, but what about Tri-Care, will the cover it?",1,desire.maintenance;desire.medication_interest;question.cost_coverage;question.eligibility;question.duration;concern.affordability;segment.lapsed
+I was up to 1. 0om Wygovy before,1,desire.medication_interest;segment.lapsed
+"I would like to feel better and able to move around, without having pains.",1,desire.pain_mobility
+"I would like to know the safest and best way to maintain a healthy weight loss and gain a positive lifestyle and relationship with food, and stress combinations.",1,desire.weight_loss;desire.maintenance;desire.pain_mobility;desire.plan_guidance
+I would like to loose some weight,1,desire.weight_loss
+"I would like to loose weight, have more energy and mobility.",1,desire.weight_loss;desire.energy;desire.pain_mobility
+I would like to lose just a few pounds to feel better about myself,1,desire.weight_loss;desire.appearance;segment.modest_goal
+"I would like to take the tirzipatide 5mg, what would the cost be out of pocket and with insurance",1,question.cost_coverage
+I would like to take wagovy,1,desire.medication_interest
+I would like to talk about losing,1,desire.weight_loss
+I would really love to loose weight please help me,1,desire.weight_loss
+I'm always hungry,1,desire.appetite_control
+I've never discussed it with my doctor just that I need to do more exercise.,1,desire.plan_guidance
+If I qualify for the weight loss program,1,desire.weight_loss;question.eligibility
+"If I will need to be on it forever.
+Also, why is it so difficult for me to lose weight.",1,desire.weight_loss;question.duration
+If i can get this extra weight off my legs and back won't hurt so bad and I'll be able to walk better,1,desire.weight_loss;desire.pain_mobility;question.eligibility
+If this equals results like the drug zepbound,1,desire.medication_interest
+"If weight loss treatment plan is totally covered, and do you keep track of monthly results to adjust dose when needed.",1,desire.weight_loss;question.cost_coverage
+"Im 69, but feel like I'm 100!  I want to enjoy my grandkids",1,desire.appearance;concern.age
+Im plateau on semaglutide for a few months. I recently started on terzepatide. I don't feel like it's working as well and it's difficult to communicate with the provider,1,desire.medication_interest;concern.plateau_switcher;segment.current_glp1
+Im struggling with my weight & have very little energy & if i dr I nk too much coffee to keep me going i cant sleep....HP,1,desire.weight_loss;desire.energy;concern.tried_everything
+Incorporating activity into day,1,desire.plan_guidance
+"Inflammation 
+Fibromyalgia",1,desire.pain_mobility;desire.disease_control;concern.comorbidity_safety
+"Is it pills or injections, how often to take and cost",1,question.cost_coverage;question.modality
+Is it safe,1,question.safety
+"Is medication indefinite?
+Side effects?",1,question.side_effects;question.duration
+I’d like to loose 10 lbs & sleep better,1,desire.weight_loss;desire.specific_target;segment.modest_goal
+I’d like to try Weight loss medication,1,desire.weight_loss;desire.medication_interest;segment.naive_curious
+I’m addicted to sugar and over eating,1,desire.appetite_control
+I’m not a big eater but I just can’t lose weight,1,desire.weight_loss;concern.tried_everything
+"I’ve turned 70. I want to reduce weight, add stamina, strengthen knees.",1,desire.weight_loss;desire.energy;desire.pain_mobility;desire.muscle_strength;concern.age
+Just can’t loose weight,1,desire.weight_loss;concern.tried_everything
+"Just how it works. What are side effects, etc",1,question.how_it_works;question.side_effects
+Just loosing and maintaining the weight after I loose it,1,desire.weight_loss;desire.maintenance
+Just want to lose 40 lbs,1,desire.weight_loss;desire.specific_target
+Keeping a healthy weight and get stronger through exercise,1,desire.weight_loss;desire.muscle_strength;desire.plan_guidance
+Keeping off the weight,1,desire.weight_loss;desire.maintenance
+Keeping the weight off and sugar cravings,1,desire.weight_loss;desire.maintenance;desire.appetite_control
+Keeping weight off and reducing back and hip pain,1,desire.weight_loss;desire.maintenance;desire.pain_mobility
+Late PM cravings,1,desire.appetite_control
+Learn to keep the weight off,1,desire.weight_loss;desire.maintenance
+Learning what to eat when you eat,1,desire.plan_guidance
+Long COVID and weight loss,1,desire.weight_loss
+Long term weight management,1,desire.weight_loss;desire.maintenance;question.duration
+Longevity and energy level,1,desire.energy;desire.appearance
+Loose 10-12 lbs,1,desire.weight_loss;desire.specific_target;segment.modest_goal
+Loose 50 lb,1,desire.weight_loss;desire.specific_target
+Loose n manage weight.,1,desire.weight_loss
+Loose weight around my stomach,1,desire.weight_loss;desire.belly
+Loose weight to regain energy,1,desire.weight_loss;desire.energy
+Loosing and maintain healthy weight loss to maintain healthy A1c,1,desire.weight_loss;desire.maintenance;desire.disease_control
+Loosing weight and maintaining loss,1,desire.weight_loss;desire.maintenance
+Loosing weight! I have put on about 18 lbs. and I am very uncomfortable! I would like to lose weight and feel good about myself!,1,desire.weight_loss;desire.specific_target;desire.appearance
+"Loosing weight, staying motivated and healthy eating",1,desire.weight_loss;desire.plan_guidance
+Loosing weight,1,desire.weight_loss
+Lose 20 ibs,1,desire.weight_loss;desire.specific_target;segment.modest_goal
+Lose 20 lbs,1,desire.weight_loss;desire.specific_target;segment.modest_goal
+Lose weight and feel,1,desire.weight_loss
+"Lose weight and get energy back.
+I’m a bilateral below the knee amputee",1,desire.weight_loss;desire.energy;desire.pain_mobility
+Lose weight and less pain.,1,desire.weight_loss;desire.pain_mobility
+Losing 15 pounds.,1,desire.weight_loss;desire.specific_target;segment.modest_goal
+"Losing 50 pounds, exercise",1,desire.weight_loss;desire.specific_target;desire.plan_guidance
+Losing 8-10 pounds,1,desire.weight_loss;desire.specific_target;segment.modest_goal
+Losing approximately 12% of my weight,1,desire.weight_loss;desire.specific_target
+Losing auto get healthy,1,desire.weight_loss;desire.general_health
+Losing weight & eating healthier,1,desire.weight_loss;desire.plan_guidance
+Losing weight and changing eating habits,1,desire.weight_loss
+Losing weight and increasing my energy.,1,desire.weight_loss;desire.energy
+Losing weight and keeping it off and not feeling deprived.,1,desire.weight_loss;desire.maintenance
+Losing weight and keeping it off and stop the constant noise in my head to eat!,1,desire.weight_loss;desire.maintenance
+Losing weight and maintaining it off. Having more energy,1,desire.weight_loss;desire.maintenance;desire.energy
+Losing weight due to need of knee replacement,1,desire.weight_loss;desire.pain_mobility
+Losing weight keeping muscle,1,desire.weight_loss;desire.muscle_strength
+Losing weight so I may be able to be more mobile. I can’t walk very far and I have to sit down to cook.i had a knee replacement 17 months ago and I gained 45 lbs.,1,desire.weight_loss;desire.specific_target;desire.pain_mobility
+"Losing weight, getting in better shape.",1,desire.weight_loss
+"Losing weight, having more energy",1,desire.weight_loss;desire.energy
+"Losing weight, rid constipation, rid stiffness in back & neck,  learn better eating habbits",1,desire.weight_loss;desire.pain_mobility;question.side_effects
+Losing weight. I’m the heaviest I’ve ever been.,1,desire.weight_loss
+Loss of 25 lbs,1,desire.weight_loss;desire.specific_target
+Loss of energy and weight gain,1,desire.weight_loss;desire.energy
+Loss weight,1,desire.weight_loss
+Lower  cholesterol,1,desire.disease_control
+Maintain a desired weight,1,desire.weight_loss;desire.maintenance
+Maintaining,1,desire.maintenance
+Maintenance,1,desire.maintenance
+Making plans for hitting my goal of 170 pounds and maintaining it for life,1,desire.weight_loss;desire.specific_target;desire.maintenance;question.duration
+Making sure this is covered by Medicare,1,question.cost_coverage
+Manage my weight. Lose 15-20 lvs,1,desire.weight_loss;desire.specific_target
+Managing,1,unmapped
+Meal plans,1,desire.plan_guidance
+"Medication for intestinal irritability syndrome, gastropasesis , colon irritability",1,concern.comorbidity_safety
+Menopausal weight gain,1,desire.weight_loss;desire.disease_control
+Menopause weight gain,1,desire.weight_loss;desire.disease_control
+Menus I have a hard time knowing what to eat,1,desire.plan_guidance
+Metabolism and hormone health,1,desire.disease_control
+Metabolism,1,desire.disease_control
+Mostly my weight,1,desire.weight_loss
+Motivation,1,desire.plan_guidance
+"My BMI is to high, I have tried ozempic, and nougat with not much sucess",1,desire.medication_interest;concern.plateau_switcher
+"My Gastro doctor discovered my inflamed colon, meeting with him in 2 weeks. Since last December, I have gained about 
+20-25 #. Not eating more foods, but craving sweets. I’m actively working full time job as cashier. Weight not coming off like before.",1,desire.weight_loss;desire.plan_guidance;desire.appetite_control;question.cost_coverage;concern.comorbidity_safety
+My age 80,1,concern.age
+"My cholesterol is up. Doctor says I need to lose weight and I’ve been trying, but I’m not real good at it.",1,desire.weight_loss;desire.disease_control;concern.tried_everything
+My difficulty in losing weight in my old age. My knees are killing me from my overweightness. The pain is affecting my mobilty,1,desire.weight_loss;desire.pain_mobility;concern.age
+My doctor prescribed Wegovy but I can’t afford it. UHC won’t pay for it,1,desire.medication_interest;question.cost_coverage;concern.affordability
+My history,1,unmapped
+My hypothyroidism,1,desire.disease_control;concern.comorbidity_safety
+"My injury on my knees,Caused me to gain weight,beginning in July 2021,But since than I am still working full time as a delivery driver of crash auto  repairs all kinds of weight ,Days I fell great. & days I feel opposite.But weight is still to much",1,desire.weight_loss;desire.pain_mobility
+My weight and the issues that I have with my back,1,desire.weight_loss;desire.pain_mobility
+My weight is holding me back on things I want to do. I have arthritis and if I get weight off I believe I will be more active.,1,desire.weight_loss;desire.pain_mobility
+My weight,1,desire.weight_loss
+Ned something to get weight off that I can take with all my medications,1,desire.weight_loss;question.interactions;concern.comorbidity_safety
+Need to get 20 pounds off. Lack of energy,1,desire.weight_loss;desire.specific_target;desire.energy;segment.modest_goal
+Need to get this weight off,1,desire.weight_loss
+Need to loose weight to feel better get energy back,1,desire.weight_loss;desire.energy
+No energy,1,desire.energy
+No sure,1,tier0.nonanswer
+No,1,tier0.nonanswer
+Nothing other than losing weight,1,desire.weight_loss
+Nutrition and exercise,1,desire.plan_guidance
+Only weight loss,1,desire.weight_loss
+Only wish to lose weight because it will help with my back problem. The more weight I lose the better it is for my back.,1,desire.weight_loss;desire.pain_mobility
+Options for weight loss asdistance,1,desire.weight_loss
+Ozempic,1,desire.medication_interest
+Ozimpuc 1 mg shot per wk i havent lost weight,1,desire.weight_loss;question.modality;concern.plateau_switcher
+Pain of knee,1,desire.pain_mobility
+Payments,1,question.cost_coverage
+"Physically disabled  ( hip problem, I  use a walker)but want to loose at least  20 lbs,hoping the weight loss will help decrease the joint pain, and Ostio arthritis.",1,desire.weight_loss;desire.specific_target;desire.pain_mobility;segment.modest_goal
+Pill form weight loss,1,desire.weight_loss;question.modality
+Pills not injecting,1,question.modality
+Potentially loss of muscle,1,desire.muscle_strength
+Prescription,1,desire.medication_interest
+Prevention,1,desire.general_health
+Price?,1,question.cost_coverage
+Prolong weight control,1,desire.weight_loss
+Protein,1,desire.plan_guidance
+Qualification,1,question.eligibility
+Questions about gpl-1 continuous pain since knee surgery,1,desire.pain_mobility
+Reaching my goal weight of 125 pounds,1,desire.weight_loss;desire.specific_target
+Safety,1,question.safety
+Send me to some treats,1,unmapped
+Side affects of medication for weight loss,1,desire.weight_loss;question.side_effects
+Side effects of glp1,1,desire.medication_interest;question.side_effects
+"Side effects of medication/nausea, throwing up, etc.",1,question.side_effects
+Sided effects,1,question.side_effects
+"Sleep apnea, snoring, weight, back pain,",1,desire.weight_loss;desire.pain_mobility;desire.disease_control
+Some weight loss without muscle loss. Energy back. General well being,1,desire.weight_loss;desire.energy;desire.muscle_strength;concern.side_effect_fear
+Something that will help move the needle,1,question.modality;concern.plateau_switcher
+"Spinal and now shoulder surgery has limited participation, normal activity added weight making those conditions worse, I need help beside trying to keep moving",1,desire.weight_loss;desire.pain_mobility
+Spot fat reduction,1,unmapped
+Still hungry. On 12.5 zepbound. No energy,1,desire.energy;desire.appetite_control;desire.medication_interest;concern.plateau_switcher;segment.current_glp1
+Stopping g food noise. Learning to eat in moderation,1,desire.plan_guidance;desire.appetite_control
+"Stress eating, low energy, motivation",1,desire.energy;desire.plan_guidance
+Stress,1,unmapped
+Stubborn weight loss,1,desire.weight_loss
+Sweet food junkie,1,desire.plan_guidance;desire.appetite_control
+Taking GLP-1,1,desire.medication_interest;segment.current_glp1
+That I need help losing weight,1,desire.weight_loss
+That is equivalent to Mounjaro. Starting at same dose I am currently on.,1,desire.medication_interest;segment.current_glp1
+"The Glo 1 I was taking- shot- 10ml I only lost 8 lbs - 1000.$ and 3 mos. - no side effects 
+What can I expect from this med?",1,desire.weight_loss;desire.specific_target;question.cost_coverage;question.side_effects;question.modality;concern.affordability;segment.lapsed;segment.modest_goal
+The advancement on the shots was too slow to help me lose weight as I should,1,desire.weight_loss;question.modality;concern.plateau_switcher
+The belly apron,1,desire.weight_loss;desire.belly
+The best exercises I could do for the weight loss and they could guide me far as eating healthy,1,desire.weight_loss;desire.plan_guidance
+The cost,1,question.cost_coverage
+The drugs,1,desire.medication_interest
+"The onset of osteoarthritis has dramatically limited my mobility, resulting in a serious increase in body weight and joint pain.",1,desire.weight_loss;desire.pain_mobility
+The risks associated with GLP1,1,desire.medication_interest;question.safety
+The safety of glp,1,desire.medication_interest;question.safety
+The side effects,1,question.side_effects
+Things to do to be healthy,1,desire.general_health
+"Thyroid
+Weight loss",1,desire.weight_loss;desire.disease_control;concern.comorbidity_safety
+Tired of being overweight..I’m at 114…I’d like to get down to 90/95.,1,desire.weight_loss;desire.specific_target;desire.energy
+To be able to loose 20 pounds,1,desire.weight_loss;desire.specific_target;segment.modest_goal
+To get my zepbound injections at a $50.00 a month.,1,desire.medication_interest;question.cost_coverage;question.modality
+To lose about 25 lbs and keep it off,1,desire.weight_loss;desire.specific_target;desire.maintenance
+To lose fat and gain strength,1,desire.weight_loss;desire.muscle_strength
+To lose weight I exercise and watch what I eat but it doesn’t matter,1,desire.weight_loss;desire.plan_guidance
+"To lose weight to prevent knee pains, diabetes, and other diseases",1,desire.weight_loss;desire.pain_mobility;desire.disease_control;desire.general_health
+"To lose weight, improve energy and stay motivated.",1,desire.weight_loss;desire.energy;desire.plan_guidance
+To loss weight responsible,1,desire.weight_loss
+Trying to lose belly fat. Not feel so tired,1,desire.weight_loss;desire.belly;desire.energy
+WEIGHTLOSS,1,desire.weight_loss
+Want to find a medication that really work. I want to live longer.,1,desire.appearance;concern.skepticism_trust
+Want to loose weight and keep it off,1,desire.weight_loss;desire.maintenance
+Want to loss 40 pounds and keep it off,1,desire.weight_loss;desire.specific_target;desire.maintenance
+"Wegovy from Hers is not working 
+About 4 years ago, I did very well on monjaro",1,desire.medication_interest;concern.plateau_switcher
+Wei8 maintenance after the pill.  Site effects associated when taking the pill if any.,1,desire.maintenance;desire.medication_interest;question.side_effects;question.modality
+Weigh and strngth,1,desire.weight_loss
+Weigh loss without loss of strength; better ease of managing chronic illnesses and lack of good balance; better diet with lack of good nutrition.,1,desire.weight_loss;desire.pain_mobility;desire.muscle_strength;desire.plan_guidance
+Weight LOSS!,1,desire.weight_loss
+"Weight Loss, lack of energy & bloating",1,desire.weight_loss;desire.energy
+Weight Loss,1,desire.weight_loss
+"Weight Management, Chronic Pain Management, Fatiga & Vertigo",1,desire.weight_loss;desire.energy;desire.pain_mobility
+Weight Management,1,desire.weight_loss
+Weight fatigue chronic pain,1,desire.weight_loss;desire.energy;desire.pain_mobility
+Weight lose I have knee and back issues and the weight is not good I lose then regain yo yo for years,1,desire.weight_loss;desire.pain_mobility;concern.tried_everything
+Weight lose,1,desire.weight_loss
+Weight loss & energy,1,desire.weight_loss;desire.energy
+Weight loss Staying Healthy,1,desire.weight_loss
+Weight loss and anti aging,1,desire.weight_loss;desire.appearance;concern.age
+Weight loss and back pain,1,desire.weight_loss;desire.pain_mobility
+Weight loss and constapation,1,desire.weight_loss;question.side_effects
+Weight loss and cost of medication.,1,desire.weight_loss;question.cost_coverage
+Weight loss and joint pain,1,desire.weight_loss;desire.pain_mobility
+Weight loss and keeping it off,1,desire.weight_loss;desire.maintenance
+Weight loss and maintain,1,desire.weight_loss;desire.maintenance
+Weight loss and reverse current muscle loss,1,desire.weight_loss;desire.muscle_strength;concern.side_effect_fear
+Weight loss and sleep apena,1,desire.weight_loss;desire.disease_control
+Weight loss during care for congestive heart failure,1,desire.weight_loss;desire.disease_control;concern.comorbidity_safety
+Weight loss faste,1,desire.weight_loss
+Weight loss firm up,1,desire.weight_loss;desire.appearance
+Weight loss for a cheaper price!,1,desire.weight_loss;question.cost_coverage;concern.affordability
+Weight loss for my health. Very hard to walk long distances and also have COPD and the weight is very hard on me,1,desire.weight_loss;desire.pain_mobility;desire.disease_control;concern.comorbidity_safety
+Weight loss meds,1,desire.weight_loss;desire.medication_interest
+Weight loss without medication.,1,desire.weight_loss
+"Weight loss,  nutrition and building muscle",1,desire.weight_loss;desire.muscle_strength;desire.plan_guidance
+"Weight loss, Skin tightening & energy",1,desire.weight_loss;desire.energy;desire.appearance
+"Weight loss, aches and pains. Any side effects?",1,desire.weight_loss;desire.pain_mobility;question.side_effects
+"Weight loss, medical history",1,desire.weight_loss
+Weight loss.,1,desire.weight_loss
+Weight loss.and pain control,1,desire.weight_loss;desire.pain_mobility
+Weight loss/maintenance,1,desire.weight_loss;desire.maintenance
+Weight maintenance,1,desire.weight_loss;desire.maintenance
+Weight management and neck low back pain,1,desire.weight_loss;desire.pain_mobility
+"Weight management, particularly around tummy, hips. And exercise regimen",1,desire.weight_loss;desire.belly;desire.pain_mobility;desire.plan_guidance
+"Weight not moving despite calorie restriction, exercise, etc.",1,desire.weight_loss;desire.plan_guidance;concern.plateau_switcher;concern.tried_everything
+Weight reduction,1,desire.weight_loss
+Weightloss,1,desire.weight_loss
+We’re where I’m losing weight that’s what I wanna talk about. That’s all I wanna talk about see this gut. Nothing else to be said.,1,desire.weight_loss
+What am I doing wrong,1,unmapped
+What and when t o eat,1,desire.plan_guidance
+"What are the side effects of using GLP1, when I have cirrhosis.",1,desire.disease_control;desire.medication_interest;question.side_effects;concern.comorbidity_safety
+What can I do to lose weight,1,desire.weight_loss
+What can help me get stronger and eat foods so I dont gain weight,1,desire.weight_loss;desire.maintenance;desire.muscle_strength;desire.plan_guidance
+What does the medicine actually do,1,question.how_it_works
+What is Bold?,1,question.how_it_works
+"What is the safest and most effective plan for me to lose fat while preserving muscle, bone density, and overall health?",1,desire.weight_loss;desire.muscle_strength;desire.general_health
+What is your medication exactly,1,question.how_it_works
+What medication I can take for weight loss.,1,desire.weight_loss;question.how_it_works
+What to eat,1,desire.plan_guidance
+What's the best way to lose We,1,desire.weight_loss
+Why I can't lose ten more pounds?,1,desire.weight_loss;concern.tried_everything
+Why I don’t loose weight even when I eat small portions,1,desire.weight_loss;desire.plan_guidance;concern.tried_everything
+"Why did the first time tell me I “was approved” but then when it got to this part and I asked a few questions told me I wasn’t approved, except for some kind of exercise program",1,desire.plan_guidance;question.safety
+Why do I want to eat all the time?,1,desire.appetite_control
+Why does weight loss meds not work,1,desire.weight_loss;desire.medication_interest
+"Why even eating proper foods, no processed foods,intermittent fasting cannot seem to lose weight",1,desire.weight_loss;desire.plan_guidance;concern.tried_everything
+Why gain a weight very fast,1,desire.weight_loss
+"Why, I’m a slow looser?",1,concern.tried_everything
+Will help my heart,1,desire.disease_control
+Will it cause nausea,1,question.side_effects
+Will it come back after I go offit,1,question.duration
+Working in exercise,1,desire.plan_guidance
+Would like to lose 60 lbs and concerned with loose skin after weight lose,1,desire.weight_loss;desire.specific_target;desire.appearance;concern.side_effect_fear
+Would like to lose weight so I would have more energy to do things feel better about myself. I used to work out when I was younger.,1,desire.weight_loss;desire.energy;desire.appearance
+Wt loss & tone,1,desire.weight_loss;desire.appearance
+Wt loss,1,desire.weight_loss
+"Yes, I’m I wake up tired in the morning and then I’m tired all day and then I wake up late in the afternoon where my body wakes up and I can function and I need to lose some weight 20 pounds",1,desire.weight_loss;desire.specific_target;desire.energy;segment.modest_goal
+Yo yo dieting,1,desire.plan_guidance;concern.tried_everything
+always hungry can't lose my stomach,1,desire.weight_loss;desire.belly;desire.appetite_control;concern.tried_everything
+can i get on the GLP-1 program?  I am on the Bold exercise program through Kaiser,1,desire.plan_guidance;desire.medication_interest;question.eligibility;segment.current_glp1
+"eating healthy, losing weight",1,desire.weight_loss;desire.plan_guidance
+finding the cause and what type of eating style is best for CKD,1,desire.disease_control;concern.comorbidity_safety
+healthy weight loss,1,desire.weight_loss
+living a healthier lifestyle,1,desire.general_health
+loosing weight,1,desire.weight_loss
+losing belly fat,1,desire.weight_loss;desire.belly
+losing weight  safely,1,desire.weight_loss
+losing weight,1,desire.weight_loss
+medications to facilitate weight loss,1,desire.weight_loss
+my weight and i love food,1,desire.weight_loss;desire.plan_guidance
+my weight loss has stalled,1,desire.weight_loss;concern.plateau_switcher
+not to fast But Slow steady  give time to adjust,1,unmapped
+only want to lose 20 lbs max. then would it be possible to go on maintence?,1,desire.weight_loss;desire.specific_target;desire.maintenance;segment.modest_goal
+side effects. best injection site.,1,question.side_effects;question.modality
+slow a steady pace  keeping healthy,1,desire.general_health
+stopping the hunger,1,desire.appetite_control
+the types of resistance excercises that I would need to do to keep from losing muscle,1,desire.weight_loss;desire.muscle_strength
+want to lose and maintain weight,1,desire.weight_loss;desire.maintenance
+weight loss medication cost,1,desire.weight_loss;desire.medication_interest;question.cost_coverage
+weight loss or surgery,1,desire.weight_loss;desire.pain_mobility
+weight loss to keep A1C down and get my BMI to a healthy level,1,desire.weight_loss;desire.disease_control
+"weight loss, energy",1,desire.weight_loss;desire.energy
+"weight maintenance, I have lost 60 lbs in past year but need help to maintain the loss",1,desire.weight_loss;desire.specific_target;desire.maintenance;segment.maintenance_phase
+why am I doing this through you guys what's in it for you?,1,concern.skepticism_trust

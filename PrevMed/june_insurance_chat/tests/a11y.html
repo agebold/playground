@@ -1,0 +1,81 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>a11y</title>
+<link rel="stylesheet" href="../assets/june.css"></head><body><div id="out">running</div>
+<script>
+var R=[],pass=0,fail=0;
+function ok(n,c,d){ if(c){pass++;}else{fail++;R.push('FAIL '+n+(d!==undefined?' :: '+JSON.stringify(d):''));} }
+function lum(hex){
+  var h=hex.replace('#',''); if(h.length===3) h=h.split('').map(function(x){return x+x;}).join('');
+  var c=[0,2,4].map(function(i){ var v=parseInt(h.substr(i,2),16)/255;
+    return v<=0.03928? v/12.92 : Math.pow((v+0.055)/1.055,2.4); });
+  return 0.2126*c[0]+0.7152*c[1]+0.0722*c[2];
+}
+function ratio(a,b){ var l1=lum(a),l2=lum(b); var hi=Math.max(l1,l2),lo=Math.min(l1,l2); return (hi+0.05)/(lo+0.05); }
+function tok(name){ return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+
+// pairs that actually ship, read from the live tokens
+var PAIRS = [
+  ['body text on white',            '--grey-500','--white', 4.5],
+  ['headings on white',             '--ink-300', '--white', 4.5],
+  ['bot bubble text on bubble bg',  '--ink-300', '--grey-200', 4.5],
+  ['link/brand on white',           '--purple-300','--white', 4.5],
+  ['white on primary button',       '--white',   '--purple-300', 4.5],
+  ['white on button hover',         '--white',   '--purple-500', 4.5],
+  ['white on user bubble',          '--white',   '--purple-300', 4.5],
+  ['green tag text on green bg',    '--green-500','--green-100', 4.5],
+  ['purple tag text on purple bg',  '--purple-500','--purple-100', 4.5],
+  ['yellow banner text on bg',      '--yellow-500','--yellow-100', 4.5],
+  ['blue banner text on bg',        '--blue-500','--blue-100', 4.5],
+  ['red error text on white',       '--red-500', '--white', 4.5],
+  ['cost value green on white',     '--green-500','--white', 4.5],
+  ['chip text on white',            '--purple-500','--white', 4.5],
+  ['placeholder on white',          '--ink-200', '--white', 3.0],
+  // large text (>=18px or >=14px bold) needs only 3:1
+  ['result head white on navy',     '--white',   '--blue-500', 3.0],
+  ['result head white on yellow',   '--white',   '--yellow-500', 3.0],
+  ['result head white on grey',     '--white',   '--grey-500', 3.0],
+  ['AI badge white on brand',       '--white',   '--purple-300', 3.0],
+  // non-text UI must clear 3:1 against its neighbour
+  ['input border vs white',         '--grey-300','--white', 1.0],
+  ['focus ring vs white',           '--purple-300','--white', 3.0],
+];
+PAIRS.forEach(function(p){
+  var fg=tok(p[1]), bg=tok(p[2]);
+  var r=ratio(fg,bg);
+  ok(p[0]+' >= '+p[3]+':1', r>=p[3], {fg:fg,bg:bg,ratio:Math.round(r*100)/100});
+});
+
+// no shipped font size below 14px
+var css='';
+fetch('../assets/june.css').then(function(r){return r.text();}).then(function(t){
+  css=t;
+  var sizes=(css.match(/font-size:\s*(\d+(?:\.\d+)?)px/g)||[]).map(function(m){return parseFloat(m.match(/([\d.]+)px/)[1]);});
+  var below=sizes.filter(function(s){return s<14;});
+  ok('no literal font-size below 14px', below.length===0, below);
+
+  // REGRESSION: this sweep only looked at LITERAL px values, so a
+  // `font-size: var(--fs-12)` shipped 12px text right past it. Resolve the
+  // token indirection before comparing.
+  var tokens={};
+  (css.match(/--fs-[\w-]+:\s*[\d.]+px/g)||[]).forEach(function(d){
+    var m=d.match(/(--fs-[\w-]+):\s*([\d.]+)px/); tokens[m[1]]=parseFloat(m[2]);
+  });
+  var viaVar=[];
+  (css.match(/font-size:\s*var\((--fs-[\w-]+)\)/g)||[]).forEach(function(d){
+    var name=d.match(/(--fs-[\w-]+)/)[1];
+    if (tokens[name] !== undefined && tokens[name] < 14) viaVar.push(name+'='+tokens[name]+'px');
+  });
+  ok('no font-size var() resolving below 14px', viaVar.length===0, viaVar);
+  ok('the token sweep actually resolved tokens', Object.keys(tokens).length>4, Object.keys(tokens).length);
+  var vars=(css.match(/--fs-\d+:\s*(\d+)px/g)||[]);
+  var badVars=vars.filter(function(v){ return parseInt(v.match(/(\d+)px/)[1],10)<12; });
+  ok('no font token below 12px', badVars.length===0, badVars);
+  ok('has reduced-motion block', /prefers-reduced-motion/.test(css));
+  ok('reduced motion kills animation', /prefers-reduced-motion[\s\S]*animation-duration:\s*\.001ms/.test(css));
+  ok('hidden attribute enforced', /\[hidden\]\s*\{\s*display:none\s*!important/.test(css));
+  ok('uses DS breakpoints only', !/max-width:\s*(1080|460|768|900)px/.test(css), (css.match(/max-width:\s*\d+px/g)||[]));
+  ok('no hardcoded brand hex outside :root',
+     (css.split('}').slice(1).join('}').match(/#5200d4|#140d26|#5b16e0/gi)||[]).length===0,
+     (css.match(/#5b16e0/gi)||[]));
+  document.getElementById('out').textContent='RESULT '+pass+' passed, '+fail+' failed\n'+R.join('\n');
+});
+</script></body></html>

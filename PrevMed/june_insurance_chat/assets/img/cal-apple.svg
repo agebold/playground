@@ -1,0 +1,7 @@
+<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Apple Calendar">
+  <rect x="0.5" y="0.5" width="23" height="23" rx="5" fill="#fff" stroke="#e5e5e5"/>
+  <text x="12" y="7.6" text-anchor="middle" font-family="Inter, system-ui, sans-serif"
+        font-size="4.2" font-weight="600" letter-spacing="0.3" fill="#ff4f5c">THU</text>
+  <text x="12" y="19" text-anchor="middle" font-family="Inter, system-ui, sans-serif"
+        font-size="12" fill="#140d26">17</text>
+</svg>

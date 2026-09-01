@@ -32,25 +32,36 @@
     <main class="st-content">
       <div class="st-intro">
         <p class="st-eyebrow">Question 4 of 6</p>
-        <h1 class="cf-heading">Have you taken any weight loss medications?</h1>
+        <h1 class="cf-heading">Where are you with weight-loss medicines like Wegovy® or Zepbound®?</h1>
+        <p class="cf-body">There's no wrong answer — this just helps your doctor plan the right next step for you.</p>
       </div>
 
       <fieldset class="cf-radio-group" data-autoadvance="09-history.html"
-                aria-label="Have you taken any weight loss medications?">
+                aria-label="Where are you with weight-loss medicines like Wegovy or Zepbound?">
         <label class="cf-radio-option">
-          <input type="radio" name="meds" value="now" />
+          <input type="radio" name="meds" value="on_now" />
           <span class="cf-radio-indicator" aria-hidden="true"></span>
-          <span class="cf-radio-label">Yes, I am taking one now. (e.g. Foundayo®, Wegovy®, Zepbound®)</span>
+          <span class="cf-radio-label">I'm taking one now</span>
         </label>
         <label class="cf-radio-option">
-          <input type="radio" name="meds" value="past" />
+          <input type="radio" name="meds" value="past_would_retry" />
           <span class="cf-radio-indicator" aria-hidden="true"></span>
-          <span class="cf-radio-label">Yes, I've taken one in the past but not currently</span>
+          <span class="cf-radio-label">I stopped one — I'd try again if it felt safer or cost less</span>
         </label>
         <label class="cf-radio-option">
-          <input type="radio" name="meds" value="no" />
+          <input type="radio" name="meds" value="past_declined" />
           <span class="cf-radio-indicator" aria-hidden="true"></span>
-          <span class="cf-radio-label">No</span>
+          <span class="cf-radio-label">I tried one, and it's not for me</span>
+        </label>
+        <label class="cf-radio-option">
+          <input type="radio" name="meds" value="never_curious" />
+          <span class="cf-radio-indicator" aria-hidden="true"></span>
+          <span class="cf-radio-label">I've never taken one, but I'm curious</span>
+        </label>
+        <label class="cf-radio-option">
+          <input type="radio" name="meds" value="never_without" />
+          <span class="cf-radio-indicator" aria-hidden="true"></span>
+          <span class="cf-radio-label">I'd rather lose weight without one</span>
         </label>
       </fieldset>
     </main>

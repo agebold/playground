@@ -1,0 +1,140 @@
+/* ══════════════════════════════════════════════
+   wm-tokens.css — design tokens for the Weight-Management enrollment flow
+
+   Source of truth: @bold/web (agebold/agebold-web master)
+     packages/web/src/styles/_variables.scss
+     packages/web/src/styles/constants.ts
+   Storybook: https://staging-ui.agebold.com/
+
+   The fenced mirror block below is copied verbatim from the :root block of
+   PrevMed/glp1_funnel/funnel.css so the two prototypes stay visually
+   identical. Check for drift with:  sh ./check-tokens.sh
+
+   Tokens marked ⚠ NOT in @bold/web are legacy Tailwind-palette shades
+   inherited from the GLP-1 funnel — kept for visual parity, not invented
+   here. Keep until upstream adds equivalents or we remap to the
+   @bold/web greyscale ($grey---200..500, $ink).
+══════════════════════════════════════════════ */
+:root {
+  /* BEGIN MIRROR — funnel.css :root */
+  /* Typography */
+  --font-family: 'Inter', system-ui, -apple-system, sans-serif;   /* $font---inter */
+
+  /* @bold/web greys + ink */
+  --color-gray-50:   #fafafa;   /* $grey---200 */
+  --color-gray-200:  #e5e5e5;   /* $grey---300 */
+  --color-gray-475:  #737373;   /* ≈ $grey---500 (#4d4d4d) — kept for visual parity ⚠ */
+  --color-gray-950:  #140d26;   /* $ink ($ink---300) */
+
+  /* Legacy Tailwind greys — not in @bold/web ⚠ */
+  --color-gray-75:   #f9f9f9;
+  --color-gray-100:  #f5f5f5;
+  --color-gray-250:  #d4d4d4;
+  --color-gray-300:  #d1d5db;
+  --color-gray-350:  #a3a3a3;
+  --color-gray-400:  #9ca3af;
+  --color-gray-500:  #6b7280;
+  --color-gray-900:  #171717;
+
+  /* @bold/web purple */
+  --color-purple-600: #5200d4;   /* $purple ($purple---300) */
+  --color-purple-500: #29006a;   /* $purple---500 hover */
+  --color-purple-ede: #ede9fe;   /* form hover / landing purple-light — close to $purple---100 (#eee6fb) ⚠ */
+  --color-purple-border: #7c3aed; /* funnel-only accent — not in @bold/web ⚠ */
+
+  /* @bold/web blue (limited palette) */
+  --color-blue-100:  #ebf0ff;    /* ≈ $blue---100 */
+  --color-blue-400:  #264dbf;    /* $blue---400 */
+
+  /* Funnel-only mint accents — not in @bold/web ⚠ */
+  --color-mint-100:  #e6f8f6;    /* ≈ $green---100 */
+  --color-mint-200:  #bfede8;
+  --color-mint-300:  #00b5a3;    /* ≈ $green ($green---300) */
+  --color-mint-400:  #00887a;
+
+  --color-yellow-amber: #fbbf24;  /* funnel-only — not in @bold/web ⚠ */
+  --color-yellow-100:   #fef3c7;  /* funnel-only tooltip bg — ≈ Figma yellow-secondary; @bold/web closest $yellow---100 (#fefaea) ⚠ */
+
+  /* Radii (match @bold/web $border-radius---xsmall|small|medium) */
+  --radius-sm: 8px;    /* $border-radius---xsmall */
+  --radius-md: 12px;   /* $border-radius---small / $button-border-radius */
+  --radius-xl: 16px;   /* $border-radius---medium / $border-radius */
+
+  /* Shadows (match @bold/web $box-shadow---xsmall|small) */
+  --shadow-xs: 0 1px 2px rgba(16,24,40,0.05);
+  --shadow-sm: 0 1px 3px rgba(16,24,40,0.1), 0 1px 2px rgba(16,24,40,0.06);
+
+  /* z-index — local; @bold/web uses $Header-z-index: 100 */
+  --z-nav: 20;
+  /* END MIRROR */
+
+  /* ══════════════════════════════════════════
+     ADDITIVE — needed by this prototype, absent from funnel.css.
+     Every value below traces to _variables.scss.
+     ══════════════════════════════════════════ */
+
+  /* Serif display face. The Figma reports `Source_Serif_Pro:SemiBold` on every
+     heading — NOT Source Serif 4, which is a redraw with a larger x-height and
+     different metrics. Source Serif Pro is deprecated on Google Fonts, so both
+     families are self-hosted in assets/font/ (see @font-face in wm-frame.css).
+     @bold/web calls the same slot $font---source-serif via <Text font="serif">. */
+  --font-display: 'Source Serif Pro', Georgia, serif;
+
+  /* Greys @bold/web has that funnel.css omitted */
+  --color-gray-600: #525252;   /* $secondary */
+  --color-gray-700: #4d4d4d;   /* $grey---500 */
+
+  /* Figma-only values measured off the board (§ 2324:5102, still current) */
+  --color-heading:    #171717;  /* Text/text-default-primary — heading ink */
+  --color-blue-600:   #2563eb;  /* q-meds heading accent (2283:19227). NOT --color-blue-400 */
+  --color-blue-300:   #3366ff;  /* q-motivation heading accent (2283:20371) = $blue---300 */
+  --color-gray-acac:  #acacac;  /* $grey---400 — input placeholder + checkbox stroke */
+  --color-hero-line:  #d8ddeb;  /* 1px stroke on the landing hero, painted OUTSIDE */
+  --color-ios-ink:    #262626;  /* Surface/surface-inverted-primary — iOS chrome text */
+  --color-landing-bg: #ebf0ff;  /* landing frame background + card gradient top */
+  --color-purple-100: #eee6fb;  /* $purple---100 — consent acknowledgement row 2313:23754 */
+  --color-teal-500:   #14b8a6;  /* Border/border-border-success — insurance card 2289:20932 */
+  --color-teal-900:   #115e59;  /* Text/text-success — plan name 2289:20934 */
+  --tabbar-fill:      rgba(255, 255, 255, 0.8);
+
+  /* Radii @bold/web has that funnel.css omitted */
+  --radius-lg:   24px;  /* between $border-radius---16 and ---48 */
+  --radius-full: 99px;  /* $border-radius---full */
+
+  /* Shadows — $box-shadow---medium | ---large */
+  --shadow-md: 0 2px 4px -2px rgba(16,24,40,0.06), 0 4px 8px -2px rgba(16,24,40,0.1);
+  --shadow-lg: 0 4px 6px -2px rgba(16,24,40,0.05), 0 12px 16px -4px rgba(16,24,40,0.1);
+
+  /* Added for § campaign enrollment (2393:11580) */
+  --color-heading-sub: #525252;  /* Text/text-default-secondary — question subheads */
+  --color-ad-navy:     #001d4b;  /* 2393:12937 frame fill + its Rectangle 406 mask ⚠ Figma-only */
+  --color-violet-200:  #ddd6fe;  /* 2393:12942 ad subhead ⚠ Figma-only */
+
+  /* Deeper brand shades used by the ad frame and mint/blue text */
+  --color-ink-navy:   #0b1a4a;  /* ad background — Figma-only, closest $blue---500 #1a3380 ⚠ */
+  --color-mint-500:   #005b52;  /* $green---500 */
+  --color-blue-500:   #1a3380;  /* $blue---500 */
+  --color-red-300:    #ff4f5c;  /* $red---300 */
+  --color-red-100:    #fee2e2;  /* $red---100 */
+
+  /* Motion — $duration, $ease, $ease-pop from _variables.scss */
+  --dur-fast:  150ms;  /* $duration */
+  --dur-mid:   260ms;
+  --dur-slow:  360ms;
+  --ease:      ease-in-out;                            /* $ease */
+  --ease-pop:  cubic-bezier(0.34, 1.56, 0.64, 1);      /* $ease-pop */
+  --ease-out:  cubic-bezier(0.32, 0.72, 0, 1);         /* iOS-style decelerate */
+
+  /* Spacing — $gutter / $Row-sizes subset */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;   /* $gutter */
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+
+  /* Layout — the mobile comp width and the harness status-bar band */
+  --wm-width:      393px;
+  --wm-slide-x:    32px;   /* transition travel — see wm-frame.css */
+}

@@ -82,6 +82,15 @@
       "category": "Prototypes"
     },
     {
+      "path": "PrevMed/motivation_reflection",
+      "href": "PrevMed/motivation_reflection/",
+      "name": "Motivation Reflection",
+      "desc": "Capture the patient's weight-loss motivation in their own words, then reflect it back at the scheduling decision point — 3 testable directions, page-by-page + chat flow, with a Care Coordinator pre-call view",
+      "icon": "🎯",
+      "author": "Tzu-Yi",
+      "category": "Prototypes"
+    },
+    {
       "path": "PrevMed/care_plan",
       "href": "PrevMed/care_plan/care-plan.html",
       "name": "Care Plan",
@@ -114,6 +123,15 @@
       "name": "MVP3 — Side Effect & Prescription",
       "desc": "Post-GLP-1-visit experience across 4 member stages — side-effect check-in with severity triage (self-care / care team in 48h / 911), prescription status, medication education & reminders. Left-side stage switcher.",
       "icon": "🩹",
+      "author": "Tzu-Yi",
+      "category": "Prototypes"
+    },
+    {
+      "path": "PrevMed/weight_management_app",
+      "href": "PrevMed/weight_management_app/mvp4-side-effect-triage.html",
+      "name": "MVP4 — Side-Effect Triage (4 approaches)",
+      "desc": "Four escalation architectures over one clinical spine, toggleable: (A) red flags ruled out first, the nurse-triage standard; (B) report symptoms first, we sort them; (C) one question at a time; (D) an agent conversation in a modal — tap to answer, follow-ups only when they change the outcome, agent-written summary at the end. Built on the clinician escalation table + Schmitt-Thompson telephone-triage rules. Urgent routes to same-day care rather than promising a callback Bold can't make. D's LLM rewords questions only; the rules own every clinical decision.",
+      "icon": "🚑",
       "author": "Tzu-Yi",
       "category": "Prototypes"
     },
@@ -161,6 +179,24 @@
       "icon": "✦",
       "author": "Izabela",
       "category": "Strategy"
+    },
+    {
+      "path": "PrevMed/wm_enrollment",
+      "href": "PrevMed/wm_enrollment/",
+      "name": "Weight Management Enrollment",
+      "desc": "17-screen Figma replica: one-page questionnaire, 21% weight-loss estimate, pixel-diff verified",
+      "icon": "📝",
+      "author": "Tzu-Yi",
+      "category": "Prototypes"
+    },
+    {
+      "path": "PrevMed/june_insurance_chat",
+      "href": "PrevMed/june_insurance_chat/",
+      "name": "June — Insurance Verification Chat",
+      "desc": "AI chat that confirms Medicare coverage after booking, via pVerify; editable flow, system prompt and RAG panel",
+      "icon": "🗂️",
+      "author": "Tzu-Yi",
+      "category": "Prototypes"
     }
   ]
 }

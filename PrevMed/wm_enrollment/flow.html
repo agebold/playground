@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Weight Management Enrollment — Bold</title>
+  <meta name="description" content="Faithful replica of the Bold weight-management enrollment flow (Figma 2393:11580, § campaign enrollment)." />
+
+  <!-- Fonts are self-hosted in assets/font/ and declared in wm-frame.css.
+       No <link> to fonts.googleapis.com: Source Serif Pro is deprecated there,
+       and a network swap would break the pixel diff. -->
+  <link rel="stylesheet" href="wm-tokens.css" />
+  <link rel="stylesheet" href="wm-frame.css" />
+  <link rel="stylesheet" href="wm-parts.css" />
+</head>
+<body>
+  <a class="fg-sr" href="#wm-stage">Skip to the main content</a>
+
+  <!-- The device chrome (Status Bar, Heading Navigation, Actions, Tab Bar) lives
+       INSIDE each screen, because that is where Figma draws it — there are five
+       distinct chrome combinations across the 19 frames. So the shell holds only
+       the stage, the sheet, and the live region. -->
+  <div class="wm-shell" id="wm-shell">
+    <main class="wm-stage" id="wm-stage" tabindex="-1"></main>
+
+    <!-- One sheet host, reused. Focus-trapped, Esc closes, focus restored.
+         Only ever opened from an affordance the board actually draws. -->
+    <div class="wm-sheet-host" id="wm-sheet" role="dialog" aria-modal="true"
+         aria-labelledby="wm-sheet-title" aria-hidden="true">
+      <button type="button" class="wm-sheet-scrim" data-action="sheet-close" aria-label="Close"></button>
+      <div class="wm-sheet" role="document">
+        <div class="wm-sheet-handle" aria-hidden="true"></div>
+        <h2 class="wm-sheet-title" id="wm-sheet-title"></h2>
+        <div class="wm-sheet-body"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rendered ONCE — a live region created per-screen is never announced. -->
+  <div id="wm-live" role="status" aria-live="polite" aria-atomic="true" class="fg-sr"></div>
+
+  <script src="wm-engine.js"></script>
+  <script src="wm-widgets.js"></script>
+  <!-- The two consent documents, kept out of wm-screens.js so the screen
+       registry stays readable. -->
+  <script src="wm-legal.js"></script>
+  <script src="wm-screens.js"></script>
+  <script>WM.start();</script>
+</body>
+</html>

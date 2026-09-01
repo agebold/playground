@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your Bold weight care welcome kit (Part D) — Bold Care</title>
+  <meta name="description" content="A short guide to your Bold weight care: how it works, what it costs, and how we keep you safe — so your first appointment feels easy." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!--
+    Welcome Kit (Part D) — Bold Care Weight Management (65+)
+    Blog-style resource article: rich text + images + FAQ (no custom body components).
+    The five structured blocks are standalone SVG infographics in assets/welcome-kit/.
+    Token values mirror @bold/web _variables.scss (purple #5200d4, etc.).
+    Senior-first: 18px body floor, >=44px targets, WCAG 2.2 AA. No needle imagery.
+    PLACEHOLDERS marked "PLACEHOLDER:" — swap before publish.
+  -->
+  <style>
+    :root {
+      --purple:#5200d4; --purple-dark:#3e009f; --purple-darkest:#29006a;
+      --purple-soft:#a980ea; --purple-tint:#eee6fb;
+      --ink:#140d26; --body:#4d4d4d; --muted:#667085; --border:#e5e5e5;
+      --bg-soft:#fafafa; --white:#fff;
+      --green-700:#005b52; --green-100:#e6f8f6;
+      --r-8:8px; --r-12:12px; --r-16:16px; --r-full:99px;
+      --shadow-sm:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.1);
+      --shadow-md:0 2px 4px -2px rgba(16,24,40,.06),0 4px 8px -2px rgba(16,24,40,.1);
+      --shadow-lg:0 4px 6px -2px rgba(16,24,40,.05),0 12px 16px -4px rgba(16,24,40,.1);
+      --font:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+      --header-h:66px;
+    }
+    *,*::before,*::after{box-sizing:border-box;}
+    html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
+    body{margin:0;font-family:var(--font);font-size:18px;line-height:1.6;color:var(--body);background:var(--white);-webkit-font-smoothing:antialiased;}
+    img{display:block;max-width:100%;height:auto;}
+    a{color:var(--purple);}
+    h1,h2,h3{color:var(--ink);letter-spacing:-0.25px;}
+    p{margin:0;}
+    a:focus-visible,button:focus-visible,summary:focus-visible,.Button:focus-visible{outline:3px solid var(--purple);outline-offset:2px;border-radius:var(--r-8);}
+
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;}
+    .skip-link{position:absolute;left:12px;top:-60px;background:var(--purple);color:#fff;padding:12px 18px;border-radius:var(--r-12);font-weight:700;text-decoration:none;z-index:100;transition:top .15s ease;}
+    .skip-link:focus{top:12px;}
+
+    /* Buttons (hand-implemented @bold/web Button) */
+    .Button{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:13px 22px;font-family:var(--font);font-size:18px;font-weight:700;line-height:1.2;border:none;border-radius:var(--r-12);cursor:pointer;text-decoration:none;white-space:normal;text-align:center;transition:background .15s ease,transform .05s ease;}
+    .Button---primary{background:var(--purple);color:#fff;}
+    .Button---primary:hover,.Button---primary:focus-visible{background:var(--purple-dark);}
+    .Button---full{width:100%;}
+    .Button:active{transform:scale(.99);}
+
+    /* Header */
+    .wk-header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.94);backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--border);}
+    .wk-header-inner{max-width:1120px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 20px;min-height:var(--header-h);}
+    .wk-logo{display:inline-flex;align-items:baseline;gap:1px;font-size:25px;font-weight:700;letter-spacing:-1px;color:var(--purple);text-decoration:none;}
+    .wk-logo span{color:var(--ink);}
+    .wk-header .Button{font-size:16px;padding:10px 16px;min-height:44px;}
+
+    /* Hero — WHITE, no color */
+    .wk-hero{background:var(--white);padding:40px 20px 8px;}
+    .wk-hero-inner{max-width:820px;margin:0 auto;}
+    .wk-eyebrow{font-size:15px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--purple);margin:0 0 14px;}
+    .wk-hero h1{font-size:clamp(30px,5.2vw,44px);line-height:1.12;font-weight:800;color:var(--ink);margin:0 0 16px;}
+    .wk-hero-lede{font-size:clamp(18px,2.3vw,21px);line-height:1.55;color:var(--body);max-width:660px;}
+    .wk-hero-photo{max-width:820px;margin:24px auto 0;padding:0 20px;}
+    .wk-hero-photo img{width:100%;border-radius:var(--r-16);box-shadow:var(--shadow-sm);}
+
+    /* Key takeaways */
+    .wk-keys-wrap{padding:28px 20px 0;}
+    .wk-keys{max-width:820px;margin:0 auto;background:var(--bg-soft);border:1px solid var(--border);border-radius:var(--r-16);padding:26px;}
+    .wk-keys h2{font-size:21px;margin:0 0 14px;}
+    .wk-keys ul{list-style:none;margin:0;padding:0;display:grid;gap:12px;}
+    .wk-keys li{display:flex;gap:12px;align-items:flex-start;font-size:17px;line-height:1.5;color:var(--ink);}
+    .wk-keys li svg{flex-shrink:0;width:24px;height:24px;color:var(--green-700);margin-top:2px;}
+    .wk-keys .Button{margin-top:20px;}
+
+    /* Layout: content + right TOC */
+    .wk-layout{max-width:1120px;margin:0 auto;padding:36px 20px 8px;}
+    @media (min-width:960px){
+      .wk-layout{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:56px;align-items:start;}
+    }
+    .wk-content{min-width:0;}
+
+    /* Desktop TOC (right rail) */
+    .wk-toc-d{display:none;}
+    @media (min-width:960px){
+      .wk-toc-d{display:block;position:sticky;top:calc(var(--header-h) + 20px);background:var(--bg-soft);border:1px solid var(--border);border-radius:var(--r-16);padding:20px 22px;}
+      .wk-toc-m{display:none;}
+    }
+    .wk-toc-d h2{font-size:14px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin:0 0 12px;}
+    .wk-toc-d ol{list-style:none;margin:0;padding:0;counter-reset:toc;display:grid;gap:2px;}
+    .wk-toc-d li{counter-increment:toc;}
+    .wk-toc-d a{display:flex;gap:10px;align-items:center;min-height:44px;padding:6px 10px;border-radius:var(--r-8);font-size:16px;font-weight:600;color:var(--ink);text-decoration:none;}
+    .wk-toc-d a::before{content:counter(toc);color:var(--purple);font-weight:700;min-width:16px;}
+    .wk-toc-d a:hover{background:var(--purple-tint);}
+    .wk-toc-d a[aria-current="true"]{background:var(--purple-tint);color:var(--purple-darkest);}
+
+    /* Mobile TOC (collapsible <details>) */
+    .wk-toc-m{margin:0 0 28px;border:1px solid var(--border);border-radius:var(--r-16);background:var(--bg-soft);overflow:hidden;}
+    .wk-toc-m > summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:52px;padding:14px 18px;font-size:17px;font-weight:700;color:var(--ink);}
+    .wk-toc-m > summary::-webkit-details-marker{display:none;}
+    .wk-toc-m > summary .chev{transition:transform .2s ease;color:var(--purple);}
+    .wk-toc-m[open] > summary .chev{transform:rotate(180deg);}
+    .wk-toc-m ol{list-style:none;margin:0;padding:0 8px 10px;counter-reset:tocm;display:grid;gap:2px;}
+    .wk-toc-m li{counter-increment:tocm;}
+    .wk-toc-m a{display:flex;gap:10px;align-items:center;min-height:46px;padding:6px 12px;border-radius:var(--r-8);font-size:17px;font-weight:600;color:var(--ink);text-decoration:none;}
+    .wk-toc-m a::before{content:counter(tocm);color:var(--purple);font-weight:700;min-width:16px;}
+
+    /* Sections */
+    .wk-section{scroll-margin-top:calc(var(--header-h) + 20px);padding:6px 0 34px;}
+    .wk-section + .wk-section{border-top:1px solid var(--border);padding-top:32px;}
+    .wk-section h2{font-size:clamp(24px,3.2vw,31px);line-height:1.15;margin:0 0 12px;}
+    .wk-section > p{font-size:18px;line-height:1.6;color:var(--body);margin-bottom:6px;}
+    .wk-section > p + p{margin-top:14px;}
+
+    /* Figures (infographics) */
+    .wk-fig{margin:18px 0 6px;}
+    .wk-fig img{width:100%;max-width:480px;margin:0 auto;}
+    .wk-fig--narrow img{max-width:400px;}
+    .wk-fig figcaption{margin-top:10px;font-size:15px;color:var(--muted);text-align:center;}
+
+    /* Video thumbnail */
+    .wk-video-frame{position:relative;display:block;aspect-ratio:16/9;width:100%;max-width:640px;margin:0 auto;border-radius:var(--r-16);overflow:hidden;box-shadow:var(--shadow-lg);background:var(--purple-darkest);}
+    .wk-video-frame img{width:100%;height:100%;object-fit:cover;opacity:.92;}
+    .wk-video-frame::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,13,38,0) 45%,rgba(20,13,38,.5) 100%);}
+    .wk-video-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:78px;height:78px;border-radius:50%;background:rgba(255,255,255,.95);color:var(--purple);display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-md);z-index:2;}
+    .wk-video-frame:hover .wk-video-play{background:#fff;}
+    .wk-video-badge{position:absolute;left:14px;bottom:14px;z-index:2;background:rgba(20,13,38,.72);color:#fff;font-size:15px;font-weight:600;padding:6px 12px;border-radius:var(--r-full);}
+
+    .wk-tagline{font-size:20px;font-weight:700;color:var(--purple-darkest);margin:14px 0 4px;}
+    .wk-srcline{font-size:15px;color:var(--muted);}
+    .wk-srcline a{color:var(--purple);}
+
+    /* FAQ */
+    .wk-faq h3{font-size:14px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:32px 0 10px;}
+    .wk-faq h3:first-of-type{margin-top:8px;}
+    .wk-faq h4{font-size:19px;color:var(--ink);margin:20px 0 6px;}
+    .wk-faq p{font-size:17px;line-height:1.55;color:var(--body);}
+    .wk-faq p a{color:var(--purple);}
+    .wk-checklist{list-style:none;margin:16px 0 4px;padding:0;display:grid;gap:12px;}
+    .wk-checklist li{display:flex;gap:12px;align-items:flex-start;font-size:17px;line-height:1.5;color:var(--ink);}
+    .wk-checklist li svg{flex-shrink:0;width:24px;height:24px;color:#667085;margin-top:1px;}
+
+    /* Inline highlighted CTA link + inline dashboard link (CMS-safe, not buttons) */
+    .wk-inline-cta{display:inline-block;font-size:18px;font-weight:700;color:var(--purple);text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:2px;}
+    .wk-inline-cta:hover{color:var(--purple-dark);}
+    .wk-dash{color:var(--purple);text-decoration:underline;text-underline-offset:2px;font-weight:600;}
+    /* Care Coordinator callout */
+    .wk-cc{margin:22px 0 4px;background:var(--purple-tint);border:1px solid #d8c9f4;border-radius:var(--r-16);padding:22px 24px;}
+    .wk-cc h3{font-size:20px;margin:0 0 8px;color:var(--purple-darkest);}
+    .wk-cc p{font-size:17px;line-height:1.55;color:var(--ink);margin:0;}
+
+    /* Section-header banners */
+    .wk-shead{margin:0 0 6px;}
+    .wk-banner{margin:0 0 14px;}
+    .wk-banner img{display:block;width:100%;border-radius:var(--r-16);}
+    /* Titled mode: heading overlaps the banner as a chip (toggled) */
+    body.wk-titled .wk-shead{position:relative;}
+    body.wk-titled .wk-banner{margin-bottom:0;}
+    body.wk-titled .wk-shead > h2{position:absolute;left:16px;bottom:14px;margin:0;background:rgba(255,255,255,.95);color:var(--ink);padding:8px 16px;border-radius:var(--r-12);box-shadow:var(--shadow-sm);font-size:clamp(18px,2.6vw,26px);line-height:1.15;max-width:calc(100% - 130px);}
+    /* Prototype-only banner-title toggle (remove before ship) */
+    .wk-proto{position:fixed;right:14px;bottom:14px;z-index:80;display:flex;flex-direction:column;gap:8px;align-items:flex-end;}
+    .wk-proto button{font:700 14px var(--font);background:var(--ink);color:#fff;border:none;border-radius:var(--r-full);padding:11px 18px;min-height:44px;cursor:pointer;box-shadow:var(--shadow-md);}
+    body.wk-no-banners .wk-banner{display:none;}
+    body.wk-no-banners .wk-shead > h2{position:static;margin:0 0 12px;background:none;box-shadow:none;padding:0;max-width:none;font-size:clamp(24px,3.2vw,31px);}
+
+    /* Closing CTA */
+    .wk-cta{background:var(--purple-tint);padding:44px 20px;margin-top:36px;}
+    .wk-cta-inner{max-width:680px;margin:0 auto;text-align:center;}
+    .wk-cta-inner h2{font-size:clamp(25px,4vw,34px);margin:0 0 12px;color:var(--purple-darkest);}
+    .wk-cta-inner p{font-size:18px;color:var(--ink);margin:0 auto 22px;max-width:520px;}
+    .wk-cta-phone{font-size:16px;color:var(--body);margin-top:14px;}
+    .wk-cta-phone a{font-weight:700;}
+
+    /* Sources */
+    .wk-sources{max-width:820px;margin:0 auto;padding:30px 20px;border-top:1px solid var(--border);}
+    .wk-sources h2{font-size:14px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin:0 0 10px;}
+    .wk-sources p{font-size:15px;color:var(--muted);line-height:1.5;}
+    .wk-sources a{color:var(--purple);}
+
+    /* More from Bold */
+    .wk-more{max-width:1120px;margin:0 auto;padding:6px 20px 46px;}
+    .wk-more h2{font-size:24px;margin:0 0 20px;}
+    .wk-more-grid{display:grid;gap:20px;}
+    @media (min-width:720px){.wk-more-grid{grid-template-columns:repeat(3,1fr);}}
+    .wk-more-card{display:block;text-decoration:none;color:var(--ink);border:1px solid var(--border);border-radius:var(--r-16);overflow:hidden;background:#fff;transition:box-shadow .15s ease,transform .1s ease;}
+    .wk-more-card:hover{box-shadow:var(--shadow-md);transform:translateY(-2px);}
+    .wk-more-card img{width:100%;aspect-ratio:3/2;object-fit:cover;}
+    .wk-more-body{padding:16px 18px 20px;}
+    .wk-more-card h3{font-size:18px;margin:0 0 6px;}
+    .wk-more-card p{font-size:16px;color:var(--muted);margin:0;line-height:1.45;}
+
+    /* Footer */
+    .wk-footer{background:var(--bg-soft);border-top:1px solid var(--border);padding:40px 20px;}
+    .wk-footer-inner{max-width:1120px;margin:0 auto;display:flex;flex-wrap:wrap;gap:32px 56px;justify-content:space-between;}
+    .wk-footer-blurb{max-width:320px;font-size:16px;color:var(--muted);margin-top:12px;line-height:1.5;}
+    .wk-footer-col h3{font-size:16px;margin:0 0 12px;}
+    .wk-footer-col a{display:block;font-size:16px;font-weight:600;color:var(--purple);text-decoration:none;margin-bottom:10px;}
+    .wk-footer-col a:hover{text-decoration:underline;}
+    .wk-footer-bottom{max-width:1120px;margin:28px auto 0;padding-top:20px;border-top:1px solid var(--border);display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space-between;}
+    .wk-footer-bottom a,.wk-footer-bottom span{font-size:15px;color:var(--muted);text-decoration:none;}
+
+    @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}*{transition:none !important;}}
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- PROTOTYPE ONLY — lets you compare banner options; remove before ship -->
+  <div class="wk-proto">
+    <button type="button" id="wk-toggle-hide">Banners: shown</button>
+    <button type="button" id="wk-toggle-banners">Banner titles: below</button>
+  </div>
+
+  <header class="wk-header">
+    <div class="wk-header-inner">
+      <a class="wk-logo" href="#" aria-label="Bold Care — home">Bold<span>Care</span></a>
+      <a class="Button Button---primary" href="#">Go to my dashboard</a>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- ════════ HERO (white) ════════ -->
+    <section class="wk-hero" aria-labelledby="hero-title">
+      <div class="wk-hero-inner">
+        <p class="wk-eyebrow">Your welcome kit</p>
+        <h1 id="hero-title">Welcome to Bold. Here's what to expect.</h1>
+        <p class="wk-hero-lede">How your weight-loss program works, what it costs, and how we keep you safe while you lose weight — so your appointment feels easy.</p>
+      </div>
+    </section>
+    <div class="wk-hero-photo">
+      <img src="../glp1_funnel/assets/lp/figma-hero.png" alt="An older woman smiling during a video visit with her Bold Care provider." />
+    </div>
+
+    <!-- ════════ KEY TAKEAWAYS ════════ -->
+    <div class="wk-keys-wrap">
+      <section class="wk-keys" aria-labelledby="keys-title">
+        <h2 id="keys-title">Key takeaways</h2>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg><span>A few simple steps — starting with a no-commitment Care Coordinator call.</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg><span>Your Care Coordinator stays by your side the whole way — answering questions, sorting out insurance, and keeping you and your provider connected.</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg><span>78% of Bold patients pay $0 out of pocket for appointments (see it on your <a class="wk-dash" href="#">dashboard</a>). Your GLP-1 is covered through your Medicare Part D plan — the same cost as if your own doctor prescribed it, and it's the real FDA-approved medication billed to your insurance (never compounded).</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg><span>A plan built for adults 65+ — lose fat, not muscle, and keep it off.</span></li>
+        </ul>
+        <a class="wk-inline-cta" href="#">Go to my dashboard →</a>
+      </section>
+    </div>
+
+    <!-- ════════ BODY: content + right TOC ════════ -->
+    <div class="wk-layout">
+      <div class="wk-content">
+
+        <!-- Mobile TOC -->
+        <details class="wk-toc-m">
+          <summary>In this article
+            <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+          </summary>
+          <ol>
+            <li><a href="#welcome">Welcome from Dr. Deep</a></li>
+            <li><a href="#how-it-works">How it works</a></li>
+            <li><a href="#science">Why it works</a></li>
+            <li><a href="#cost">What it costs</a></li>
+            <li><a href="#video-visit">How to join</a></li>
+            <li><a href="#why-bold">Why Bold is the right choice</a></li>
+            <li><a href="#faq">FAQ</a></li>
+          </ol>
+        </details>
+
+        <!-- §1 Welcome video -->
+        <section id="welcome" class="wk-section" aria-labelledby="h-welcome">
+          <div class="wk-shead"><figure class="wk-banner"><img src="assets/welcome-kit/banner-welcome.svg" alt="" /></figure>
+          <h2 id="h-welcome">A warm welcome from Dr. Deep</h2></div>
+          <p>A quick hello before you get started.</p>
+          <figure class="wk-fig">
+            <!-- PLACEHOLDER: replace href + poster with Dr. Deep's welcome video -->
+            <a class="wk-video-frame" href="#" aria-label="Play the welcome video from Dr. Deep, Bold's Chief Medical Officer (2 minutes)">
+              <img src="../glp1_funnel/assets/lp/figma-video.jpg" alt="Dr. Deep, Bold's Chief Medical Officer, welcoming new members on camera." />
+              <span class="wk-video-play" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg></span>
+              <span class="wk-video-badge" aria-hidden="true">▶ 2 min</span>
+            </a>
+            <figcaption>Dr. Deep, Bold's Chief Medical Officer</figcaption>
+          </figure>
+        </section>
+
+        <!-- §2 How it works -->
+        <section id="how-it-works" class="wk-section" aria-labelledby="h-how">
+          <div class="wk-shead"><figure class="wk-banner"><img src="assets/welcome-kit/banner-how.svg" alt="" /></figure>
+          <h2 id="h-how">How it works</h2></div>
+          <p>Your care follows five clear steps, and someone is with you the whole way.</p>
+          <figure class="wk-fig">
+            <img src="assets/welcome-kit/process.svg" alt="Five steps. 1. Care Coordinator call: schedule your provider visit and get answers — no commitment yet. 2. First appointment: your provider learns your goals, health, and GLP-1 interest, and how they'll help you lose fat, not muscle. 3. GLP-1 visit (if interested): your provider reviews your history and preps your GLP-1 coverage submission to get you covered. 4. Receive your Weight-loss Care Plan: personalized nutrition and strength in the Bold Care app, covered by insurance. 5. Lose weight, and keep it off: medication only when it's right, plus app support to manage side effects — always guided, not alone." />
+          </figure>
+          <div class="wk-cc">
+            <h3>Who is your Care Coordinator?</h3>
+            <p>Your personal guide and advocate. Every member gets a dedicated Care Coordinator who walks you through each step, helps you get the most from the program, clears up insurance questions, and keeps things moving with your provider between visits. You're never navigating this alone.</p>
+          </div>
+        </section>
+
+        <!-- Science (moved up — reassure it works and is built for 65+) -->
+        <section id="science" class="wk-section" aria-labelledby="h-sci">
+          <div class="wk-shead"><figure class="wk-banner"><img src="assets/welcome-kit/banner-science.svg" alt="" /></figure>
+          <h2 id="h-sci">Why this program works</h2></div>
+          <p>Losing weight the wrong way costs you muscle. Bold pairs your medication with strength training and protein — so you keep your muscle and lose the fat.</p>
+          <figure class="wk-fig">
+            <img src="assets/welcome-kit/science.svg" alt="Side by side. GLP-1 alone: about 40% of the weight lost can be muscle. GLP-1 plus lifestyle: 2 times more body fat lost, and muscle kept." />
+          </figure>
+          <p class="wk-tagline">Lose fat, not muscle.</p>
+          <p class="wk-srcline">STEP 1 body-composition analysis, 2021; and Lundgren et al., <em>New England Journal of Medicine</em>, 2021. <a href="https://www.nejm.org/doi/full/10.1056/NEJMoa2028198" target="_blank" rel="noopener">Read the study<span class="sr-only"> (opens in a new tab)</span></a></p>
+        </section>
+
+        <!-- Cost -->
+        <section id="cost" class="wk-section" aria-labelledby="h-cost">
+          <div class="wk-shead"><figure class="wk-banner"><img src="assets/welcome-kit/banner-cost.svg" alt="" /></figure>
+          <h2 id="h-cost">What it costs</h2></div>
+          <p>Two separate costs — your appointments and your medication. You'll always know both before you pay anything.</p>
+          <figure class="wk-fig">
+            <img src="assets/welcome-kit/cost-partd.svg" alt="Two costs, side by side. Appointments: 78% of Bold patients pay $0 out of pocket. Medication: the same cost as getting it from your own doctor — an FDA-approved GLP-1 billed to your Medicare Part D plan, never a compounded drug." />
+          </figure>
+          <!-- PLACEHOLDER: replace dashboard href with the real member dashboard URL -->
+          <p>78% of Bold patients pay $0 out of pocket for appointments — we bill Medicare directly, and you'll see your exact cost on your <a class="wk-dash" href="#">dashboard</a> before your visit. Your GLP-1 is covered through your Medicare Part D plan, so it costs the same as if your own doctor prescribed it — no Bold markup. It's the real, FDA-approved medication billed to your insurance, never a compounded copy. Your plan sets the price, so your pharmacy or Part D plan can tell you the exact amount.</p>
+        </section>
+
+        <!-- §4 Getting ready (Zoom) -->
+        <section id="video-visit" class="wk-section" aria-labelledby="h-video">
+          <div class="wk-shead"><figure class="wk-banner"><img src="assets/welcome-kit/banner-ready.svg" alt="" /></figure>
+          <h2 id="h-video">How to join the appointment</h2></div>
+          <p>Your visits are on Zoom, right from home — on a phone, tablet, or computer. It's simple, and you can try it out beforehand. Your Care Coordinator can walk you through the setup on your call, and if anything goes wrong, we'll call you.</p>
+          <!-- PLACEHOLDER: replace href with the step-by-step Zoom guide URL -->
+          <p><a class="wk-inline-cta" href="#" target="_blank" rel="noopener">See the step-by-step Zoom guide →<span class="sr-only"> (opens in a new tab)</span></a></p>
+          <h3>Have these ready</h3>
+          <ul class="wk-checklist">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/></svg><span>A few questions you'd like to ask.</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/></svg><span>A list of the medications you take now.</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/></svg><span>Your Medicare or insurance card.</span></li>
+          </ul>
+        </section>
+
+        <!-- §5 Why Bold -->
+        <section id="why-bold" class="wk-section" aria-labelledby="h-why">
+          <div class="wk-shead"><figure class="wk-banner"><img src="assets/welcome-kit/banner-compare.svg" alt="" /></figure>
+          <h2 id="h-why">Why Bold is the right choice</h2></div>
+          <p>Only Bold pairs an FDA-approved GLP-1 (covered through your Part D plan, at the same price as your own doctor) with a real nutrition-and-movement plan, side-effect tracking, and providers who stay in the loop — designed for adults 65+ to help you lose fat, not strength, and keep it off.</p>
+          <figure class="wk-fig wk-fig--narrow">
+            <img src="assets/welcome-kit/compare-partd.svg" alt="How Bold compares with primary care and other online services. GLP-1 cost — Bold: covered through your Part D plan; primary care: varies; other services: hundreds to thousands. Member fee — Bold: $0; primary care: $0; other services: a monthly fee. FDA-approved GLP-1s — Bold yes, primary care yes, other services no. Nutrition and movement plan — Bold yes, others no. Side-effect tracking and help — Bold yes, others no. Providers stay in the loop — Bold yes, others no. Designed for 65+ — Bold yes, others no. Prevents the yo-yo effect — Bold yes, others no. Lose fat, not strength — Bold yes, others no." />
+          </figure>
+          <p>We complement your primary care — we don't replace it. And we're not a "here are the meds, you're on your own" service; a real Bold team stays with you.</p>
+        </section>
+
+        <!-- FAQ -->
+        <section id="faq" class="wk-section wk-faq" aria-labelledby="h-faq">
+          <div class="wk-shead"><figure class="wk-banner"><img src="assets/welcome-kit/banner-faq.svg" alt="" /></figure>
+          <h2 id="h-faq">Frequently asked questions</h2></div>
+
+          <h3>Getting started</h3>
+
+          <h4>Is the first call a commitment?</h4>
+          <p>No. This first call is with me, your Care Coordinator — my job is scheduling, logistics, and helping with anything that comes up. There's no cost for the call and no pressure. We'll go over what Bold is, answer your questions, and only book your provider visit if you'd like to move forward.</p>
+
+          <h3>Eligibility &amp; coverage</h3>
+
+          <h4>Am I eligible? Will Medicare cover it?</h4>
+          <p>If you have a qualifying condition — like type 2 diabetes or moderate-to-severe sleep apnea — Medicare Part D can cover your GLP-1. You're in network with us, so your Care Coordinator confirms your coverage and you'll see your appointment cost on your <a class="wk-dash" href="#">dashboard</a>.</p>
+
+          <h4>Which of my health conditions could qualify me?</h4>
+          <p>Medicare Part D already covers GLP-1s for certain conditions — most commonly type 2 diabetes and moderate-to-severe sleep apnea. If you have one, your provider can prescribe through your Part D plan, and your Care Coordinator confirms the path that fits you.</p>
+
+          <h4>Which GLP-1 medications can I get?</h4>
+          <p>FDA-approved GLP-1s that your Part D plan covers for your condition — your provider chooses the one that fits you best. We prescribe only FDA-approved medications billed to your insurance — never a compounded, cash-pay version.</p>
+
+          <h4>Do I need a Medicare Part D drug plan?</h4>
+          <p>Yes — this path covers your GLP-1 through your Medicare Part D (prescription drug) plan. If you're not sure whether you have it, your Care Coordinator checks with you and talks through your options. No guessing.</p>
+
+          <h4>I've seen a $50/month price — can I get that?</h4>
+          <p>That's the Medicare "GLP-1 Bridge" — a separate program for a different group, and it isn't part of Medicare Part D, so it won't apply here. That's okay: your GLP-1 is still covered through your Part D plan. And what makes Bold worth it was never a coupon — it's everything around the medication (a real care plan, side-effect support, and providers who stay with you) that your regular doctor usually can't give you.</p>
+
+          <h4>Is there an application I have to fill out?</h4>
+          <p>No application for you to fill out. Your provider confirms your coverage during your visit and works with Medicare to get your prescription covered — your care team handles the details.</p>
+
+          <h4>I took a GLP-1 before, through insurance or paying cash. Does that disqualify me?</h4>
+          <p>No. Taking a GLP-1 in the past doesn't disqualify you. Your provider reviews your history at your first visit and picks the right next step.</p>
+
+          <h4>Do I need a certain BMI to qualify?</h4>
+          <p>Not for this path — Part D coverage is based on a qualifying condition, like type 2 diabetes or sleep apnea, not your BMI. Your provider confirms what you qualify for.</p>
+
+          <h4>Is my specific Medicare Advantage plan accepted?</h4>
+          <p>Bold is in-network with Medicare and many Medicare Advantage plans. Your Care Coordinator checks your specific plan, and because Bold is a medical practice, we bill Medicare directly so you get the full benefit of your coverage.</p>
+
+          <h3>Cost</h3>
+
+          <h4>What will it cost me out of pocket?</h4>
+          <p>Two parts. Your appointments: 78% of Bold patients pay $0 out of pocket — we bill Medicare directly, and you'll see your exact cost on your <a class="wk-dash" href="#">dashboard</a> before your visit. Your medication: your GLP-1 is covered through your Medicare Part D plan, so it costs the same as if your own doctor prescribed it — no Bold markup. Because your plan sets the price, your pharmacy or Part D plan can give you the exact amount. It's always the real, FDA-approved medication billed to your insurance — never a compounded copy.</p>
+
+          <h3>Your visits</h3>
+
+          <h4>Does the provider prescribe the medication? What happens next?</h4>
+          <p>Yes — if a GLP-1 is the right fit, your provider prescribes it. They also explore the parts of your routine that affect your weight — nutrition, movement, and your relationship with food — and build a personalized care plan. About a week later, your Care Coordinator checks in to see how you're doing.</p>
+
+          <h4>How do the GLP-1 options differ, and which is right for me?</h4>
+          <p>They differ in how you take them — pills or injections — and in side effects and pace. Your provider matches one to your body and goals, and explains it in plain language.</p>
+
+          <h4>How does the Zoom visit work? Do I need to download anything?</h4>
+          <p>Your visits are on Zoom — you'll get a link by email. Your Care Coordinator can do a quick test with you beforehand so you feel prepared (<a href="#video-visit">how to join the appointment</a> is above). If you join on a computer, keep your phone nearby — if any Zoom issue comes up, your provider can call you to connect.</p>
+
+          <h4>What if I'm not comfortable with technology?</h4>
+          <p>That's completely okay. Your Care Coordinator can walk you through the setup and do a test call before your appointment, and if anything goes wrong on the day, we'll call you — you'll never be left stuck.</p>
+
+          <h4>In person or virtual? Where's the office?</h4>
+          <p>Everything is virtual, right from home — no travel, no waiting rooms. Being virtual also lets your provider see your home environment, which helps them build a plan that fits your daily life.</p>
+
+          <h4>How often will I be seen?</h4>
+          <p>You'll have your first visit, then your Care Coordinator checks in about a week later. From there it's every few weeks early on, easing to about every three months once you're steady.</p>
+
+          <h4>Does Bold replace my primary doctor?</h4>
+          <p>No — Bold complements your primary care. With your okay, we send a note to your doctor after your visit, so we're coordinating with your doctor, not going around them.</p>
+
+        </section>
+
+      </div><!-- /.wk-content -->
+
+      <!-- Desktop TOC (right rail) -->
+      <nav class="wk-toc-d" aria-label="On this page">
+        <h2>On this page</h2>
+        <ol>
+          <li><a href="#welcome">Welcome from Dr. Deep</a></li>
+          <li><a href="#how-it-works">How it works</a></li>
+          <li><a href="#science">Why it works</a></li>
+          <li><a href="#cost">What it costs</a></li>
+          <li><a href="#video-visit">How to join</a></li>
+          <li><a href="#why-bold">Why Bold is the right choice</a></li>
+          <li><a href="#faq">FAQ</a></li>
+        </ol>
+      </nav>
+    </div>
+
+    <!-- ════════ CLOSING CTA ════════ -->
+    <section id="book" class="wk-cta" aria-labelledby="h-book">
+      <div class="wk-cta-inner">
+        <h2 id="h-book">Ready when you are</h2>
+        <p>Your cost, your plan, and your next step are waiting on your dashboard — and your Care Coordinator is a call away.</p>
+        <a class="wk-inline-cta" href="#">Go to my dashboard →</a>
+        <p class="wk-cta-phone">Questions first? Call or text us at <a href="tel:+14245775266">(424) 577-5266</a>.</p>
+      </div>
+    </section>
+
+    <!-- ════════ SOURCES ════════ -->
+    <div class="wk-sources">
+      <h2>Sources</h2>
+      <p>Lundgren JR, Janus C, Jensen SBK, et al. Healthy Weight Loss Maintenance with Exercise, Liraglutide, or Both Combined. <em>New England Journal of Medicine</em>. 2021;384(18):1719–1729. doi:10.1056/NEJMoa2028198.</p>
+      <p style="margin-top:8px;">Impact of Semaglutide on Body Composition in Adults With Overweight or Obesity: Exploratory Analysis of the STEP 1 Study. <em>Journal of the Endocrine Society</em>. 2021;5(Suppl 1):A16. <!-- confirm exact author list/page before publish --></p>
+      <p style="margin-top:10px;">Updated July 2026.</p>
+    </div>
+
+    <!-- ════════ MORE FROM BOLD ════════ -->
+    <section class="wk-more" aria-labelledby="h-more">
+      <h2 id="h-more">More from Bold</h2>
+      <div class="wk-more-grid">
+        <a class="wk-more-card" href="#">
+          <img src="../glp1_funnel/assets/lp/figma-insight-1.jpg" alt="" />
+          <div class="wk-more-body"><h3>Feeling your best on your medication</h3><p>A plain-language guide to managing common GLP-1 side effects.</p></div>
+        </a>
+        <a class="wk-more-card" href="#">
+          <img src="../glp1_funnel/assets/lp/pillar-nutrition.jpg" alt="" />
+          <div class="wk-more-body"><h3>The protein guide for adults 60+</h3><p>How much protein you need to protect strength while losing weight.</p></div>
+        </a>
+        <a class="wk-more-card" href="#">
+          <img src="../glp1_funnel/assets/lp/healthy-aging.jpg" alt="" />
+          <div class="wk-more-body"><h3>The cost of your Bold appointment</h3><p>How Medicare coverage works, and what your visits may cost.</p></div>
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="wk-footer">
+    <div class="wk-footer-inner">
+      <div>
+        <a class="wk-logo" href="#" aria-label="Bold Care — home">Bold<span>Care</span></a>
+        <p class="wk-footer-blurb">Doctor-supervised weight care built for adults 65+. Lose fat, keep your strength, and feel confident you're doing it the right way for your body.</p>
+      </div>
+      <nav class="wk-footer-col" aria-label="Product">
+        <h3>Product</h3>
+        <a href="#book">Go to my dashboard</a>
+        <a href="#cost">Cost &amp; coverage</a>
+        <a href="#how-it-works">How it works</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+      <nav class="wk-footer-col" aria-label="Company">
+        <h3>Company</h3>
+        <a href="#">About Bold</a>
+        <a href="#">Science</a>
+        <a href="#">Contact us</a>
+      </nav>
+      <nav class="wk-footer-col" aria-label="Get help">
+        <h3>Get help</h3>
+        <a href="tel:+14245775266">(424) 577-5266</a>
+        <a href="mailto:careteam@agebold.com">careteam@agebold.com</a>
+      </nav>
+    </div>
+    <div class="wk-footer-bottom">
+      <span>© 2026 Age Bold Inc.</span>
+      <span><a href="#">Terms</a> · <a href="#">Privacy Policy</a> · <a href="#">Disclaimers</a></span>
+    </div>
+  </footer>
+
+  <script>
+    // Progressive enhancement: highlight the active TOC link (desktop rail) on scroll.
+    (function () {
+      var links = Array.prototype.slice.call(document.querySelectorAll('.wk-toc-d a'));
+      if (!links.length || !('IntersectionObserver' in window)) return;
+      var map = {};
+      links.forEach(function (a) {
+        var sec = document.getElementById(a.getAttribute('href').slice(1));
+        if (sec) map[sec.id] = a;
+      });
+      var obs = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) {
+            links.forEach(function (a) { a.removeAttribute('aria-current'); });
+            if (map[e.target.id]) map[e.target.id].setAttribute('aria-current', 'true');
+          }
+        });
+      }, { rootMargin: '-25% 0px -65% 0px', threshold: 0 });
+      Object.keys(map).forEach(function (id) { obs.observe(document.getElementById(id)); });
+    })();
+
+    // PROTOTYPE ONLY — toggle banner title placement (below vs on banner)
+    (function () {
+      var t = document.getElementById('wk-toggle-banners');
+      if (!t) return;
+      t.addEventListener('click', function () {
+        var on = document.body.classList.toggle('wk-titled');
+        t.textContent = 'Banner titles: ' + (on ? 'on banner' : 'below');
+      });
+    })();
+
+    // PROTOTYPE ONLY — show/hide all banner images
+    (function () {
+      var t = document.getElementById('wk-toggle-hide');
+      if (!t) return;
+      t.addEventListener('click', function () {
+        var off = document.body.classList.toggle('wk-no-banners');
+        t.textContent = 'Banners: ' + (off ? 'hidden' : 'shown');
+      });
+    })();
+  </script>
+</body>
+</html>

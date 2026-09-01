@@ -1,0 +1,422 @@
+/* ══════════════════════════════════════════════
+   wm-frame.css — the frame shell, the device chrome, and the transitions.
+
+   Every measurement here is read off Figma `Weight-management Enrollment`
+   § campaign enrollment (2393:11580) and carries its node id. `.wm-*` is the SPA machinery;
+   `.fg-*` ("from Figma") is anything measured off the board.
+
+   LAYOUT MODEL
+   ────────────
+   The frames are not "flow column + pinned footer". They are a top-anchored
+   group in flow, then a bottom group. Two mechanisms, both taken from the
+   board rather than invented:
+
+   · Funnel screens  — Status Bar, Heading Navigation, content, then a bottom
+     group. `.fg-bottom { position: sticky; bottom: 0 }` reproduces all three
+     Figma cases at once: content shorter than the frame → the group sits at
+     the frame bottom; content taller (q-situations 876, q-diagnosed 1092 in
+     852 frames) → it floats over the scroll, which is what Figma's clip
+     shows; tall frames (bridge 1886, portal 3062) → it sits at the document
+     end. It also makes the fidelity screenshot free: a sticky element
+     resolves to its natural flow position once the scrollport is tall enough
+     to contain it, so setting the emulated viewport to the frame height lands
+     the bottom group exactly where Figma draws it. One layout, two correct
+     renderings.
+
+   · Landing screens (2283:19092 and siblings) — Figma positions these
+     ABSOLUTELY, and we copy that literally: Status Bar and hero in flow, the
+     rounded card at `top: 212.67px`, the bottom group at `bottom: 0`. The
+     card deliberately overlaps both the hero (by 24.6px) and the bottom
+     group; DOM order gives the correct paint order.
+
+   SUB-PIXEL VALUES ARE REAL — 181.292, 691.336, 212.67, 3061.7998. Rounding
+   accumulates into visible drift by the bottom of a 3062px frame.
+══════════════════════════════════════════════ */
+
+/* ── Fonts: self-hosted. Source Serif Pro is DEPRECATED on Google Fonts and
+      Source Serif 4 is a redraw with different metrics, so depending on the
+      CDN in a pipeline whose point is a reproducible pixel diff is a latent
+      failure. `display: block` so no screenshot ever catches a swap. ── */
+/* Static Inter instances (Inter 3.19 via @fontsource), NOT the variable font
+   Google now serves. Figma reports `Inter:Regular` / `:Medium` / `:Semi Bold`
+   — static named instances — and measuring against the reference render, the
+   statics land 0.45pp closer than the variable build. */
+@font-face {
+  font-family: 'Inter'; src: url('assets/font/Inter-Regular.woff2') format('woff2');
+  font-weight: 400; font-style: normal; font-display: block;
+}
+@font-face {
+  font-family: 'Inter'; src: url('assets/font/Inter-Medium.woff2') format('woff2');
+  font-weight: 500; font-style: normal; font-display: block;
+}
+@font-face {
+  font-family: 'Inter'; src: url('assets/font/Inter-SemiBold.woff2') format('woff2');
+  font-weight: 600; font-style: normal; font-display: block;
+}
+@font-face {
+  font-family: 'Source Serif Pro';
+  src: url('assets/font/SourceSerifPro-600.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: block;
+}
+
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  background: var(--color-gray-200);
+  font-family: var(--font-family);
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+[hidden] { display: none !important; }
+
+/* Scrollbars off — Figma has none, and an overlay bar would add a diff column
+   on every tall screen. */
+.wm-layer, .wm-shell, .fg-scroll-x { scrollbar-width: none; -ms-overflow-style: none; }
+.wm-layer::-webkit-scrollbar,
+.wm-shell::-webkit-scrollbar,
+.fg-scroll-x::-webkit-scrollbar { display: none; }
+
+.fg-sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+         overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+         border: 0; }
+
+/* ══════════════════════════════════════════════
+   SHELL + STAGE + LAYER
+══════════════════════════════════════════════ */
+.wm-shell {
+  position: relative;
+  width: 100%;
+  max-width: var(--wm-width);
+  height: 100vh;
+  height: 100dvh;              /* == the emulated viewport → the fidelity lever */
+  margin: 0 auto;
+  overflow: hidden;            /* clips the off-stage layer and the hero's outside stroke */
+  background: #fff;
+  isolation: isolate;
+}
+
+.wm-stage { position: absolute; inset: 0; }
+
+.wm-layer {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  background: #fff;
+  /* PERMANENT, not applied only during the animation. A transformed element is
+     the containing block for its position:fixed descendants; if this toggled,
+     anything fixed would silently re-anchor when the animation ended. Sticky
+     is unaffected — it anchors to the nearest scrollport, which is this layer,
+     so .fg-bottom keeps working. Do not remove. */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+.wm-layer.is-leaving { pointer-events: none; }
+
+/* Focus is moved to the heading programmatically to announce the screen. */
+.wm-layer [data-focus]:focus, .wm-layer [data-focus]:focus-visible { outline: none; }
+
+/* ══════════════════════════════════════════════
+   STATUS BAR — Figma "Status Bar - iPhone" · 2283:19093 · 393×56
+   `bg-white`, `overflow-clip`, `sticky top-0`.
+══════════════════════════════════════════════ */
+.fg-statusbar {
+  position: sticky; top: 0; z-index: 3;
+  flex: 0 0 56px; height: 56px;
+  background: #fff; overflow: hidden;
+}
+.fg-sb-time {                                    /* I2283:19093;4408:84 — 54×21 @ 31,18 */
+  position: absolute; left: 31px; top: 18px; width: 54px; height: 21px;
+  font: 500 16px/20px var(--font-family);
+  color: var(--color-ios-ink);
+  text-align: center;
+  padding-top: 1px;                              /* the <p> sits at top:1px inside */
+}
+.fg-sb-signal  { position: absolute; right: 91.34px; top: 23.38px; width: 18.996px; height: 11.919px; }
+.fg-sb-wifi    { position: absolute; right: 67.66px; top: 23px;    width: 17.065px; height: 12.253px; }
+.fg-sb-batt    { position: absolute; right: 35.45px; top: 23px;    width: 24.582px; height: 12.664px; }
+.fg-sb-batt-f  { position: absolute; right: 37.68px; top: 25.24px; width: 20.113px; height: 8.194px; }
+.fg-sb-batt-c  { position: absolute; right: 32.85px; top: 27.1px;  width: 1.484px;  height: 4.47px; }
+.fg-statusbar img { display: block; width: 100%; height: 100%; }
+
+/* ══════════════════════════════════════════════
+   HEADING NAVIGATION — Figma 2313:23353 · 393×76
+   `padding:16px`, `justify-between`, shadow-sm. 16+44+16 = 76.
+══════════════════════════════════════════════ */
+.fg-nav {
+  position: relative;
+  flex: 0 0 76px; height: 76px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px;
+  background: #fff;
+  box-shadow: var(--shadow-sm);
+}
+/* The purple edge. The COMPONENT declares border-b-3 #5200d4 full width, but
+   every instance on this board RENDERS 153×3 at the left with white to its
+   right — sampled identical on 9 screens. Reproduce the render. It reads as a
+   progress bar frozen at 39%; see FIDELITY.md. A real border-bottom:3px would
+   also make the nav 79px instead of 76. */
+.fg-nav::after {
+  content: ""; position: absolute; left: 0; bottom: 0;
+  width: 153px; height: 3px;
+  background: var(--color-purple-600);
+}
+/* portal-home (2292:22536) is the exception: its Heading Navigation renders with
+   NO purple segment at all — sampled white across the full width at y=129..131,
+   where all 13 funnel frames sample #5200d4 from x=0..152. Which fits: the portal
+   is the post-enrollment destination, not a step in the funnel. */
+.fg-nav--plain::after { display: none; }
+
+.fg-nav-btn {                                    /* I2313:23353;8616:25773 · 44×44 */
+  flex: none; width: 44px; height: 44px; padding: 10px;
+  display: flex; align-items: center; justify-content: center; gap: 4px;
+  background: #fff;
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-xs);
+  cursor: pointer; overflow: hidden;
+  transition: background-color var(--dur-fast) var(--ease),
+              transform var(--dur-fast) var(--ease);
+}
+.fg-nav-btn:hover { background: var(--color-gray-75); }
+.fg-nav-btn:active { transform: scale(.985); }
+.fg-nav-btn:focus-visible { outline: 2px solid var(--color-purple-600); outline-offset: 2px; }
+/* The right-hand 44×44 button is opacity:0 in Figma — a spacer. Drop it and the
+   centred logo shifts ~22px right. I2313:23353;5586:41268 */
+.fg-nav-btn--ghost { opacity: 0; pointer-events: none; }
+.fg-nav-center { flex: 1 0 0; min-width: 1px; display: flex; align-items: center; justify-content: center; }
+
+/* ══════════════════════════════════════════════
+   ICONS — every icon file is the Figma *Vector* layer exported at its own
+   natural size with `preserveAspectRatio="none"` (caret-left.svg is 8.129 ×
+   14.378, not 20 × 20). So an icon needs the box Figma draws it in PLUS the
+   node's own insets; stretching the vector to fill the box distorts it.
+   `.fg-ic` is that box and the percentages are read straight off the
+   `inset-[…]` on each Vector's parent.
+
+   The insets also have to come from the node and not from the glyph name: the
+   same `Question` art is drawn at 9.375% inset inside 20×20 here and the
+   `lead-icon` layer name is used for two different glyphs on this board.
+══════════════════════════════════════════════ */
+.fg-ic { position: relative; display: block; flex: none; }
+.fg-ic > img { position: absolute; display: block; }
+
+/* CaretLeft · 361:133, inside a 20×20 lead-icon (I2313:23353;8616:25773;2682:3717) */
+.fg-ic--caret-left { width: 20px; height: 20px; }
+.fg-ic--caret-left > img { left: 26.55%; top: 14.06%; width: 40.64%; height: 71.89%; }
+/* X · 361:169, inside a 16×16 lead-icon (I2313:23353;5586:41268;2682:3491) */
+.fg-ic--x { width: 16px; height: 16px; }
+.fg-ic--x > img { left: 17.18%; top: 17.17%; width: 65.64%; height: 65.65%; }
+/* Question · 366:10360 — committed as the FLATTENED 20×20 export (2313:23346),
+   where the 16.25px glyph is already inset inside the box, so no insets here.
+   The other instance (2313:23486) exports the bare 16.25px Vector plus an EMPTY
+   32×32 `<g id="Vector"/>` that paints nothing; both draw the same picture, and
+   one file beats two for the same glyph. */
+.fg-ic--question { width: 20px; height: 20px; }
+.fg-ic--question > img { inset: 0; width: 100%; height: 100%; }
+
+/* CaretDown · inside the 20×20 select affordance 2313:23514 — the Group
+   2313:23515 is inset 32.8% / 14.05%, i.e. 14.38 × 8.13, not a full-box glyph. */
+.fg-ic--caret-down { width: 20px; height: 20px; }
+.fg-ic--caret-down > img { left: 14.05%; top: 32.8%; width: 71.9%; height: 40.65%; }
+
+/* ══════════════════════════════════════════════
+   LOGO — Figma "Logo" · 120×36 in the nav, 88×26 on the landing hero.
+   Two SVGs; the insets are percentages so one rule serves both sizes.
+══════════════════════════════════════════════ */
+/* display:block is load-bearing: this is a <span>, and inside the absolutely
+   positioned .fg-landing-logo it is NOT blockified by a flex parent, so an
+   inline box would ignore width/height and the Lines mark would not paint. */
+.fg-logo { display: block; position: relative; flex: none; }
+.fg-logo--nav     { width: 120px; height: 36px; }
+.fg-logo--landing { width: 88px;  height: 26px; }
+/* 2393:14626 · a THIRD size, in the one-page Floating Nav. Absolutely placed
+   because Figma gives it mr:-53 so it overlaps the button row. */
+.fg-logo--float   { width: 107px; height: 32px; }
+.fg-logo-lines { position: absolute; inset: 0 69.76% 0 0; }
+.fg-logo-text  { position: absolute; inset: 20.94% 0 20.53% 36.57%; }
+.fg-logo img { display: block; width: 100%; height: 100%; }
+
+/* ══════════════════════════════════════════════
+   CONTENT SLACK — grows to fill the frame, never shrinks below its content,
+   so a 1092px list overflows and scrolls exactly as Figma clips it.
+══════════════════════════════════════════════ */
+.fg-content { flex: 1 0 auto; min-height: 0; min-width: 0; }
+
+/* ══════════════════════════════════════════════
+   BOTTOM GROUP — intrinsic height, because it varies:
+   213 (Actions+Tab) · 257 (blurb+Actions+Tab) · 349 (legal+Actions+Tab)
+   261 (two-button Actions+Tab) · 133 (Tab only) · 0 (portal-home)
+══════════════════════════════════════════════ */
+.fg-bottom { position: sticky; bottom: 0; z-index: 2; flex: 0 0 auto; }
+
+/* Figma "Actions" · 2283:20207 · flex-col gap-16, p-16 → 16+48+16 = 80.
+   `width: 100%` is load-bearing: the landing bottom group is `items-start`, so
+   without it this shrink-wraps to its label. */
+.fg-actions {
+  display: flex; flex-direction: column; gap: 16px;
+  width: 100%; padding: 16px;
+  background: #fff;
+}
+/* The FUNNEL screens' Actions is not white — 2313:23402 and its siblings carry
+   `bg-gradient-to-b from-rgba(245,245,245,0) to-#f5f5f5`, which over the frame's
+   own #fafafa fades 250 → 245 down the 80px band. Measured in the reference
+   render: row 639 is #f9f9f9 and row 717 is #f5f5f5. The landing screens' Actions
+   (2283:20207) really is flat white, hence the modifier rather than a change to
+   the base. */
+.fg-actions--grad {
+  background: linear-gradient(to bottom, rgba(245, 245, 245, 0), var(--color-gray-100));
+}
+/* q-discuss (2313:23209) stacks TWO buttons and is 128 tall, not 144 — Figma
+   drops the bottom padding: 16 + 48 + 16 + 48 = 128, with the second button
+   flush to the Tab Bar. */
+.fg-actions--two { padding-bottom: 0; }
+
+/* Figma "Button" · 2283:20209 · px-16 py-12 → 12+24+12 = 48 */
+.fg-btn {
+  display: flex; align-items: center; justify-content: center; gap: 4px;
+  width: 100%; padding: 12px 16px;
+  background: var(--color-purple-600);
+  border: 0; border-radius: var(--radius-md);
+  overflow: hidden; cursor: pointer;
+  font: 600 16px/24px var(--font-family);
+  color: #fff; text-align: center;
+  transition: background-color var(--dur-fast) var(--ease),
+              transform var(--dur-fast) var(--ease);
+}
+.fg-btn > span { display: flex; align-items: center; justify-content: center; padding: 0 4px; }
+.fg-btn:hover:not(:disabled) { background: var(--color-purple-500); }
+.fg-btn:active:not(:disabled) { transform: scale(.985); }
+.fg-btn:focus-visible { outline: 2px solid var(--color-purple-600); outline-offset: 2px; }
+/* Figma draws the CTA grey/disabled on `phone` (2313:23693) — no purple pixels
+   in that reference render at all. */
+.fg-btn:disabled {
+  background: var(--color-gray-200);
+  color: var(--color-gray-350);
+  cursor: not-allowed;
+}
+/* Secondary text button — Figma q-discuss 2313:23212 */
+.fg-btn--text {
+  background: transparent; color: var(--color-gray-950); font-weight: 600;
+}
+.fg-btn--text:hover:not(:disabled) { background: var(--color-gray-100); }
+
+/* ══════════════════════════════════════════════
+   TAB BAR (Safari chrome) — Figma "Tab Bar" · 2283:20210 · 393×133
+   pt-10 + 40 tab row + 49 tabs + 34 home indicator = 133.
+══════════════════════════════════════════════ */
+.fg-tabbar {
+  width: 100%; height: 133px; padding-top: 10px;
+  display: flex; flex-direction: column; align-items: center;
+  background: var(--tabbar-fill);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  overflow: hidden;
+}
+.fg-tab-row { display: flex; align-items: flex-start; height: 40px; width: 100%; padding: 0 26px; }
+.fg-tab-pill {
+  position: relative; flex: 1 0 0; min-width: 1px; height: 100%;
+  background: #fff; border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, .1);
+  overflow: hidden;
+}
+.fg-tab-url {
+  position: absolute; left: calc(50% - .09px); top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex; align-items: center; gap: 6px;
+  font: 500 17px/22px var(--font-family);
+  letter-spacing: -.408px; color: var(--color-ios-ink); white-space: nowrap;
+}
+.fg-tab-lock   { display: block; width: 7.828px; height: 11.432px; }
+.fg-tab-reload { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); width: 15px; height: 18px; }
+.fg-tab-fmt    { position: absolute; left: 12px;  top: 50%; transform: translateY(-50%); width: 19px; height: 12px; }
+.fg-tab-items  { position: relative; height: 49px; width: 100%; overflow: hidden; }
+.fg-tab-items img { position: absolute; top: 0; width: 75px; height: 49px; transform: translateX(-50%); display: block; }
+.fg-tab-items img:nth-child(1) { left: calc(10% - .2px); }
+.fg-tab-items img:nth-child(2) { left: calc(30% - .6px); }
+.fg-tab-items img:nth-child(3) { left: 50%; }
+.fg-tab-items img:nth-child(4) { left: calc(70% - .4px); }
+.fg-tab-items img:nth-child(5) { left: calc(90% - .8px); }
+.fg-home { position: relative; height: 34px; width: 375px; }
+.fg-home::after {
+  content: ""; position: absolute; bottom: 8px; left: calc(50% + .5px);
+  transform: translateX(-50%);
+  width: 134px; height: 5px; border-radius: 100px;
+  background: var(--color-ios-ink);
+}
+
+/* ══════════════════════════════════════════════
+   TRANSITIONS — 32px slide + crossfade, driven from wm-engine.slide().
+   `.wm-freeze` is the fidelity-runner kill switch: `wm-no-motion` alone does
+   not cover the loader's width transition.
+══════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  .fg-nav-btn, .fg-btn { transition: none !important; }
+  .fg-nav-btn:active, .fg-btn:active { transform: none; }
+}
+body.wm-no-motion .fg-nav-btn,
+body.wm-no-motion .fg-btn { transition: none !important; }
+body.wm-freeze *, body.wm-freeze *::before, body.wm-freeze *::after {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* ══════════════════════════════════════════════
+   BOTTOM SHEET — the only non-layout-changing way to make a Figma-drawn link
+   with no destination frame actually do something. Opened ONLY from
+   affordances the board draws ("Why are we asking this?", "Tooltip link",
+   "Learn more", "Edit information", the two Bridge cost Info icons).
+
+   Anatomy ported from PrevMed/glp1_funnel/what-to-expect-modal.html and
+   RETOKENIZED — that file declares a conflicting --color-purple-500 (#6333E8
+   vs our #29006a) and uses --fs-… / --fw-… / --space-… tokens absent here.
+   @bold/web equivalent: Modal / ModalBox.
+══════════════════════════════════════════════ */
+.wm-sheet-host { position: absolute; inset: 0; z-index: 70; display: none; }
+.wm-sheet-host.is-open { display: block; }
+.wm-sheet-scrim {
+  position: absolute; inset: 0; width: 100%;
+  background: rgba(20, 13, 38, .5); border: 0; cursor: pointer;
+}
+.wm-sheet-host.is-open .wm-sheet-scrim { animation: wm-scrim-in 200ms var(--ease) both; }
+.wm-sheet {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  background: #fff;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  padding: 8px 16px 24px;
+  max-height: 94%; overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+}
+.wm-sheet-host.is-open .wm-sheet { animation: wm-sheet-up 250ms var(--ease-out) both; }
+@keyframes wm-sheet-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@keyframes wm-scrim-in { from { opacity: 0; } to { opacity: 1; } }
+.wm-sheet:focus { outline: none; }
+.wm-sheet-handle {
+  width: 40px; height: 5px; border-radius: 3px;
+  background: var(--color-gray-300); margin: 8px auto 16px;
+}
+.wm-sheet-title {
+  font-family: var(--font-display); font-weight: 600;
+  font-size: 22px; line-height: 1.2; letter-spacing: -0.5px;
+  color: var(--color-heading); margin-bottom: 12px;
+}
+.wm-sheet-body { display: flex; flex-direction: column; gap: 12px; }
+.wm-sheet-body p, .wm-sheet-body li {
+  font: 400 16px/24px var(--font-family); color: var(--color-gray-700);
+}
+.wm-sheet-body ul { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; }
+.wm-sheet-body .fg-btn { margin-top: 16px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .wm-sheet-host.is-open .wm-sheet,
+  .wm-sheet-host.is-open .wm-sheet-scrim { animation: none !important; }
+}

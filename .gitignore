@@ -1,3 +1,6 @@
 .DS_Store
 .env
 .env.*
+
+# Raw member check-in exports — verbatim health free-text, public repo
+PrevMed/glp1_funnel/data/

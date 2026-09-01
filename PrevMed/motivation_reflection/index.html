@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Motivation Reflection — Bold weight-management funnel</title>
+<meta name="description" content="Prototype: capture the patient's motivation in their own words, then reflect it back at the scheduling decision point. Three testable directions." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<!-- Design system: tokens + cf-* components, hand-implemented from @bold/web -->
+<link rel="stylesheet" href="../glp1_funnel/funnel.css" />
+<link rel="stylesheet" href="../glp1_funnel/steps.css" />
+<link rel="stylesheet" href="motivation.css" />
+</head>
+<body data-variant="A" data-surface="patient">
+
+<div class="mv-app">
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     PROTOTYPE CHROME — not part of the product
+═══════════════════════════════════════════════════════════════════════ -->
+<aside class="mv-sidebar">
+
+  <div class="mv-sidebar-head">
+    <p class="mv-eyebrow" id="mv-eyebrow">Prototype</p>
+    <h1 class="mv-sidebar-title">Motivation reflection</h1>
+    <p class="mv-sidebar-sub">Three directions, each testing a different reason an eligible
+      patient doesn't book. iPhone 16 · 393 × 852.</p>
+  </div>
+
+  <div class="mv-group">
+    <p class="mv-eyebrow" id="mv-seg-label">Direction</p>
+    <div class="mv-seg" role="group" aria-labelledby="mv-seg-label">
+      <button type="button" id="mv-seg-A" aria-pressed="true">
+        <span class="mv-seg-name">A · Verbatim echo</span>
+        <span class="mv-seg-sub">Bet: the goal was never stated</span>
+      </button>
+      <button type="button" id="mv-seg-B" aria-pressed="false">
+        <span class="mv-seg-name">B · Call agenda</span>
+        <span class="mv-seg-sub">Bet: they don't know what the call is for</span>
+      </button>
+      <button type="button" id="mv-seg-C" aria-pressed="false">
+        <span class="mv-seg-name">C · Goal + worry</span>
+        <span class="mv-seg-sub">Bet: an unanswered worry is the blocker</span>
+      </button>
+    </div>
+    <p class="mv-caption" id="mv-caption" aria-live="polite"></p>
+  </div>
+
+  <div class="mv-group">
+    <p class="mv-eyebrow" id="mv-jump-label">Jump to a screen</p>
+    <div class="mv-jump" id="mv-jump" role="group" aria-labelledby="mv-jump-label"></div>
+  </div>
+
+  <div class="mv-sidebar-actions">
+    <button type="button" class="mv-ghost-btn" id="mv-debug-toggle" aria-expanded="false" aria-controls="mv-debug">
+      Tracking &amp; source data
+    </button>
+    <button type="button" class="mv-ghost-btn" id="mv-restart">Restart the flow</button>
+  </div>
+
+</aside>
+
+<main class="mv-stage">
+
+<!-- ── iPhone 16 ───────────────────────────────────────────────────────── -->
+<div class="mv-phone">
+  <div class="mv-phone-buttons" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+  <div class="mv-island" aria-hidden="true"></div>
+
+  <div class="mv-frame" id="mv-viewport">
+
+    <div class="mv-statusbar" aria-hidden="true">
+      <span>9:41</span>
+      <span class="mv-statusbar-icons">
+        <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 10.5l1.9-2.2a2.6 2.6 0 00-3.8 0L8 10.5z" fill="currentColor"/><path d="M3.4 5.6a6.8 6.8 0 019.2 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M1 2.9a10.3 10.3 0 0114 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        <svg width="26" height="13" viewBox="0 0 26 13" fill="none"><rect x="0.6" y="0.6" width="22" height="11.8" rx="3.2" stroke="currentColor" stroke-opacity="0.4" stroke-width="1.1"/><rect x="2.2" y="2.2" width="18.8" height="8.6" rx="2" fill="currentColor"/><path d="M24.2 4.4v4.2a2.2 2.2 0 000-4.2z" fill="currentColor" fill-opacity="0.5"/></svg>
+      </span>
+    </div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     1 · COVERAGE  (page-by-page)
+═══════════════════════════════════════════════════════════════════════ -->
+<section class="mv-screen" data-screen="coverage" aria-label="Confirm your coverage">
+  <nav class="cf-nav" aria-label="Bold">
+    <span class="cf-nav-btn is-hidden" aria-hidden="true"></span>
+    <span class="cf-logo" role="img" aria-label="Bold">
+      <span class="logo-lines"><img src="../glp1_funnel/assets/lp/logo-lines.svg" alt="" /></span>
+      <span class="logo-text"><img src="../glp1_funnel/assets/lp/logo-text.svg" alt="" /></span>
+    </span>
+    <span class="cf-nav-btn is-hidden" aria-hidden="true"></span>
+  </nav>
+
+  <main class="st-content">
+    <div class="st-intro">
+      <p class="st-eyebrow">Step 1 of 5</p>
+      <h1 class="cf-heading">Let's confirm your coverage</h1>
+      <p class="cf-body">Appointments with a Bold provider are covered by Medicare. We'll check your plan before anything else.</p>
+    </div>
+
+    <div class="cf-field">
+      <label class="cf-field-label" for="cov-name">Your full name</label>
+      <input class="cf-input" id="cov-name" type="text" autocomplete="name" value="Carol Whitfield" />
+    </div>
+
+    <div class="cf-field">
+      <label class="cf-field-label" for="cov-dob">Date of birth</label>
+      <input class="cf-input" id="cov-dob" type="text" inputmode="numeric" autocomplete="bday" placeholder="MM / DD / YYYY" value="04 / 18 / 1954" />
+      <p class="cf-field-note">Why we ask: Medicare matches your record on your name and date of birth.</p>
+    </div>
+
+    <div class="cf-field">
+      <label class="cf-field-label" for="cov-plan">Your insurance plan</label>
+      <input class="cf-input" id="cov-plan" type="text" value="UnitedHealthcare" />
+      <p class="cf-field-note">In-network with Medicare plans and eligible Aetna, Anthem, Blue Cross Blue Shield, UnitedHealthcare, and more.</p>
+    </div>
+
+    <p class="cf-hipaa-strip">
+      <span class="cf-hipaa-icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 3l7 3v6c0 4.2-2.9 7.9-7 9-4.1-1.1-7-4.8-7-9V6l7-3z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      Your information is private and protected. It's encrypted, never sold, and shared only with your care team.
+    </p>
+  </main>
+
+  <footer class="st-footer">
+    <div class="st-actions">
+      <button type="button" class="Button Button---primary Button---purple Button---full" data-go="checking">Check my coverage</button>
+    </div>
+  </footer>
+  <p class="mv-support">Need help? Call us at <a href="tel:18005550123">1-800-555-0123</a>, 8am–8pm ET.</p>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     2 · CHECKING  (loader)
+═══════════════════════════════════════════════════════════════════════ -->
+<section class="mv-screen" data-screen="checking" aria-label="Checking your coverage">
+  <nav class="cf-nav" aria-label="Bold">
+    <span class="cf-nav-btn is-hidden" aria-hidden="true"></span>
+    <span class="cf-logo" role="img" aria-label="Bold">
+      <span class="logo-lines"><img src="../glp1_funnel/assets/lp/logo-lines.svg" alt="" /></span>
+      <span class="logo-text"><img src="../glp1_funnel/assets/lp/logo-text.svg" alt="" /></span>
+    </span>
+    <span class="cf-nav-btn is-hidden" aria-hidden="true"></span>
+  </nav>
+
+  <main class="st-content" aria-live="polite">
+    <div class="st-intro">
+      <h1 class="cf-heading">Checking your Medicare coverage</h1>
+      <p class="cf-body">This usually takes a few seconds. You don't need to do anything.</p>
+    </div>
+    <div class="st-check-list">
+      <div class="st-check">
+        <span class="st-check-ic" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" fill="#264dbf"/><path d="M7 12.5l3.2 3.2L17 9" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <span class="st-check-text">Plan found</span>
+      </div>
+      <div class="st-check">
+        <span class="st-check-ic" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" fill="#264dbf"/><path d="M7 12.5l3.2 3.2L17 9" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <span class="st-check-text">Provider in network</span>
+      </div>
+      <div class="st-check">
+        <span class="st-check-ic" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" fill="#e5e5e5"/></svg></span>
+        <span class="st-check-text">Working out your cost…</span>
+      </div>
+    </div>
+  </main>
+  <p class="mv-support">Need help? Call us at <a href="tel:18005550123">1-800-555-0123</a>, 8am–8pm ET.</p>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     3 · COVERED
+═══════════════════════════════════════════════════════════════════════ -->
+<section class="mv-screen st-fade-in" data-screen="covered" aria-label="Your appointment is covered">
+  <nav class="cf-nav" aria-label="Bold">
+    <a class="cf-nav-btn" href="#" data-go="coverage" aria-label="Go back">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <span class="cf-logo" role="img" aria-label="Bold">
+      <span class="logo-lines"><img src="../glp1_funnel/assets/lp/logo-lines.svg" alt="" /></span>
+      <span class="logo-text"><img src="../glp1_funnel/assets/lp/logo-text.svg" alt="" /></span>
+    </span>
+    <span class="cf-nav-btn is-hidden" aria-hidden="true"></span>
+  </nav>
+
+  <main class="st-content">
+    <div class="st-intro">
+      <p class="st-eyebrow">Step 2 of 5</p>
+      <h1 class="cf-heading">Your appointment is covered</h1>
+      <p class="cf-body">Your UnitedHealthcare plan covers virtual appointments with a Bold provider. Your estimated cost is <strong>$0 out of pocket</strong>.</p>
+      <p class="cf-caption">78% of Bold patients pay $0 out of pocket. Your Care Coordinator confirms your final cost before your visit — no surprises.</p>
+    </div>
+  </main>
+
+  <footer class="st-footer">
+    <div class="st-actions">
+      <button type="button" class="Button Button---primary Button---purple Button---full" data-go="focus">Continue</button>
+    </div>
+  </footer>
+  <p class="mv-support">Need help? Call us at <a href="tel:18005550123">1-800-555-0123</a>, 8am–8pm ET.</p>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     4 · FOCUS AREA  (the existing area router, kept where Figma has it)
+═══════════════════════════════════════════════════════════════════════ -->
+<section class="mv-screen" data-screen="focus" aria-label="Which area do you want to focus on?">
+  <nav class="cf-nav" aria-label="Bold">
+    <a class="cf-nav-btn" href="#" data-go="covered" aria-label="Go back">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <span class="cf-logo" role="img" aria-label="Bold">
+      <span class="logo-lines"><img src="../glp1_funnel/assets/lp/logo-lines.svg" alt="" /></span>
+      <span class="logo-text"><img src="../glp1_funnel/assets/lp/logo-text.svg" alt="" /></span>
+    </span>
+    <span class="cf-nav-btn is-hidden" aria-hidden="true"></span>
+  </nav>
+
+  <main class="st-content">
+    <div class="st-intro">
+      <p class="st-eyebrow">Step 3 of 5</p>
+      <h1 class="cf-heading">Which area do you want to focus on?</h1>
+      <p class="cf-body">Pick one so your provider can focus on what matters most. You can change this later.</p>
+    </div>
+
+    <fieldset class="mv-chips mv-chips--stack mv-focus-list">
+      <legend>Which area do you want to focus on?</legend>
+      <label class="mv-chip">
+        <input type="radio" name="focus-area" value="weight" checked />
+        <span class="mv-chip-emoji" aria-hidden="true">🌱</span>
+        <span class="mv-chip-rank" aria-hidden="true"></span>
+        <svg class="mv-chip-tick" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M3.5 9.5L7 13L14.5 5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="mv-chip-label">Weight management</span>
+      </label>
+      <label class="mv-chip">
+        <input type="radio" name="focus-area" value="energy" />
+        <span class="mv-chip-emoji" aria-hidden="true">🔋</span>
+        <span class="mv-chip-rank" aria-hidden="true"></span>
+        <svg class="mv-chip-tick" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M3.5 9.5L7 13L14.5 5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="mv-chip-label">Energy and fatigue</span>
+      </label>
+      <label class="mv-chip">
+        <input type="radio" name="focus-area" value="pain" />
+        <span class="mv-chip-emoji" aria-hidden="true">💊</span>
+        <span class="mv-chip-rank" aria-hidden="true"></span>
+        <svg class="mv-chip-tick" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M3.5 9.5L7 13L14.5 5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="mv-chip-label">Pain management</span>
+      </label>
+      <label class="mv-chip">
+        <input type="radio" name="focus-area" value="aging" />
+        <span class="mv-chip-emoji" aria-hidden="true">🙂</span>
+        <span class="mv-chip-rank" aria-hidden="true"></span>
+        <svg class="mv-chip-tick" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M3.5 9.5L7 13L14.5 5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="mv-chip-label">General healthy aging</span>
+      </label>
+    </fieldset>
+
+    <p class="mv-note">This screen is the existing area router (Figma <code>315:4916</code>) — it picks a
+      programme, not a motivation. The motivation question is the first thing the chat asks.</p>
+  </main>
+
+  <footer class="st-footer">
+    <div class="st-actions">
+      <button type="button" class="Button Button---primary Button---purple Button---full" data-go="chat">Continue</button>
+    </div>
+  </footer>
+  <p class="mv-support">Need help? Call us at <a href="tel:18005550123">1-800-555-0123</a>, 8am–8pm ET.</p>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     5 · CHAT  (the whole middle of the funnel)
+═══════════════════════════════════════════════════════════════════════ -->
+<section class="mv-screen" data-screen="chat" aria-label="Chat with Bold AI">
+  <div class="mv-chat">
+    <!-- Header + progress are one sticky block. Two separately-stuck
+         elements leave a seam that scrolling content bleeds through. -->
+    <div class="mv-chat-top">
+      <div class="mv-chat-header">
+        <span class="mv-orb" aria-hidden="true"><span class="mv-orb-eyes"><i></i><i></i></span></span>
+        <span class="mv-chat-name">June</span>
+        <span class="mv-ai-badge">AI</span>
+      </div>
+      <div class="mv-chat-progress" role="progressbar" aria-label="How far through the questions you are" aria-valuemin="0" aria-valuemax="100">
+        <div class="mv-chat-progress-fill" id="mv-chat-progress-fill"></div>
+      </div>
+    </div>
+
+    <p class="cf-hipaa-strip">
+      <span class="cf-hipaa-icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 3l7 3v6c0 4.2-2.9 7.9-7 9-4.1-1.1-7-4.8-7-9V6l7-3z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      Bold is HIPAA compliant. Your health information is safe and encrypted, never sold, and shared only with your care team.
+    </p>
+
+    <div class="mv-thread" id="mv-thread" role="log" aria-live="polite" aria-relevant="additions text"></div>
+  </div>
+  <p class="mv-support">Prefer to talk to a person? Call <a href="tel:18005550123">1-800-555-0123</a>, 8am–8pm ET.</p>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     6 · MATCHING  (loader)
+═══════════════════════════════════════════════════════════════════════ -->
+<section class="mv-screen" data-screen="matching" aria-label="Matching you with a provider">
+  <nav class="cf-nav" aria-label="Bold">
+    <span class="cf-nav-btn is-hidden" aria-hidden="true"></span>
+    <span class="cf-logo" role="img" aria-label="Bold">
+      <span class="logo-lines"><img src="../glp1_funnel/assets/lp/logo-lines.svg" alt="" /></span>
+      <span class="logo-text"><img src="../glp1_funnel/assets/lp/logo-text.svg" alt="" /></span>
+    </span>
+    <span class="cf-nav-btn is-hidden" aria-hidden="true"></span>
+  </nav>
+  <main class="st-content" aria-live="polite">
+    <div class="st-intro">
+      <h1 class="cf-heading">Matching you with the right Bold Care provider</h1>
+      <p class="cf-body">Every Bold provider is board-certified in healthy aging. This takes a moment.</p>
+    </div>
+  </main>
+  <p class="mv-support">Need help? Call us at <a href="tel:18005550123">1-800-555-0123</a>, 8am–8pm ET.</p>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     7 · SCHEDULE  ★ the reflection lands here
+═══════════════════════════════════════════════════════════════════════ -->
+<section class="mv-screen" data-screen="schedule" id="screen-schedule" aria-label="Schedule your call">
+  <nav class="cf-nav" aria-label="Bold">
+    <a class="cf-nav-btn" href="#" data-go="chat" aria-label="Go back">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <span class="cf-logo" role="img" aria-label="Bold">
+      <span class="logo-lines"><img src="../glp1_funnel/assets/lp/logo-lines.svg" alt="" /></span>
+      <span class="logo-text"><img src="../glp1_funnel/assets/lp/logo-text.svg" alt="" /></span>
+    </span>
+    <span class="cf-nav-btn is-hidden" aria-hidden="true"></span>
+  </nav>
+
+  <main class="st-content">
+    <div class="st-intro">
+      <p class="st-eyebrow">Step 4 of 5</p>
+      <h1 class="cf-heading">Schedule a 15-min quick call</h1>
+    </div>
+
+    <div class="cf-coordinator-card">
+      <div class="cf-coordinator-body">
+        <div class="cf-coordinator-row">
+          <img class="cf-avatar" src="../glp1_funnel/assets/lp/figma-coord-woman.jpg" alt="Kathleen K., Bold Care Coordinator" width="44" height="44" />
+          <div>
+            <p class="cf-coordinator-name">Bold Care Coordinator call</p>
+            <p class="cf-coordinator-desc">15 minutes · no cost · by phone or video, your choice</p>
+          </div>
+        </div>
+        <p class="cf-coordinator-desc">Kathleen confirms your coverage and books your first visit with a licensed provider. She handles billing directly, so there are no surprises.</p>
+      </div>
+    </div>
+
+    <!-- ★ THE REFLECTION. Above the day tabs on purpose: it must be read
+         before the commitment, not after it. -->
+    <div id="mv-schedule-reflect"></div>
+
+    <p class="cf-caption">All times shown in Pacific Time (PT) — your local time.</p>
+
+    <div class="mv-days" id="mv-days" role="group" aria-label="Choose a day"></div>
+
+    <div class="cf-time-slots-all">
+      <div class="cf-time-section">
+        <h2 class="cf-time-section-label">Morning</h2>
+        <div class="cf-time-grid" role="group" aria-label="Morning times">
+          <button class="cf-time-slot" type="button" aria-pressed="false" data-slot="Tuesday, Jan 12 · 7:00am PT"><span class="cf-time-slot-hour">7:00am</span><span class="cf-time-slot-tz">PT</span></button>
+          <button class="cf-time-slot" type="button" aria-pressed="false" data-slot="Tuesday, Jan 12 · 9:00am PT"><span class="cf-time-slot-hour">9:00am</span><span class="cf-time-slot-tz">PT</span></button>
+          <button class="cf-time-slot" type="button" aria-pressed="false" data-slot="Tuesday, Jan 12 · 10:00am PT"><span class="cf-time-slot-hour">10:00am</span><span class="cf-time-slot-tz">PT</span></button>
+          <button class="cf-time-slot" type="button" aria-pressed="false" data-slot="Tuesday, Jan 12 · 10:45am PT"><span class="cf-time-slot-hour">10:45am</span><span class="cf-time-slot-tz">PT</span></button>
+        </div>
+      </div>
+      <div class="cf-time-section">
+        <h2 class="cf-time-section-label">Afternoon</h2>
+        <div class="cf-time-grid" role="group" aria-label="Afternoon times">
+          <button class="cf-time-slot" type="button" aria-pressed="false" data-slot="Tuesday, Jan 12 · 12:00pm PT"><span class="cf-time-slot-hour">12:00pm</span><span class="cf-time-slot-tz">PT</span></button>
+          <button class="cf-time-slot" type="button" aria-pressed="false" data-slot="Tuesday, Jan 12 · 12:45pm PT"><span class="cf-time-slot-hour">12:45pm</span><span class="cf-time-slot-tz">PT</span></button>
+          <button class="cf-time-slot" type="button" aria-pressed="false" data-slot="Tuesday, Jan 12 · 1:30pm PT"><span class="cf-time-slot-hour">1:30pm</span><span class="cf-time-slot-tz">PT</span></button>
+          <button class="cf-time-slot" type="button" aria-pressed="false" data-slot="Tuesday, Jan 12 · 2:15pm PT"><span class="cf-time-slot-hour">2:15pm</span><span class="cf-time-slot-tz">PT</span></button>
+          <button class="cf-time-slot" type="button" aria-pressed="false" data-slot="Tuesday, Jan 12 · 3:00pm PT"><span class="cf-time-slot-hour">3:00pm</span><span class="cf-time-slot-tz">PT</span></button>
+          <button class="cf-time-slot" type="button" aria-pressed="false" data-slot="Tuesday, Jan 12 · 5:00pm PT"><span class="cf-time-slot-hour">5:00pm</span><span class="cf-time-slot-tz">PT</span></button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="st-footer">
+    <div class="st-actions">
+      <button type="button" class="Button Button---primary Button---purple Button---full" id="mv-schedule-cta" disabled>Pick a time to continue</button>
+    </div>
+  </footer>
+  <p class="mv-support">Need help? Call us at <a href="tel:18005550123">1-800-555-0123</a>, 8am–8pm ET.</p>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     8 · PRIVACY
+═══════════════════════════════════════════════════════════════════════ -->
+<section class="mv-screen" data-screen="privacy" aria-label="Your privacy">
+  <nav class="cf-nav" aria-label="Bold">
+    <a class="cf-nav-btn" href="#" data-go="schedule" aria-label="Go back">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <span class="cf-logo" role="img" aria-label="Bold">
+      <span class="logo-lines"><img src="../glp1_funnel/assets/lp/logo-lines.svg" alt="" /></span>
+      <span class="logo-text"><img src="../glp1_funnel/assets/lp/logo-text.svg" alt="" /></span>
+    </span>
+    <span class="cf-nav-btn is-hidden" aria-hidden="true"></span>
+  </nav>
+  <main class="st-content">
+    <div class="st-intro">
+      <p class="st-eyebrow">Step 5 of 5</p>
+      <h1 class="cf-heading">Your privacy matters</h1>
+      <p class="cf-body">Your health information is private and protected by law. It's encrypted, never sold, and shared only with your Bold care team.</p>
+      <p class="cf-body">You can ask us to delete it at any time by calling your Care Coordinator.</p>
+    </div>
+  </main>
+  <footer class="st-footer">
+    <div class="st-actions">
+      <button type="button" class="Button Button---primary Button---purple Button---full" data-go="consent">I understand — continue</button>
+    </div>
+  </footer>
+  <p class="mv-support">Need help? Call us at <a href="tel:18005550123">1-800-555-0123</a>, 8am–8pm ET.</p>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     9 · CONSENT FOR CARE
+═══════════════════════════════════════════════════════════════════════ -->
+<section class="mv-screen" data-screen="consent" aria-label="Consent for care">
+  <nav class="cf-nav" aria-label="Bold">
+    <a class="cf-nav-btn" href="#" data-go="privacy" aria-label="Go back">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <span class="cf-logo" role="img" aria-label="Bold">
+      <span class="logo-lines"><img src="../glp1_funnel/assets/lp/logo-lines.svg" alt="" /></span>
+      <span class="logo-text"><img src="../glp1_funnel/assets/lp/logo-text.svg" alt="" /></span>
+    </span>
+    <span class="cf-nav-btn is-hidden" aria-hidden="true"></span>
+  </nav>
+  <main class="st-content">
+    <div class="st-intro">
+      <h1 class="cf-heading">Consent for care</h1>
+      <p class="cf-body">You're agreeing to have a virtual appointment with a licensed Bold provider, and to let them review the answers you gave.</p>
+      <p class="cf-body">You can stop care at any time. Nothing is prescribed without a conversation first.</p>
+    </div>
+  </main>
+  <footer class="st-footer">
+    <div class="st-actions">
+      <button type="button" class="Button Button---primary Button---purple Button---full" data-go="phone">I agree — continue</button>
+    </div>
+  </footer>
+  <p class="mv-support">Need help? Call us at <a href="tel:18005550123">1-800-555-0123</a>, 8am–8pm ET.</p>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     10 · PHONE
+═══════════════════════════════════════════════════════════════════════ -->
+<section class="mv-screen" data-screen="phone" aria-label="Your phone number">
+  <nav class="cf-nav" aria-label="Bold">
+    <a class="cf-nav-btn" href="#" data-go="consent" aria-label="Go back">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <span class="cf-logo" role="img" aria-label="Bold">
+      <span class="logo-lines"><img src="../glp1_funnel/assets/lp/logo-lines.svg" alt="" /></span>
+      <span class="logo-text"><img src="../glp1_funnel/assets/lp/logo-text.svg" alt="" /></span>
+    </span>
+    <span class="cf-nav-btn is-hidden" aria-hidden="true"></span>
+  </nav>
+  <main class="st-content">
+    <div class="st-intro">
+      <h1 class="cf-heading">What number should Kathleen call?</h1>
+    </div>
+    <div class="cf-field">
+      <label class="cf-field-label" for="ph-num">Your phone number</label>
+      <input class="cf-input" id="ph-num" type="tel" inputmode="tel" autocomplete="tel" placeholder="(555) 012-3456" />
+      <p class="cf-field-note">Type it however you like — hyphens, spaces and brackets are all fine.</p>
+    </div>
+  </main>
+  <footer class="st-footer">
+    <div class="st-actions">
+      <button type="button" class="Button Button---primary Button---purple Button---full" data-go="allset">Confirm my call</button>
+    </div>
+  </footer>
+  <p class="mv-support">Need help? Call us at <a href="tel:18005550123">1-800-555-0123</a>, 8am–8pm ET.</p>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     11 · YOU'RE ALL SET  (motivation carried downstream)
+═══════════════════════════════════════════════════════════════════════ -->
+<section class="mv-screen st-fade-in" data-screen="allset" aria-label="You're all set">
+  <nav class="cf-nav" aria-label="Bold">
+    <span class="cf-nav-btn is-hidden" aria-hidden="true"></span>
+    <span class="cf-logo" role="img" aria-label="Bold">
+      <span class="logo-lines"><img src="../glp1_funnel/assets/lp/logo-lines.svg" alt="" /></span>
+      <span class="logo-text"><img src="../glp1_funnel/assets/lp/logo-text.svg" alt="" /></span>
+    </span>
+    <span class="cf-nav-btn is-hidden" aria-hidden="true"></span>
+  </nav>
+
+  <main class="st-content">
+    <div class="cf-greeting">
+      <span class="cf-greeting-icon" aria-hidden="true">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" fill="#00b5a3"/><path d="M7 12.5l3.2 3.2L17 9" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      <h1 class="cf-greeting-title">You're all set, Carol</h1>
+      <p class="cf-greeting-sub">We've texted you a confirmation and a calendar invite.</p>
+    </div>
+
+    <div class="cf-appointment-outer">
+      <div class="cf-appointment-inner">
+        <p class="cf-appointment-call-title">Your call with Kathleen</p>
+        <p class="cf-body" id="mv-allset-slot">Tuesday, Jan 12 · 10:00am PT</p>
+        <p class="cf-caption">15 minutes · by phone · no cost</p>
+      </div>
+    </div>
+
+    <!-- The motivation carried downstream -->
+    <div id="mv-allset-reflect"></div>
+
+    <div class="cf-confirmation-section">
+      <h2 class="cf-section-title">Before your call</h2>
+      <p class="cf-body">Have your medication list handy — even the over-the-counter ones. That's the only thing you need.</p>
+    </div>
+
+    <p class="mv-note">Next in the plan: this same motivation carries into the confirmation and
+      reminder sends, and into pre-visit onboarding. Both ship in a second pass.
+      The Care Coordinator view is built — open <strong>CC view</strong> above.</p>
+  </main>
+
+  <footer class="st-footer">
+    <div class="st-actions">
+      <button type="button" class="Button Button---primary Button---purple Button---full" data-go="cc">See the Care Coordinator's view</button>
+    </div>
+  </footer>
+  <p class="mv-support">Need to change your time? Call <a href="tel:18005550123">1-800-555-0123</a>, 8am–8pm ET.</p>
+</section>
+
+
+  </div><!-- /.mv-frame (the screen) -->
+
+  <div class="mv-homebar" aria-hidden="true"></div>
+</div><!-- /.mv-phone -->
+
+<!-- ── Internal surface: the Care Coordinator view is a desktop tool, not a
+        patient screen, so it is deliberately not shown inside the phone. ── -->
+<div class="mv-desktop">
+  <p class="mv-surface-label">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="2.5" y="4" width="19" height="13" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M8 20h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    Bold internal · Care Coordinator desktop
+  </p>
+<section class="mv-screen" data-screen="cc" aria-label="Care Coordinator pre-call view">
+  <div class="mv-cc">
+    <p class="mv-cc-banner">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3l7 3v6c0 4.2-2.9 7.9-7 9-4.1-1.1-7-4.8-7-9V6l7-3z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+      Internal — Care Coordinator pre-call view. Not patient-facing.
+    </p>
+
+    <div class="mv-cc-card">
+      <h2>Carol Whitfield, 71 · Phoenix, AZ</h2>
+      <dl class="mv-cc-dl">
+        <dt>Call</dt>          <dd id="mv-cc-slot">—</dd>
+        <dt>Coverage</dt>      <dd id="mv-cc-bucket">—</dd>
+        <dt>GLP-1 history</dt> <dd id="mv-cc-glp1">—</dd>
+        <dt>Variant</dt>       <dd id="mv-cc-variant">—</dd>
+      </dl>
+    </div>
+
+    <div class="mv-cc-grid">
+      <div class="mv-cc-card">
+        <h2>What she said she wants</h2>
+        <div id="mv-cc-motivation"></div>
+        <p class="mv-note">In her words, from the chat. Don't paraphrase it back at her —
+          use it.</p>
+      </div>
+
+      <div class="mv-cc-card" id="mv-cc-worry-block" hidden>
+        <h2>What she's unsure about</h2>
+        <p class="mv-reflect-quote" id="mv-cc-worry"></p>
+        <p class="mv-reflect-body" id="mv-cc-worry-answer"></p>
+      </div>
+    </div>
+
+    <div class="mv-cc-card">
+      <h2>Suggested opener</h2>
+      <p class="mv-cc-opener" id="mv-cc-opener"></p>
+      <p class="mv-note">Step 4 (CC call → physician visit scheduled) is our worst step. Opening on
+        her stated goal instead of a script is the highest-leverage use of this data.</p>
+    </div>
+
+    <div class="st-actions">
+      <button type="button" class="mv-ghost-btn" data-go="allset">Back to the patient view</button>
+    </div>
+  </div>
+</section>
+</div><!-- /.mv-desktop -->
+
+</main><!-- /.mv-stage -->
+</div><!-- /.mv-app -->
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     INSTRUMENTATION PANEL  (prototype only — nothing is sent anywhere)
+═══════════════════════════════════════════════════════════════════════ -->
+<aside class="mv-debug" id="mv-debug" hidden aria-label="Tracking and source data">
+  <div class="mv-debug-head">
+    <h2>Tracking &amp; source data</h2>
+    <button type="button" class="mv-ghost-btn" id="mv-debug-close">Close</button>
+  </div>
+  <div class="mv-debug-body">
+
+    <div>
+      <h3>Live payload</h3>
+      <pre id="mv-debug-payload">{}</pre>
+      <p class="mv-note">New event property <strong>and</strong> user property:
+        <code>weightLossMotivation</code>. Nothing is sent — this is a prototype.</p>
+    </div>
+
+    <div>
+      <h3>Events fired this run</h3>
+      <ul class="mv-debug-log" id="mv-debug-log"></ul>
+    </div>
+
+    <div>
+      <h3>What to watch</h3>
+      <table>
+        <tbody>
+          <tr><th>Primary funnel</th><td>Eligible → CC Call Scheduled, broken down by <code>weightLossMotivation</code> and by <code>glp1VerdictBucket</code></td></tr>
+          <tr><th>Guardrail</th><td>Signup → Eligible must not degrade. We are adding a step to a funnel step we are already losing.</td></tr>
+          <tr><th>Secondary</th><td>CC Call Scheduled → Physician Visit Scheduled — does CC visibility into motivation move the pitch?</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div>
+      <h3>Every option, and the data behind it</h3>
+      <table id="mv-debug-table">
+        <thead>
+          <tr><th>Option</th><th>Tag</th><th>Share</th><th>Verbatims</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <p class="mv-note">n = 690 text answers, 2026-06-28 → 2026-07-28 (1,137 submissions, 39.3% blank).
+        Multi-label, so shares sum to more than 100%. These are <strong>prevalence</strong> — how often
+        a topic was raised. Not intensity, not the person's main reason, not persuasiveness.
+        Full mapping in <code>motivation-options.md</code>.</p>
+    </div>
+
+  </div>
+</aside>
+
+<script src="motivation-data.js"></script>
+<script src="motivation.js"></script>
+</body>
+</html>

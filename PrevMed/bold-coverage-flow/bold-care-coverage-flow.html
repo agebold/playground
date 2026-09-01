@@ -1,0 +1,584 @@
+<title>Bold Care Coverage Flow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* shell chrome — light */
+    --shell-bg: #f5f2fb;
+    --shell-surface: #ffffff;
+    --shell-border: #e3ddf0;
+    --shell-text: #140d26;
+    --shell-text-muted: #6b6578;
+    --shell-accent: #5200d4;
+    --shell-accent-hover: #29006a;
+    --shell-accent-tint: #eee6fb;
+    --shell-shadow: 0 12px 32px -8px rgba(20, 13, 38, 0.18), 0 2px 8px rgba(20, 13, 38, 0.08);
+
+    /* bold brand tokens (used inside the replicated screens — fixed, not theme-adaptive) */
+    --bcf-purple-500: #29006a;
+    --bcf-purple-300: #5200d4;
+    --bcf-purple-100: #eee6fb;
+    --bcf-purple-50: #f6f4fc;
+    --bcf-yellow-300: #ffcc1a;
+    --bcf-green-500: #005b52;
+    --bcf-green-100: #e6f8f6;
+    --bcf-ink-300: #140d26;
+    --bcf-ink-200: #8a8693;
+    --bcf-grey-500: #4d4d4d;
+    --bcf-grey-300: #e5e5e5;
+    --bcf-grey-200: #fafafa;
+    --bcf-white: #ffffff;
+    --bcf-radius-full: 99px;
+    --bcf-radius-16: 16px;
+    --bcf-shadow-sm: 0 1px 2px rgba(16,24,40,.06), 0 1px 3px rgba(16,24,40,.1);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --shell-bg: #150f22;
+      --shell-surface: #1e1830;
+      --shell-border: #342b4a;
+      --shell-text: #f3f0fa;
+      --shell-text-muted: #b3abc9;
+      --shell-accent: #b491ec;
+      --shell-accent-hover: #d5c2f5;
+      --shell-accent-tint: #2a2140;
+      --shell-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.55), 0 2px 8px rgba(0, 0, 0, 0.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --shell-bg: #150f22;
+    --shell-surface: #1e1830;
+    --shell-border: #342b4a;
+    --shell-text: #f3f0fa;
+    --shell-text-muted: #b3abc9;
+    --shell-accent: #b491ec;
+    --shell-accent-hover: #d5c2f5;
+    --shell-accent-tint: #2a2140;
+    --shell-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.55), 0 2px 8px rgba(0, 0, 0, 0.35);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { overflow-x: hidden; }
+  body {
+    margin: 0;
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--shell-bg);
+    color: var(--shell-text);
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--shell-accent); }
+
+  .Shell {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 48px 24px 72px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .Shell-header {
+    max-width: 620px;
+    text-align: center;
+    margin-bottom: 32px;
+  }
+  .Shell-eyebrow {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--shell-accent);
+    margin: 0 0 10px;
+  }
+  .Shell-title {
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    line-height: 1.15;
+    margin: 0 0 12px;
+    text-wrap: balance;
+  }
+  .Shell-desc {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--shell-text-muted);
+    margin: 0;
+  }
+
+  /* step tabs */
+  .Shell-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    max-width: 100%;
+    background: var(--shell-surface);
+    border: 1px solid var(--shell-border);
+    border-radius: 20px;
+    padding: 8px;
+    margin-bottom: 36px;
+    box-shadow: var(--shell-shadow);
+  }
+  .Shell-tab {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    color: var(--shell-text-muted);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 10px 16px;
+    border-radius: 99px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 150ms ease-in-out, color 150ms ease-in-out;
+  }
+  .Shell-tab:hover { color: var(--shell-text); }
+  .Shell-tab:focus-visible { outline: 3px solid var(--shell-accent); outline-offset: 2px; }
+  .Shell-tab[aria-selected="true"] {
+    background: var(--shell-accent);
+    color: #ffffff;
+  }
+
+  /* stage + phone frame */
+  .Shell-stage {
+    position: relative;
+    width: 390px;
+    max-width: 100%;
+  }
+  .Screen-frame {
+    background: var(--bcf-white);
+    border-radius: 28px;
+    border: 1px solid var(--shell-border);
+    box-shadow: var(--shell-shadow);
+    overflow: hidden;
+  }
+  .Screen-panel { display: none; }
+  .Screen-panel.is-active {
+    display: flex;
+    flex-direction: column;
+    animation: Bcf-fade-in 220ms ease-out;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .Screen-panel.is-active { animation: none; }
+  }
+  @keyframes Bcf-fade-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .Shell-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    width: 100%;
+    margin-top: 24px;
+  }
+  .Shell-navbtn {
+    appearance: none;
+    border: 1px solid var(--shell-border);
+    background: var(--shell-surface);
+    color: var(--shell-text);
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 12px 20px;
+    border-radius: 99px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 150ms ease-in-out, opacity 150ms ease-in-out;
+  }
+  .Shell-navbtn:hover { background: var(--shell-accent-tint); }
+  .Shell-navbtn:focus-visible { outline: 3px solid var(--shell-accent); outline-offset: 2px; }
+  .Shell-navbtn:disabled { opacity: 0.35; cursor: default; pointer-events: none; }
+  .Shell-navbtn--primary {
+    background: var(--shell-accent);
+    color: #ffffff;
+    border-color: transparent;
+  }
+  .Shell-navbtn--primary:hover { background: var(--shell-accent-hover); }
+
+  .Shell-stepcount {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--shell-text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .Shell-footnote {
+    max-width: 480px;
+    text-align: center;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--shell-text-muted);
+    margin-top: 40px;
+  }
+
+  /* ============ replicated screen content (fixed brand palette) ============ */
+  .Bcf-logo { display: flex; align-items: center; gap: 7px; }
+  .Bcf-logo-lines { width: 24px; height: 24px; flex-shrink: 0; display: block; }
+  .Bcf-logo-text { width: 64px; height: 17.7px; flex-shrink: 0; display: block; }
+
+  /* screen 1 */
+  .Bcf-header { padding: 24px 24px 20px; display: flex; }
+  .Bcf-banner {
+    background: var(--bcf-yellow-300);
+    padding: 12px 24px;
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .Bcf-banner-strong { font-weight: 700; color: var(--bcf-ink-300); font-size: 14px; line-height: 1.2; }
+  .Bcf-banner-text { font-weight: 500; color: var(--bcf-ink-300); font-size: 14px; line-height: 1.2; }
+  .Bcf-panel { background: var(--bcf-purple-50); padding: 32px 24px 36px; flex: 1; }
+  .Bcf-h1 { margin: 0 0 16px; font-size: 28px; line-height: 1.2; letter-spacing: -0.25px; font-weight: 700; color: var(--bcf-ink-300); }
+  .Bcf-body { margin: 0 0 16px; font-size: 16px; line-height: 1.6; color: var(--bcf-grey-500); }
+  .Bcf-body strong { color: var(--bcf-ink-300); }
+  .Bcf-btn-primary {
+    appearance: none; border: 0; width: 100%;
+    background: var(--bcf-purple-300); color: var(--bcf-white);
+    font-family: inherit; font-size: 16px; font-weight: 700;
+    border-radius: var(--bcf-radius-full); padding: 16px 24px;
+    box-shadow: var(--bcf-shadow-sm); cursor: pointer;
+    transition: background-color 150ms ease-in-out; margin-top: 8px;
+    min-height: 44px;
+  }
+  .Bcf-btn-primary:hover { background: var(--bcf-purple-500); }
+  .Bcf-btn-primary:focus-visible { outline: 3px solid var(--bcf-purple-300); outline-offset: 2px; }
+  .Bcf-btn-primary:active { transform: scale(0.99); }
+  .Bcf-footnote { margin: 14px 0 0; font-size: 14px; line-height: 1.5; color: var(--bcf-grey-500); text-align: center; }
+
+  /* screen 2 */
+  .Bcf-header--center { padding: 28px 24px 0; display: flex; justify-content: center; }
+  .Bcf-stepper { padding: 32px 28px 8px; }
+  .Bcf-stepper-row { display: flex; align-items: flex-start; }
+  .Bcf-step { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 68px; flex-shrink: 0; }
+  .Bcf-step-dot { width: 28px; height: 28px; border-radius: 50%; background: var(--bcf-grey-300); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .Bcf-step.is-done .Bcf-step-dot { background: var(--bcf-green-500); }
+  .Bcf-step.is-active .Bcf-step-dot { background: var(--bcf-white); border: 2.5px solid var(--bcf-purple-300); border-top-color: var(--bcf-purple-100); }
+  @media (prefers-reduced-motion: no-preference) {
+    .Bcf-step.is-active .Bcf-step-dot { animation: Bcf-spin 900ms linear infinite; }
+  }
+  @keyframes Bcf-spin { to { transform: rotate(360deg); } }
+  .Bcf-step-label { font-size: 14px; font-weight: 600; color: var(--bcf-grey-500); text-align: center; line-height: 1.3; }
+  .Bcf-step.is-done .Bcf-step-label, .Bcf-step.is-active .Bcf-step-label { color: var(--bcf-ink-300); }
+  .Bcf-step-line { flex: 1; height: 3px; background: var(--bcf-grey-300); margin-top: 13px; border-radius: 2px; }
+  .Bcf-step-line.is-done { background: var(--bcf-green-500); }
+  .Bcf-content { padding: 28px 24px 32px; }
+  .Bcf-legal { margin-top: 24px; background: var(--bcf-ink-300); color: rgba(255,255,255,0.7); padding: 24px; text-align: center; }
+  .Bcf-legal p { margin: 0 0 10px; font-size: 14px; line-height: 1.5; }
+  .Bcf-legal p:last-child { margin-bottom: 0; }
+  .Bcf-legal a { color: rgba(255,255,255,0.85); }
+
+  /* screen 3 */
+  .Bcf-nav-bar {
+    position: sticky; top: 0; background: var(--bcf-white);
+    border-bottom: 3px solid var(--bcf-purple-300);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 20px; box-shadow: var(--bcf-shadow-sm); z-index: 2;
+  }
+  .Bcf-nav-icon-btn {
+    width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+    border-radius: 10px; border: 0; background: transparent; color: var(--bcf-ink-300); cursor: pointer;
+  }
+  .Bcf-nav-icon-btn:hover { background: var(--bcf-grey-200); }
+  .Bcf-nav-icon-btn:focus-visible { outline: 3px solid var(--bcf-purple-300); outline-offset: 1px; }
+  .Bcf-shield-row { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; }
+  .Bcf-shield-row svg { flex-shrink: 0; }
+  .Bcf-shield-text { font-size: 14px; font-weight: 600; color: var(--bcf-grey-500); }
+  .Bcf-group { margin-top: 32px; }
+  .Bcf-group-title { margin: 0 0 12px; font-size: 14px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--bcf-ink-200); }
+  .Bcf-tag { display: inline-flex; align-items: center; gap: 6px; border-radius: var(--bcf-radius-full); padding: 6px 12px 6px 8px; font-size: 14px; font-weight: 700; margin-bottom: 12px; }
+  .Bcf-tag--green { background: var(--bcf-green-100); color: var(--bcf-green-500); }
+  .Bcf-tag--purple { background: var(--bcf-purple-100); color: var(--bcf-purple-300); }
+  .Bcf-row-card { display: flex; align-items: center; gap: 14px; background: var(--bcf-white); border: 1px solid var(--bcf-grey-300); border-radius: var(--bcf-radius-16); padding: 14px; margin-bottom: 10px; }
+  .Bcf-row-card:last-child { margin-bottom: 0; }
+  .Bcf-row-icon { width: 44px; height: 44px; border-radius: 12px; background: var(--bcf-purple-50); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .Bcf-row-label { font-size: 16px; font-weight: 600; color: var(--bcf-ink-300); line-height: 1.35; }
+  .Bcf-divider { border: 0; border-top: 1px solid var(--bcf-grey-300); margin: 32px 0 24px; }
+  .Bcf-safety-toggle {
+    appearance: none; border: 0; background: transparent; width: 100%;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 4px 0; font-family: inherit; font-size: 16px; font-weight: 700;
+    color: var(--bcf-ink-300); cursor: pointer; min-height: 44px;
+  }
+  .Bcf-safety-toggle:focus-visible { outline: 3px solid var(--bcf-purple-300); outline-offset: 2px; border-radius: 8px; }
+  .Bcf-safety-chevron { display: inline-flex; transition: transform 150ms ease-in-out; flex-shrink: 0; }
+  .Bcf-safety-chevron.is-open { transform: rotate(180deg); }
+  .Bcf-safety-body { font-size: 14px; line-height: 1.6; color: var(--bcf-grey-500); padding-top: 10px; display: none; }
+  .Bcf-safety-body.is-open { display: block; }
+</style>
+
+<div class="Shell">
+  <div class="Shell-header">
+    <p class="Shell-eyebrow">Interactive prototype</p>
+    <h1 class="Shell-title">Bold Care coverage flow</h1>
+    <p class="Shell-desc">Repositioned from a GLP-1-led funnel to Bold's weight management program &mdash; medication shown as one part of the plan, not the headline &mdash; with Bold's logo and brand tokens throughout.</p>
+  </div>
+
+  <div class="Shell-tabs" role="tablist" aria-label="Flow steps">
+    <button class="Shell-tab" role="tab" id="tab-0" aria-controls="panel-0" type="button">1. Report ready</button>
+    <button class="Shell-tab" role="tab" id="tab-1" aria-controls="panel-1" type="button">2. Confirming coverage</button>
+    <button class="Shell-tab" role="tab" id="tab-2" aria-controls="panel-2" type="button">3. Coverage results</button>
+  </div>
+
+  <div class="Shell-stage">
+    <div class="Screen-frame">
+
+      <!-- ============ SCREEN 1 — Report ready ============ -->
+      <section class="Screen-panel" id="panel-0" role="tabpanel" aria-labelledby="tab-0">
+        <div class="Bcf-header">
+          <div class="Bcf-logo" role="img" aria-label="Bold">
+            <svg class="Bcf-logo-lines" viewBox="0 0 33.2634 33" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M24.0446 25.65L0.46821 32.9836C0.235529 33.056 0 32.8799 0 32.6335V27.252C0 27.0912 0.103607 26.9492 0.255617 26.902L23.832 19.5684C24.0647 19.496 24.3002 19.6721 24.3002 19.9185V25.2999C24.3002 25.4608 24.1965 25.6028 24.0446 25.65Z" fill="#5200D4"/>
+              <path d="M28.5262 15.874L4.94981 23.2076C4.71713 23.28 4.4816 23.1039 4.4816 22.8575V17.4761C4.4816 17.3152 4.58521 17.1732 4.73722 17.126L28.3136 9.79239C28.5463 9.72004 28.7818 9.89612 28.7818 10.1425V15.524C28.7818 15.6848 28.6782 15.8268 28.5262 15.874Z" fill="#3366FF"/>
+              <path d="M33.008 6.09806L9.43153 13.4316C9.19885 13.504 8.96332 13.3279 8.96332 13.0816V7.70007C8.96332 7.53919 9.06693 7.39721 9.21894 7.34999L32.7952 0.0164023C33.0279 -0.0559507 33.2634 0.12013 33.2634 0.366482V5.74798C33.2634 5.90869 33.1598 6.05083 33.008 6.09806Z" fill="#80E8FF"/>
+            </svg>
+            <svg class="Bcf-logo-text" viewBox="0 0 88.7956 24.5824" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M36.5444 2.81701e-05C29.8733 2.81701e-05 23.4651 5.45508 22.2711 12.3081C21.0829 19.1271 25.5903 24.5824 32.2614 24.5824C38.9325 24.5824 45.3408 19.1269 46.5288 12.3081C47.7228 5.45508 43.2155 2.81701e-05 36.5444 2.81701e-05ZM33.0455 20.0816C28.8341 20.0816 26.1268 16.6722 26.8872 12.3081C27.6536 7.91002 31.5491 4.50061 35.7605 4.50061C39.9719 4.50061 42.6792 7.91002 41.913 12.3081C41.1524 16.672 37.2569 20.0816 33.0455 20.0816Z" fill="#140D26"/>
+              <path d="M14.6818 11.3534C16.5191 10.6715 18.1262 8.79622 18.5598 6.30746C19.1241 3.06837 17.2867 0.272799 12.6036 0.272799H4.58489H1.99915C1.6398 0.272799 1.35996 0.684944 1.51941 0.979536L3.36268 4.38528L0.00992099 23.6275C-0.0436298 23.9345 0.123062 24.1391 0.426449 24.1391H8.44518C14.341 24.1391 17.5532 21.7526 18.3374 17.2518C18.8779 14.1494 17.062 12.0013 14.6818 11.3534ZM7.9763 4.39811H11.4462C13.2996 4.39811 14.4274 5.07999 14.1125 6.88687C13.7797 8.79622 12.4128 9.68285 10.5254 9.68285H7.05547L7.9763 4.39811ZM9.29836 20.0138H5.25548L6.38428 13.5356H10.4272C12.8863 13.5356 14.1848 14.5925 13.8105 16.7406C13.4184 18.9906 11.7575 20.0138 9.29836 20.0138Z" fill="#140D26"/>
+              <path d="M62.4907 20.0138H54.8422L58.1927 0.784364C58.2463 0.477547 58.0802 0.272799 57.7768 0.272799L53.9529 1.52818C53.5986 1.63616 53.4122 1.73293 53.3586 2.03974L49.5972 23.6277C49.5437 23.9347 49.7103 24.1393 50.0133 24.1393H61.7722C62.0749 24.1393 62.3129 23.9349 62.3664 23.6277L62.907 20.5251C62.9601 20.2181 62.7934 20.0138 62.4907 20.0138Z" fill="#140D26"/>
+              <path d="M78.288 0.272799H71.6503H69.0646C68.7053 0.272799 68.4254 0.684944 68.5849 0.979536L70.4285 4.38609L67.076 23.6275C67.0224 23.9345 67.1885 24.1391 67.4919 24.1391H74.1296C82.2156 24.1391 87.4148 18.8543 88.5732 12.2062C89.7316 5.55754 86.374 0.272799 78.288 0.272799ZM74.8485 20.0138H72.3215L75.0424 4.39832H77.5693C82.6899 4.39832 84.7455 7.29657 83.8901 12.2062C83.0347 17.1159 79.9688 20.0138 74.8485 20.0138Z" fill="#140D26"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="Bcf-banner">
+          <span class="Bcf-banner-strong">COVERAGE CONFIRMED:</span>
+          <span class="Bcf-banner-text">Your Bold Care report is ready</span>
+        </div>
+
+        <div class="Bcf-panel">
+          <h1 class="Bcf-h1">Christopher, your Bold Care plan is ready to view</h1>
+          <p class="Bcf-body">We reached out to your insurance company to confirm coverage for your Bold Care visit and build your personalized weight management plan.</p>
+          <p class="Bcf-body">Your report shows what's covered for your visit &mdash; and, if it's a good fit, your options for FDA-approved GLP-1 medication.</p>
+          <button class="Bcf-btn-primary" type="button" data-goto="1">See my Bold Care plan</button>
+          <p class="Bcf-footnote">Your Care Coordinator confirms your exact cost before your visit, so there are no surprises.</p>
+        </div>
+      </section>
+
+      <!-- ============ SCREEN 2 — Confirming coverage ============ -->
+      <section class="Screen-panel" id="panel-1" role="tabpanel" aria-labelledby="tab-1">
+        <div class="Bcf-header--center">
+          <div class="Bcf-logo" role="img" aria-label="Bold">
+            <svg class="Bcf-logo-lines" viewBox="0 0 33.2634 33" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M24.0446 25.65L0.46821 32.9836C0.235529 33.056 0 32.8799 0 32.6335V27.252C0 27.0912 0.103607 26.9492 0.255617 26.902L23.832 19.5684C24.0647 19.496 24.3002 19.6721 24.3002 19.9185V25.2999C24.3002 25.4608 24.1965 25.6028 24.0446 25.65Z" fill="#5200D4"/>
+              <path d="M28.5262 15.874L4.94981 23.2076C4.71713 23.28 4.4816 23.1039 4.4816 22.8575V17.4761C4.4816 17.3152 4.58521 17.1732 4.73722 17.126L28.3136 9.79239C28.5463 9.72004 28.7818 9.89612 28.7818 10.1425V15.524C28.7818 15.6848 28.6782 15.8268 28.5262 15.874Z" fill="#3366FF"/>
+              <path d="M33.008 6.09806L9.43153 13.4316C9.19885 13.504 8.96332 13.3279 8.96332 13.0816V7.70007C8.96332 7.53919 9.06693 7.39721 9.21894 7.34999L32.7952 0.0164023C33.0279 -0.0559507 33.2634 0.12013 33.2634 0.366482V5.74798C33.2634 5.90869 33.1598 6.05083 33.008 6.09806Z" fill="#80E8FF"/>
+            </svg>
+            <svg class="Bcf-logo-text" viewBox="0 0 88.7956 24.5824" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M36.5444 2.81701e-05C29.8733 2.81701e-05 23.4651 5.45508 22.2711 12.3081C21.0829 19.1271 25.5903 24.5824 32.2614 24.5824C38.9325 24.5824 45.3408 19.1269 46.5288 12.3081C47.7228 5.45508 43.2155 2.81701e-05 36.5444 2.81701e-05ZM33.0455 20.0816C28.8341 20.0816 26.1268 16.6722 26.8872 12.3081C27.6536 7.91002 31.5491 4.50061 35.7605 4.50061C39.9719 4.50061 42.6792 7.91002 41.913 12.3081C41.1524 16.672 37.2569 20.0816 33.0455 20.0816Z" fill="#140D26"/>
+              <path d="M14.6818 11.3534C16.5191 10.6715 18.1262 8.79622 18.5598 6.30746C19.1241 3.06837 17.2867 0.272799 12.6036 0.272799H4.58489H1.99915C1.6398 0.272799 1.35996 0.684944 1.51941 0.979536L3.36268 4.38528L0.00992099 23.6275C-0.0436298 23.9345 0.123062 24.1391 0.426449 24.1391H8.44518C14.341 24.1391 17.5532 21.7526 18.3374 17.2518C18.8779 14.1494 17.062 12.0013 14.6818 11.3534ZM7.9763 4.39811H11.4462C13.2996 4.39811 14.4274 5.07999 14.1125 6.88687C13.7797 8.79622 12.4128 9.68285 10.5254 9.68285H7.05547L7.9763 4.39811ZM9.29836 20.0138H5.25548L6.38428 13.5356H10.4272C12.8863 13.5356 14.1848 14.5925 13.8105 16.7406C13.4184 18.9906 11.7575 20.0138 9.29836 20.0138Z" fill="#140D26"/>
+              <path d="M62.4907 20.0138H54.8422L58.1927 0.784364C58.2463 0.477547 58.0802 0.272799 57.7768 0.272799L53.9529 1.52818C53.5986 1.63616 53.4122 1.73293 53.3586 2.03974L49.5972 23.6277C49.5437 23.9347 49.7103 24.1393 50.0133 24.1393H61.7722C62.0749 24.1393 62.3129 23.9349 62.3664 23.6277L62.907 20.5251C62.9601 20.2181 62.7934 20.0138 62.4907 20.0138Z" fill="#140D26"/>
+              <path d="M78.288 0.272799H71.6503H69.0646C68.7053 0.272799 68.4254 0.684944 68.5849 0.979536L70.4285 4.38609L67.076 23.6275C67.0224 23.9345 67.1885 24.1391 67.4919 24.1391H74.1296C82.2156 24.1391 87.4148 18.8543 88.5732 12.2062C89.7316 5.55754 86.374 0.272799 78.288 0.272799ZM74.8485 20.0138H72.3215L75.0424 4.39832H77.5693C82.6899 4.39832 84.7455 7.29657 83.8901 12.2062C83.0347 17.1159 79.9688 20.0138 74.8485 20.0138Z" fill="#140D26"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="Bcf-stepper" role="list" aria-label="Enrollment progress">
+          <div class="Bcf-stepper-row">
+            <div class="Bcf-step is-done" role="listitem">
+              <div class="Bcf-step-dot" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <span class="Bcf-step-label">Eligibility</span>
+            </div>
+            <div class="Bcf-step-line is-done"></div>
+            <div class="Bcf-step is-active" role="listitem" aria-current="step">
+              <div class="Bcf-step-dot"></div>
+              <span class="Bcf-step-label">Insurance</span>
+            </div>
+            <div class="Bcf-step-line"></div>
+            <div class="Bcf-step" role="listitem">
+              <div class="Bcf-step-dot"></div>
+              <span class="Bcf-step-label">Care Plan</span>
+            </div>
+            <div class="Bcf-step-line"></div>
+            <div class="Bcf-step" role="listitem">
+              <div class="Bcf-step-dot"></div>
+              <span class="Bcf-step-label">Program</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="Bcf-content">
+          <h1 class="Bcf-h1">We're confirming your coverage for your Bold Care visit</h1>
+          <p class="Bcf-body">We're reaching out to your insurer and reviewing your plan details. This usually takes 1&ndash;2 business days. We'll let you know what we find.</p>
+          <button class="Bcf-btn-primary" type="button" data-goto="2">Track my progress</button>
+        </div>
+
+        <div class="Bcf-legal">
+          <p>This email is intended for the recipient only, do not forward.</p>
+          <p>&copy; 2026 Age Bold Inc. &middot; <a href="mailto:careteam@agebold.com">careteam@agebold.com</a></p>
+        </div>
+      </section>
+
+      <!-- ============ SCREEN 3 — Coverage results ============ -->
+      <section class="Screen-panel" id="panel-2" role="tabpanel" aria-labelledby="tab-2">
+        <div class="Bcf-nav-bar">
+          <button class="Bcf-nav-icon-btn" type="button" aria-label="Open menu">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="#140D26" stroke-width="2" stroke-linecap="round"/></svg>
+          </button>
+          <div class="Bcf-logo" role="img" aria-label="Bold">
+            <svg class="Bcf-logo-lines" viewBox="0 0 33.2634 33" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M24.0446 25.65L0.46821 32.9836C0.235529 33.056 0 32.8799 0 32.6335V27.252C0 27.0912 0.103607 26.9492 0.255617 26.902L23.832 19.5684C24.0647 19.496 24.3002 19.6721 24.3002 19.9185V25.2999C24.3002 25.4608 24.1965 25.6028 24.0446 25.65Z" fill="#5200D4"/>
+              <path d="M28.5262 15.874L4.94981 23.2076C4.71713 23.28 4.4816 23.1039 4.4816 22.8575V17.4761C4.4816 17.3152 4.58521 17.1732 4.73722 17.126L28.3136 9.79239C28.5463 9.72004 28.7818 9.89612 28.7818 10.1425V15.524C28.7818 15.6848 28.6782 15.8268 28.5262 15.874Z" fill="#3366FF"/>
+              <path d="M33.008 6.09806L9.43153 13.4316C9.19885 13.504 8.96332 13.3279 8.96332 13.0816V7.70007C8.96332 7.53919 9.06693 7.39721 9.21894 7.34999L32.7952 0.0164023C33.0279 -0.0559507 33.2634 0.12013 33.2634 0.366482V5.74798C33.2634 5.90869 33.1598 6.05083 33.008 6.09806Z" fill="#80E8FF"/>
+            </svg>
+            <svg class="Bcf-logo-text" viewBox="0 0 88.7956 24.5824" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M36.5444 2.81701e-05C29.8733 2.81701e-05 23.4651 5.45508 22.2711 12.3081C21.0829 19.1271 25.5903 24.5824 32.2614 24.5824C38.9325 24.5824 45.3408 19.1269 46.5288 12.3081C47.7228 5.45508 43.2155 2.81701e-05 36.5444 2.81701e-05ZM33.0455 20.0816C28.8341 20.0816 26.1268 16.6722 26.8872 12.3081C27.6536 7.91002 31.5491 4.50061 35.7605 4.50061C39.9719 4.50061 42.6792 7.91002 41.913 12.3081C41.1524 16.672 37.2569 20.0816 33.0455 20.0816Z" fill="#140D26"/>
+              <path d="M14.6818 11.3534C16.5191 10.6715 18.1262 8.79622 18.5598 6.30746C19.1241 3.06837 17.2867 0.272799 12.6036 0.272799H4.58489H1.99915C1.6398 0.272799 1.35996 0.684944 1.51941 0.979536L3.36268 4.38528L0.00992099 23.6275C-0.0436298 23.9345 0.123062 24.1391 0.426449 24.1391H8.44518C14.341 24.1391 17.5532 21.7526 18.3374 17.2518C18.8779 14.1494 17.062 12.0013 14.6818 11.3534ZM7.9763 4.39811H11.4462C13.2996 4.39811 14.4274 5.07999 14.1125 6.88687C13.7797 8.79622 12.4128 9.68285 10.5254 9.68285H7.05547L7.9763 4.39811ZM9.29836 20.0138H5.25548L6.38428 13.5356H10.4272C12.8863 13.5356 14.1848 14.5925 13.8105 16.7406C13.4184 18.9906 11.7575 20.0138 9.29836 20.0138Z" fill="#140D26"/>
+              <path d="M62.4907 20.0138H54.8422L58.1927 0.784364C58.2463 0.477547 58.0802 0.272799 57.7768 0.272799L53.9529 1.52818C53.5986 1.63616 53.4122 1.73293 53.3586 2.03974L49.5972 23.6277C49.5437 23.9347 49.7103 24.1393 50.0133 24.1393H61.7722C62.0749 24.1393 62.3129 23.9349 62.3664 23.6277L62.907 20.5251C62.9601 20.2181 62.7934 20.0138 62.4907 20.0138Z" fill="#140D26"/>
+              <path d="M78.288 0.272799H71.6503H69.0646C68.7053 0.272799 68.4254 0.684944 68.5849 0.979536L70.4285 4.38609L67.076 23.6275C67.0224 23.9345 67.1885 24.1391 67.4919 24.1391H74.1296C82.2156 24.1391 87.4148 18.8543 88.5732 12.2062C89.7316 5.55754 86.374 0.272799 78.288 0.272799ZM74.8485 20.0138H72.3215L75.0424 4.39832H77.5693C82.6899 4.39832 84.7455 7.29657 83.8901 12.2062C83.0347 17.1159 79.9688 20.0138 74.8485 20.0138Z" fill="#140D26"/>
+            </svg>
+          </div>
+          <button class="Bcf-nav-icon-btn" type="button" aria-label="Account">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="4" stroke="#140D26" stroke-width="1.8"/><path d="M4 20c1.6-3.6 5-5.5 8-5.5s6.4 1.9 8 5.5" stroke="#140D26" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+
+        <div class="Bcf-content">
+          <h1 class="Bcf-h1">Great news &mdash; your Bold Care visit is covered</h1>
+
+          <div class="Bcf-shield-row">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M15.3186 10.3418L11.1706 14.4898L8.68164 12.0008" stroke="#005B52" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M19.1 5.92099C16.641 5.72699 14.403 4.74799 12.637 3.23299C12.275 2.92299 11.724 2.92299 11.363 3.23299C9.597 4.74699 7.359 5.72699 4.9 5.92099C4.388 5.96099 4 6.39899 4 6.91199V11.242C4 15.609 7.156 19.704 11.478 20.927C11.817 21.023 12.184 21.023 12.523 20.927C16.844 19.703 20 15.61 20 11.243V6.91299C20 6.39899 19.612 5.96099 19.1 5.92099Z" stroke="#005B52" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="Bcf-shield-text">Verified by the Bold Care Coordinator team on Aug 18, 2026</span>
+          </div>
+
+          <p class="Bcf-body">Your Bold Care visit is in-network with Medicare, so most of the cost is covered &mdash; <strong>78% of Bold patients pay $0 out of pocket.</strong></p>
+          <p class="Bcf-body">If a GLP-1 is the right fit for you, your provider can also prescribe an FDA-approved medication for a <strong>$50/month copay</strong> through the Medicare GLP-1 Bridge program.</p>
+
+          <div class="Bcf-group">
+            <h2 class="Bcf-group-title">Included with your Bold Care visit</h2>
+            <div class="Bcf-tag Bcf-tag--green">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 6L9 17l-5-5" stroke="#005B52" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Covered by your plan
+            </div>
+
+            <div class="Bcf-row-card">
+              <div class="Bcf-row-icon" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="2" y="5" width="14" height="14" rx="2.5" stroke="#5200D4" stroke-width="1.6"/><path d="M16 10.5l5.2-3.1c.5-.3 1.1.1 1.1.7v9.8c0 .6-.6 1-1.1.7L16 14.5" stroke="#5200D4" stroke-width="1.6" stroke-linejoin="round"/></svg>
+              </div>
+              <span class="Bcf-row-label">Doctor-supervised care visit</span>
+            </div>
+
+            <div class="Bcf-row-card">
+              <div class="Bcf-row-icon" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 21c-4-2.5-7-6.2-7-10.5C5 6.5 8 4 12 3c4 1 7 3.5 7 7.5C19 14.8 16 18.5 12 21Z" stroke="#5200D4" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 21V11" stroke="#5200D4" stroke-width="1.6" stroke-linecap="round"/></svg>
+              </div>
+              <span class="Bcf-row-label">Personalized nutrition &amp; movement plan</span>
+            </div>
+          </div>
+
+          <div class="Bcf-group">
+            <h2 class="Bcf-group-title">If a GLP-1 is right for you</h2>
+            <div class="Bcf-tag Bcf-tag--purple">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 6L9 17l-5-5" stroke="#5200D4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              $50/month copay
+            </div>
+
+            <div class="Bcf-row-card">
+              <div class="Bcf-row-icon" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="9.5" width="18" height="7" rx="3.5" stroke="#5200D4" stroke-width="1.6" transform="rotate(-32 12 12)"/><path d="M9.5 8.7l3 5.8" stroke="#5200D4" stroke-width="1.6" stroke-linecap="round" transform="rotate(-32 12 12)"/></svg>
+              </div>
+              <span class="Bcf-row-label">FDA-approved GLP-1 medication</span>
+            </div>
+          </div>
+
+          <hr class="Bcf-divider">
+
+          <button class="Bcf-safety-toggle" type="button" id="safety-toggle" aria-expanded="false" aria-controls="safety-body">
+            Important safety information
+            <span class="Bcf-safety-chevron" id="safety-chevron" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#140D26" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </button>
+          <p class="Bcf-safety-body" id="safety-body">FDA-approved GLP-1 medications may have side effects, and aren't right for everyone. Your Bold Care provider reviews your health history before prescribing &mdash; and Bold helps you lose weight and build strength with or without medication.</p>
+
+          <button class="Bcf-btn-primary" type="button" style="margin-top:28px" data-goto="0">Continue</button>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <div class="Shell-nav">
+    <button class="Shell-navbtn" id="btn-back" type="button">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Back
+    </button>
+    <span class="Shell-stepcount" id="stepcount">Step 1 of 3</span>
+    <button class="Shell-navbtn Shell-navbtn--primary" id="btn-next" type="button">
+      Next
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+
+  <p class="Shell-footnote">Each screen's primary button advances the flow, so you can click through it the way a member would.</p>
+</div>
+
+<script>
+  (function () {
+    var STEPS = 3;
+    var current = 0;
+    var tabs = Array.prototype.slice.call(document.querySelectorAll('.Shell-tab'));
+    var panels = Array.prototype.slice.call(document.querySelectorAll('.Screen-panel'));
+    var backBtn = document.getElementById('btn-back');
+    var nextBtn = document.getElementById('btn-next');
+    var stepcount = document.getElementById('stepcount');
+
+    function render() {
+      panels.forEach(function (panel, i) {
+        panel.classList.toggle('is-active', i === current);
+      });
+      tabs.forEach(function (tab, i) {
+        tab.setAttribute('aria-selected', i === current ? 'true' : 'false');
+      });
+      backBtn.disabled = current === 0;
+      nextBtn.textContent = '';
+      var label = document.createTextNode(current === STEPS - 1 ? 'Restart' : 'Next');
+      nextBtn.appendChild(label);
+      nextBtn.insertAdjacentHTML('beforeend', ' <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="vertical-align:-3px"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+      stepcount.textContent = 'Step ' + (current + 1) + ' of ' + STEPS;
+    }
+
+    function goTo(index) {
+      current = Math.max(0, Math.min(STEPS - 1, index));
+      render();
+    }
+
+    tabs.forEach(function (tab, i) {
+      tab.addEventListener('click', function () { goTo(i); });
+    });
+    backBtn.addEventListener('click', function () { goTo(current - 1); });
+    nextBtn.addEventListener('click', function () {
+      goTo(current === STEPS - 1 ? 0 : current + 1);
+    });
+    document.querySelectorAll('[data-goto]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        goTo(parseInt(btn.getAttribute('data-goto'), 10));
+      });
+    });
+
+    var safetyToggle = document.getElementById('safety-toggle');
+    var safetyBody = document.getElementById('safety-body');
+    var safetyChevron = document.getElementById('safety-chevron');
+    safetyToggle.addEventListener('click', function () {
+      var open = safetyToggle.getAttribute('aria-expanded') === 'true';
+      safetyToggle.setAttribute('aria-expanded', String(!open));
+      safetyBody.classList.toggle('is-open', !open);
+      safetyChevron.classList.toggle('is-open', !open);
+    });
+
+    render();
+  })();
+</script>

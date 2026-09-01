@@ -72,7 +72,7 @@ Sample user quotes (used to motivate the weight-with-secondary-pain/energy frami
 Bold offers a provider-created personalized weight management program. Build strength and muscle while losing weight with easy lifestyle changes. Losing weight after 65 isn't the same as losing weight at 35 — metabolism, medications, joints all play important roles. Bold's physician-led care plans account for all of it.
 
 **Covered by Medicare.**
-Bold Care weight management appointment is covered by Medicare and other insurance plans. **86% of Bold patients pay $0 out of pocket.**
+Bold Care weight management appointment is covered by Medicare and other insurance plans. **86% of Bold patients pay $0 out of pocket.** <!-- Source record as written 2026-05-20. NOTE: this stat was corrected to 78% on 2026-06-26 per user; do not reuse 86% — see synthesis/findings.md #21 and .claude/skills/bold-pricing-messaging. Raw figure left intact to preserve the archive. -->
 
 **A provider-created Care Plan with accountability baked in.**
 Every Bold Care appointment ends with a personalized Care Plan — a document the provider makes just for the patient. Practical, easy-to-adopt habits across fitness, nutrition, and daily life. Because follow-up appointments with the Bold Provider are covered by insurance, the patient is held accountable for progress while working with someone who'll ensure they're losing weight *and* staying safe.

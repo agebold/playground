@@ -1,0 +1,1635 @@
+/* ══════════════════════════════════════════════
+   wm-parts.css — per-screen components, measured off Figma
+   `Weight-management Enrollment` § campaign enrollment, 2393:11580.
+
+   Every block carries the node id it was measured from. Nothing here is
+   inherited from another prototype: the GLP-1 funnel's `.cf-*` sheet was
+   measured against a different board and 3 of its components contradict this
+   one (its radio has an indicator glyph this board's Radio Button does not,
+   its time slots are fixed-width where these hug their text, and it carries a
+   funnel progress bar this board doesn't have).
+══════════════════════════════════════════════ */
+
+/* ══════════════════════════════════════════════
+   THE AD — Figma "mWeb - Landing Page" · 2393:12937 · 393×886, frame fill
+   #001d4b, and the whole frame is an <a>.
+
+   No longer one flattened raster. It is now two image fills with LIVE text over
+   them, so the two bands ship as rasters and the headline and subhead are real
+   markup:
+
+     2393:12938  image (14) 1   (3.455, 56.772)  382.662×249.122  — logo baked in
+     2393:12940  Rectangle 406  (10.953, 191.496) 371.083×127.592 — solid #001d4b,
+                 the mask the live text sits on. Same colour as the frame fill.
+     2393:12941  headline       (24.785, 190.088) Inter SemiBold 27/35 white
+     2393:12942  subhead        (22.571, 290.895) Inter SemiBold 20/26 #ddd6fe
+     2393:12943  image (14) 2   (10.964, 348.767) 371.072×413.437 — the yellow
+                 CTA, "In pill form and more.", the pill photo and the FDA disc
+                 are all baked into this one.
+
+   Both bands are committed as CROPS OF THE BOARD'S OWN FRAME RENDER with the
+   live-text band repainted #001d4b, because the per-node exports do not
+   reproduce what the frame renders (see FIDELITY.md). Everything else on the
+   screen is live markup.
+══════════════════════════════════════════════ */
+.wm-layer[data-shell="ad"] { background: var(--color-ad-navy); }
+/* 753 − 56: the Status Bar is in flow above this, the Tab Bar sticks below it. */
+.fg-ad2 {
+  position: relative; flex: 1 0 auto; width: 100%; min-height: 697px;
+  display: block; color: inherit; text-decoration: none;
+}
+.fg-ad2-band { position: absolute; left: 0; width: 393px; }
+.fg-ad2-band img { display: block; width: 100%; height: 100%; }
+.fg-ad2-band--top { top: 0px;   height: 250px; }      /* frame 56 → 306 */
+.fg-ad2-band--bot { top: 292px; height: 415px; }      /* frame 348 → 763 */
+/* 2393:12941 · three line boxes of 35 (the third is an empty U+200B paragraph
+   the board actually draws, and it is what makes this node 105 tall). */
+.fg-ad2-h {
+  position: absolute; left: 24.785px; top: 134.088px; width: 344.429px;
+  font: 600 27px/35px var(--font-family); color: #fff;
+}
+.fg-ad2-sub {
+  position: absolute; left: 22.571px; top: 234.895px; width: 344.429px;
+  font: 600 20px/26px var(--font-family); color: var(--color-violet-200);
+}
+.fg-ad2:focus-visible { outline: 2px solid #fff; outline-offset: -2px; }
+
+/* ══════════════════════════════════════════════
+   ONE-PAGE LANDING — Figma "mWeb - Landing Page" · 2393:14545 · 393×2947,
+   frame fill #ebf0ff.
+
+   This replaces FOUR screens from the previous board (a 1345 hero page plus
+   q-meds / q-motivation / q-measure). All three questions now live on ONE
+   scrolling page, so the flow is 17 screens instead of 20.
+
+   Everything is absolutely positioned from the frame origin. `.fg-op` starts at
+   frame y=56 — directly under the sticky Status Bar, which is the only node on
+   this frame Figma marks "fix position when scrolling" — so every child's `top`
+   is its Figma y minus 56. Height 2758 = 2814 − 56, where 2814 is where the Tab
+   Bar starts (2947 − 133).
+
+   The three question sections are each a 600-tall band with `justify-center`, so
+   one question fills the viewport (852 − 56 − 133 = 663) at a time. That is what
+   makes "jump to the next question" land cleanly, and it is why the board draws
+   them 72px apart rather than as a continuous form.
+══════════════════════════════════════════════ */
+.wm-layer[data-shell="onepage"] { background: var(--color-landing-bg); }
+
+.fg-op { position: relative; flex: 1 0 auto; width: 100%; min-height: 2758px; }
+
+/* Floating Nav — 2393:14625 · 393×68 at frame y=56, #fcfcfc, 1px bottom border,
+   px-20 py-12. Figma gives the logo `mr:-53` so it OVERLAPS the button row; both
+   are absolutely placed here rather than fighting a negative flex margin. */
+.fg-op-nav {
+  position: absolute; left: 0; top: 0; width: 393px; height: 68px;
+  background: var(--color-gray-100);
+  border-bottom: 1px solid var(--color-gray-200);
+  overflow: hidden;
+}
+.fg-logo--float { position: absolute; left: 20px; top: 18px; width: 107px; height: 32px; }
+/* The wordmark is NOT drawn in this instance. Figma emits both sub-layers, but
+   sampled across the reference render x 56–74 / y 74–106 is flat #fcfcfc where the
+   "B" would be — the Text layer is off here, and the 107-wide box plus the
+   mr:-53 overlap is what hides the rest behind the "Sign in" button. Reproducing
+   the render, per the same rule that settled the nav's 153px purple bar. */
+.fg-logo--float .fg-logo-text { display: none; }
+
+/* 2393:14628 / 2393:14629 / 2393:14630 · absolutely placed at their measured
+   lefts. Figma's own flex puts them at 74 / 171 / 341 with widths 85 / 158 / 32,
+   confirmed against the reference render (white button 74–158, purple 171–328,
+   hamburger ink 344–369). Letting the labels size the boxes lands 0.8px short. */
+.fg-op-navbtn {
+  position: absolute; top: 12px; height: 44px;
+  display: flex; align-items: center; justify-content: center; gap: 4px;
+  padding: 10px 12px;
+  background: #fff; border: 0; border-radius: var(--radius-md);
+  box-shadow: inset 0 0 0 1px var(--color-gray-200);
+  cursor: pointer; overflow: hidden;
+  font: 600 16px/24px var(--font-family); color: var(--color-gray-950);
+  white-space: nowrap;
+}
+.fg-op-navbtn > span { display: flex; align-items: center; justify-content: center; padding: 0 4px; }
+.fg-op-navbtn--signin { left: 74px;  width: 85px; }
+.fg-op-navbtn--brand  {
+  left: 171px; width: 158px;
+  background: var(--color-purple-600); box-shadow: none; color: #fff;
+}
+.fg-op-navbtn:focus-visible { outline: 2px solid var(--color-purple-600); outline-offset: 2px; }
+.fg-op-menu { position: absolute; left: 341px; top: 18px; width: 32px; height: 32px; }
+.fg-op-menu img { display: block; width: 100%; height: 100%; }
+
+/* Hero band — 2393:14552 photo (−8, 124) 436×283 with a 1px #d8ddeb stroke that
+   paints OUTSIDE the box, plus the 2393:14632 frosted pill card and the
+   2393:14634 FDA disc composited over it. Shipped as ONE raster: the photo node
+   is animated, so Figma's own endpoints disagree about its pan phase, and the
+   pill card is translucent over the photo. See FIDELITY.md. */
+.fg-op-hero { position: absolute; left: 0; top: 67px; width: 393px; height: 285px; }
+.fg-op-hero img { display: block; width: 100%; height: 100%; }
+
+/* 2393:14553 · Source Serif Pro SemiBold 28/37, −0.5px, centred in a 318 box at
+   left calc(50% + 0.5px). Line 2 is #2563eb. */
+.fg-op-h {
+  position: absolute; top: 310px; left: calc(50% + 0.5px); transform: translateX(-50%);
+  width: 318px; text-align: center;
+  font-family: var(--font-display); font-weight: 600;
+  font-size: 28px; line-height: 37px; letter-spacing: -0.5px;
+  color: var(--color-heading);
+  /* Figma emits `whitespace-pre-wrap` on this node, and it matters: the paragraph
+     ends with a real space, and Figma INCLUDES that space when centring the
+     wrapped second line. CSS normally drops a trailing space at a line end, which
+     centred the visible glyphs 3px right of where the board puts them. */
+  white-space: pre-wrap;
+}
+/* Figma writes the accent as its own paragraph, so the break is authored, not a
+   wrap — a block, not an inline span. */
+.fg-op-h em { display: block; font-style: normal; color: var(--color-blue-600); }
+
+/* 2393:14554 · the only CTA above the fold — 274 wide at (60, 497). */
+.fg-op-cta { position: absolute; left: 60px; top: 441px; width: 274px; }
+
+/* 2393:14555 · three benefit rows at (58, 567), 289 wide, gap-16. Icon in a
+   20×28 wrapper (py-4); the lead-in run is Inter BOLD #2563eb. */
+.fg-op-benefits {
+  position: absolute; left: 58px; top: 511px; width: 289px;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 16px;
+}
+.fg-lp-benefit { display: flex; align-items: center; gap: 12px; width: 100%; }
+.fg-lp-benefit > .fg-icwrap { flex: none; display: flex; align-items: center; padding: 4px 0; }
+.fg-lp-benefit p {
+  flex: 1 0 0; min-width: 1px;
+  font: 500 14px/1.4 var(--font-family); color: var(--color-heading);
+}
+.fg-lp-benefit b { font-weight: 700; color: var(--color-blue-600); }
+/* Row 1 only (2393:14559): Figma writes the accent run as its OWN paragraph,
+   so the break after "FDA-approved GLP-1s," is authored. Rows 2 and 3 are one
+   paragraph with inline spans and wrap normally. */
+.fg-lp-benefit b.fg-blk { display: block; }
+
+/* 2393:14568 · the questionnaire — (16, 811), 361 wide, gap-72. */
+.fg-op-qs {
+  position: absolute; left: 16px; top: 755px; width: 361px;
+  display: flex; flex-direction: column; gap: 72px;
+}
+/* 2393:14569 / 2393:14584 / 2393:14611 · h-600 justify-center gap-24.
+   `min-height` rather than a fixed `height` + `overflow-clip`: identical at 1×,
+   and it does not amputate the question at 200% zoom.
+   `scroll-margin-top: 56px` is the sticky Status Bar — without it the jump puts
+   the progress bar under the clock. */
+.fg-op-q {
+  display: flex; flex-direction: column; align-items: flex-start; justify-content: center;
+  gap: 24px; width: 100%; min-height: 600px; scroll-margin-top: 56px;
+}
+/* 2393:15768 / 2393:15765 have NO gap between heading and subhead; 2393:14618
+   has gap-4. Both are real. */
+.fg-op-head { display: flex; flex-direction: column; align-items: flex-start; width: 100%; }
+.fg-op-head--g4 { gap: 4px; }
+.fg-op-sub { width: 100%; font: 400 16px/24px var(--font-family); color: var(--color-heading-sub); }
+.fg-op-body { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; width: 100%; }
+
+/* The Continue on Q2 (2393:14610) is a section child, not a bottom-group button:
+   it is the only one the board draws inside the page. */
+.fg-op-continue { width: 100%; }
+
+/* Bottom group — 2393:14691 · Tab Bar only. There is no Actions on this frame. */
+
+/* ══════════════════════════════════════════════
+   RESULT — Figma "mWeb - EC" · 2393:15035 · 393×915. A funnel-shell screen:
+   Status Bar + Heading Navigation + a gap-16 column + Actions + Tab Bar.
+   Content 2393:15039 is 393×530 while the bottom group starts at 702, so there
+   is a real 40px of slack under the footer; `.fg-content { flex: 1 0 auto }`
+   absorbs it and the children stay top-anchored, which is the same picture.
+══════════════════════════════════════════════ */
+.fg-res {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 16px;
+  width: 100%; padding: 16px 16px 0;
+}
+/* 2393:15074 · a 347-wide, 72-tall block whose rows sit at y=23 and y=52. */
+.fg-res-foot {
+  display: flex; flex-direction: column; align-items: flex-start;
+  gap: 8px; width: 347px; padding-top: 23px;
+}
+.fg-res-foot > span { display: flex; align-items: center; gap: 12px; }
+/* 2393:14735 is 14px/1.5 (=21) and 2393:14738 is 14px/normal (=17) — two
+   different line boxes on two adjacent rows. Reproduced. */
+.fg-lp-foot-a { font: 400 14px/1.5 var(--font-family); color: var(--color-gray-350); white-space: nowrap; }
+.fg-lp-foot-b { font: 400 14px/normal var(--font-family); color: var(--color-gray-350); white-space: nowrap; }
+.fg-lp-foot-b a { color: var(--color-purple-600); text-decoration: none; }
+
+/* Icon boxes for the new landing screens. Every number is the Figma inset plus
+   the negative inner inset, cross-checked against each SVG's own width/height. */
+.fg-ic--shield-check { width: 20px; height: 20px; }
+.fg-ic--shield-check > img:nth-child(1) { left: 2.375px; top: 3px;     width: 15.25px; height: 15.875px; }
+.fg-ic--shield-check > img:nth-child(2) { left: 6.125px; top: 7.376px; width: 7.75px;  height: 5.875px; }
+.fg-ic--shield-plus { width: 20px; height: 20px; }
+.fg-ic--shield-plus > img:nth-child(1) { left: 6.75px;  top: 9.25px; width: 6.5px;   height: 1.5px; }
+.fg-ic--shield-plus > img:nth-child(2) { left: 9.25px;  top: 6.75px; width: 1.5px;   height: 6.5px; }
+.fg-ic--shield-plus > img:nth-child(3) { left: 2.375px; top: 3px;    width: 15.25px; height: 15.875px; }
+.fg-ic--lock-simple { width: 20px; height: 20px; }
+.fg-ic--lock-simple > img:nth-child(1) { left: 2.377px; top: 6.126px; width: 15.25px; height: 11.5px; }
+.fg-ic--lock-simple > img:nth-child(2) { left: 6.126px; top: 0.5px;   width: 7.75px;  height: 7.125px; }
+.fg-ic--headset20 { width: 20px; height: 20px; }
+.fg-ic--headset20 > img { left: 1.876px; top: 1.876px; width: 16.25px; height: 17.5px; }
+/* 2333:7745 · the same CheckCircle art as the portal's, but filled #00b5a3 */
+.fg-ic--check-circle-t48 { width: 48px; height: 48px; }
+.fg-ic--check-circle-t48 > img { left: 9.37%; top: 9.38%; width: 81.25%; height: 81.25%; }
+
+/* 2333:7276 · the 48px mark and the 3-line heading on 2333:6967 */
+.fg-lp-intro { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; width: 100%; overflow: hidden; }
+
+/* 3-segment progress — 2333:6410 · flex gap-4, each flex-1 h-4 r-100. The two
+   incomplete segments are the SAME purple at opacity .12, not a grey track. */
+.fg-steps3 { display: flex; align-items: center; gap: 4px; width: 100%; }
+.fg-steps3 i {
+  flex: 1 0 0; min-width: 1px; height: 4px; border-radius: 100px;
+  background: var(--color-purple-600);
+}
+.fg-steps3 i[data-done="0"] { opacity: .12; }
+
+/* ══════════════════════════════════════════════
+   TYPE
+══════════════════════════════════════════════ */
+/* Question heading — 2283:19227 · Source Serif Pro SemiBold 24px,
+   unitless line-height 1.2, tracking -0.5px, #171717. The accent span is
+   #2563eb (NOT --color-blue-400 #264dbf). Figma writes the <p> at
+   `leading-[0]` with the 1.2 on the spans; a plain 1.2 on the block is
+   equivalent here and avoids a zero-height first line. */
+.fg-q {
+  font-family: var(--font-display); font-weight: 600;
+  /* 29px, not the literal 1.2 (=28.8). Figma reports these heading nodes at
+     361x29 for one line and 361x58 for two, so its LAYOUT rounds the line box
+     to 29 and positions the next sibling from that. Using 28.8 leaves the
+     block 0.4px short, which rounds the text a full pixel high and lights up
+     every glyph row in the diff. */
+  font-size: 24px; line-height: 29px; letter-spacing: -0.5px;
+  color: var(--color-heading);
+  overflow-wrap: break-word;
+}
+.fg-q em { font-style: normal; color: var(--color-blue-600); }
+
+/* ══════════════════════════════════════════════
+   RADIO — Figma "Radio Button" · 2283:19579 · w-361, px-16 py-12, gap-8,
+   radius-12, 1px #e5e5e5, shadow-xs, overflow-clip.
+   THERE IS NO INDICATOR GLYPH. The component contains exactly one child: the
+   label <p>. Do not draw a dot.
+   Text — I2283:19579;3240:1970 · Inter Regular 16/24 #140d26, flex-1.
+══════════════════════════════════════════════ */
+.fg-radio-group { display: flex; flex-direction: column; gap: 16px; width: 100%; border: 0; }
+.fg-radio {
+  position: relative;
+  display: flex; align-items: center; gap: 8px;
+  width: 361px; padding: 12px 16px;
+  background: #fff;
+  /* border:0 is REQUIRED, not tidiness: this is a <button>, and Chrome's UA
+     sheet applies `border: 2px outset ButtonBorder`. Dropping the border
+     declaration silently reinstates 4px of vertical box. */
+  border: 0;
+  border-radius: var(--radius-md);
+  /* The 1px stroke is an INSET SHADOW, not a border. Figma draws this stroke
+     INSIDE the hugged box: the auto-height radios measure exactly 72px
+     (12 + 2x24 + 12) in the reference render. A real 1px border makes them 74
+     and the error cascades 4px down the list by the fourth option. Verified by
+     measuring the #e5e5e5 border rows: ref 339-410, build-with-border 338-411. */
+  box-shadow: inset 0 0 0 1px var(--color-gray-200), var(--shadow-xs);
+  overflow: hidden; cursor: pointer; text-align: left;
+  font: 400 16px/24px var(--font-family);
+  color: var(--color-gray-950);
+  transition: box-shadow var(--dur-fast) var(--ease),
+              background-color var(--dur-fast) var(--ease),
+              transform var(--dur-fast) var(--ease);
+}
+.fg-radio > span { flex: 1 0 0; min-width: 1px; }
+.fg-radio--h56 { height: 56px; }                  /* 2283:19581, 2292:21962 carry h-56 */
+.fg-radio:hover { box-shadow: inset 0 0 0 1px var(--color-purple-border), var(--shadow-xs); }
+.fg-radio:active { transform: scale(.985); }
+.fg-radio:focus-visible { outline: 2px solid var(--color-purple-600); outline-offset: 2px; }
+/* Selected state. Figma has no selected variant for this component, so this
+   uses only values the board itself declares — Border/border-brand-primary and
+   Surface/surface-brand-secondary — and changes no geometry. */
+.fg-radio[aria-checked="true"] {
+  box-shadow: inset 0 0 0 1px var(--color-purple-border), var(--shadow-xs);
+  background: var(--color-purple-ede);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fg-radio { transition: none !important; }
+  .fg-radio:active { transform: none; }
+}
+body.wm-no-motion .fg-radio { transition: none !important; }
+
+/* Second heading form — Figma writes some headings as two BLOCK <p>s (a hard
+   break) rather than inline spans, and the two landing headings use DIFFERENT
+   accent blues: 2283:19227 is #2563eb, 2283:20371 is #36f. */
+.fg-q b { display: block; font-weight: inherit; }
+.fg-q em.alt { color: var(--color-blue-300); }
+
+/* ══════════════════════════════════════════════
+   CHECKBOX BUTTON — Figma 2283:20373 · w-361, px-16 py-12, gap-8, radius-12,
+   1px #e5e5e5 (inside stroke), shadow-xs, overflow-clip → 48 tall.
+   Indicator: Figma "Checkbox" 361:247 · 16×16, white, 1px #acacac, radius 4.
+   The board never renders it SELECTED, so there is no drawn checked state to
+   copy; selected fills the box with the board's own brand purple and adds no
+   glyph. Logged in FIDELITY.md.
+══════════════════════════════════════════════ */
+/* Figma nests these in TWO frames with DIFFERENT gaps: 2283:20370 is gap-16 and
+   holds [heading, list]; 2283:20372 is gap-12 and holds the 7 checkboxes.
+   Collapsing them into one gap-12 group pulls the list 4px up under the
+   heading. (q-meds is different: 2283:19224 is a single gap-16 frame holding
+   the heading AND the radios, which is why .fg-radio-group is one level.) */
+.fg-qblock    { display: flex; flex-direction: column; gap: 16px; width: 100%; border: 0; }
+.fg-check-list { display: flex; flex-direction: column; gap: 12px; width: 100%; }
+.fg-check {
+  display: flex; align-items: center; gap: 8px;
+  width: 361px; padding: 12px 16px;
+  background: #fff;
+  border: 0;                                     /* UA button border is 2px outset */
+  border-radius: var(--radius-md);
+  box-shadow: inset 0 0 0 1px var(--color-gray-200), var(--shadow-xs);
+  overflow: hidden; cursor: pointer; text-align: left;
+  font: 400 16px/24px var(--font-family);
+  color: var(--color-gray-950);
+  transition: box-shadow var(--dur-fast) var(--ease),
+              background-color var(--dur-fast) var(--ease),
+              transform var(--dur-fast) var(--ease);
+}
+.fg-check > span:last-child { flex: 1 0 0; min-width: 1px; }
+.fg-check:hover { box-shadow: inset 0 0 0 1px var(--color-purple-border), var(--shadow-xs); }
+.fg-check:active { transform: scale(.985); }
+.fg-check:focus-visible { outline: 2px solid var(--color-purple-600); outline-offset: 2px; }
+.fg-check-box {
+  flex: none; width: 16px; height: 16px;
+  background: #fff;
+  border: 1px solid var(--color-gray-acac);
+  border-radius: 4px;
+  transition: background-color var(--dur-fast) var(--ease),
+              border-color var(--dur-fast) var(--ease);
+}
+.fg-check[aria-checked="true"] {
+  box-shadow: inset 0 0 0 1px var(--color-purple-border), var(--shadow-xs);
+  background: var(--color-purple-ede);
+}
+.fg-check[aria-checked="true"] .fg-check-box {
+  background: var(--color-purple-600);
+  border-color: var(--color-purple-600);
+}
+@media (prefers-reduced-motion: reduce) { .fg-check, .fg-check-box { transition: none !important; } .fg-check:active { transform: none; } }
+body.wm-no-motion .fg-check, body.wm-no-motion .fg-check-box { transition: none !important; }
+
+/* ══════════════════════════════════════════════
+   MEASUREMENT FIELDS — Figma 2326:4186
+   Field label 2326:4188 · Inter SemiBold 16/24 #140d26
+   Input 2326:4190 · h-42, min-w-144, px-15 py-1, radius-12, 1px #e5e5e5,
+   drop-shadow 0 1px 1px rgba(16,24,40,.05); inner row justify-between with a
+   16px/16px placeholder (#acacac) and a unit suffix (#171717).
+══════════════════════════════════════════════ */
+.fg-fieldset { display: flex; flex-direction: column; gap: 16px; width: 100%; border: 0; }
+.fg-field { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+.fg-field-label {
+  font: 600 16px/24px var(--font-family);
+  color: var(--color-gray-950); white-space: nowrap;
+}
+.fg-field-row { display: flex; align-items: flex-start; gap: 8px; width: 100%; }
+.fg-input {
+  display: flex; align-items: center; gap: 12px;
+  flex: 1 0 0; min-width: 144px; height: 42px; min-height: 42px;
+  padding: 1px 15px;
+  background: #fff;
+  /* Inside stroke, so `px-15` puts the text at x=15 from the frame edge — a
+     real `border: 1px` + `padding: 15px` puts it at 16. Figma reports the
+     placeholder node at x=15 on 2313:23511 and y=11 on 2313:23342, which only
+     works if the stroke takes no layout space. */
+  border: 0;
+  box-shadow: inset 0 0 0 1px var(--color-gray-200);
+  border-radius: 12px;
+  filter: drop-shadow(0 1px 1px rgba(16, 24, 40, .05));
+}
+.fg-input--wide {                                 /* 2313:23341 · pt-11 pb-12 */
+  flex: none; min-width: 0; width: 100%;
+  padding: 11px 15px 12px;
+  box-shadow: inset 0 0 0 1px var(--color-gray-200), var(--shadow-xs);
+  filter: none;
+}
+/* Same component, full width in a COLUMN parent — 2313:23510 on ec-state. The
+   base's `flex: 1 0 0` would put the grow on the vertical axis there. */
+.fg-input--full { flex: none; width: 100%; }
+.fg-input input {
+  flex: 1 0 0; min-width: 1px;
+  background: none; border: 0; padding: 0; margin: 0;
+  font: 400 16px/16px var(--font-family);
+  color: var(--color-heading);
+}
+.fg-input input::placeholder { color: var(--color-gray-acac); opacity: 1; }
+.fg-input input:focus { outline: none; }
+.fg-input:focus-within { border-color: var(--color-purple-600); }
+.fg-input-unit {
+  flex: none;
+  font: 400 16px/16px var(--font-family);
+  color: var(--color-heading); white-space: nowrap;
+}
+
+/* Ghost button — Figma 2326:4203 · transparent, OPACITY 50%, px-16 py-12,
+   radius-12, label Inter SemiBold 16/24 #140d26 centred. */
+.fg-btn-ghost {
+  display: flex; align-items: center; justify-content: center; gap: 4px;
+  width: 100%; padding: 12px 16px;
+  background: rgba(255, 255, 255, 0);
+  border: 0; border-radius: var(--radius-md);
+  opacity: .5; overflow: hidden; cursor: pointer;
+  font: 600 16px/24px var(--font-family);
+  color: var(--color-gray-950); text-align: center;
+}
+.fg-btn-ghost > span { display: flex; align-items: center; justify-content: center; padding: 0 4px; }
+.fg-btn-ghost:focus-visible { outline: 2px solid var(--color-purple-600); outline-offset: 2px; }
+.fg-step-line--123 { height: 123px; }
+.fg-step-line--108 { height: 108.585px; }
+.fg-step-line--128 { height: 128px; }   /* 2393:15056 — was 108.585 on the old board */
+.fg-trust-grp--8 { gap: 8px; }
+
+/* ══════════════════════════════════════════════
+   LANDING-STEPS — Figma 2326:3804
+   Hero title 2326:3813 (361x58) · steps card 2326:3814 · trust 2326:3845
+══════════════════════════════════════════════ */
+.fg-card--steps { height: 718px; }               /* 2326:3807 */
+
+/* Steps card — 2326:3814 · white, 1px #e5e5e5, radius-12, p-16, gap-12,
+   items-center, drop-shadow 0 1px 1px rgba(16,24,40,.05) */
+.fg-steps-card {
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  width: 100%; padding: 16px;
+  background: #fff;
+  /* Inside stroke. A real 1px border narrows the 329-wide step column to 327,
+     which wraps "Help us confirm your appointment coverage" onto a second line
+     and grows the whole card 266 → 290. */
+  border: 0;
+  box-shadow: inset 0 0 0 1px var(--color-gray-200);
+  border-radius: var(--radius-md);
+  /* 2393:15771 · Elevation/200, two shadows — the old board had one. */
+  filter: drop-shadow(0 1px 1.5px rgba(16, 24, 40, .1)) drop-shadow(0 1px 1px rgba(16, 24, 40, .06));
+}
+.fg-steps-title {                                /* 2326:3815 · Inter SemiBold 16/24 */
+  width: 100%;
+  font: 600 16px/24px var(--font-family);
+  color: var(--color-heading);
+}
+.fg-steps { display: flex; flex-direction: column; justify-content: center; gap: 16px; width: 100%; }
+.fg-step { position: relative; display: flex; align-items: flex-start; gap: 12px; width: 100%; }
+.fg-step-num {                                   /* 2326:3818 · 26x26 round */
+  position: relative; flex: none; width: 26px; height: 26px;
+  border-radius: 999px;
+  background: var(--color-purple-600);           /* Surface/surface-brand-primary */
+  font: 600 14px/22px var(--font-family);
+  color: #fff; text-align: center;
+}
+/* SCOPED to the digit. `.fg-step-num span` also matched `.fg-step-line` — one
+   class + one element (0,1,1) outspecifies `.fg-step-line` (0,1,0) — so the
+   connector inherited `top: calc(50% - 11px)` = 2px and started 23px too high,
+   which put its bottom end 23px short. Same family of bug as the unscoped
+   `.fg-faq-q > span` that once let an icon steal half a label's width. */
+.fg-step-num > .fg-step-n { position: absolute; left: 50%; top: calc(50% - 11px); transform: translateX(-50%); white-space: nowrap; }
+/* Steps 2 and 3 use Surface/surface-brand-tertiary, a LIGHTER purple. */
+.fg-step-num--alt { background: #a78bfa; }
+/* The connector runs from the circle's bottom edge; Figma draws it as a rotated
+   line of a fixed length (123px under step 1, 108.585px under step 2, and a
+   HIDDEN one under step 3). */
+.fg-step-line { position: absolute; left: 12px; top: 25px; width: 2px; }
+.fg-step-line img { display: block; width: 100%; height: 100%; }
+.fg-step-body { flex: 1 0 0; min-width: 1px; display: flex; flex-direction: column; justify-content: center; gap: 2px; }
+.fg-step-t { font: 600 16px/24px var(--font-family); color: var(--color-heading); }
+.fg-step-d { font: 400 14px/22px var(--font-family); color: var(--color-heading); }
+
+/* Trust strip — 2326:3845. Figma places the inner row at x=-101 in a 361-wide
+   clipping frame, so the leading avatars are DELIBERATELY cut off on the left
+   and the trailing text on the right. Reproduced, not "fixed". */
+.fg-trust { position: relative; width: 100%; height: 70px; }
+.fg-trust-bg {                                   /* Rectangle 351 · 361x68 */
+  position: absolute; left: 0; top: 8.235px; width: 361px; height: 68px;
+  border-radius: var(--radius-md); background: var(--color-landing-bg);
+}
+.fg-trust-clip { position: absolute; left: 0; top: 8px; width: 361px; height: 54px; overflow: hidden; }
+.fg-trust-row {
+  position: absolute; left: -101px; top: 7px;
+  display: flex; align-items: center; gap: 16px;
+}
+.fg-trust-grp { display: flex; align-items: center; gap: 12px; }
+.fg-avatars { display: flex; align-items: center; isolation: isolate; }
+.fg-avatars span {
+  position: relative; flex: none; width: 40px; height: 40px;
+  border: 2px solid #fff; border-radius: 999px; overflow: hidden;
+}
+.fg-avatars span + span { margin-left: -10px; }
+.fg-avatars span:nth-child(1) { z-index: 3; }
+.fg-avatars span:nth-child(2) { z-index: 2; }
+.fg-avatars span:nth-child(3) { z-index: 1; }
+.fg-avatars img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 999px; }
+.fg-trust-txt {                                  /* 2326:3855 · Inter Medium 14/1.4 #29006a */
+  font: 500 14px/1.4 var(--font-family);
+  color: var(--color-purple-500); white-space: nowrap;
+}
+.fg-trust-div { flex: none; width: 1px; height: 24px; }
+.fg-trust-div img { display: block; width: 100%; height: 100%; }
+.fg-stars { flex: none; width: 116px; height: 20px; }
+.fg-stars img { display: block; width: 100%; height: 100%; }
+
+/* ══════════════════════════════════════════════
+   FUNNEL SHELL — Figma 2313:23350 and the 12 frames that follow it.
+   The frame fill is `Surface/surface-default-primary` #fafafa, NOT white: only
+   the Status Bar and the Heading Navigation are white, and the slack below the
+   content is grey. Verified in the reference render — row 136 is #fafafa.
+══════════════════════════════════════════════ */
+.wm-layer[data-shell="funnel"] { background: var(--color-gray-50); }
+
+/* Content column — 2313:23354 · flex-col gap-16, pt-16, px-16, w-full.
+   No padding-bottom: the bottom group provides the whole lower band. */
+.fg-fcontent {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 16px;
+  width: 100%; padding: 16px 16px 0;
+}
+
+/* ══════════════════════════════════════════════
+   TEXT FIELD — Figma "User Info" 2313:23464 / "Field" 2313:23465
+   Group: flex-col gap-12, overflow-clip.
+   Field: flex-col gap-4.
+   Label 2313:23466 · Inter Medium 16/24 #171717, nowrap.
+   Input 2313:23467 · h-44, p-16, radius-8, 1px #e5e5e5, shadow-xs, items-center.
+   Placeholder 2313:23469 · Inter Regular 16, leading-NORMAL, #acacac.
+
+   This is NOT .fg-input (2326:4190, the height/weight field): that one is h-42,
+   radius-12, px-15/py-1 with a unit suffix. Two different Figma components, two
+   classes — collapsing them is how a "shared" component drifts from the board.
+══════════════════════════════════════════════ */
+.fg-userinfo {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 12px;
+  width: 100%; overflow: hidden;
+}
+.fg-tfield { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; width: 100%; }
+/* ec-state's two fields use gap-8, not gap-4 — 2313:23507 and 2313:23338. */
+.fg-tfield--g8 { gap: 8px; }
+/* 2313:23337 · gap-16 column holding the DOB field and the "Why are we asking
+   this?" row. Hugs (361) rather than stretching. */
+.fg-dobblock { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; width: 361px; }
+.fg-tfield-label {
+  font: 500 16px/24px var(--font-family);
+  color: var(--color-heading); white-space: nowrap;
+}
+.fg-tinput {
+  display: flex; align-items: center;
+  width: 100%; height: 44px; padding: 16px;
+  background: #fff;
+  /* Inside stroke, so the padding is measured from the frame edge and the text
+     starts at x=16 — not at 17, which is where `border: 1px` + `padding: 16px`
+     would put it. Same reasoning as .fg-radio, for the horizontal this time. */
+  box-shadow: inset 0 0 0 1px var(--color-gray-200), var(--shadow-xs);
+  border: 0; border-radius: var(--radius-sm);
+  overflow: hidden;
+  transition: box-shadow var(--dur-fast) var(--ease);
+}
+.fg-tinput input {
+  flex: 1 0 0; min-width: 1px;
+  background: none; border: 0; padding: 0; margin: 0;
+  font: 400 16px/normal var(--font-family);
+  color: var(--color-heading);
+}
+.fg-tinput input::placeholder { color: var(--color-gray-acac); opacity: 1; }
+.fg-tinput input:focus { outline: none; }
+.fg-tinput:focus-within { box-shadow: inset 0 0 0 1px var(--color-purple-600), var(--shadow-xs); }
+@media (prefers-reduced-motion: reduce) { .fg-tinput { transition: none !important; } }
+body.wm-no-motion .fg-tinput { transition: none !important; }
+
+/* ══════════════════════════════════════════════
+   "Why are we asking this?" — Figma "Info" 2313:23485 · flex gap-4 items-center,
+   w-full, holding the 20×20 Question glyph and 2313:23487 (Inter Medium 16/24
+   #5200d4, underlined). Figma draws it as a group with no destination frame, so
+   the group ITSELF becomes the <button> — nothing is added and nothing moves.
+   The hit area is the full 361 the board draws rather than the text's ~200px,
+   which is a larger target, not a different picture.
+══════════════════════════════════════════════ */
+.fg-info-link {
+  display: flex; align-items: center; gap: 4px;
+  width: 100%; padding: 0;
+  background: none; border: 0; cursor: pointer; text-align: left;
+}
+.fg-info-link > span:last-child {
+  font: 500 16px/24px var(--font-family);
+  color: var(--color-purple-600);
+  text-decoration: underline; text-decoration-skip-ink: none;
+  text-underline-position: from-font;
+  white-space: nowrap;
+}
+.fg-info-link:focus-visible { outline: 2px solid var(--color-purple-600); outline-offset: 2px; }
+/* ec-state draws the same affordance differently — 2313:23344 hugs its content
+   (215 wide, not 361), the glyph carries `pr-8` instead of the row carrying
+   gap-4, and 2313:23348 is Inter SEMI BOLD, not Medium. Same picture in two
+   different shapes, so both are reproduced rather than unified. */
+.fg-info-link--sb { width: auto; gap: 8px; }
+.fg-info-link--sb > span { font-weight: 600; }
+
+/* ══════════════════════════════════════════════
+   STATE SELECT — Figma 2313:23510 · the .fg-input box, full width, with the
+   placeholder text 2313:23512 (Inter Regular 16/16 #acacac) and the 20×20
+   CaretDown 2313:23513 pinned to its right.
+   `appearance: none` so the drawn caret is the ONLY chevron; the native one
+   would sit beside it.
+══════════════════════════════════════════════ */
+.fg-select {
+  flex: 1 0 0; min-width: 1px;
+  background: none; border: 0; padding: 0; margin: 0;
+  font: 400 16px/16px var(--font-family);
+  color: var(--color-heading);
+  appearance: none; -webkit-appearance: none;
+  cursor: pointer;
+}
+/* Empty = the drawn state. `required` + an empty-valued first option makes
+   :invalid mean "nothing chosen yet", which is the only styling hook a <select>
+   gives for its placeholder. */
+.fg-select:required:invalid { color: var(--color-gray-acac); }
+.fg-select:focus { outline: none; }
+.fg-select option { color: var(--color-heading); }
+
+/* ══════════════════════════════════════════════
+   DOB FIELD — Figma 2313:23341 draws the value as TWO-TONE placeholder text:
+   `01/01/19|` in #171717 (the `|` is a drawn caret) and `YY` in #a3a3a3, on one
+   text node (2313:23343). A single `placeholder` attribute cannot be two
+   colours, so the drawn text is a span and the <input> is the live layer under
+   it; the span clears the moment the field is focused or has a value.
+══════════════════════════════════════════════ */
+.fg-input--dob { position: relative; }
+.fg-dob-ghost {
+  position: absolute; left: 15px; top: 11px;
+  font: 400 16px/normal var(--font-family);
+  color: var(--color-heading);
+  pointer-events: none;
+}
+.fg-dob-ghost i { font-style: normal; color: var(--color-gray-350); }
+.fg-input--dob input:focus ~ .fg-dob-ghost,
+.fg-input--dob input:not(:placeholder-shown) ~ .fg-dob-ghost { opacity: 0; }
+
+/* ══════════════════════════════════════════════
+   VERIFIED FOOTER — Figma 2289:20981 (gap-4, px-16) = the 110-tall third-party
+   consent paragraph 2289:20984 plus the "Powered by Verified" lockup 2289:20985.
+   This is what makes ec-state's bottom group 349 instead of 213.
+══════════════════════════════════════════════ */
+.fg-verified {                                   /* 2289:20985 · 148.63×22 */
+  display: flex; align-items: center; justify-content: center; gap: 4px;
+  overflow: hidden;
+}
+.fg-verified-by {                                /* 2289:20986 · #a5a5a5, NOT #a3a3a3 */
+  font: 400 14px/22px var(--font-family);
+  color: #a5a5a5; white-space: nowrap;
+}
+.fg-verified-mark { position: relative; flex: none; width: 65.626px; height: 16px; }
+.fg-verified-mark img { position: absolute; display: block; }
+.fg-verified-mark img:first-child { left: 0; top: 0; width: 16px; height: 16px; }
+.fg-verified-mark img:last-child  { left: 17.84px; top: 3.01px; width: 47.788px; height: 9.998px; }
+
+/* ══════════════════════════════════════════════
+   LOADER — Figma "mWeb - EC Loader" · 2289:20904 · 393×852, frame fill WHITE.
+   No Heading Navigation and no Actions. Everything is absolutely placed on the
+   frame: the progress bar at y=64, a 361×578 content column at y=131, and the
+   Tab Bar at y=719. `.fg-loadbody` is the flex slack between the Status Bar and
+   the Tab Bar (852 − 56 − 133 = 663) and the two groups are positioned inside it.
+══════════════════════════════════════════════ */
+.fg-loadbody { position: relative; flex: 1 0 auto; min-height: 663px; }
+
+/* "Linear progress bar" · 2289:20922 · 361.003 wide, gap-16 → 24 + 16 + 4 = 44 */
+.fg-progress {
+  position: absolute; left: 16px; top: 8px; width: 361.003px;
+  display: flex; flex-direction: column; align-items: center; gap: 16px;
+}
+.fg-progress-label {                             /* I2289:20922;1061:38677 · 18/24 SemiBold */
+  width: 100%;
+  font: 600 18px/24px var(--font-family);
+  color: var(--color-gray-950); text-align: center;
+}
+/* Figma stacks these in a grid: the #e5e5e5 track is 360 wide at ml-1 and the
+   purple fill is 88 wide at ml-0 — so the fill starts one pixel LEFT of the
+   track. Drawn at 88/360 ≈ 24%. */
+.fg-progress-track { position: relative; flex: none; width: 361px; height: 4px; }
+.fg-progress-track > i {
+  position: absolute; top: 0; left: 1px; width: 360px; height: 4px;
+  border-radius: 4px; background: var(--color-gray-200);
+}
+.fg-progress-fill {
+  position: absolute; top: 0; left: 0; width: 88px; height: 4px;
+  border-radius: 4px; background: var(--color-purple-600);
+}
+
+.fg-loadcontent {                                /* 2289:20906 · 361×578 at y=131 */
+  position: absolute; left: 16px; top: 75px; width: 361px; height: 578px;
+  display: flex; flex-direction: column; align-items: center; gap: 24px;
+}
+.fg-loadhero {                                   /* 2289:20907 / 2289:20908 · radius-16 */
+  flex: none; width: 361px; height: 216px;
+  border-radius: var(--radius-xl); overflow: hidden;
+}
+.fg-loadhero img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.fg-loadlist {                                   /* 2289:20909 · flex-1, gap-12 */
+  flex: 1 0 0; min-height: 1px;
+  display: flex; flex-direction: column; align-items: center; gap: 12px; width: 100%;
+}
+.fg-loadlist-h {                                 /* 2289:20910 · Inter SemiBold 16/24 */
+  width: 100%;
+  font: 600 16px/24px var(--font-family); color: var(--color-heading);
+}
+.fg-benefits { display: flex; flex-direction: column; gap: 16px; width: 100%; }
+.fg-benefit  { display: flex; align-items: flex-start; gap: 8px; width: 100%; }
+.fg-benefit > span:last-child {                  /* 2289:20914 · 20/24 SemiBold, w-329 */
+  flex: none; width: 329px; align-self: stretch;
+  font: 600 20px/24px var(--font-family); color: var(--color-heading);
+}
+.fg-hipaa {                                      /* 2289:20921 · gap-12, px-16 */
+  flex: none; display: flex; align-items: center; justify-content: center;
+  gap: 12px; padding: 0 16px;
+}
+.fg-hipaa img { display: block; flex: none; width: 44px; height: 44px; }
+.fg-hipaa span {
+  font: 400 16px/1.5 var(--font-family);
+  color: var(--color-gray-600); white-space: nowrap;
+}
+/* CheckCircle · 363:3057 in a 24×24 box, Vector inset 9.375% → 19.5px.
+   The SAME glyph is filled #2563eb on the loader (2289:20913) and #14b8a6 on the
+   Bridge program list (I2292:22146;2229:9395), so it is two committed files, not
+   one recoloured with CSS — the fill is baked into the exported path. */
+.fg-ic--check-circle,
+.fg-ic--check-circle-teal { width: 24px; height: 24px; }
+.fg-ic--check-circle > img,
+.fg-ic--check-circle-teal > img { left: 9.37%; top: 9.38%; width: 81.25%; height: 81.25%; }
+
+/* ══════════════════════════════════════════════
+   COVERED — Figma 2289:20924. The frame is NAMED "mWeb - Phone number, 2FA
+   verification" on the board but draws the coverage-confirmed screen; the id is
+   what matters. Frame fill #fafafa (funnel shell). Container 2289:20925 is
+   gap-40, p-16 → 16 + 109 + 40 + 207 + 40 + 24 + 16 = 452.
+══════════════════════════════════════════════ */
+.fg-container {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 40px;
+  width: 100%; padding: 16px;
+}
+.fg-cov-head { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; width: 100%; }
+.fg-body { width: 100%; font: 400 16px/24px var(--font-family); color: var(--color-heading); }
+.fg-body b { font-weight: 600; }
+
+.fg-cardwrap { display: flex; flex-direction: column; align-items: flex-start; width: 100%; padding: 0 8px; }
+/* Insurance card · 2289:20932 · 345×207, mint-100 fill, 2px #14b8a6 stroke.
+   Inside stroke again: 2289:20933 sits at (16,16) from the frame edge and
+   2289:20935 ends at y=191 = 207−16, which only works if the stroke takes no
+   layout space. A real `border: 2px` shifts both by 2 and eats 4 from the
+   space-between gap. */
+.fg-inscard {
+  position: relative;
+  display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between;
+  width: 100%; height: 207px; padding: 16px;
+  background: var(--color-mint-100);
+  border: 0; border-radius: var(--radius-sm);
+  box-shadow: inset 0 0 0 2px var(--color-teal-500);
+}
+.fg-ins-plan {                                   /* 2289:20934 · 24/32 SemiBold, -0.5px */
+  width: 100%;
+  font: 600 24px/32px var(--font-family); letter-spacing: -.5px;
+  color: var(--color-teal-900);
+}
+.fg-ins-id { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; width: 100%;
+             color: var(--color-heading); }
+.fg-ins-name {                                   /* 2289:20936 · 32/40 SemiBold, -1px */
+  width: 100%;
+  font: 600 32px/40px var(--font-family); letter-spacing: -1px;
+}
+/* 2289:20937 · line 1 is "Member ID: " at 14/22 sharing its line box with an
+   EMPTY 16/24 run, so the box is 24 not 22 and the node is 48 tall, not 46. */
+.fg-ins-mid { font: 400 14px/22px var(--font-family); white-space: pre; }
+.fg-ins-mid .fg-br { font-size: 16px; line-height: 24px; }
+.fg-ins-mid b { font: 600 16px/24px var(--font-family); }
+/* 2289:20938 · 50×50 at (279,136) from the card's border box */
+.fg-seal { position: absolute; left: 279px; top: 136px; }
+.fg-ic--seal-check { width: 50px; height: 50px; }
+.fg-ic--seal-check > img { left: 6.25%; top: 6.25%; width: 87.5%; height: 87.5%; }
+/* lead-icon on 2289:20941 · 16×16, Vector inset 7.81% → 13.5px */
+.fg-ic--pencil { width: 16px; height: 16px; }
+.fg-ic--pencil > img { left: 7.81%; top: 7.81%; width: 84.38%; height: 84.38%; }
+
+.fg-editrow { display: flex; align-items: center; gap: 8px; width: 100%; }
+.fg-editrow p { font: 400 16px/24px var(--font-family); color: var(--color-heading); white-space: nowrap; }
+
+/* An underlined run inside a text node that the board gives no destination —
+   "Learn more." (2289:20928) and "Edit information." (2289:20942). Inline, so it
+   adds no box and moves nothing. */
+.fg-inline-link {
+  font: inherit; color: inherit;
+  background: none; border: 0; padding: 0;
+  text-decoration: underline; text-underline-position: from-font;
+  text-decoration-skip-ink: none; cursor: pointer;
+}
+.fg-inline-link--brand { color: var(--color-purple-600); }
+.fg-inline-link:focus-visible { outline: 2px solid var(--color-purple-600); outline-offset: 2px; }
+
+/* ══════════════════════════════════════════════
+   SCREENING QUESTIONS — Figma 2289:21069 / 2289:21151 / 2289:21095 / 2289:21005.
+   Content column is gap-12 with p-16 all round (2289:21074 and siblings) — not
+   the gap-16 / pt-16-only column the EC screens use (2313:23354).
+══════════════════════════════════════════════ */
+.fg-qframe {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 12px;
+  width: 100%; padding: 16px;
+}
+/* 2289:21076 · gap-8 between the title stack and the sub-line */
+.fg-qhead { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; width: 100%; }
+/* 2393:11772 uses gap-4 for the same shape, and 2393:11751 / 2393:11800 fold the
+   sub-line INTO the title frame with no gap at all. Three spacings for one
+   shape across four adjacent frames — all reproduced, none unified. */
+.fg-qhead--g4 { gap: 4px; }
+.fg-qhead--g0 { gap: 0; }
+/* 2289:21077 · NO gap: the eyebrow's 22px line box butts straight against the
+   heading's first 29px line box. */
+.fg-qtitle { display: flex; flex-direction: column; align-items: flex-start; width: 100%; }
+.fg-qnum {                                       /* 2289:21078 · Inter SemiBold 14/22 */
+  width: 100%;
+  font: 600 14px/22px var(--font-family); color: var(--color-heading);
+}
+.fg-qsub {                                       /* 2289:21080 · Inter Regular 16/24 */
+  width: 100%;
+  font: 400 16px/24px var(--font-family); color: var(--color-gray-950);
+}
+/* Figma sets most of these labels to rgba(0,0,0,0.8) (= #333) and a few to
+   Ink/300 #140d26, seemingly at random within the same list. Both reproduced. */
+.fg-check--soft > span:last-child { color: rgba(0, 0, 0, .8); }
+/* "None of the above" is Inter SemiBold on every list that has it. */
+.fg-check--sb > span:last-child { font-weight: 600; }
+
+/* Free-text box — Figma 2289:21017 · 361×160, px-16 py-16, radius-12,
+   1px #e5e5e5, drop-shadow 0 1px 1px. The placeholder 2289:21018 is Ink/300 at
+   OPACITY 50%, not a grey. */
+.fg-textarea {
+  display: flex; align-items: flex-start;
+  width: 100%; height: 160px; padding: 16px;
+  background: #fff;
+  border: 0; border-radius: var(--radius-md);
+  box-shadow: inset 0 0 0 1px var(--color-gray-200);
+  filter: drop-shadow(0 1px 1px rgba(16, 24, 40, .05));
+}
+.fg-textarea textarea {
+  flex: 1 0 0; min-width: 1px; align-self: stretch;
+  background: none; border: 0; padding: 0; margin: 0; resize: none;
+  font: 400 16px/24px var(--font-family);
+  color: var(--color-gray-950);
+}
+.fg-textarea textarea::placeholder { color: var(--color-gray-950); opacity: .5; }
+.fg-textarea textarea:focus { outline: none; }
+.fg-textarea:focus-within { box-shadow: inset 0 0 0 1px var(--color-purple-600); }
+
+/* ══════════════════════════════════════════════
+   BRIDGE — Figma "Bridge" · 2292:22130 · 393×1886, the tallest funnel frame.
+   Four stacked sections inside 2292:22133 (1529 tall, no gaps between them),
+   then a 12px gap and the 213 bottom group at y=1673.
+══════════════════════════════════════════════ */
+/* 2292:22134 · gap-16 items-center, px-16 py-24 */
+.fg-bridge-a {
+  display: flex; flex-direction: column; align-items: center; gap: 16px;
+  width: 100%; padding: 24px 16px;
+}
+/* 20px heading — 2292:22145. Same 1.2 → whole-pixel rounding as .fg-q: Figma
+   reports this node at 337×48 for two lines, so the line box is 24. */
+.fg-q20 {
+  font-family: var(--font-display); font-weight: 600;
+  font-size: 20px; line-height: 24px; letter-spacing: -0.5px;
+  color: var(--color-heading);
+  width: 100%; overflow-wrap: break-word;
+}
+/* Program card — 2292:22136. The shadow is a FILTER, not box-shadow: Figma
+   applies it to the whole card including the hero's rounded top, and a
+   box-shadow on the parent would draw behind the child's own background. */
+.fg-bcard {
+  display: flex; flex-direction: column; align-items: flex-start;
+  width: 361px;
+  filter: drop-shadow(0 1px 1.5px rgba(16, 24, 40, .1))
+          drop-shadow(0 1px 1px rgba(16, 24, 40, .06));
+}
+.fg-bcard-hero {                                 /* 2292:22137 · 361×164 */
+  flex: none; width: 100%; height: 164px;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  overflow: hidden;
+}
+.fg-bcard-hero img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.fg-bcard-body {                                 /* 2292:22138 · gap-24, px-12 py-16 */
+  display: flex; flex-direction: column; align-items: center; gap: 24px;
+  width: 361px; padding: 16px 12px;
+  background: #fff;
+  border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+}
+.fg-bcard-head { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; width: 100%; }
+.fg-pill {                                       /* 2292:22143 · px-8 py-4, radius-8 */
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 4px 8px;
+  background: var(--color-mint-100);
+  border-radius: var(--radius-sm);
+  /* Inter BOLD here (700), not the SemiBold this board uses everywhere else. */
+  font: 700 14px/22px var(--font-family);
+  color: var(--color-teal-900); white-space: nowrap;
+}
+.fg-proglist { display: flex; flex-direction: column; gap: 12px; width: 100%; }
+.fg-prog { display: flex; align-items: flex-start; gap: 8px; width: 100%; }
+.fg-prog > p {
+  flex: 1 0 0; min-width: 1px; align-self: stretch;
+  font: 600 16px/24px var(--font-family); color: var(--color-heading);
+}
+.fg-prog > p span { font-weight: 400; }          /* the trailing Regular run */
+
+/* "See more" — 2292:22147. Drawn collapsed with a CaretDown and no expanded
+   frame anywhere on the board, so it opens the sheet like the other
+   destination-less affordances. */
+.fg-seemore {
+  display: flex; align-items: center; gap: 8px;
+  padding: 0; background: none; border: 0; cursor: pointer;
+  font: 600 14px/22px var(--font-family); color: var(--color-heading);
+}
+.fg-seemore:focus-visible { outline: 2px solid var(--color-purple-600); outline-offset: 2px; }
+
+/* Cost card — 2326:4341 · mint-100, radius-16, shadow-sm, overflow-clip */
+.fg-cost {
+  display: flex; flex-direction: column; align-items: flex-start;
+  width: 361px;
+  background: var(--color-mint-100);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+.fg-cost-badge {                                 /* 2326:4342 · px-16 py-4 → 32 tall */
+  display: flex; align-items: center; justify-content: space-between;
+  width: 100%; padding: 4px 16px; overflow: hidden;
+}
+.fg-cost-badge > span:first-child {
+  font: 600 14px/22px var(--font-family);
+  color: var(--color-mint-500); white-space: nowrap;
+}
+/* 2326:4344 is the SAME Info glyph at opacity 0 — invisible, but it is 24 tall
+   and it is what makes the badge 32 rather than 30. Keep it. */
+.fg-cost-badge .fg-ic--info[data-ghost] { opacity: 0; }
+.fg-cost-cells {                                 /* 2326:4345 · white, p-12, gap-16 */
+  display: flex; align-items: flex-start; gap: 16px;
+  width: 100%; padding: 12px;
+  background: #fff; border-radius: var(--radius-xl);
+}
+.fg-cost-cell {                                  /* 2326:4346 / 2326:4349 · h-100 */
+  flex: 1 0 0; min-width: 1px;
+  display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between;
+  height: 100px;
+}
+.fg-cost-cell--rule { border-right: 1px solid var(--color-gray-200); }
+.fg-cost-label { font: 600 16px/24px var(--font-family); color: var(--color-heading); white-space: nowrap; }
+.fg-cost-label-row { display: flex; align-items: center; justify-content: space-between; width: 100%; }
+/* Bare 24×24 hit target around a drawn icon — adds no box of its own. */
+.fg-iconbtn { display: block; padding: 0; background: none; border: 0; cursor: pointer; }
+.fg-iconbtn:focus-visible { outline: 2px solid var(--color-purple-600); outline-offset: 2px; }
+.fg-cost-val { width: 100%; color: var(--color-heading); letter-spacing: -.5px; }
+.fg-cost-val b { display: block; font: 600 24px/32px var(--font-family); }
+.fg-cost-val span { display: block; font: 400 16px/24px var(--font-family); letter-spacing: normal; }
+
+/* Reviews strip — 2292:22150 · 393×128, px-16 py-24. The laurels are one Vector
+   each, and the LEFT one is the right one mirrored (rotate-180 + scaleY(-1)). */
+.fg-reviews {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  width: 100%; height: 128px; padding: 24px 16px;
+}
+.fg-reviews-row { display: flex; align-items: center; gap: 9.45px; padding: 0 5.695px; }
+.fg-laurel { display: block; flex: none; width: 26.25px; height: 60px; }
+.fg-laurel--l { transform: scaleX(-1); }
+.fg-reviews-mid { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.fg-reviews-n {
+  width: 152.381px;
+  font: 700 20px/19.342px var(--font-family);
+  color: var(--color-gray-600); text-align: center;
+}
+.fg-reviews-t {
+  font: 400 16px/19.342px var(--font-family);
+  color: var(--color-gray-600); text-align: center; white-space: nowrap;
+}
+.fg-reviews-stars { display: block; flex: none; width: 142.81px; height: 24px; }
+
+/* Doctor quote — 2292:22151 (p-16 wrapper) / 2292:22152 · #ebf0ff, p-12, radius-16 */
+.fg-quotewrap {
+  display: flex; flex-direction: column; align-items: center; gap: 24px;
+  width: 100%; padding: 16px;
+}
+.fg-quote {
+  display: flex; flex-direction: column; align-items: flex-start;
+  width: 361px; padding: 12px;
+  background: var(--color-landing-bg); border-radius: var(--radius-xl);
+  filter: drop-shadow(0 1px 1.5px rgba(16, 24, 40, .1))
+          drop-shadow(0 1px 1px rgba(16, 24, 40, .06));
+}
+.fg-quote-row { display: flex; align-items: flex-start; gap: 12px; width: 100%; }
+/* "Ellipse 1" · I2292:22152;2222:16853 — a 40×40 ELLIPSE with an image fill, so
+   Figma clips the square photo to a circle. The design context flattens it to a
+   plain <img> and loses the clip, which renders a square headshot. */
+.fg-quote-av {
+  display: block; flex: none; width: 40px; height: 40px;
+  border-radius: 50%; overflow: hidden;
+}
+.fg-quote-av img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.fg-quote-body { flex: 1 0 0; min-width: 1px; display: flex; flex-direction: column; gap: 8px; }
+.fg-quote-who { display: flex; flex-direction: column; gap: 2px; width: 100%; }
+.fg-quote-who p {
+  width: 100%;
+  font: 600 14px/22px var(--font-family); color: var(--color-blue-500);
+}
+.fg-quote-txt { width: 100%; font: 400 16px/24px var(--font-family); color: var(--color-blue-500); }
+
+/* FAQ — 2292:22153 (px-16 py-24) / 2292:22154 (gap-12) / 2292:22157 (card) */
+.fg-faqwrap {
+  display: flex; flex-direction: column; align-items: center; gap: 24px;
+  width: 100%; padding: 24px 16px;
+}
+.fg-faq { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; width: 361px; }
+.fg-faq-h {                                      /* 2292:22155 · 18/24 SemiBold, BLACK */
+  width: 100%;
+  font: 600 18px/24px var(--font-family); color: #000;
+}
+.fg-faq-card {
+  display: flex; flex-direction: column; align-items: flex-start;
+  width: 361px; background: #fff; border-radius: var(--radius-xl); overflow: hidden;
+  filter: drop-shadow(0 1px 1.5px rgba(16, 24, 40, .1))
+          drop-shadow(0 1px 1px rgba(16, 24, 40, .06));
+}
+.fg-faq-q {                                      /* 2292:22158 · px-12 py-16 → 56 */
+  display: flex; align-items: center; gap: 8px;
+  width: 100%; padding: 16px 12px;
+  background: none; border: 0; cursor: pointer; text-align: left;
+}
+/* :first-child, NOT `> span`: ic() emits a <span> too, and `.fg-faq-q > span`
+   outspecifies `.fg-ic { flex: none }` — so an unscoped rule makes the caret a
+   flex-grow sibling and halves the label's width. That silently turned every
+   1-line portal FAQ row into 2 lines (+24px each, +168 down the frame). */
+.fg-faq-q > span:first-child {
+  flex: 1 0 0; min-width: 1px;
+  font: 400 16px/24px var(--font-family); color: var(--color-heading);
+}
+.fg-faq-q:focus-visible { outline: 2px solid var(--color-purple-600); outline-offset: -2px; }
+.fg-faq-a {                                      /* 2292:22161 · pb-16 px-12, NO pt */
+  display: flex; align-items: center; gap: 8px;
+  width: 100%; padding: 0 12px 16px;
+}
+.fg-faq-a p {
+  flex: 1 0 0; min-width: 1px;
+  font: 400 16px/24px var(--font-family); color: rgba(0, 0, 0, .8);
+}
+[data-acc][data-open="false"] .fg-faq-a { display: none; }
+/* Figma draws this FAQ EXPANDED, with the CaretRight rotated 90° to point down
+   (2292:22160). Collapsed points right. */
+.fg-faq-q .fg-ic { transition: transform var(--dur-fast) var(--ease); }
+[data-acc][data-open="true"] .fg-faq-q .fg-ic { transform: rotate(90deg); }
+@media (prefers-reduced-motion: reduce) { .fg-faq-q .fg-ic { transition: none !important; } }
+body.wm-no-motion .fg-faq-q .fg-ic { transition: none !important; }
+
+/* ══════════════════════════════════════════════
+   SCHEDULE — Figma "Schedule Provider" · 2313:23615 · 393×1083.
+   Content 2313:23618 (727.41) → 2313:23619 (361×695.41, gap-16): the call card,
+   the timezone note, then the day row and two slot groups.
+   Carries THREE of the five agreed corrections — see FIDELITY.md.
+══════════════════════════════════════════════ */
+.fg-sched { padding: 16px; }
+.fg-sched-col { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; width: 100%; }
+/* 2313:23622 · Source Serif Pro SemiBold 24 with an explicit 32px line-height —
+   not the 1.2 (→29) every other heading on this board uses. */
+.fg-q32 {
+  font-family: var(--font-display); font-weight: 600;
+  font-size: 24px; line-height: 32px; letter-spacing: -0.5px;
+  color: var(--color-heading); white-space: nowrap;
+}
+
+/* Care Coordinator call card — 2313:23623 · white, gap-4, p-12, radius-16, shadow-sm */
+.fg-cccard {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
+  width: 100%; padding: 12px;
+  background: #fff; border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm); overflow: hidden;
+}
+.fg-ccrow { display: flex; align-items: center; gap: 12px; width: 100%; padding: 4px 0; }
+/* "Group 2" · 2313:23625 · 49.999×29.412, two overlapping 29.412 circles whose
+   1.454/1.141px rings are drawn OUTSIDE the shape — which is why the committed
+   export is 52.667×32.333 and has to be offset by −1.454. Shipped as one raster
+   because the first circle stacks TWO image fills at different crops. */
+.fg-ccav { position: relative; flex: none; width: 49.999px; height: 29.412px; }
+.fg-ccav img {
+  position: absolute; display: block;
+  left: -1.454px; top: -1.454px; width: 52.667px; height: 32.333px;
+}
+.fg-ccname {                                     /* 2313:23629 · 18/24 SemiBold, BLACK */
+  font: 600 18px/24px var(--font-family); color: #000; white-space: nowrap;
+}
+.fg-ccmeta { display: flex; align-items: flex-start; justify-content: center; gap: 16px; }
+.fg-ccmeta > span { display: flex; align-items: center; justify-content: center; gap: 8px; }
+.fg-ccmeta em {
+  font: 400 14px/22px var(--font-family); font-style: normal;
+  color: #000; white-space: nowrap;
+}
+.fg-ccdesc { width: 100%; font: 400 16px/24px var(--font-family); color: var(--color-heading); }
+
+/* 2313:23638 · one 22-tall line. This is the node whose copy reads
+   "All times shown are in {Pacific Standard Times (PST)}" on the board. */
+.fg-tznote { width: 100%; font: 400 14px/22px var(--font-family); color: var(--color-heading); }
+
+/* 2313:23639 · gap-24 between the day row and each slot group */
+.fg-sched-pick { display: flex; flex-direction: column; align-items: flex-start; gap: 24px; width: 100%; }
+
+/* Day row — 2313:23640 · 360 wide holding five 80-wide tabs at 8px gaps, so the
+   fifth starts at 352 and overflows. Figma just clips; here it scrolls, which
+   needs one wrapper so the right-edge fade (2313:23651) can stay put while the
+   row moves under it. That wrapper is the only element on this screen with no
+   Figma node behind it. */
+.fg-daywrap { position: relative; width: 360px; }
+.fg-days {
+  display: flex; align-items: flex-start; gap: 8px;
+  overflow-x: auto; -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x proximity;
+}
+.fg-days > * { scroll-snap-align: start; }
+.fg-dayfade {                                    /* 2313:23651 · 40×104 at right:-17 */
+  position: absolute; right: -17px; top: -0.41px;
+  width: 40px; height: 104px; pointer-events: none;
+  background: linear-gradient(to right, rgba(250, 250, 250, 0), var(--color-gray-50) 69.712%);
+}
+.fg-daytab {
+  flex: none; width: 80px; height: 102px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 16px 12px;
+  background: #fff;
+  border: 0;                                     /* UA button border */
+  box-shadow: inset 0 0 0 1px var(--color-gray-200);
+  filter: drop-shadow(0 1px 1px rgba(16, 24, 40, .05));
+  border-radius: var(--radius-sm);
+  cursor: pointer; text-align: center;
+  /* nowrap is load-bearing: "Jan 13" measures 57px inside a 56px content box, so
+     Figma lets it overflow by a pixel while CSS would break it onto a third line
+     and make the tab's text 72 tall instead of 48. */
+  white-space: nowrap;
+  transition: box-shadow var(--dur-fast) var(--ease),
+              background-color var(--dur-fast) var(--ease),
+              transform var(--dur-fast) var(--ease);
+}
+.fg-daytab b { display: block; font: 400 16px/24px var(--font-family); color: var(--color-heading); }
+.fg-daytab i { display: block; font: 600 18px/24px var(--font-family); font-style: normal; color: var(--color-heading); }
+.fg-daytab:active { transform: scale(.985); }
+.fg-daytab:focus-visible { outline: 2px solid var(--color-purple-600); outline-offset: 2px; }
+/* Figma draws the FIRST day selected (2313:23641) using its own
+   Surface/surface-brand-secondary + Border/border-brand-primary. */
+.fg-daytab[aria-checked="true"] {
+  background: var(--color-purple-ede);
+  box-shadow: inset 0 0 0 1px var(--color-purple-border);
+}
+
+/* Slot group — 2313:23652 / 2313:23667 · gap-8; the row wraps at 361. */
+.fg-slotgrp { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; width: 100%; }
+.fg-slotgrp-h { width: 100%; font: 600 16px/24px var(--font-family); color: var(--color-heading); }
+.fg-slots { display: flex; flex-wrap: wrap; align-items: center; align-content: center; gap: 8px; width: 100%; }
+/* Time Slot · 2313:23655 — HUGS its text (109/110/118/108/107/111px on this
+   board, all different), so no fixed width. px-12 from the frame edge → inside
+   stroke: 12 + 59 + 8 + 18 + 12 = 109 only works that way. */
+.fg-slot {
+  flex: none;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  height: 56px; padding: 16px 12px;
+  background: #fff;
+  border: 0;
+  box-shadow: inset 0 0 0 1px var(--color-gray-200);
+  filter: drop-shadow(0 1px 1px rgba(16, 24, 40, .05));
+  border-radius: var(--radius-sm);
+  cursor: pointer; white-space: nowrap;
+  transition: box-shadow var(--dur-fast) var(--ease),
+              background-color var(--dur-fast) var(--ease),
+              transform var(--dur-fast) var(--ease);
+}
+.fg-slot b { font: 600 16px/24px var(--font-family); color: var(--color-heading); }
+.fg-slot i { font: 400 14px/22px var(--font-family); font-style: normal; color: var(--color-gray-600); }
+.fg-slot:active { transform: scale(.985); }
+.fg-slot:focus-visible { outline: 2px solid var(--color-purple-600); outline-offset: 2px; }
+.fg-slot[aria-checked="true"] {
+  background: var(--color-purple-ede);
+  box-shadow: inset 0 0 0 1px var(--color-purple-border);
+}
+@media (prefers-reduced-motion: reduce) {
+  .fg-slot, .fg-daytab { transition: none !important; }
+  .fg-slot:active, .fg-daytab:active { transform: none; }
+}
+body.wm-no-motion .fg-slot, body.wm-no-motion .fg-daytab { transition: none !important; }
+
+/* Clock · 363:4129 and Money · 363:4601, both in 20×20 boxes (2313:23632 /
+   2313:23635). Each Vector's box is its Figma inset PLUS a negative inner inset
+   for stroke bleed; every number below was cross-checked against the downloaded
+   SVG's own width/height. */
+.fg-ic--clock { width: 20px; height: 20px; }
+.fg-ic--clock > img:nth-child(1) { left: 1.75px; top: 1.75px;  width: 16.5px;  height: 16.5px; }
+.fg-ic--clock > img:nth-child(2) { left: 9.25px; top: 4.875px; width: 5.875px; height: 5.875px; }
+.fg-ic--money { width: 20px; height: 20px; }
+.fg-ic--money > img:nth-child(1) { left: 6.75px;  top: 6.75px;   width: 6.5px;   height: 6.5px; }
+.fg-ic--money > img:nth-child(2) { left: 0.5px;   top: 4.25px;   width: 19px;    height: 11.5px; }
+.fg-ic--money > img:nth-child(3) { left: 14.876px; top: 4.25px;  width: 4.625px; height: 4.625px; }
+.fg-ic--money > img:nth-child(4) { left: 14.876px; top: 11.126px; width: 4.625px; height: 4.625px; }
+.fg-ic--money > img:nth-child(5) { left: 0.5px;   top: 11.126px; width: 4.625px; height: 4.625px; }
+.fg-ic--money > img:nth-child(6) { left: 0.5px;   top: 4.25px;   width: 4.625px; height: 4.625px; }
+
+/* ══════════════════════════════════════════════
+   CONSENT SCREENS — Figma 2393:11974 (HIPAA) / 2393:12015 (care) · both 852.
+   Content 2393:11977 is gap-12 with p-16 and NO bottom padding:
+   16 + 81 + 12 + 322 + 12 + 64 = 507, which is exactly 852 − 56 − 76 − 213.
+   Three of the board's hidden nodes live on these frames and are not rendered:
+   the appointment Container (2393:11983 / 12016), the intake Section
+   (2393:11997 / 12038) and their Buttons — plus the "On Bold" label.
+
+   CHANGED on this board: the outer heading moved from Inter SemiBold 24/32 to
+   Source Serif Pro SemiBold 24/1.2 (2393:11981), which is 3px shorter and shifts
+   the whole document card up — and the CTA, drawn DISABLED on the old board, is
+   now drawn ENABLED.
+══════════════════════════════════════════════ */
+.fg-consent {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 12px;
+  width: 100%; padding: 16px 16px 0;
+}
+/* 2313:23702 · Inter (not the serif) SemiBold 24/32, −0.5px, Ink/300. Still used
+   by the phone screen, whose heading did NOT change. */
+.fg-h24 {
+  width: 100%;
+  font: 600 24px/32px var(--font-family); letter-spacing: -.5px;
+  color: var(--color-gray-950);
+}
+.fg-sub16 { width: 100%; font: 400 16px/24px var(--font-family); color: var(--color-heading); }
+.fg-consent-head { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; width: 100%; }
+
+/* Scrolling document — Figma "Section" 2313:23747 / 2313:23790 · 361×319, white,
+   1px #e5e5e5, radius-12, p-16, with a DRAWN 6×93 scrollbar thumb at (351,12.09)
+   (2313:23753 / 2313:23794). The thumb is a real element rather than a styled
+   ::-webkit-scrollbar because a native bar would take 6px of layout width and
+   push the 329-wide text off Figma's grid. It tracks scrollTop from JS. */
+.fg-docwrap {
+  position: relative; width: 100%; height: 322px;
+  background: #fff; border-radius: var(--radius-md);
+  box-shadow: inset 0 0 0 1px var(--color-gray-200);
+  overflow: hidden;
+}
+.fg-doc { height: 100%; overflow-y: auto; padding: 16px; }
+.fg-docbar {
+  position: absolute; right: 4px; top: 12.086px;
+  width: 6px; height: 93px; border-radius: 3px;
+  background: var(--color-gray-200); pointer-events: none;
+}
+/* 2313:23749 · the HIPAA seal at 80×80, centred, 18px above the doc heading */
+.fg-doc-badge { display: block; width: 80px; height: 80px; margin: 0 auto 18px; }
+/* 2313:23751 · Inter SemiBold 18/24 #525252. Measured off the reference, not
+   assumed: at 16px the string runs 182px wide against the render's 207. */
+.fg-doc-h {
+  width: 100%; margin-bottom: 16px;
+  font: 600 18px/24px var(--font-family); color: var(--color-gray-600);
+}
+/* And 2313:23792 — the same-looking heading on consent-care — is 20px. Measured:
+   its string renders 225px wide and 21px tall against 203/18 at 18px. Two sizes
+   for one component on two adjacent frames; both reproduced. */
+.fg-doc-h--20 { font-size: 20px; }
+.fg-doc-b { width: 100%; font: 400 16px/24px var(--font-family); color: var(--color-gray-600); }
+.fg-doc-b + .fg-doc-b { margin-top: 24px; }
+
+/* Acknowledgement row — 2313:23754 / 2313:23795 · purple-100, p-8, radius-16 */
+.fg-ack {
+  display: flex; align-items: center; gap: 8px;
+  width: 100%; padding: 8px;
+  background: var(--color-purple-100); border: 0; border-radius: var(--radius-xl);
+  cursor: pointer; text-align: left;
+}
+.fg-ack:focus-visible { outline: 2px solid var(--color-purple-600); outline-offset: 2px; }
+.fg-ack > span:first-child { flex: none; display: flex; align-items: center; padding: 4px 0; }
+.fg-ackbox {                                     /* 2313:23756 · 20×20, 1px #acacac, radius-4 */
+  display: block; width: 20px; height: 20px;
+  background: #fff; border: 1px solid var(--color-gray-acac); border-radius: 4px;
+  transition: background-color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+}
+.fg-ack > span:last-child { flex: 1 0 0; min-width: 1px; font: 400 16px/24px var(--font-family); color: var(--color-heading); }
+.fg-ack[aria-checked="true"] .fg-ackbox { background: var(--color-purple-600); border-color: var(--color-purple-600); }
+@media (prefers-reduced-motion: reduce) { .fg-ackbox { transition: none !important; } }
+body.wm-no-motion .fg-ackbox { transition: none !important; }
+
+/* ══════════════════════════════════════════════
+   PHONE — Figma "mWeb - Phone number" · 2313:23693 · 852.
+   Content 2313:23700 (361×341, gap-12): title block 116, then a gap-16 column of
+   the input + opt-in (115) and the shield note (82).
+══════════════════════════════════════════════ */
+.fg-phone { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; width: 100%; padding: 16px; }
+.fg-phone-body { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; width: 100%; }
+.fg-phone-top { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; width: 100%; }
+/* 2313:23706 · h-44 p-16 radius-12 — the same anatomy as .fg-tinput but radius 12,
+   not 8, and the board draws it FILLED with a value rather than a placeholder. */
+.fg-pinput {
+  display: flex; align-items: center;
+  width: 100%; height: 44px; padding: 16px;
+  background: #fff;
+  border: 0; border-radius: var(--radius-md);
+  box-shadow: inset 0 0 0 1px var(--color-gray-200), var(--shadow-xs);
+  overflow: hidden;
+  transition: box-shadow var(--dur-fast) var(--ease);
+}
+.fg-pinput input {
+  flex: 1 0 0; min-width: 1px;
+  background: none; border: 0; padding: 0; margin: 0;
+  font: 400 16px/24px var(--font-family); color: var(--color-gray-950);
+}
+.fg-pinput input:focus { outline: none; }
+.fg-pinput:focus-within { box-shadow: inset 0 0 0 1px var(--color-purple-600), var(--shadow-xs); }
+body.wm-no-motion .fg-pinput { transition: none !important; }
+
+/* 2313:23708 — carries a Figma dev annotation, "give a 150% line-height", which
+   is why this text is 14px/1.5 (=21) where the rest of the board uses 14/22. */
+.fg-optin {
+  display: flex; align-items: flex-start; gap: 8px;
+  width: 100%; padding: 0; background: none; border: 0; cursor: pointer; text-align: left;
+}
+.fg-optin:focus-visible { outline: 2px solid var(--color-purple-600); outline-offset: 2px; }
+.fg-optin > span:first-child { flex: none; padding-top: 1px; }
+.fg-optinbox {
+  display: block; width: 20px; height: 20px;
+  background: #fff; border: 1px solid var(--color-gray-200); border-radius: 4px;
+  box-shadow: var(--shadow-xs);
+  transition: background-color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+}
+.fg-optin[aria-checked="true"] .fg-optinbox { background: var(--color-purple-600); border-color: var(--color-purple-600); }
+.fg-optin > span:last-child {
+  flex: 1 0 0; min-width: 1px;
+  font: 400 14px/1.5 var(--font-family); color: var(--color-gray-600);
+}
+.fg-optin b { font-weight: 700; }                /* "Terms of service" is Inter BOLD */
+body.wm-no-motion .fg-optinbox { transition: none !important; }
+
+/* 2313:23713 · #ebf0ff, p-8, radius-16 */
+.fg-shieldnote {
+  display: flex; align-items: flex-start; gap: 8px;
+  width: 100%; padding: 8px;
+  background: var(--color-landing-bg); border-radius: var(--radius-xl);
+}
+.fg-shieldnote img { display: block; flex: none; width: 24px; height: 24px; }
+.fg-shieldnote p {
+  flex: 1 0 0; min-width: 1px;
+  font: 400 14px/22px var(--font-family); color: var(--color-gray-950);
+}
+.fg-shieldnote b { font-weight: 700; }
+
+/* ══════════════════════════════════════════════
+   PORTAL HOME — Figma 2292:22536 · 393×3061.8, the tallest frame on the board
+   and the only one with NO Actions and NO Tab Bar.
+   132 + 922 (Section 2292:22539) + 2007.8 (Content 2292:22591) = 3061.8.
+══════════════════════════════════════════════ */
+/* 2292:22539 · gap-24 items-center, px-16 py-40, radius-24 */
+.fg-portal-top {
+  display: flex; flex-direction: column; align-items: center; gap: 24px;
+  width: 100%; padding: 40px 16px; border-radius: var(--radius-lg);
+}
+.fg-greet { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 100%; }
+/* 2292:22541 · a 76px mint-200 disc at OPACITY 50% with a 48px CheckCircle over
+   it (the layer is named "Shield icon" but its vector is CheckCircle's). */
+.fg-greet-ring { position: relative; flex: none; width: 76px; height: 76px; }
+.fg-greet-ring::before {
+  content: ""; position: absolute; inset: 0;
+  border-radius: var(--radius-full); background: var(--color-mint-200); opacity: .5;
+}
+.fg-greet-ring .fg-ic { position: absolute; left: calc(50% + .5px); top: 50%; transform: translate(-50%, -50%); }
+.fg-ic--check-circle-48 { width: 48px; height: 48px; }
+.fg-ic--check-circle-48 > img { left: 9.37%; top: 9.38%; width: 81.25%; height: 81.25%; }
+.fg-greet-h {                                    /* 2292:22544 · serif 32/40, −1px */
+  width: 100%;
+  font-family: var(--font-display); font-weight: 600;
+  font-size: 32px; line-height: 40px; letter-spacing: -1px;
+  color: var(--color-heading); text-align: center;
+}
+.fg-greet-p { width: 100%; font: 400 16px/24px var(--font-family); color: var(--color-heading); text-align: center; }
+
+/* Upcoming-call card — 2292:22546 · a mint-300 shell whose Badge is the only bit
+   of mint that shows; the white body (2292:22549) covers the rest. */
+.fg-callcard {
+  display: flex; flex-direction: column; align-items: flex-start; justify-content: center;
+  width: 361px;
+  background: var(--color-mint-300); border-radius: var(--radius-xl);
+  filter: drop-shadow(0 1px 1px rgba(16, 24, 40, .05));
+}
+.fg-callcard-badge { display: flex; align-items: center; justify-content: center; padding: 10px 16px 8px; }
+.fg-callcard-badge span { font: 600 14px/22px var(--font-family); color: #fff; white-space: nowrap; }
+/* 2px INSIDE stroke: 2292:22553 sits at (0,0) inside 2292:22549 and 300 + 298 =
+   598 exactly, which only holds if the stroke takes no layout space. */
+.fg-callcard-body {
+  display: flex; flex-direction: column; align-items: flex-start; width: 100%;
+  background: #fff; border: 0; border-radius: var(--radius-xl); overflow: hidden;
+  box-shadow: inset 0 0 0 2px var(--color-mint-300), var(--shadow-sm);
+}
+.fg-callcard-top {                               /* 2292:22553 · gap-16, px-16 py-32 */
+  display: flex; flex-direction: column; align-items: center; gap: 16px;
+  width: 100%; padding: 32px 16px;
+}
+/* 2292:22554 · 100×100 round with a 1.563px #e5e5e5 ring. Shipped as one raster
+   because Figma stacks two image fills plus a blurred black square inside it. */
+.fg-avatar100 { flex: none; width: 100px; height: 100px; }
+.fg-avatar100 img { display: block; width: 100%; height: 100%; }
+.fg-callcard-h { width: 100%; font: 600 20px/24px var(--font-family); color: var(--color-heading); text-align: center; }
+.fg-callmeta { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.fg-callmeta > span { display: flex; align-items: center; justify-content: center; gap: 8px; height: 24px; }
+.fg-callmeta em {
+  font: 400 16px/24px var(--font-family); font-style: normal;
+  color: var(--color-heading); white-space: nowrap;
+}
+.fg-callcard-foot {                              /* 2292:22569 · #f5f5f5, gap-32, p-16 */
+  display: flex; flex-direction: column; align-items: center; gap: 32px;
+  width: 361px; padding: 16px;
+  background: var(--color-gray-100);
+}
+.fg-callfrom { display: flex; align-items: center; justify-content: center; width: 100%; }
+.fg-callfrom p { font: 400 14px/22px var(--font-family); color: var(--color-heading); white-space: nowrap; }
+.fg-callfrom a { color: var(--color-purple-600); text-decoration: underline;
+                 text-underline-position: from-font; text-decoration-skip-ink: none; }
+.fg-callacts { display: flex; align-items: center; justify-content: center; gap: 32px; width: 100%; padding: 0 24px; }
+.fg-callact { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 72px;
+              background: none; border: 0; padding: 0; cursor: pointer; }
+.fg-callact:focus-visible { outline: 2px solid var(--color-purple-600); outline-offset: 2px; }
+.fg-callact-btn {                                /* 2292:22574 · p-14, radius-full, 48×48 */
+  display: flex; align-items: center; justify-content: center; gap: 4px;
+  flex: none; padding: 14px;
+  background: #fff; border: 0;
+  /* Inside stroke: 14 + 20 + 14 = 48, which a real 1px border would make 50. */
+  box-shadow: inset 0 0 0 1px var(--color-gray-200), var(--shadow-xs);
+  border-radius: var(--radius-full); overflow: hidden;
+}
+.fg-callact-t { font: 400 12px/16px var(--font-family); color: var(--color-heading); text-align: center; white-space: nowrap; }
+.fg-expect {                                     /* 2292:22582 · border-top, py-8, gap-8 */
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  width: 100%; padding: 8px 0;
+  /* Top rule as an inset shadow — 2292:22586 sits at y=8, so the stroke takes
+     no layout space and the Section is 96, not 97. */
+  box-shadow: inset 0 1px 0 var(--color-gray-200);
+}
+.fg-expect-h { width: 100%; font: 600 18px/24px var(--font-family); color: var(--color-heading); }
+.fg-expect ul { width: 100%; padding-left: 24px; list-style: disc; }
+.fg-expect li { font: 400 16px/24px var(--font-family); color: var(--color-heading); }
+
+/* 2292:22591 · gap-24, px-16 py-32 → 2007.8 */
+.fg-portal-body {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 24px;
+  width: 100%; padding: 32px 16px;
+}
+/* 2292:22603 · serif 28/34 with −0.8px tracking, BLACK not #171717 */
+.fg-portal-h1 {
+  width: 100%;
+  font-family: var(--font-display); font-weight: 600;
+  font-size: 28px; line-height: 34px; letter-spacing: -0.8px;
+  color: #000; white-space: nowrap;
+}
+/* 2292:22622 / 2292:22625 · serif 20/24, black */
+.fg-portal-h2 {
+  width: 100%;
+  font-family: var(--font-display); font-weight: 600;
+  font-size: 20px; line-height: 24px; color: #000;
+}
+
+/* Team Member / Bridge summary — 2292:22604 · mint-100 shell + white card */
+.fg-team {
+  display: flex; flex-direction: column; align-items: flex-start; width: 361px;
+  background: var(--color-mint-100); border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm); overflow: hidden;
+}
+.fg-team-badge { display: flex; align-items: center; width: 100%; padding: 4px 16px; overflow: hidden; }
+.fg-team-badge span { font: 600 14px/22px var(--font-family); color: var(--color-mint-500); white-space: nowrap; }
+.fg-team-card {                                  /* 2292:22607 · white, px-12 py-16, gap-12 */
+  display: flex; flex-direction: column; align-items: flex-start; gap: 12px;
+  width: 361px; padding: 16px 12px;
+  background: #fff; border: 0;
+  box-shadow: inset 0 0 0 1px var(--color-gray-200);
+  border-radius: var(--radius-xl);
+}
+.fg-team-row { display: flex; align-items: center; gap: 12px; width: 100%; }
+/* 2393:12127 · Source Serif Pro SemiBold 20/24 Ink/300. On the previous board this
+   was Inter SemiBold with a 5-vector HandHeart glyph beside it; both changed. */
+.fg-team-row p {
+  flex: 1 0 0; min-width: 1px;
+  font-family: var(--font-display); font-weight: 600;
+  font-size: 20px; line-height: 24px; color: var(--color-gray-950);
+}
+.fg-team-sec {                                   /* 2393:12128 · border-top, pt-16, gap-8 */
+  display: flex; flex-direction: column; align-items: flex-start; gap: 8px;
+  width: 337px; padding-top: 16px;
+  box-shadow: inset 0 1px 0 var(--color-gray-200);
+}
+/* 2393:12132 · 16/24, not the 18/24 the previous board used */
+.fg-team-sec > p { font: 600 16px/24px var(--font-family); color: var(--color-heading); white-space: nowrap; }
+.fg-team-sec ul { width: 100%; padding-left: 24px; list-style: disc; }
+.fg-team-sec li { font: 400 16px/24px var(--font-family); color: var(--color-heading); }
+.fg-team-sec li b { font-weight: 600; }
+
+/* After-scheduling video — 2292:22620 · 361×577.6, an opaque media instance.
+   Shipped as a raster (1× and 3×) for the same reason as the ad creative: its
+   internals are a video poster with baked type. Recorded in FIDELITY.md. */
+.fg-portal-video { flex: none; width: 361px; height: 577.5999755859375px; }
+.fg-portal-video img { display: block; width: 100%; height: 100%; }
+
+/* Learn-more carousel — 2292:22623 · three 216.6-wide cards at 16px gaps inside a
+   361 box, so it overflows and scrolls. The yellow outer Callout is fully covered
+   by the inner one (both resolve to 250.2 tall) and never shows. */
+.fg-learn { display: flex; align-items: flex-start; gap: 16px; width: 100%; overflow-x: auto; }
+.fg-learncard {
+  flex: none; width: 216.6px;
+  /* This is an <a>, so the UA underline has to go — the board draws none. */
+  text-decoration: none; color: inherit;
+  background: var(--color-yellow-amber); border-radius: var(--radius-xl);
+  filter: drop-shadow(0 1px 1px rgba(16, 24, 40, .05));
+}
+.fg-learncard-in {
+  display: flex; flex-direction: column; align-items: flex-start;
+  width: 100%; aspect-ratio: 361 / 417;
+  background: var(--color-gray-50); border-radius: var(--radius-xl);
+}
+.fg-learncard-media {
+  position: relative; flex: 1 0 0; min-height: 1px; width: 100%;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0; overflow: hidden;
+}
+.fg-learncard-media > img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.fg-learncard-media .fg-ic { position: absolute; left: 16px; top: 16px; }
+.fg-learncard-foot {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
+  width: 100%; padding: 12px;
+  background: #fff; border-radius: 0 0 var(--radius-xl) var(--radius-xl); overflow: hidden;
+}
+.fg-learncard-kicker { display: flex; align-items: center; justify-content: center; gap: 8px; }
+.fg-learncard-kicker img { display: block; flex: none; width: 16px; height: 15.873px; }
+.fg-learncard-kicker span { font: 400 14px/22px var(--font-family); color: var(--color-heading); white-space: nowrap; }
+.fg-learncard-t { width: 100%; font: 600 16px/24px var(--font-family); color: var(--color-heading); }
+
+/* Additional links — 2292:22648 · white card, one 48-tall Cell with a 0.5px rule */
+.fg-links {
+  display: flex; flex-direction: column; align-items: flex-start; justify-content: center;
+  width: 361px; background: #fff; border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm); overflow: hidden;
+}
+.fg-links a {
+  display: flex; align-items: center; justify-content: space-between;
+  width: 100%; padding: 12px 16px;
+  background: #fff; box-shadow: inset 0 -0.5px 0 var(--color-gray-200);
+  font: 400 16px/24px var(--font-family); color: var(--color-heading);
+  text-decoration: none; white-space: nowrap;
+}
+.fg-links a:hover { background: var(--color-gray-75); }
+
+/* Portal icon boxes. Same rule as everywhere: the box is the Figma inset plus the
+   negative inner inset, cross-checked against each SVG's own width/height. */
+.fg-ic--calblank { width: 20px; height: 20px; }
+.fg-ic--calblank > img:nth-child(1) { left: 2.377px; top: 2.377px; width: 15.25px; height: 15.25px; }
+.fg-ic--calblank > img:nth-child(2) { left: 13px;    top: 1.127px; width: 1.5px;   height: 4px; }
+.fg-ic--calblank > img:nth-child(3) { left: 5.5px;   top: 1.127px; width: 1.5px;   height: 4px; }
+.fg-ic--calblank > img:nth-child(4) { left: 2.377px; top: 6.126px; width: 15.25px; height: 1.5px; }
+.fg-ic--user { width: 20px; height: 20px; }
+.fg-ic--user > img { left: 1.868px; top: 1.872px; width: 16.266px; height: 15.641px; }
+.fg-ic--calendar-plus { width: 20px; height: 20px; }
+.fg-ic--calendar-plus > img { left: 2.5px; top: 1.25px; width: 15px; height: 16.25px; }
+.fg-ic--x-circle { width: 20px; height: 20px; }
+.fg-ic--x-circle > img { left: 1.874px; top: 1.876px; width: 16.25px; height: 16.25px; }
+.fg-ic--speaker-high { width: 24px; height: 24px; }
+.fg-ic--speaker-high > img { left: 1.5px; top: 2.251px; width: 21.753px; height: 19.498px; }
+.fg-ic--arrow-ur { width: 20px; height: 20px; }
+.fg-ic--arrow-ur > img:nth-child(1) { left: 4px;     top: 4px; width: 12px;     height: 12px; }
+.fg-ic--arrow-ur > img:nth-child(2) { left: 5.876px; top: 4px; width: 10.125px; height: 10.125px; }
+.fg-ic--hand-heart { width: 40px; height: 40px; }
+.fg-ic--hand-heart > img:nth-child(1) { left: 1.252px; top: 23.752px; width: 6.25px;  height: 8.75px; }
+.fg-ic--hand-heart > img:nth-child(2) { left: 12.5px;  top: 6.248px;  width: 23.75px; height: 18.75px; }
+.fg-ic--hand-heart > img:nth-child(3) { left: 0.252px; top: 22.752px; width: 8.25px;  height: 10.75px; }
+.fg-ic--hand-heart > img:nth-child(4) { left: 6.5px;   top: 17.748px; width: 30.75px; height: 15.75px; }
+.fg-ic--hand-heart > img:nth-child(5) { left: 11.5px;  top: 5.248px;  width: 25.75px; height: 19.394px; }
+
+/* Icon boxes for this screen. Every number is the Figma Vector's own intrinsic
+   size, cross-checked against the downloaded SVG's width/height attributes —
+   Figma nests a negative inset inside these to make room for stroke bleed, so
+   the painted box is bigger than the nominal glyph box. */
+/* CaretDown 16 · 2292:22149 — Vector box 10×5 at (3,6), bled to 12×7 at (2,5) */
+.fg-ic--caret-down-sm { width: 16px; height: 16px; }
+.fg-ic--caret-down-sm > img { left: 2px; top: 5px; width: 12px; height: 7px; }
+/* CaretRight 20 · 2292:22160 — bled to 8.25×14.5 at (6.5,2.75) */
+.fg-ic--caret-right { width: 20px; height: 20px; }
+.fg-ic--caret-right > img { left: 6.5px; top: 2.75px; width: 8.25px; height: 14.5px; }
+/* Info 24 · 2326:4352 — three Vectors: circle 20×20 at (2,2), stem 3.5×7.25 at
+   (10.25,10.25), dot 2.25×2.25 at (10.5,6.75) */
+.fg-ic--info { width: 24px; height: 24px; }
+.fg-ic--info > img:nth-child(1) { left: 2px;     top: 2px;     width: 20px;   height: 20px; }
+.fg-ic--info > img:nth-child(2) { left: 10.25px; top: 10.25px; width: 3.5px;  height: 7.25px; }
+.fg-ic--info > img:nth-child(3) { left: 10.5px;  top: 6.75px;  width: 2.25px; height: 2.25px; }
+
+/* ══════════════════════════════════════════════
+   LEGAL BLURB — Figma 2313:23381 (px-16 wrapper) + 2313:23491.
+   Figma writes the <p> at font-size 0 / leading 0 and puts 14px/22 on every
+   span, which is its mixed-style encoding; a 14/22 block is equivalent and
+   avoids a zero-height first line. Two lines at 361 wide → 44 tall, which is
+   what makes this screen's bottom group 257 instead of 213.
+══════════════════════════════════════════════ */
+.fg-legal {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
+  width: 100%; padding: 0 16px;
+}
+.fg-legal p {
+  width: 100%;
+  font: 400 14px/22px var(--font-family);
+  color: var(--color-gray-350);            /* Text/text-default-tertiary #a3a3a3 */
+}
+/* The one real link in the legal copy: "Verified" → verified.inc, which the
+   board itself carries as an href on 2289:20984. */
+.fg-legal a { color: inherit; text-decoration: underline;
+              text-underline-position: from-font; text-decoration-skip-ink: none; }
+/* "Terms of Service" / "Privacy Policy" are underlined RUNS inside the single
+   text node, not link nodes, and the board gives them no destination frame. */
+.fg-u {
+  text-decoration: underline;
+  text-underline-position: from-font; text-decoration-skip-ink: none;
+}

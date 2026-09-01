@@ -1,0 +1,746 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   motivation.css — local layer for the Motivation Reflection prototype.
+
+   Builds ON ../glp1_funnel/funnel.css (tokens + .cf-* components) and
+   ../glp1_funnel/steps.css (.st-* step shell).
+
+   Everything here is either (a) a screen-router / prototype-chrome concern,
+   or (b) the chat layer, for which @bold/web has NO component today
+   (no Chat / Bubble / Chip / Thread in the Storybook catalog — 92 titles
+   checked at https://staging-ui.agebold.com/index.json).
+
+   The chat chips are therefore hand-built on the ANATOMY of
+   Forms/Formik/FieldRadioButtons + FieldCheckboxButtons (real <input> +
+   <label>, no div-as-button) and skinned with the Tag---purple100 token pair
+   (background $purple---100, text $purple) so they read as design-system parts.
+     Tag:               https://staging-ui.agebold.com/?path=/story/tag--default
+     FieldRadioButtons: https://staging-ui.agebold.com/?path=/story/forms-formik-fieldradiobuttons--default
+
+   Tokens below are pinned to @bold/web master
+   packages/web/src/styles/_variables.scss and are the REAL values — several
+   correct funnel.css's documented parity deviations (⚠ in that file):
+     --mv-purple-100  #eee6fb   $purple---100   (funnel.css uses #ede9fe ⚠)
+     --mv-grey-500    #4d4d4d   $grey---500     (funnel.css uses #737373 ⚠)
+   Use these for anything new; #737373 on white is 4.7:1, which passes but
+   leaves no headroom for a 65+ audience.
+══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* @bold/web tokens not present in funnel.css */
+  --mv-purple-50:   #f6f4fc;   /* $purple---50  */
+  --mv-purple-100:  #eee6fb;   /* $purple---100 */
+  --mv-purple-200:  #a980ea;   /* $purple---200 */
+  --mv-purple-400:  #3e009f;   /* $purple---400 */
+  --mv-grey-400:    #acacac;   /* $grey---400   */
+  --mv-grey-500:    #4d4d4d;   /* $grey---500   */
+  --mv-grey-100:    #fcfcfc;   /* $grey---100   */
+  --mv-radius-full: 99px;      /* $border-radius---full */
+  --mv-radius-4:    4px;       /* $border-radius---4    */
+
+  /* Senior-onboarding floor: body 18px, line-height >= 1.5 */
+  --mv-body:      18px;
+  --mv-body-lh:   28px;
+  --mv-tap:       48px;        /* > 44x44 hard minimum */
+
+  /* ── iPhone 16 geometry (points = CSS px at 1x) ──────────────────────────
+     Logical resolution 393 x 852. Display corner radius 55.
+     Dynamic Island 125 x 36, 11 from the top.
+     Home indicator 139 x 5. Status bar 54 — which is exactly what
+     funnel.css assumes with `.cf-nav { top: 54px }`. */
+  --ip-w:        393px;
+  --ip-h:        852px;
+  --ip-radius:   55px;
+  --ip-bezel:    13px;
+  --ip-status:   54px;
+  --ip-island-w: 125px;
+  --ip-island-h: 36px;
+
+  /* Height of the sticky chrome inside the chat, for scroll-margin */
+  --mv-chat-chrome: 124px;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   APP SHELL — prototype chrome in a sidebar, the device on a stage.
+   steps.css clamps `body` to 393px for the real funnel pages; this
+   prototype hosts a device frame, so that clamp has to be lifted here.
+══════════════════════════════════════════════════════════════════════════ */
+
+html { overflow-x: clip; }
+
+body {
+  max-width: none;                       /* overrides steps.css:12 */
+  margin: 0;
+  font-family: var(--font-family);
+  background: var(--color-gray-100);
+  color: var(--color-gray-950);
+  overflow-x: clip;
+}
+
+.mv-app { display: flex; align-items: stretch; min-height: 100vh; }
+
+/* ── Sidebar ──────────────────────────────────────────────────────────── */
+
+.mv-sidebar {
+  flex: 0 0 340px;
+  width: 340px;
+  align-self: flex-start;
+  position: sticky;
+  top: 0;
+  height: 100vh;                         /* fill it, so the rule reads as a rail */
+  overflow-y: auto;
+  background: #fff;
+  border-right: 1px solid var(--color-gray-200);
+  padding: 20px 20px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.mv-sidebar-head { display: flex; flex-direction: column; gap: 6px; }
+.mv-sidebar-title { margin: 0; font-size: 20px; line-height: 26px; font-weight: 700; }
+.mv-eyebrow {
+  margin: 0; font-size: 14px; font-weight: 700; letter-spacing: 0.4px;
+  text-transform: uppercase; color: var(--mv-grey-500);
+}
+.mv-sidebar-sub { margin: 0; font-size: 14px; line-height: 20px; color: var(--mv-grey-500); }
+
+.mv-group { display: flex; flex-direction: column; gap: 8px; }
+
+/* Direction switcher — vertical in the sidebar, so each direction can carry
+   its hypothesis instead of a bare label. */
+.mv-seg { display: flex; flex-direction: column; gap: 8px; }
+.mv-seg button {
+  width: 100%; min-height: var(--mv-tap);
+  padding: 10px 14px;
+  text-align: left;
+  background: #fff;
+  border: 1px solid var(--color-gray-250);
+  border-radius: var(--radius-md);
+  font-family: var(--font-family); cursor: pointer;
+  display: flex; flex-direction: column; gap: 2px;
+  transition: background-color 160ms ease-in-out, border-color 160ms ease-in-out;
+}
+.mv-seg .mv-seg-name { font-size: 16px; font-weight: 700; color: var(--color-gray-950); }
+.mv-seg .mv-seg-sub  { font-size: 14px; line-height: 19px; color: var(--mv-grey-500); }
+.mv-seg button:hover { background: var(--mv-purple-50); border-color: var(--mv-purple-200); }
+.mv-seg button[aria-pressed="true"] {
+  background: var(--color-purple-600); border-color: var(--color-purple-600);
+}
+.mv-seg button[aria-pressed="true"] .mv-seg-name,
+.mv-seg button[aria-pressed="true"] .mv-seg-sub { color: #fff; }
+.mv-seg button[aria-pressed="true"] .mv-seg-sub { opacity: 0.85; }
+.mv-seg button:focus-visible { outline: 3px solid var(--color-purple-600); outline-offset: 2px; }
+
+.mv-caption {
+  margin: 0; font-size: 14px; line-height: 20px; color: var(--color-gray-950);
+  background: var(--mv-purple-50);
+  border-left: 3px solid var(--color-purple-600);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+}
+.mv-caption strong { color: var(--color-purple-500); }
+
+.mv-jump { display: flex; flex-wrap: wrap; gap: 6px; }
+.mv-jump button {
+  min-height: 36px; padding: 6px 11px;
+  border: 1px solid var(--color-gray-250); background: #fff;
+  border-radius: var(--mv-radius-full);
+  font-family: var(--font-family); font-size: 14px; color: var(--mv-grey-500);
+  cursor: pointer;
+}
+.mv-jump button[aria-current="true"] {
+  border-color: var(--color-purple-600); color: var(--color-purple-500);
+  font-weight: 700; background: var(--mv-purple-50);
+}
+.mv-jump button:focus-visible { outline: 3px solid var(--color-purple-600); outline-offset: 2px; }
+
+.mv-ghost-btn {
+  min-height: 44px; padding: 10px 14px;
+  border: 1px solid var(--color-gray-250); background: #fff;
+  border-radius: var(--radius-md);
+  font-family: var(--font-family); font-size: 14px; font-weight: 700;
+  color: var(--color-gray-950); cursor: pointer;
+}
+.mv-ghost-btn:hover { background: var(--color-gray-50); }
+.mv-ghost-btn:focus-visible { outline: 3px solid var(--color-purple-600); outline-offset: 2px; }
+.mv-sidebar-actions { display: flex; flex-direction: column; gap: 8px; }
+
+/* ── Stage ────────────────────────────────────────────────────────────── */
+
+.mv-stage {
+  flex: 1; min-width: 0;
+  display: flex; align-items: flex-start; justify-content: center;
+  padding: 32px 24px 48px;
+  background:
+    radial-gradient(120% 90% at 50% 0%, #f3effb 0%, var(--color-gray-100) 60%);
+}
+
+/* ── iPhone 16 ────────────────────────────────────────────────────────── */
+
+.mv-phone {
+  position: relative;
+  flex-shrink: 0;
+  width: calc(var(--ip-w) + var(--ip-bezel) * 2);
+  height: calc(var(--ip-h) + var(--ip-bezel) * 2);
+  padding: var(--ip-bezel);
+  border-radius: calc(var(--ip-radius) + var(--ip-bezel));
+  background: linear-gradient(160deg, #2c2c31 0%, #191920 45%, #34343a 100%);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.22) inset,
+    0 24px 60px rgba(20,13,38,0.28),
+    0 4px 14px rgba(20,13,38,0.16);
+}
+body[data-surface="internal"] .mv-phone { display: none; }
+
+/* Side buttons, so the chassis reads as a device rather than a rounded box.
+   iPhone 16: Action button + volume rocker on the left, power on the right.
+   Drawn just inside the silhouette so they read as machined into the rail
+   rather than floating alongside it. */
+.mv-phone-buttons { position: absolute; inset: 0; pointer-events: none; }
+.mv-phone-buttons span {
+  position: absolute; width: 2px; border-radius: 2px;
+  background: linear-gradient(180deg, #45454e 0%, #24242b 60%, #3a3a43 100%);
+  box-shadow: 0 0 0 0.5px rgba(0,0,0,0.45);
+}
+.mv-phone-buttons span:nth-child(1) { left: -2px; top: 132px; height: 30px; }  /* action  */
+.mv-phone-buttons span:nth-child(2) { left: -2px; top: 186px; height: 58px; }  /* vol up  */
+.mv-phone-buttons span:nth-child(3) { left: -2px; top: 256px; height: 58px; }  /* vol dn  */
+.mv-phone-buttons span:nth-child(4) { right: -2px; top: 214px; height: 86px; } /* power   */
+
+/* The screen. This is the scroll container — the page itself never scrolls,
+   so the sticky status bar and nav behave exactly as they do on device. */
+.mv-frame {
+  position: relative;
+  width: var(--ip-w);
+  height: var(--ip-h);
+  border-radius: var(--ip-radius);
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: var(--color-gray-50);
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.mv-frame::-webkit-scrollbar { width: 0; height: 0; }
+
+/* iOS status bar — sticky, 54px, which is the offset funnel.css's
+   `.cf-nav { top: 54px }` already expects. */
+.mv-statusbar {
+  position: sticky; top: 0; z-index: 30;
+  height: var(--ip-status);
+  padding: 14px 30px 0;
+  background: #fff;
+  display: flex; align-items: flex-start; justify-content: space-between;
+  font-size: 16px; font-weight: 600; letter-spacing: 0.2px;
+  color: var(--color-gray-950);
+  pointer-events: none;
+}
+.mv-statusbar-icons { display: flex; align-items: center; gap: 6px; }
+
+/* Dynamic Island */
+.mv-island {
+  position: absolute;
+  top: calc(var(--ip-bezel) + 11px);
+  left: 50%; transform: translateX(-50%);
+  width: var(--ip-island-w); height: var(--ip-island-h);
+  border-radius: var(--mv-radius-full);
+  background: #08080b;
+  z-index: 40;
+  pointer-events: none;
+}
+.mv-island::after {                       /* front camera */
+  content: ''; position: absolute; right: 13px; top: 50%;
+  transform: translateY(-50%);
+  width: 11px; height: 11px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #24243a 0%, #0d0d14 70%);
+}
+
+/* Home indicator */
+.mv-homebar {
+  position: absolute;
+  bottom: calc(var(--ip-bezel) + 8px);
+  left: 50%; transform: translateX(-50%);
+  width: 139px; height: 5px; border-radius: 3px;
+  background: var(--color-gray-950); opacity: 0.9;
+  z-index: 40; pointer-events: none;
+}
+
+/* Screens sit inside the scrolling viewport. The last screen needs room so
+   the home indicator never sits on top of a tap target. */
+.mv-screen[hidden] { display: none !important; }
+.mv-screen {
+  display: flex; flex-direction: column;
+  min-height: calc(var(--ip-h) - var(--ip-status));
+  padding-bottom: 34px;
+}
+
+/* ── Internal desktop surface (the Care Coordinator view) ─────────────── */
+
+.mv-desktop {
+  width: 100%; max-width: 880px;
+  background: #fff;
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+body:not([data-surface="internal"]) .mv-desktop { display: none; }
+.mv-desktop .mv-screen { min-height: 0; padding-bottom: 0; }
+
+.mv-surface-label {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 16px;
+  background: var(--color-gray-50);
+  border-bottom: 1px solid var(--color-gray-200);
+  font-size: 14px; font-weight: 700; letter-spacing: 0.3px;
+  text-transform: uppercase; color: var(--mv-grey-500);
+}
+
+/* Variant-conditional visibility. Space-separated list of variants that show
+   the block, e.g. data-variant-block="A C". Mechanism from
+   glp1_funnel/11-result-variants.html, CSS-only form from
+   weight_management_app/mvp4-side-effect-triage.html. */
+body[data-variant="A"] [data-variant-block]:not([data-variant-block~="A"]),
+body[data-variant="B"] [data-variant-block]:not([data-variant-block~="B"]),
+body[data-variant="C"] [data-variant-block]:not([data-variant-block~="C"]) { display: none !important; }
+
+/* ── Chat ────────────────────────────────────────────────────────────────── */
+
+.mv-chat { display: flex; flex-direction: column; flex: 1; background: #fff; }
+
+/* Sticks directly under the 54px status bar, mirroring `.cf-nav { top: 54px }`,
+   so you can always see who you're talking to and how far along you are. */
+.mv-chat-top {
+  position: sticky; top: var(--ip-status); z-index: 22;
+  background: #fff;
+  box-shadow: var(--shadow-sm);
+}
+.mv-chat-header {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 16px 10px;
+}
+.mv-orb {
+  width: 36px; height: 36px; border-radius: var(--mv-radius-full); flex-shrink: 0;
+  background: radial-gradient(circle at 32% 30%, #fff 0%, var(--mv-purple-200) 45%, var(--color-purple-600) 100%);
+  display: flex; align-items: center; justify-content: center;
+}
+.mv-orb-eyes { display: flex; gap: 5px; }
+.mv-orb-eyes i { width: 4px; height: 4px; border-radius: 50%; background: var(--color-purple-500); }
+.mv-chat-name { font-size: var(--mv-body); font-weight: 700; }
+.mv-ai-badge {
+  /* Tag, color="purple", size=14 → radius 4px, 2px 8px, white bold text */
+  background: var(--color-purple-600); color: #fff;
+  font-size: 14px; font-weight: 700; line-height: 1.4;
+  border-radius: var(--mv-radius-4); padding: 2px 8px;
+}
+.mv-chat-progress {
+  height: 4px; background: var(--color-gray-200); overflow: hidden;
+}
+.mv-chat-progress-fill {
+  height: 100%; background: var(--color-purple-600);
+  transition: width 320ms ease-out;
+}
+
+.mv-thread {
+  /* bottom padding clears the home indicator so the last option is never
+     sitting underneath it */
+  flex: 1; padding: 16px 16px 44px;
+  display: flex; flex-direction: column; gap: 10px;
+  scroll-behavior: smooth;
+}
+
+/* The thread scrolls with the screen rather than nesting a second scroller
+   inside it — nested scroll regions are a known trap for older users. The
+   newest bubble still has to clear the sticky header + progress bar. */
+.mv-row, .mv-control { scroll-margin-top: calc(var(--mv-chat-chrome) + 12px); }
+
+.mv-row { display: flex; }
+.mv-row--bot { justify-content: flex-start; }
+.mv-row--me  { justify-content: flex-end; }
+
+.mv-bubble {
+  max-width: 86%;
+  border-radius: var(--radius-xl);
+  font-size: var(--mv-body); line-height: var(--mv-body-lh);
+  padding: 12px 16px;
+  overflow-wrap: anywhere;
+}
+.mv-row--bot .mv-bubble {
+  background: var(--mv-purple-100);          /* Tag---purple100 background */
+  color: var(--color-gray-950);
+  border-bottom-left-radius: var(--mv-radius-4);
+}
+.mv-row--me .mv-bubble {
+  background: var(--color-purple-600);
+  color: #fff;
+  border-bottom-right-radius: var(--mv-radius-4);
+}
+.mv-bubble strong { font-weight: 700; }
+
+/* Typing indicator */
+.mv-typing { display: flex; gap: 5px; align-items: center; padding: 12px 16px; }
+.mv-typing span {
+  width: 9px; height: 9px; border-radius: 50%;
+  background: var(--mv-purple-200);
+  animation: mv-bounce 1s infinite;
+}
+.mv-typing span:nth-child(2) { animation-delay: .15s; }
+.mv-typing span:nth-child(3) { animation-delay: .3s; }
+@keyframes mv-bounce {
+  0%, 60%, 100% { transform: translateY(0);    opacity: .6; }
+  30%           { transform: translateY(-5px); opacity: 1;  }
+}
+
+/* In-thread control block (chips, fields, cards) */
+.mv-control { display: flex; flex-direction: column; gap: 10px; padding: 2px 0 6px; }
+.mv-control-note {
+  margin: 0; font-size: 14px; line-height: 20px; color: var(--mv-grey-500);
+}
+
+/* ── Chips: FieldRadioButtons / FieldCheckboxButtons anatomy, chip skin ──── */
+
+.mv-chips {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  border: 0; margin: 0; padding: 0;                 /* it's a <fieldset> */
+}
+.mv-chips > legend { /* visible question text lives in the bubble */
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+.mv-chips--stack { flex-direction: column; flex-wrap: nowrap; }
+
+.mv-chip {
+  position: relative;
+  display: inline-flex; align-items: center; gap: 8px;
+  min-height: var(--mv-tap);
+  padding: 10px 16px;
+  background: #fff;
+  border: 1px solid var(--color-gray-250);
+  border-radius: var(--mv-radius-full);
+  font-size: var(--mv-body); line-height: 24px;
+  color: var(--color-gray-950);
+  cursor: pointer;
+  transition: background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
+}
+.mv-chips--stack .mv-chip { border-radius: var(--radius-md); }
+.mv-chip input {
+  /* real input, visually hidden but focusable */
+  position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0;
+}
+.mv-chip:hover { background: var(--mv-purple-50); border-color: var(--mv-purple-200); }
+.mv-chip:has(input:focus-visible) { outline: 3px solid var(--color-purple-600); outline-offset: 2px; }
+.mv-chip:has(input:checked) {
+  background: var(--mv-purple-100);
+  border-color: var(--color-purple-600);
+  color: var(--color-purple-500);
+  font-weight: 700;
+}
+/* Selection is signalled by a checkmark AND weight AND colour — never colour alone */
+.mv-chip-tick { display: none; flex-shrink: 0; }
+.mv-chip:has(input:checked) .mv-chip-tick { display: block; }
+.mv-chip-emoji { font-size: var(--mv-body); }
+
+/* Rank badge for the multi-select direction */
+.mv-chip-rank {
+  display: none; flex-shrink: 0;
+  min-width: 24px; height: 24px; border-radius: var(--mv-radius-full);
+  background: var(--color-purple-600); color: #fff;
+  font-size: 14px; font-weight: 700;
+  align-items: center; justify-content: center;
+}
+.mv-chip:has(input:checked) .mv-chip-rank { display: inline-flex; }
+.mv-chip:has(input:checked) .mv-chip-rank:empty { display: none; }
+
+.mv-chip--escape { border-style: dashed; }
+.mv-chip.is-locked { opacity: .45; cursor: not-allowed; }
+
+/* Optional "Something else" free-text (the one survivor, with voice input) */
+.mv-other { display: flex; flex-direction: column; gap: 6px; }
+.mv-other-row { display: flex; gap: 8px; align-items: flex-start; }
+.mv-other textarea {
+  flex: 1; min-height: 84px; resize: vertical;
+  font-family: var(--font-family); font-size: var(--mv-body); line-height: 26px;
+  padding: 12px 14px;
+  border: 1px solid var(--color-gray-250); border-radius: var(--radius-md);
+  color: var(--color-gray-950); background: #fff;
+}
+.mv-other textarea:focus-visible { outline: 3px solid var(--color-purple-600); outline-offset: 1px; }
+.mv-mic {
+  width: var(--mv-tap); height: var(--mv-tap); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: #fff; border: 1px solid var(--color-gray-250);
+  border-radius: var(--radius-md); cursor: pointer; color: var(--color-purple-600);
+}
+.mv-mic:focus-visible { outline: 3px solid var(--color-purple-600); outline-offset: 2px; }
+
+/* ── The reflection callout (the core of the test) ───────────────────────── */
+
+.mv-reflect {
+  border: 1px solid var(--mv-purple-200);
+  background: var(--mv-purple-50);
+  border-radius: var(--radius-xl);
+  padding: 16px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.mv-reflect-label {
+  margin: 0; display: flex; align-items: center; gap: 6px;
+  font-size: 14px; font-weight: 700; letter-spacing: 0.3px;
+  text-transform: uppercase; color: var(--color-purple-500);
+}
+.mv-reflect-quote {
+  margin: 0; font-size: 20px; line-height: 28px; font-weight: 700;
+  color: var(--color-gray-950);
+}
+.mv-reflect-body {
+  margin: 0; font-size: var(--mv-body); line-height: var(--mv-body-lh);
+  color: var(--mv-grey-500);
+}
+.mv-reflect-divider { height: 1px; background: var(--mv-purple-200); border: 0; margin: 2px 0; }
+
+/* Direction B — the call agenda */
+.mv-agenda { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.mv-agenda li { display: flex; gap: 10px; align-items: flex-start; }
+.mv-agenda-num {
+  flex-shrink: 0; width: 28px; height: 28px; border-radius: var(--mv-radius-full);
+  background: var(--color-purple-600); color: #fff;
+  font-size: 14px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+.mv-agenda-text { font-size: var(--mv-body); line-height: 26px; color: var(--color-gray-950); }
+
+/* Direction C — the answered worry */
+.mv-worry-label {
+  margin: 0; font-size: 14px; font-weight: 700; letter-spacing: 0.3px;
+  text-transform: uppercase; color: var(--mv-grey-500);
+}
+
+/* ── Support line (visible phone number on every step) ───────────────────── */
+
+.mv-support {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px;
+  padding: 16px; margin-top: auto;
+  font-size: var(--mv-body); line-height: 26px; color: var(--mv-grey-500);
+}
+.mv-support a { color: var(--color-purple-500); font-weight: 700; text-decoration: underline; }
+
+/* ── Care Coordinator internal view ─────────────────────────────────────── */
+
+.mv-cc { padding: 16px; display: flex; flex-direction: column; gap: 16px; }
+.mv-cc-banner {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--color-gray-950); color: #fff;
+  border-radius: var(--radius-md); padding: 12px 16px;
+  font-size: 14px; font-weight: 700; letter-spacing: 0.3px;
+}
+.mv-cc-card {
+  background: #fff; border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-xl); padding: 16px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.mv-cc-card h2 { margin: 0; font-size: 20px; line-height: 26px; }
+.mv-cc-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+@media (min-width: 640px) { .mv-cc-grid { grid-template-columns: 1fr 1fr; } }
+.mv-cc-dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 6px 16px; }
+.mv-cc-dl dt { font-size: 14px; font-weight: 700; color: var(--mv-grey-500); text-transform: uppercase; letter-spacing: 0.3px; }
+.mv-cc-dl dd { margin: 0; font-size: var(--mv-body); line-height: 26px; }
+.mv-cc-opener {
+  background: var(--mv-purple-50); border-left: 4px solid var(--color-purple-600);
+  border-radius: var(--radius-sm); padding: 12px 16px;
+  font-size: var(--mv-body); line-height: var(--mv-body-lh);
+}
+.mv-tag-code {
+  display: inline-block; background: var(--mv-purple-100); color: var(--color-purple-600);
+  font-size: 14px; font-weight: 700; border-radius: var(--mv-radius-4); padding: 2px 8px;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+/* ── Instrumentation panel ──────────────────────────────────────────────── */
+
+.mv-debug {
+  position: fixed; z-index: 55;
+  top: 20px; right: 20px; bottom: 20px;
+  width: min(560px, calc(100vw - 40px));
+  background: #fff;
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 18px 48px rgba(20,13,38,0.22);
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+.mv-debug-head {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  padding: 10px 16px; border-bottom: 1px solid var(--color-gray-200);
+}
+.mv-debug-head h2 { margin: 0; font-size: 16px; font-weight: 700; }
+.mv-debug-body { overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 20px; }
+.mv-debug h3 {
+  margin: 0 0 8px; font-size: 14px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.3px; color: var(--mv-grey-500);
+}
+.mv-debug pre {
+  margin: 0; padding: 12px 14px; overflow-x: auto;
+  background: var(--color-gray-950); color: #f6f4fc;
+  border-radius: var(--radius-md);
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 14px; line-height: 22px;
+}
+.mv-debug table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.mv-debug th, .mv-debug td {
+  text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--color-gray-200);
+  line-height: 20px; vertical-align: top;
+}
+.mv-debug th { font-weight: 700; color: var(--mv-grey-500); }
+.mv-debug-log { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.mv-debug-log li { font-size: 14px; line-height: 20px; display: flex; gap: 8px; }
+.mv-debug-log code {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace; font-weight: 700;
+  color: var(--color-purple-500);
+}
+.mv-note {
+  font-size: 14px; line-height: 20px; color: var(--mv-grey-500);
+  background: var(--color-gray-50); border-left: 3px solid var(--mv-grey-400);
+  border-radius: var(--radius-sm); padding: 10px 12px; margin: 0;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   RESPONSIVE
+   The device frame is a reviewing aid. On an actual phone it would be a
+   frame inside a frame, so below 900px the chrome moves above the screen and
+   below 460px the chassis is dropped entirely and the screen goes full-bleed.
+══════════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 1180px) {
+  .mv-debug { width: min(480px, calc(100vw - 40px)); }
+}
+
+@media (max-width: 900px) {
+  .mv-app { flex-direction: column; }
+  .mv-sidebar {
+    flex: 0 0 auto; width: auto; align-self: stretch;
+    position: static;
+    height: auto; max-height: none; overflow-y: visible;   /* undo the 100vh rail */
+    border-right: 0; border-bottom: 1px solid var(--color-gray-200);
+  }
+  .mv-seg { flex-direction: row; flex-wrap: wrap; }
+  .mv-seg button { flex: 1 1 200px; }
+  .mv-stage { padding: 24px 16px 40px; }
+  .mv-debug {
+    top: auto; right: 0; left: 0; bottom: 0;
+    width: 100%; max-height: 70vh;
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    border-left: 0; border-right: 0; border-bottom: 0;
+  }
+}
+
+/* Narrow screens: the stacked chrome grows past a full viewport, which would
+   mean scrolling a screenful of controls before reaching the prototype. Cap it
+   and let it scroll on its own, and lay the direction switcher out as one
+   swipeable row. */
+@media (max-width: 620px) {
+  .mv-sidebar {
+    max-height: 42vh;
+    overflow-y: auto;
+    padding: 14px 16px 16px;
+    gap: 14px;
+  }
+  .mv-sidebar-sub { display: none; }
+  .mv-seg { flex-direction: row; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; }
+  .mv-seg button { flex: 0 0 232px; }
+}
+
+@media (max-width: 460px) {
+  .mv-stage { padding: 0; background: none; }
+  .mv-phone {
+    width: 100%; height: auto; padding: 0;
+    border-radius: 0; background: none; box-shadow: none;
+  }
+  .mv-phone::before, .mv-phone::after { display: none; }
+  .mv-island, .mv-homebar { display: none; }
+  /* Full-bleed: the browser's own viewport is the screen, so hand scrolling
+     back to the document and drop the fixed height. */
+  .mv-frame {
+    width: 100%; height: auto; border-radius: 0;
+    overflow: visible;
+  }
+  .mv-screen { min-height: auto; padding-bottom: 24px; }
+  .mv-statusbar { display: none; }
+  .mv-chat-top { top: 0; }
+  .mv-row, .mv-control { scroll-margin-top: 76px; }
+  .cf-nav { top: 0 !important; }
+  .mv-desktop { border-radius: 0; border-left: 0; border-right: 0; }
+}
+
+/* ── Motion ─────────────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .mv-typing span { animation: none; }
+  .mv-thread { scroll-behavior: auto; }
+  .mv-chat-progress-fill,
+  .mv-chip, .mv-seg button { transition: none; }
+  .st-fade-in { animation: none; }
+}
+
+/* Ranked (multi-select) chips show the pick order instead of a tick */
+.mv-chips--ranked .mv-chip-tick { display: none !important; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Corrections to inherited funnel.css rules.
+   These are deliberate overrides, not restyling — each fixes a WCAG failure
+   or a token deviation in the shared stylesheet. Flagged in README.md.
+══════════════════════════════════════════════════════════════════════════ */
+
+/* funnel.css:648 sets .cf-hipaa-strip to --color-gray-350 (#a3a3a3) at 16px.
+   #a3a3a3 on white is 2.3:1 — it fails WCAG 2.2 AA (4.5:1) outright, and this
+   is the one line on the screen whose whole job is to be trusted. Corrected to
+   $grey---500 at the 18px senior floor: 8.9:1. */
+.mv-frame .cf-hipaa-strip {
+  color: var(--mv-grey-500);
+  font-size: var(--mv-body);
+  line-height: var(--mv-body-lh);
+  padding: 12px 16px;
+  background: var(--color-gray-50);
+  border-radius: var(--radius-md);
+}
+
+/* funnel.css selects time slots with .is-selected and paints them
+   --color-purple-ede (#ede9fe, not a @bold/web token). These pages drive
+   selection from aria-pressed, so mirror it on the real $purple---100 token
+   and add the focus ring funnel.css omits. */
+.mv-frame .cf-time-slot { min-height: var(--mv-tap); justify-content: center; }
+.mv-frame .cf-time-slot[aria-pressed="true"] {
+  background: var(--mv-purple-100);
+  border-color: var(--color-purple-600);
+  box-shadow: inset 0 0 0 1px var(--color-purple-600);
+}
+.mv-frame .cf-time-slot[aria-pressed="true"] .cf-time-slot-hour { color: var(--color-purple-500); }
+.mv-frame .cf-time-slot:focus-visible { outline: 3px solid var(--color-purple-600); outline-offset: 2px; }
+
+/* Day tabs. .cf-avail-chip is pointer-events:none by design (display only),
+   so these are their own control rather than a misused one. */
+.mv-days {
+  display: flex; gap: 8px; overflow-x: auto; width: 100%; padding-bottom: 4px;
+}
+.mv-days button {
+  flex-shrink: 0; width: 84px; min-height: var(--mv-tap); padding: 10px 8px;
+  background: #fff; border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-md); box-shadow: var(--shadow-xs);
+  font-family: var(--font-family); cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+}
+.mv-days button .mv-day-dow { font-size: 16px; color: var(--color-gray-900); }
+.mv-days button .mv-day-date { font-size: var(--mv-body); font-weight: 700; color: var(--color-gray-950); }
+.mv-days button:hover { border-color: var(--mv-purple-200); }
+.mv-days button[aria-pressed="true"] {
+  background: var(--mv-purple-100); border-color: var(--color-purple-600);
+}
+.mv-days button[aria-pressed="true"] .mv-day-date { color: var(--color-purple-500); }
+.mv-days button:focus-visible { outline: 3px solid var(--color-purple-600); outline-offset: 2px; }
+
+/* Raise inherited body copy to the 18px senior floor inside this prototype. */
+.mv-frame .cf-body { font-size: var(--mv-body); line-height: var(--mv-body-lh); }
+.mv-frame .cf-caption { font-size: 16px; line-height: 24px; color: var(--mv-grey-500); }
+.mv-frame .st-eyebrow { color: var(--mv-grey-500); }
+.mv-frame .cf-field-label { font-size: 16px; }
+.mv-frame .Button:focus-visible { outline: 3px solid var(--color-purple-500); outline-offset: 3px; }
+
+/* Focus-area router (the existing 4-chip area question, kept where Figma has it) */
+.mv-focus-list { display: flex; flex-direction: column; gap: 10px; }

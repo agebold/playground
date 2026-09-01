@@ -43,7 +43,7 @@ Validated insights from research with the Medicare-age GLP-1 target audience. Ea
 
 19. **$50/month is highly compelling** against the $300–700/month anchor users have for GLP-1s. Users self-reported a 9/10 willingness to pay at $50. *(2026-05-05, 00:27:23.)* Treat stated willingness-to-pay with a grain of salt — only purchase behavior is real.
 20. **Cost has historically been the top blocker to GLP-1 access** for this audience. *(2026-05-05, 00:27:23.)*
-21. **86% of Bold patients pay $0 out of pocket.** Use this as a standout proof point — pair with any "Covered by Medicare" claim. *(Source: 2026-05-20 positioning doc.)*
+21. **78% of Bold patients pay $0 out of pocket.** Use this as a standout proof point — pair with any "Covered by Medicare" claim. *(Source: 2026-05-20 positioning doc, which stated 86%; corrected to 78% on 2026-06-26 per user. See `.claude/skills/bold-pricing-messaging` for the authoritative figure.)*
 
 ## Demand signal (quantitative)
 

@@ -1,0 +1,3118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MVP4 — Side-Effect Triage · 4 approaches · Bold Weight Management</title>
+
+  <!--
+    ============================================================================
+    PROVISIONAL — NOT CLEARED FOR SHIP
+    ============================================================================
+    Product translation of the clinician-authored GLP-1 side-effect escalation
+    table (Clinican_Bold_Care_GLP1_Weight_Management_Side_Effects_Management.pdf,
+    7 symptoms x 3 tiers) into a patient-facing triage flow.
+
+    The SYMPTOM ROWS and their mild/urgent/emergent content are transcribed from
+    that PDF. Everything else is a PRODUCT INFERENCE and needs Dr. Deeb sign-off:
+      - the 4-tier ladder (self / concern / urgent / emergency)
+      - the level -> tier routing and the middle "concern" tier
+      - the companion-symptom gate (dizzy / confused / weak / no urine)
+      - the "3+ moderate GI symptoms upgrades to urgent" rule
+      - all response-time copy
+
+    DELIBERATE DEPARTURES FROM THE CURRENT FIGMA (726-45672), both clinical:
+      1. Figma's urgent card reads "care team will call in 72 hr. You must stop
+         your medication or search for emergency care." That asks the member to
+         self-choose between stopping a drug and going to the ER, with no
+         clinician involved, and calls it a 3-day follow-up. Replaced with a real
+         same-day disposition (urgent care / ER) + care-team notified in parallel.
+      2. 72 hr contradicts the PDF's own column headers, which specify care-team
+         follow-up within 24-48h (Urgent) and 12-24h (Emergent). PDF wins.
+      3. Figma stacks a mint "Thanks for sharing" card AND a red "Call 911" card
+         on the same screen. Telephone-triage standard is ONE consolidated
+         disposition - highest acuity wins. See consolidate().
+
+    Industry standard followed: Schmitt-Thompson Clinical Content (STCC)
+    telephone-triage architecture - disposition ladder, highest-acuity questions
+    first, stop at first positive, highest acuity wins across protocols, upgrade
+    ok / downgrade discouraged, reassurance-first care advice capped at 3 items,
+    "when less is better" at high acuity, and call-back ("safety netting")
+    instructions closing every encounter without catastrophising.
+
+    FDA posture: patient-facing recommendation software is a device by
+    definition (CDS guidance, Sept 2022), so this flow (a) always shows the
+    plain-language BASIS for its disposition, (b) routes to a human rather than
+    substituting for one, and (c) keeps an ungated 911 path on every screen.
+    ============================================================================
+  -->
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+
+  <style>
+    /* ============================================================
+       DESIGN TOKENS
+       Values transcribed from @bold/web master:
+       packages/web/src/styles/_variables.scss
+       Naming mirrors the SCSS ($red---500 -> --red-500) so a future
+       migration to the real package is a mechanical swap.
+
+       NOTE: mvp3-side-effect-prescription.html used Tailwind hexes
+       (#b91c1c, #dc2626, #f59e0b, #fffbeb) for its medical signal
+       colours. Those are NOT Bold tokens. Corrected here.
+       ============================================================ */
+    :root {
+      --red-500:#80282e;    --red-300:#ff4f5c;   --red-100:#fee2e2;
+      --orange-300:#ff9e00; --orange-200:#ffc180; --orange-100:#fff5e6;
+      --yellow-500:#80660c; --yellow-400:#e6b300; --yellow-300:#ffcc1a;
+      --yellow-200:#ffe68d; --yellow-100:#fefaea;
+      --green-500:#005b52;  --green-300:#00b5a3;  --green-100:#e6f8f6;
+      --blue-500:#1a3380;   --blue-300:#36f;      --blue-100:#ebf0ff;
+      --purple-500:#29006a; --purple-400:#3e009f; --purple-300:#5200d4;
+      --purple-200:#a980ea; --purple-100:#eee6fb;
+      --ink-300:#140d26;    --ink-200:#8a8693;
+      --grey-500:#4d4d4d;   --grey-400:#acacac;   --grey-300:#e5e5e5;
+      --grey-200:#fafafa;   --grey-100:#fcfcfc;   --white:#ffffff;
+
+      --font:'Inter', system-ui, -apple-system, sans-serif;
+      --font-serif:'Source Serif 4', Georgia, 'Times New Roman', serif;
+
+      /* 14px is the hard floor and there is NO exception in this file.
+         (mvp3 carried a 12px --fs-tag exception; not carried over.) */
+      --fs-sm:14px; --fs-md:15px; --fs-lg:16px; --fs-xl:18px;
+      --fs-2xl:20px; --fs-3xl:24px; --fs-4xl:28px;
+      --fw-regular:400; --fw-medium:500; --fw-semibold:600; --fw-bold:700; --fw-extrabold:800;
+
+      --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px;
+      --space-5:20px; --space-6:24px; --space-7:32px; --space-8:40px;
+
+      --radius-4:4px; --radius-8:8px; --radius-12:12px;
+      --radius-16:16px; --radius-48:48px; --radius-full:99px;
+
+      --shadow-xsmall:0 1px 2px rgba(16,24,40,0.05);
+      --shadow-small:0 1px 2px rgba(16,24,40,0.06), 0 1px 3px rgba(16,24,40,0.1);
+      --shadow-medium:0 2px 4px -2px rgba(16,24,40,0.06), 0 4px 8px -2px rgba(16,24,40,0.1);
+      --shadow-large:0 4px 6px -2px rgba(16,24,40,0.05), 0 12px 16px -4px rgba(16,24,40,0.1);
+      --shadow-xlarge:0 8px 8px -4px rgba(16,24,40,0.04), 0 20px 24px -4px rgba(16,24,40,0.1);
+      --shadow-phone:0 12px 40px rgba(0,0,0,0.14);
+
+      /* Demo chrome only — the desktop backdrop and the clinical trace panel.
+         These are prototype scaffolding, never a product surface, so they sit
+         outside the @bold/web palette deliberately. */
+      --demo-bg:#efeaf7; --demo-bg-hi:#f3edff; --demo-bg-lo:#e9e3f3;
+      --demo-trace-fg:#d8ffe9;
+    }
+
+    *,*::before,*::after{box-sizing:border-box;}
+    html{-webkit-text-size-adjust:100%;}
+    body{
+      margin:0; font-family:var(--font); color:var(--ink-300);
+      background:var(--demo-bg);
+      background-image:radial-gradient(1200px 600px at 15% -10%, var(--demo-bg-hi) 0%, var(--demo-bg) 45%, var(--demo-bg-lo) 100%);
+      -webkit-font-smoothing:antialiased; min-height:100vh; overflow-x:hidden;
+    }
+    button{font-family:inherit;}
+    [hidden]{display:none !important;}
+    :focus-visible{outline:3px solid var(--purple-300); outline-offset:2px; border-radius:var(--radius-4);}
+    .visually-hidden{
+      position:absolute; width:1px; height:1px; margin:-1px; padding:0;
+      overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;
+    }
+
+    /* ============================================================
+       PAGE SHELL — demo sidebar + phone stage
+       ============================================================ */
+    .showcase{display:grid; grid-template-columns:320px 1fr; min-height:100vh;}
+    .sidebar{
+      position:sticky; top:0; align-self:start; height:100vh; overflow-y:auto;
+      background:var(--white); border-right:1px solid var(--grey-300);
+      padding:22px 18px 28px; display:flex; flex-direction:column; gap:18px; z-index:30;
+    }
+    .sidebar-brand{display:flex; align-items:center; gap:10px;}
+    .brand-mark{
+      width:34px; height:34px; border-radius:9px; flex:none;
+      background:linear-gradient(135deg, var(--purple-300), var(--purple-400)); position:relative;
+    }
+    .brand-mark::before{
+      content:""; position:absolute; background:#fff; border-radius:2px;
+      left:9px; top:8px; width:4px; height:18px; transform:skewX(-12deg);
+      box-shadow:6px 0 0 #fff, 12px 0 0 #fff;
+    }
+    .brand-word{font-weight:var(--fw-extrabold); font-size:var(--fs-2xl); letter-spacing:-0.5px; color:var(--ink-300);}
+    .sidebar-sub{font-size:var(--fs-sm); color:var(--grey-500); margin:2px 0 0; line-height:1.45;}
+    .sidebar-label{
+      font-size:var(--fs-sm); font-weight:var(--fw-bold); letter-spacing:0.6px;
+      text-transform:uppercase; color:var(--grey-500); margin:4px 0 2px;
+    }
+    .demo-note{
+      font-size:var(--fs-sm); color:var(--grey-500); line-height:1.55;
+      background:var(--purple-100); border:1px solid var(--purple-200);
+      border-radius:var(--radius-8); padding:10px 12px;
+    }
+    .demo-note strong{color:var(--purple-500);}
+    .demo-warn{
+      font-size:var(--fs-sm); color:var(--red-500); line-height:1.55;
+      background:var(--red-100); border:1px solid var(--red-300);
+      border-radius:var(--radius-8); padding:10px 12px;
+    }
+
+    /* approach switcher — .vp-seg pattern from glp1_funnel/11-result-variants.html */
+    .vp-seg{
+      display:flex; flex-direction:column; gap:var(--space-2);
+      background:var(--grey-200); border:1px solid var(--grey-300);
+      border-radius:var(--radius-12); padding:6px;
+    }
+    .vp-seg button{
+      display:flex; flex-direction:column; align-items:flex-start; gap:2px;
+      text-align:left; width:100%; min-height:56px; padding:10px 12px;
+      border:1.5px solid transparent; background:var(--white); border-radius:var(--radius-8);
+      cursor:pointer; transition:background-color 150ms ease-in-out, border-color 150ms ease-in-out;
+    }
+    .vp-seg button .vs-name{font-size:var(--fs-lg); font-weight:var(--fw-bold); color:var(--ink-300);}
+    .vp-seg button .vs-desc{font-size:var(--fs-sm); font-weight:var(--fw-regular); color:var(--grey-500); line-height:1.35;}
+    .vp-seg button:hover{border-color:var(--purple-200);}
+    .vp-seg button[aria-pressed="true"]{background:var(--purple-300); border-color:var(--purple-300);}
+    .vp-seg button[aria-pressed="true"] .vs-name,
+    .vp-seg button[aria-pressed="true"] .vs-desc{color:#fff;}
+
+    .ctl-row{
+      display:flex; align-items:flex-start; gap:10px; font-size:var(--fs-md);
+      color:var(--grey-500); line-height:1.45; cursor:pointer;
+      padding:10px 12px; border:1.5px solid var(--grey-300); border-radius:var(--radius-8);
+      min-height:44px; background:var(--white);
+    }
+    .ctl-row:hover{border-color:var(--purple-200);}
+    .ctl-row input{width:20px; height:20px; margin:0; flex:none; accent-color:var(--purple-300);}
+    .ctl-row span{min-width:0;}
+
+    .jump-list{display:flex; flex-direction:column; gap:6px;}
+    .jump-link{
+      background:none; border:none; text-align:left; cursor:pointer; padding:8px 10px;
+      border-radius:var(--radius-8); font-size:var(--fs-md); color:var(--purple-300);
+      font-weight:var(--fw-semibold); min-height:44px;
+    }
+    .jump-link:hover{background:var(--purple-100);}
+
+    /* live triage trace — for clinical review */
+    .trace{
+      font-family:ui-monospace, 'SF Mono', Menlo, monospace; font-size:var(--fs-sm);
+      background:var(--ink-300); color:var(--demo-trace-fg); border-radius:var(--radius-8);
+      padding:12px; line-height:1.6; white-space:pre-wrap; word-break:break-word;
+      max-height:280px; overflow-y:auto;
+    }
+    .trace:empty::after{content:'No result yet — run the flow.'; color:var(--grey-400);}
+
+    .stage{
+      display:grid; place-items:center; padding:36px 20px 56px; min-width:0;
+    }
+
+    /* ============================================================
+       PHONE FRAME  (anatomy reused from mvp3-side-effect-prescription.html)
+       ============================================================ */
+    .iphone{
+      width:393px; height:852px; background:var(--ink-300); border-radius:54px;
+      padding:12px; box-shadow:var(--shadow-phone); position:relative; flex:none;
+    }
+    .iphone-screen{
+      width:100%; height:100%; background:var(--grey-200); border-radius:44px;
+      overflow:hidden; position:relative; display:flex; flex-direction:column;
+    }
+    .iphone-island{
+      position:absolute; top:10px; left:50%; transform:translateX(-50%);
+      width:118px; height:32px; background:#000; border-radius:20px; z-index:50;
+    }
+    .statusbar{
+      height:52px; flex:none; display:flex; align-items:flex-end; justify-content:space-between;
+      padding:0 26px 6px; font-size:var(--fs-sm); font-weight:var(--fw-semibold); color:var(--ink-300);
+    }
+    .statusbar .sb-icons{display:flex; gap:6px; align-items:center;}
+
+    .app-topbar{
+      flex:none; height:56px; display:flex; align-items:center; justify-content:space-between;
+      padding:0 18px; background:var(--white); border-bottom:1px solid var(--grey-300);
+    }
+    .topbar-brand{display:flex; align-items:center; gap:8px;}
+    .topbar-brand .brand-mark{width:26px; height:26px; border-radius:7px;}
+    .topbar-brand .brand-mark::before{left:7px; top:6px; width:3px; height:14px; box-shadow:5px 0 0 #fff, 10px 0 0 #fff;}
+    .topbar-brand .brand-word{font-size:var(--fs-xl);}
+    .avatar{
+      width:40px; height:40px; border-radius:50%; border:none; cursor:pointer;
+      background:var(--purple-300); color:#fff; font-weight:var(--fw-bold); font-size:var(--fs-md);
+      display:grid; place-items:center; flex:none;
+    }
+
+    .app-scroll{flex:1; overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch; max-width:100%;}
+    .app-scroll::-webkit-scrollbar{width:0;}
+    .scn{padding:20px 16px 28px; display:flex; flex-direction:column; gap:20px;}
+
+    .app-tabbar{
+      flex:none; display:grid; grid-template-columns:repeat(2,1fr); gap:2px;
+      background:var(--white); border-top:1px solid var(--grey-300); padding:8px 6px 14px;
+    }
+    .app-tabbar button{
+      display:flex; flex-direction:column; align-items:center; gap:3px; border:none;
+      background:transparent; cursor:pointer; padding:6px 2px; border-radius:var(--radius-12);
+      font-size:var(--fs-sm); font-weight:var(--fw-semibold); color:var(--grey-500); min-height:52px;
+    }
+    .app-tabbar button i{font-size:24px;}
+    .app-tabbar button[aria-pressed="true"]{color:var(--purple-300);}
+
+    .screen{display:none; flex:1; min-height:0; flex-direction:column;}
+    .screen.active{display:flex;}
+
+    /* approach-conditional visibility (11-result-variants.html mechanism) */
+    body[data-variant="A"] [data-variant-block]:not([data-variant-block~="A"]),
+    body[data-variant="B"] [data-variant-block]:not([data-variant-block~="B"]),
+    body[data-variant="C"] [data-variant-block]:not([data-variant-block~="C"]),
+    body[data-variant="D"] [data-variant-block]:not([data-variant-block~="D"]){display:none !important;}
+
+    /* ============================================================
+       BOLD COMPONENTS
+       Hand-implemented from @bold/web source; component + prop names
+       preserved. Storybook: https://staging-ui.agebold.com/
+       ============================================================ */
+    /* Button — staging-ui.agebold.com/?path=/story/button--default */
+    .Button{
+      display:inline-flex; align-items:center; justify-content:center; gap:8px;
+      border:1.5px solid transparent; border-radius:var(--radius-12); cursor:pointer;
+      font-size:var(--fs-lg); font-weight:var(--fw-semibold); line-height:1.2;
+      padding:14px 18px; min-height:52px; text-decoration:none; text-align:center;
+      transition:background-color .15s ease-in-out, border-color .15s ease-in-out;
+    }
+    .Button i{font-size:20px;}
+    .Button---primary{background:var(--purple-300); color:#fff;}
+    .Button---primary:hover{background:var(--purple-400);}
+    .Button---secondary{background:#fff; color:var(--ink-300); border-color:var(--grey-300); box-shadow:var(--shadow-xsmall);}
+    .Button---secondary:hover{border-color:var(--grey-400); background:var(--grey-200);}
+    .Button---danger{background:var(--red-500); color:#fff;}
+    /* @bold/web has no shade darker than $red---500, so darken rather than
+       invent a hex that isn't in the palette. */
+    .Button---danger:hover{filter:brightness(0.88);}
+    .Button---full{width:100%;}
+    .Button:disabled{opacity:.45; cursor:not-allowed;}
+
+    /* ButtonClose — staging-ui.agebold.com/?path=/story/buttonclose--default */
+    .ButtonClose{
+      width:44px; height:44px; border:none; background:var(--grey-200); border-radius:50%;
+      display:grid; place-items:center; cursor:pointer; color:var(--ink-300); font-size:22px; flex:none;
+    }
+    .ButtonClose:hover{background:var(--grey-300);}
+
+    /* Card / Box */
+    .Card{
+      background:#fff; border:1px solid var(--grey-300); border-radius:var(--radius-16);
+      box-shadow:var(--shadow-small); padding:16px;
+    }
+
+    /* Tag / Tags — staging-ui.agebold.com/?path=/story/tag--default */
+    .Tag{
+      display:inline-flex; align-items:center; gap:5px; border-radius:var(--radius-full);
+      padding:5px 11px; font-size:var(--fs-sm); font-weight:var(--fw-semibold); line-height:1.35;
+      background:var(--grey-200); color:var(--grey-500);
+    }
+    .Tag i{font-size:16px;}
+    .Tag---green{background:var(--green-100); color:var(--green-500);}
+    .Tag---purple{background:var(--purple-100); color:var(--purple-500);}
+    .Tags{display:flex; flex-wrap:wrap; gap:6px;}
+
+    /* Heading / Text */
+    .Heading{font-family:var(--font-serif); font-weight:var(--fw-bold); color:var(--ink-300); margin:0; line-height:1.25;}
+    .Heading---1{font-size:var(--fs-3xl);}
+    .Heading---2{font-size:var(--fs-2xl);}
+    .Heading---3{font-size:var(--fs-xl);}
+    .Text{font-size:var(--fs-md); line-height:1.55; color:var(--grey-500); margin:0;}
+    .Text---copy{line-height:1.6;}
+    .eyebrow{
+      font-size:var(--fs-sm); font-weight:var(--fw-bold); letter-spacing:.05em;
+      text-transform:uppercase; color:var(--purple-300); margin:0;
+    }
+
+    /* FieldCheckboxButtons / FieldRadioButtons
+       staging-ui.agebold.com/?path=/story/forms-formik-fieldradiobuttons--with-indicator
+       Anatomy: a real <input> inside a <label>, so keyboard + SR come free. */
+    .Buttons{display:flex; flex-direction:column; gap:10px;}
+    .FieldOption{
+      display:flex; align-items:center; gap:14px; width:100%; cursor:pointer;
+      background:#fff; border:1.5px solid var(--grey-300); border-radius:var(--radius-12);
+      padding:14px; min-height:60px;
+      transition:border-color .15s ease-in-out, background-color .15s ease-in-out;
+    }
+    .FieldOption:hover{border-color:var(--purple-300); background:var(--purple-100);}
+    .FieldOption:has(input:checked),
+    .FieldOption.is-checked{border-color:var(--purple-300); background:var(--purple-100); border-width:2px;}
+    .FieldOption:has(input:focus-visible){outline:3px solid var(--purple-300); outline-offset:2px;}
+    .FieldOption input{
+      width:24px; height:24px; margin:0; flex:none; accent-color:var(--purple-300);
+    }
+    .FieldOption .fo-body{min-width:0; flex:1;}
+    /* both are spans (a <label> can't contain block-level flow content in the
+       @bold/web anatomy), so they need display:block to stack */
+    .FieldOption .fo-text{
+      display:block; font-size:var(--fs-lg); font-weight:var(--fw-semibold);
+      line-height:1.35; color:var(--ink-300);
+    }
+    .FieldOption .fo-subtext{
+      display:block; font-size:var(--fs-md); color:var(--grey-500);
+      margin-top:3px; line-height:1.4;
+    }
+    /* severity indicator. Colour is NEVER the only signal — the anchor text
+       differs per level, and a shape (1/2/3 filled pips) carries it too.
+       NOTE: net-new. FieldRadioButtons.icon in @bold/web supports only
+       check|cross|heart|thumbs-down|thumbs-up. Flagged for upstream. */
+    .sev-pips{display:flex; gap:3px; flex:none;}
+    .sev-pip{width:9px; height:16px; border-radius:2px; background:var(--grey-300);}
+    .sev-pips---1 .sev-pip:nth-child(-n+1),
+    .sev-pips---2 .sev-pip:nth-child(-n+2),
+    .sev-pips---3 .sev-pip:nth-child(-n+3){background:currentColor;}
+    .sev-pips---1{color:var(--green-500);}
+    .sev-pips---2{color:var(--yellow-500);}
+    .sev-pips---3{color:var(--red-500);}
+
+    /* Details / Accordion2 — staging-ui.agebold.com/?path=/story/details--default */
+    .Details{border:1px solid var(--grey-300); border-radius:var(--radius-16); overflow:hidden; background:#fff;}
+    .Details__label{
+      display:flex; align-items:center; gap:8px; margin:0; padding:12px 14px;
+      font-size:var(--fs-sm); font-weight:var(--fw-bold); letter-spacing:.03em;
+      text-transform:uppercase; color:var(--grey-500);
+      background:var(--grey-200); border-bottom:1px solid var(--grey-300);
+    }
+    .Details__item{border-bottom:1px solid var(--grey-300);}
+    .Details__item:last-child{border-bottom:none;}
+    .Details__item summary{
+      list-style:none; cursor:pointer; display:flex; align-items:center;
+      justify-content:space-between; gap:12px; padding:14px; min-height:56px;
+    }
+    .Details__item summary::-webkit-details-marker{display:none;}
+    .Details__item .di-head{display:flex; align-items:center; gap:10px; min-width:0; flex:1;}
+    .Details__item .di-head i{font-size:22px; color:var(--purple-300); flex:none;}
+    .Details__item .di-label{font-size:var(--fs-lg); font-weight:var(--fw-semibold); line-height:1.3;}
+    .Details__item .di-chev{color:var(--grey-400); flex:none; transition:transform .2s ease-in-out;}
+    .Details__item[open] .di-chev{transform:rotate(90deg);}
+    .Details__item .di-body{padding:0 14px 14px;}
+    .Details__item .di-body p{margin:0 0 8px; font-size:var(--fs-md); line-height:1.55; color:var(--grey-500);}
+    .Details__item .di-body ul{margin:6px 0 0; padding-left:20px;}
+    .Details__item .di-body li{font-size:var(--fs-md); line-height:1.5; margin-bottom:6px; color:var(--grey-500);}
+
+    /* ListCheckmarks */
+    .ListCheckmarks{list-style:none; margin:8px 0 0; padding:0; display:flex; flex-direction:column; gap:10px;}
+    .ListCheckmarks li{display:flex; gap:10px; font-size:var(--fs-md); line-height:1.5; color:var(--ink-300);}
+    .ListCheckmarks li i{flex:none; font-size:20px; color:var(--green-500); margin-top:1px;}
+    .ListCheckmarks .lc-topic{font-weight:var(--fw-bold); color:var(--ink-300);}
+
+    /* ============================================================
+       TRIAGE RESULT — 4 tiers.
+       Every tier differs by icon + explicit tier label + border weight,
+       never by colour alone. Contrast verified against the token hexes:
+         emergency  #80282e on #fee2e2 = 7.60:1
+         urgent     #80282e on #fff5e6 = 8.60:1
+         concern    #80660c on #fefaea = 5.25:1
+         self       #005b52 on #e6f8f6 = 7.30:1
+       ($orange has no ---500 shade in @bold/web, so the urgent tier borrows
+       $red---500 for its text. Flagged for upstream.)
+       ============================================================ */
+    .Triage{border-radius:var(--radius-16); padding:18px 16px; border:1.5px solid;}
+    .Triage .tr-tier{
+      display:inline-flex; align-items:center; gap:6px; margin:0 0 8px;
+      font-size:var(--fs-sm); font-weight:var(--fw-bold); letter-spacing:.05em; text-transform:uppercase;
+    }
+    .Triage .tr-head{display:flex; align-items:flex-start; gap:10px; margin:0 0 10px;}
+    .Triage .tr-head i{font-size:28px; flex:none;}
+    .Triage .tr-title{font-family:var(--font-serif); font-size:var(--fs-2xl); font-weight:var(--fw-bold); line-height:1.25; margin:0;}
+    .Triage p{margin:0 0 10px; font-size:var(--fs-md); line-height:1.6; color:var(--ink-300);}
+    .Triage---self{background:var(--green-100); border-color:var(--green-300); color:var(--green-500);}
+    .Triage---concern{background:var(--yellow-100); border-color:var(--yellow-400); color:var(--yellow-500);}
+    .Triage---urgent{background:var(--orange-100); border-color:var(--orange-300); border-width:2px; color:var(--red-500);}
+    .Triage---emergency{background:var(--red-100); border-color:var(--red-300); border-width:2px; color:var(--red-500);}
+
+    /* the plain-language rule that produced this disposition (FDA: reviewable basis) */
+    .basis{
+      display:flex; align-items:flex-start; gap:8px; margin:0 0 12px; padding:10px 12px;
+      background:rgba(255,255,255,.72); border-radius:var(--radius-8);
+      font-size:var(--fs-md); line-height:1.5; color:var(--ink-300);
+    }
+    .basis i{flex:none; font-size:18px; margin-top:1px; opacity:.75;}
+
+    /* one de-duplicated medication instruction */
+    .DoseBanner{
+      display:flex; align-items:flex-start; gap:10px; margin:12px 0; padding:12px 14px;
+      border-radius:var(--radius-12); font-size:var(--fs-md); line-height:1.5;
+    }
+    .DoseBanner i{font-size:22px; flex:none; margin-top:1px;}
+    .DoseBanner .db-label{
+      display:block; font-size:var(--fs-sm); font-weight:var(--fw-bold);
+      letter-spacing:.03em; text-transform:uppercase; margin-bottom:2px;
+    }
+    .DoseBanner---dose{background:var(--yellow-100); border:1.5px solid var(--yellow-400); color:var(--yellow-500);}
+    .DoseBanner---med{background:var(--red-100); border:1.5px solid var(--red-300); color:var(--red-500);}
+
+    /* safety netting — "call back if" closes every result (STCC) */
+    .SafetyNet{
+      border:1px solid var(--grey-300); border-left:4px solid var(--purple-300);
+      border-radius:var(--radius-12); background:#fff; padding:14px;
+    }
+    .SafetyNet h3{
+      display:flex; align-items:center; gap:8px; margin:0 0 8px;
+      font-size:var(--fs-lg); font-weight:var(--fw-bold); color:var(--ink-300);
+    }
+    .SafetyNet h3 i{color:var(--purple-300); font-size:20px;}
+    .SafetyNet ul{margin:0; padding-left:20px;}
+    .SafetyNet li{font-size:var(--fs-md); line-height:1.55; color:var(--ink-300); margin-bottom:7px;}
+    .SafetyNet li:last-child{margin-bottom:0;}
+    .SafetyNet .sn-911{margin:10px 0 0; font-size:var(--fs-md); line-height:1.5; color:var(--grey-500);}
+    .SafetyNet .sn-911 a{color:var(--red-500); font-weight:var(--fw-bold);}
+
+    /* teach-back: "what will you do next?" — never "do you understand?" */
+    .TeachBack{
+      border:2px solid var(--purple-300); border-radius:var(--radius-12);
+      background:var(--purple-100); padding:14px;
+    }
+    .TeachBack h3{margin:0 0 4px; font-size:var(--fs-lg); font-weight:var(--fw-bold); color:var(--purple-500);}
+    .TeachBack .tb-help{margin:0 0 10px; font-size:var(--fs-md); color:var(--purple-500); line-height:1.5;}
+    .TeachBack .tb-ack{
+      display:flex; align-items:flex-start; gap:8px; margin:10px 0 0; padding:10px 12px;
+      background:#fff; border-radius:var(--radius-8); font-size:var(--fs-md);
+      line-height:1.5; color:var(--green-500); font-weight:var(--fw-semibold);
+    }
+    .TeachBack .tb-ack i{flex:none; font-size:20px;}
+
+    .note-preview{
+      display:flex; align-items:flex-start; gap:8px; margin-top:12px; padding:10px 12px;
+      background:var(--purple-100); border:1px solid var(--purple-200); border-radius:var(--radius-12);
+      font-size:var(--fs-md); color:var(--purple-500); font-weight:var(--fw-medium); line-height:1.45;
+    }
+    .note-preview i{flex:none; font-size:18px; margin-top:1px;}
+
+    /* flow chrome */
+    .scn-back{
+      flex:none; display:flex; align-items:center; gap:10px; padding:12px;
+      border-bottom:1px solid var(--grey-300); background:#fff;
+    }
+    .scn-back button{
+      width:44px; height:44px; border:none; background:transparent; border-radius:50%;
+      display:grid; place-items:center; cursor:pointer; font-size:22px; color:var(--ink-300); flex:none;
+    }
+    .scn-back button:hover{background:var(--grey-200);}
+    .scn-back .sb-title{font-size:var(--fs-xl); font-weight:var(--fw-bold); font-family:var(--font-serif);}
+
+    .step-count{
+      margin:0; font-size:var(--fs-sm); font-weight:var(--fw-bold);
+      letter-spacing:.05em; text-transform:uppercase; color:var(--purple-300);
+    }
+    .sticky-cta{
+      position:sticky; bottom:0; padding-top:8px; margin-top:4px;
+      background:linear-gradient(to bottom, rgba(250,250,250,0), var(--grey-200) 40%);
+    }
+
+    /* the ungated emergency escape hatch — present on EVERY flow screen.
+       Not behind the triage logic (FDA automation-bias posture). */
+    .escape{
+      flex:none; display:flex; align-items:center; justify-content:center; gap:8px;
+      width:100%; min-height:48px; padding:12px 14px; cursor:pointer;
+      background:var(--red-100); border:none; border-top:1.5px solid var(--red-300);
+      color:var(--red-500); font-size:var(--fs-md); font-weight:var(--fw-bold); line-height:1.3;
+    }
+    .escape:hover{filter:brightness(0.96);}
+    .escape i{font-size:20px; flex:none;}
+
+    /* home */
+    .greet{font-family:var(--font-serif); font-size:var(--fs-3xl); font-weight:var(--fw-bold); margin:0;}
+    .CheckinCard{
+      position:relative; overflow:hidden; background:#fff;
+      border:1px solid var(--grey-300); border-radius:var(--radius-16);
+      box-shadow:var(--shadow-small); padding:18px 16px;
+    }
+    .CheckinCard::before{
+      content:""; position:absolute; inset:-40% -30% auto auto; width:210px; height:210px;
+      background:radial-gradient(circle, rgba(255,158,0,.16), transparent 68%); pointer-events:none;
+    }
+    .CheckinCard h2{font-family:var(--font-serif); font-size:var(--fs-xl); font-weight:var(--fw-bold); margin:0 0 6px; position:relative;}
+    .CheckinCard p{margin:0 0 14px; font-size:var(--fs-md); color:var(--grey-500); line-height:1.55; position:relative;}
+    .CheckinCard .cc-actions{display:flex; flex-direction:column; gap:10px; position:relative;}
+
+    .AckCard{border:1px solid var(--green-300); background:var(--green-100); border-radius:var(--radius-16); padding:16px;}
+    .AckCard h2{
+      display:flex; align-items:center; gap:8px; margin:0 0 6px;
+      font-size:var(--fs-lg); font-weight:var(--fw-bold); color:var(--green-500);
+    }
+    .AckCard p{margin:0 0 6px; font-size:var(--fs-md); line-height:1.55; color:var(--ink-300);}
+    .AckCard .ac-foot{margin:8px 0 0; font-size:var(--fs-md); color:var(--grey-500);}
+    .AckCard .ac-foot a{color:var(--red-500); font-weight:var(--fw-bold);}
+
+    .care-hours{
+      border:1px dashed var(--grey-400); border-radius:var(--radius-12);
+      padding:12px 14px; background:#fff;
+    }
+    .care-hours h3{margin:0 0 4px; font-size:var(--fs-md); font-weight:var(--fw-bold); color:var(--ink-300);}
+    .care-hours p{margin:0; font-size:var(--fs-md); color:var(--grey-500); line-height:1.5;}
+    .care-hours a{color:var(--purple-300); font-weight:var(--fw-semibold);}
+
+    /* ============================================================
+       APPROACH D — bottom sheet + agent conversation
+       Sheet anatomy ported from mvp3-side-effect-prescription.html and
+       remapped onto mvp4's token names. @bold/web has no sheet component;
+       flagged for upstream.
+       ============================================================ */
+    .sheet-host{position:absolute; inset:0; z-index:70; display:none;}
+    .sheet-host.open{display:block;}
+    .sheet-scrim{position:absolute; inset:0; background:rgba(20,13,38,.5); border:none; padding:0; width:100%; cursor:pointer;}
+    /* An emergency locks the scrim so the sheet can't be dismissed by a stray
+       tap — but the explicit Close button always stays, so nobody is trapped. */
+    .sheet-host.locked .sheet-scrim{cursor:default;}
+    .sheet{
+      position:absolute; left:0; right:0; bottom:0; background:#fff;
+      border-radius:var(--radius-16) var(--radius-16) 0 0;
+      max-height:92%; display:flex; flex-direction:column;
+      box-shadow:var(--shadow-xlarge);
+    }
+    .sheet-handle{width:40px; height:5px; border-radius:3px; background:var(--grey-300); margin:8px auto 4px; flex:none;}
+    .sheet-head{
+      flex:none; display:flex; align-items:center; gap:10px;
+      padding:6px 14px 12px; border-bottom:1px solid var(--grey-300);
+    }
+    .sheet-head .sh-title{
+      flex:1; min-width:0; font-family:var(--font-serif);
+      font-size:var(--fs-xl); font-weight:var(--fw-bold); color:var(--ink-300);
+    }
+    .sheet-head .sh-sub{
+      display:block; font-family:var(--font); font-size:var(--fs-sm);
+      font-weight:var(--fw-regular); color:var(--grey-500); margin-top:2px;
+    }
+    .sheet-body{flex:1; overflow-y:auto; padding:16px 14px 8px; min-height:0;}
+    .sheet-body::-webkit-scrollbar{width:0;}
+    .sheet-foot{flex:none; padding:10px 14px 16px; border-top:1px solid var(--grey-300); background:#fff;}
+
+    /* transcript */
+    .convo{display:flex; flex-direction:column; gap:12px;}
+    .bubble{
+      align-self:flex-start; max-width:88%;
+      background:var(--purple-100); color:var(--ink-300);
+      border-radius:var(--radius-16) var(--radius-16) var(--radius-16) var(--radius-4);
+      padding:12px 14px; font-size:var(--fs-lg); line-height:1.5;
+    }
+    .bubble.plain{background:var(--grey-200); border:1px solid var(--grey-300);}
+    .said{
+      align-self:flex-end; max-width:88%;
+      background:var(--purple-300); color:#fff;
+      border-radius:var(--radius-16) var(--radius-16) var(--radius-4) var(--radius-16);
+      padding:10px 14px; font-size:var(--fs-md); font-weight:var(--fw-semibold); line-height:1.4;
+    }
+    /* typing indicator — decorative only; the text it precedes is what gets
+       announced, so this is aria-hidden */
+    .typing{
+      align-self:flex-start; display:flex; gap:5px; align-items:center;
+      background:var(--purple-100); border-radius:var(--radius-full); padding:12px 16px;
+    }
+    .typing span{
+      width:8px; height:8px; border-radius:50%; background:var(--purple-200);
+      animation:tdot 1s ease-in-out infinite;
+    }
+    .typing span:nth-child(2){animation-delay:.15s;}
+    .typing span:nth-child(3){animation-delay:.3s;}
+    @keyframes tdot{0%,60%,100%{opacity:.35; transform:translateY(0);} 30%{opacity:1; transform:translateY(-3px);}}
+
+    /* answer chips */
+    .chips{display:flex; flex-wrap:wrap; gap:8px; margin-top:4px;}
+    .chip{
+      flex:0 1 auto; min-height:48px; padding:12px 16px; cursor:pointer;
+      background:#fff; border:1.5px solid var(--purple-200); border-radius:var(--radius-full);
+      font-size:var(--fs-lg); font-weight:var(--fw-semibold); color:var(--purple-500);
+      line-height:1.3; text-align:left;
+      transition:background-color .15s ease-in-out, border-color .15s ease-in-out;
+    }
+    .chip:hover{background:var(--purple-100); border-color:var(--purple-300);}
+    /* multi-select "on" state — border weight + tick carry it too, never colour alone */
+    .chip.is-on{background:var(--purple-100); border-color:var(--purple-300); border-width:2.5px;}
+    .chip.is-on::before{content:'\2713\00a0'; font-weight:var(--fw-bold);}
+    .chip---wide{flex:1 1 100%;}
+    /* the ungated emergency chip — always available, never gated behind logic */
+    .chip---sos{border-color:var(--red-300); color:var(--red-500); background:var(--red-100);}
+    .chip---sos:hover{filter:brightness(0.96);}
+    .chip:disabled{opacity:.45; cursor:not-allowed;}
+
+    .typeit{
+      margin-top:10px; background:none; border:none; padding:8px 4px; cursor:pointer;
+      font-size:var(--fs-md); font-weight:var(--fw-semibold); color:var(--purple-300);
+      text-decoration:underline; min-height:44px;
+    }
+    .typebox{margin-top:10px;}
+    .typebox label{display:block; font-size:var(--fs-md); font-weight:var(--fw-semibold); color:var(--ink-300); margin-bottom:6px;}
+    .typebox textarea{
+      width:100%; min-height:88px; padding:12px; resize:vertical;
+      font-family:var(--font); font-size:var(--fs-lg); line-height:1.5; color:var(--ink-300);
+      border:1.5px solid var(--grey-300); border-radius:var(--radius-12);
+    }
+    .typebox textarea:focus-visible{outline:3px solid var(--purple-300); outline-offset:2px;}
+
+    /* agent-written summary */
+    .sum-label{
+      display:flex; align-items:center; gap:6px; margin:0 0 6px;
+      font-size:var(--fs-sm); font-weight:var(--fw-bold); letter-spacing:.05em;
+      text-transform:uppercase; color:var(--grey-500);
+    }
+    .sum-recap{
+      background:var(--grey-200); border:1px solid var(--grey-300);
+      border-radius:var(--radius-12); padding:14px; margin:0 0 16px;
+      font-size:var(--fs-lg); line-height:1.55; color:var(--ink-300);
+    }
+    .sum-block{margin-bottom:16px;}
+    .sum-block:last-child{margin-bottom:0;}
+    /* provenance: makes it visible in the demo which words the LLM touched */
+    .phrased{border-bottom:1px dotted var(--purple-200);}
+    body:not([data-phrase-marks="on"]) .phrased{border-bottom:none;}
+
+    /* spacing utilities, so the D renderers need no inline styles */
+    .gap-xs{margin-top:var(--space-1);}
+    .gap-sm{margin-top:var(--space-2);}
+    .gap-md{margin-top:var(--space-3);}
+    .gap-lg{margin-top:var(--space-4);}
+
+    /* ============================================================
+       RESPONSIVE
+       ============================================================ */
+    @media (max-width:1080px){
+      .showcase{grid-template-columns:1fr;}
+      .sidebar{
+        position:fixed; inset:0 auto 0 0; width:320px; transform:translateX(-100%);
+        transition:transform .2s ease-in-out; box-shadow:var(--shadow-xlarge);
+      }
+      body.nav-open .sidebar{transform:none;}
+      .nav-scrim{
+        position:fixed; inset:0; background:rgba(20,13,38,.45); z-index:25; border:none; padding:0;
+      }
+      .hamburger{
+        position:fixed; top:14px; left:14px; z-index:26; width:48px; height:48px;
+        border-radius:var(--radius-12); border:1px solid var(--grey-300); background:#fff;
+        display:grid; place-items:center; font-size:24px; cursor:pointer; box-shadow:var(--shadow-small);
+      }
+      .stage{padding-top:76px;}
+    }
+    @media (min-width:1081px){ .hamburger,.nav-scrim{display:none;} }
+    @media (max-width:460px){
+      .iphone{width:100%; max-width:393px; height:auto; min-height:720px; border-radius:0; padding:0; box-shadow:none;}
+      .iphone-screen{border-radius:0; min-height:720px;}
+      .iphone-island{display:none;}
+      .statusbar{display:none;}
+      .stage{padding:70px 0 0;}
+    }
+    @media (prefers-reduced-motion: reduce){
+      *{transition:none !important; animation:none !important;}
+    }
+  </style>
+</head>
+<body data-variant="B">
+
+<button class="hamburger" type="button" onclick="toggleNav()" aria-label="Show prototype controls">
+  <i class="ph ph-sliders-horizontal" aria-hidden="true"></i>
+</button>
+<button class="nav-scrim" type="button" hidden onclick="toggleNav(false)" aria-label="Hide prototype controls" id="nav-scrim"></button>
+
+<div class="showcase">
+
+  <!-- ================= DEMO SIDEBAR (prototype chrome, not the product) ================= -->
+  <aside class="sidebar" aria-label="Prototype controls">
+    <div>
+      <div class="sidebar-brand">
+        <div class="brand-mark" aria-hidden="true"></div>
+        <span class="brand-word">BOLD</span>
+      </div>
+      <p class="sidebar-sub">MVP4 &middot; Side-effect triage &mdash; four escalation architectures, one shared clinical spine.</p>
+    </div>
+
+    <div>
+      <p class="sidebar-label" id="vp-label">Triage approach</p>
+      <div class="vp-seg" role="group" aria-labelledby="vp-label">
+        <button type="button" id="vp-A" aria-pressed="false" onclick="setVariant('A')">
+          <span class="vs-name">A &middot; Safety first</span>
+          <span class="vs-desc">Red flags ruled out before anything else. The nurse-triage standard.</span>
+        </button>
+        <button type="button" id="vp-B" aria-pressed="true" onclick="setVariant('B')">
+          <span class="vs-name">B &middot; Report first</span>
+          <span class="vs-desc">Pick your symptoms, we sort them. Figma-faithful, clinically corrected.</span>
+        </button>
+        <button type="button" id="vp-C" aria-pressed="false" onclick="setVariant('C')">
+          <span class="vs-name">C &middot; One at a time</span>
+          <span class="vs-desc">A guided interview that asks only what it needs.</span>
+        </button>
+        <button type="button" id="vp-D" aria-pressed="false" onclick="setVariant('D')">
+          <span class="vs-name">D &middot; Talk it through</span>
+          <span class="vs-desc">An agent asks in a modal, tap to answer, and writes you a summary.</span>
+        </button>
+      </div>
+      <p class="demo-note" id="vp-caption" aria-live="polite"></p>
+    </div>
+
+    <div>
+      <p class="sidebar-label">Member context</p>
+      <label class="ctl-row">
+        <input type="checkbox" id="su-insulin" onchange="toggleSuInsulin()" />
+        <span>On insulin or a sulfonylurea<br><span style="color:var(--grey-400)">Flips low blood sugar from self-care to urgent</span></span>
+      </label>
+    </div>
+
+    <div data-variant-block="D">
+      <p class="sidebar-label">Agent phrasing (approach D)</p>
+      <label class="ctl-row">
+        <input type="checkbox" id="llm-on" onchange="toggleLlm()" />
+        <span>Let an LLM reword the questions<br><span style="color:var(--grey-400)">Needs the local proxy running</span></span>
+      </label>
+      <p class="demo-note gap-sm" id="llm-note"></p>
+    </div>
+
+    <div>
+      <p class="sidebar-label">Jump to</p>
+      <div class="jump-list">
+        <button class="jump-link" type="button" onclick="showScreen('home')">Today (home)</button>
+        <button class="jump-link" type="button" onclick="startFlow()">Start the check-in</button>
+        <button class="jump-link" type="button" onclick="demoScenario('mild')">Result &middot; mild nausea</button>
+        <button class="jump-link" type="button" onclick="demoScenario('concern')">Result &middot; nausea affecting meals</button>
+        <button class="jump-link" type="button" onclick="demoScenario('urgent')">Result &middot; can't keep liquids down</button>
+        <button class="jump-link" type="button" onclick="demoScenario('emergency')">Result &middot; severe pain to back</button>
+        <button class="jump-link" type="button" onclick="demoScenario('multi')">Result &middot; 3 symptoms at once</button>
+      </div>
+    </div>
+
+    <div>
+      <p class="sidebar-label">Triage trace</p>
+      <div class="trace" id="trace" aria-live="polite"></div>
+    </div>
+
+    <p class="demo-warn">
+      <strong>Provisional.</strong> Symptom rows come from the clinician escalation table.
+      The tier ladder, companion-symptom gate, upgrade rule and all response-time copy are
+      product inferences pending Dr.&nbsp;Deeb sign-off.
+    </p>
+  </aside>
+
+  <!-- ================= PHONE ================= -->
+  <main class="stage">
+    <div class="iphone">
+      <div class="iphone-island" aria-hidden="true"></div>
+      <div class="iphone-screen">
+        <div class="statusbar" aria-hidden="true">
+          <span>9:41</span>
+          <span class="sb-icons">
+            <i class="ph-fill ph-cell-signal-full"></i>
+            <i class="ph-fill ph-wifi-high"></i>
+            <i class="ph-fill ph-battery-full"></i>
+          </span>
+        </div>
+
+        <!-- ---------- HOME ---------- -->
+        <section class="screen active" data-screen="home" aria-label="Today">
+          <header class="app-topbar">
+            <div class="topbar-brand">
+              <div class="brand-mark" aria-hidden="true"></div>
+              <span class="brand-word">BOLD</span>
+            </div>
+            <button class="avatar" type="button" aria-label="Your profile">CS</button>
+          </header>
+
+          <div class="app-scroll">
+            <div class="scn">
+              <div>
+                <h1 class="greet">Hi Carol!</h1>
+                <p class="Text" style="margin-top:6px">Week 3 on your medication. This is the stretch when side effects are most common &mdash; and most manageable.</p>
+              </div>
+
+              <div class="AckCard" id="ack-card" hidden>
+                <h2><i class="ph-fill ph-check-circle" aria-hidden="true"></i> <span id="ack-title">We heard you</span></h2>
+                <p id="ack-body"></p>
+                <p class="ac-foot" id="ack-foot"></p>
+              </div>
+
+              <div class="CheckinCard" id="checkin-card">
+                <h2>How are you feeling today?</h2>
+                <p>Tell us about anything that&rsquo;s bothering you &mdash; even if it feels small. Mild things count, and your care team wants to hear them.</p>
+                <div class="cc-actions">
+                  <button class="Button Button---primary Button---full" type="button" onclick="startFlow()">
+                    <i class="ph ph-first-aid-kit" aria-hidden="true"></i> Report a side effect
+                  </button>
+                  <button class="Button Button---secondary Button---full" type="button" onclick="doingWell()">
+                    <i class="ph ph-smiley" aria-hidden="true"></i> I&rsquo;m doing well today
+                  </button>
+                </div>
+              </div>
+
+              <div class="care-hours">
+                <h3>Your care team</h3>
+                <p>
+                  Ali, your care coordinator &middot; Monday&ndash;Friday, 7am&ndash;5pm PT<br />
+                  <a href="tel:+18005550100">(800)&nbsp;555-0100</a><br />
+                  <span style="color:var(--grey-400)">Bold isn&rsquo;t an emergency service and can&rsquo;t watch over you in real time. For an emergency, call 911.</span>
+                </p>
+              </div>
+
+              <div class="care-hours" style="border-style:solid; border-color:var(--grey-300)">
+                <h3>Someone helping you?</h3>
+                <p>A family member or caregiver can fill this out with you, or for you. Call us and we&rsquo;ll do it together over the phone.</p>
+              </div>
+            </div>
+          </div>
+
+          <nav class="app-tabbar" aria-label="Main">
+            <button type="button" aria-pressed="true" onclick="showScreen('home')">
+              <i class="ph-fill ph-house" aria-hidden="true"></i> Home
+            </button>
+            <button type="button" aria-pressed="false" onclick="showScreen('home')">
+              <i class="ph ph-pulse" aria-hidden="true"></i> My health
+            </button>
+          </nav>
+        </section>
+
+        <!-- ---------- FLOW (approaches A / B / C render here) ---------- -->
+        <section class="screen" data-screen="flow" aria-label="Side-effect check-in">
+          <div class="scn-back">
+            <button type="button" onclick="flowBack()" aria-label="Go back">
+              <i class="ph ph-arrow-left" aria-hidden="true"></i>
+            </button>
+            <span class="sb-title" id="flow-title">How are you feeling?</span>
+          </div>
+          <div class="app-scroll">
+            <div class="scn" id="flow-body"></div>
+          </div>
+          <button class="escape" type="button" onclick="panicButton()">
+            <i class="ph-fill ph-warning-circle" aria-hidden="true"></i>
+            Something feels really wrong right now
+          </button>
+        </section>
+
+        <!-- ---------- APPROACH D — agent conversation in a bottom sheet ---------- -->
+        <div class="sheet-host" id="sheet-convo" aria-hidden="true">
+          <button class="sheet-scrim" type="button" id="convo-scrim"
+                  onclick="closeSheet()" aria-label="Close the check-in" tabindex="-1"></button>
+          <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="convo-title">
+            <div class="sheet-handle" aria-hidden="true"></div>
+            <div class="sheet-head">
+              <!-- title and subtitle are SIBLINGS: the renderer rewrites each
+                   with textContent, so nesting one inside the other would
+                   delete it on the first write. -->
+              <span class="sh-title">
+                <span id="convo-title">Report a side effect</span>
+                <span class="sh-sub" id="convo-sub">Tap to answer &mdash; no typing needed</span>
+              </span>
+              <button class="ButtonClose" type="button" onclick="closeSheet()" aria-label="Close">
+                <i class="ph ph-x" aria-hidden="true"></i>
+              </button>
+            </div>
+            <div class="sheet-body" id="convo-body">
+              <!-- aria-live so each new agent turn is announced as it lands -->
+              <div class="convo" id="convo" aria-live="polite"></div>
+            </div>
+            <div class="sheet-foot" id="convo-foot"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+/* ==========================================================================
+   1. CLINICAL MODEL
+   Symptom rows, mild/urgent/emergent content and medication instructions are
+   transcribed from the clinician escalation table. `tier` routing and the
+   middle `concern` tier are the product inference.
+   ========================================================================== */
+
+var CARE_PHONE = '+18005550100';
+var CARE_PHONE_DISPLAY = '(800) 555-0100';
+var PROVIDER = 'Dr. Desai';
+var COORDINATOR = 'Ali';
+
+/* Four tiers, because Bold has exactly four actors that can act:
+   911, urgent care/ED, the Bold care team, and the member. */
+var TIER = {
+  self: {
+    rank: 0, label: 'Care for at home', icon: 'ph-fill ph-house-line',
+    followup: 'Logged for ' + PROVIDER + ' to see.'
+  },
+  concern: {
+    rank: 1, label: 'Your care team should see this', icon: 'ph-fill ph-user-circle',
+    followup: COORDINATOR + ' will reach out within 2 business days.'
+  },
+  urgent: {
+    rank: 2, label: 'Needs to be seen today', icon: 'ph-fill ph-warning',
+    followup: 'We’ve flagged this for ' + PROVIDER + '. Your care team follows up within 24–48 hours.'
+  },
+  emergency: {
+    rank: 3, label: 'Emergency — get help now', icon: 'ph-fill ph-warning-circle',
+    followup: 'We’ve flagged this for ' + PROVIDER + '. Your care team follows up within 12–24 hours.'
+  }
+};
+
+/* Tie-break order when two findings share a tier — most dangerous first. */
+var PRIORITY = ['pain', 'gallbladder', 'hypoglycemia', 'vomiting', 'diarrhea', 'nausea', 'constipation', 'other'];
+
+var HOLD_RANK = { none: 0, dose: 1, med: 2 };
+
+var SYMPTOMS = {
+  nausea: {
+    key: 'nausea', label: 'Nausea', icon: 'ph ph-drop-half', gi: true,
+    q: 'How is the nausea today?',
+    levels: [
+      { text: 'I can still eat and drink', subtext: 'It’s there, but I’m managing',
+        tier: 'self', hold: 'none',
+        basis: 'This is the most common effect of the medicine. If you can still eat and drink, it usually settles on its own.' },
+      { text: 'It’s affecting my meals — I’m eating much less', subtext: 'I’m skipping food or cutting portions right down',
+        tier: 'concern', hold: 'dose',
+        basis: 'When it starts costing you meals, your care team would rather look at your dose than have you push through.' },
+      { text: 'I can’t keep food or water down', subtext: 'Nothing is staying down',
+        tier: 'urgent', hold: 'dose',
+        basis: 'Your care team asks anyone who cannot keep food or drinks down for a day to be seen. You get dry faster after 65.' }
+    ],
+    care: {
+      reassure: 'About 1 in 3 people feel some nausea when they start this medicine or move up a dose. It is the medicine, not your age — and it usually eases within a week or so.',
+      tips: [
+        { topic: 'Smaller meals', text: 'Eat small amounts through the day instead of two or three big meals.' },
+        { topic: 'Skip high-fat food', text: 'Fried and greasy food makes nausea worse. Ginger tea or peppermint helps some people.' },
+        { topic: 'Ask about medicine', text: 'There is medicine for this, called ondansetron. Just ask your care team.' }
+      ],
+      callback: ['The nausea lasts more than a few days', 'You start being sick (vomiting) as well', 'You can’t keep drinks down']
+    }
+  },
+
+  vomiting: {
+    key: 'vomiting', label: 'Vomiting', icon: 'ph ph-drop', gi: true,
+    q: 'Tell us about the vomiting.',
+    levels: [
+      { text: 'Once or twice, and I can still drink', subtext: 'I’m keeping liquids down',
+        tier: 'self', hold: 'none',
+        basis: 'This is common in the first few weeks. If you can still keep drinks down, it usually passes in a day or two.' },
+      { text: 'Several times, but I can still sip fluids', subtext: 'More than a couple of times today',
+        tier: 'concern', hold: 'dose',
+        basis: 'Being sick again and again is worth a look, even if you are still drinking. They may pause your dose.' },
+      { text: 'I can’t hold liquids down at all', subtext: 'Everything comes back up',
+        tier: 'urgent', hold: 'dose',
+        basis: 'If drinks will not stay down, you need to be seen today. Your care team wants to check that you are not too dry.' }
+    ],
+    care: {
+      reassure: 'This is common in the first weeks, and after a dose goes up. For most people it settles in about a week.',
+      tips: [
+        { topic: 'Small sips', text: 'Take small sips often. Do not try to drink a big glass at once.' },
+        { topic: 'Bland and low-fat', text: 'Plain, low-fat food when you can face it. Ginger tea helps some people.' },
+        { topic: 'Ask about medicine', text: 'If you have anti-nausea medicine, this is what it’s for.' }
+      ],
+      callback: ['You can’t keep liquids down', 'It carries on past a day or two', 'You feel dizzy, mixed up, or very weak']
+    }
+  },
+
+  diarrhea: {
+    key: 'diarrhea', label: 'Diarrhea', icon: 'ph ph-toilet', gi: true,
+    q: 'Tell us about the diarrhea.',
+    levels: [
+      { text: 'A few loose stools, no cramping', subtext: 'Nothing too disruptive',
+        tier: 'self', hold: 'none',
+        basis: 'A few loose stools without cramping is common in the first month and normally settles on its own.' },
+      { text: 'Loose stools with belly cramps', subtext: 'It’s uncomfortable and it keeps happening',
+        tier: 'concern', hold: 'none',
+        basis: 'Cramping that carries on past two days is worth a look. Your care team will check your fluid levels.' },
+      { text: 'Many times a day, or there’s blood', subtext: 'Eight or more times, or blood or very dark stool',
+        tier: 'emergency', hold: 'dose',
+        basis: 'Bad diarrhea can mean an infection. So can blood, or very dark stool. This needs checking right away.' }
+    ],
+    care: {
+      reassure: 'Loose stools happen to up to a quarter of people starting this medicine, usually in the first four weeks.',
+      tips: [
+        { topic: 'Replace fluids', text: 'Drink fluids with electrolytes so you don’t get dry.' },
+        { topic: 'Simple food', text: 'Bananas, rice, applesauce and toast are gentle while things settle.' },
+        { topic: 'Ask about medicine', text: 'An over-the-counter medicine like loperamide can help — ask your care team first.' }
+      ],
+      callback: ['It carries on past two days', 'You see blood, or very dark stool', 'You feel dizzy or stop passing urine']
+    }
+  },
+
+  constipation: {
+    key: 'constipation', label: 'Constipation', icon: 'ph ph-hourglass-medium', gi: true,
+    q: 'Tell us about the constipation.',
+    levels: [
+      { text: 'Slower than usual, but comfortable', subtext: 'Just not as regular as normal',
+        tier: 'self', hold: 'none',
+        basis: 'This medicine slows things down. Fibre and fluids help a lot.' },
+      { text: 'Nothing for 3 days or more, with some discomfort', subtext: 'My belly feels uncomfortable',
+        tier: 'concern', hold: 'none',
+        basis: 'Three days or more is worth telling us. Your care team will check that nothing is backing up.' },
+      { text: 'Belly is swollen and hard, or I can’t pass gas', subtext: 'Bad pain, or being sick with it',
+        tier: 'emergency', hold: 'dose',
+        basis: 'A hard, swollen belly with no gas can mean a blockage. That needs checking right away.' }
+    ],
+    care: {
+      reassure: 'Of all these effects, this one lasts longest. It can stay for weeks, not days. So it helps to get ahead of it.',
+      tips: [
+        { topic: 'Build fibre slowly', text: 'Add fibre a little at a time so you don’t swap one problem for another.' },
+        { topic: 'Fluids', text: 'Six to eight glasses of water a day. Thirst fades with age, so drink on a schedule rather than waiting to feel thirsty.' },
+        { topic: 'Ask about a laxative', text: 'A gentle laxative like MiraLAX is usually fine — check with your care team.' }
+      ],
+      callback: ['Three days pass with no bowel movement', 'Your belly becomes swollen or hard', 'You can’t pass gas, or you start being sick']
+    }
+  },
+
+  /* PDF marks the mild column "Not applicable" — no benign level exists. */
+  gallbladder: {
+    key: 'gallbladder', label: 'Pain under my right ribs', icon: 'ph ph-heartbeat', gi: true, noBenign: true,
+    q: 'Tell us about the pain under your right ribs.',
+    levels: [
+      { text: 'It comes on after meals', subtext: 'Especially after something fatty',
+        tier: 'urgent', hold: 'none',
+        basis: 'Pain under the right ribs after eating points at your gallbladder. Your care team wants a scan quickly rather than waiting.' },
+      { text: 'It came on suddenly and it’s severe', subtext: 'With a fever or chills',
+        tier: 'emergency', hold: 'dose',
+        basis: 'Pain that bad, with a fever or chills, needs checking right away.' }
+    ],
+    care: {
+      reassure: 'This one we always look at properly rather than wait out. Getting it scanned is routine, and it is the fastest way to put your mind at rest.',
+      tips: [{ topic: 'While you wait', text: 'Avoid fatty meals until someone has looked at you.' }],
+      callback: ['The pain becomes severe', 'You develop a fever or chills', 'Your skin or eyes look yellow']
+    }
+  },
+
+  /* PDF marks the mild column "Not applicable" — no benign level exists. */
+  pain: {
+    key: 'pain', label: 'Severe stomach pain', icon: 'ph ph-warning-octagon', gi: true, noBenign: true,
+    q: 'Tell us about the stomach pain.',
+    levels: [
+      { text: 'Severe, and it spreads through to my back', subtext: 'With feeling sick, being sick, or a fever',
+        tier: 'urgent', hold: 'med',
+        basis: 'Severe stomach pain going through to your back is the pattern your care team treats as pancreatitis until proven otherwise. Stop the medicine and get seen.' },
+      { text: 'Unbearable, with fever or feeling very weak', subtext: 'Racing heart, or I can barely stand',
+        tier: 'emergency', hold: 'med',
+        basis: 'Pain this bad needs help right now. Even more so with a fever, a racing heart, or if you feel very weak.' }
+    ],
+    care: {
+      reassure: '',
+      tips: [{ topic: 'Do not restart', text: 'Don’t take another dose until a clinician tells you it’s safe.' }],
+      callback: ['The pain gets worse', 'You develop a fever', 'You start being sick and can’t stop']
+    }
+  },
+
+  hypoglycemia: {
+    key: 'hypoglycemia', label: 'Low blood sugar', icon: 'ph ph-drop-simple', gi: false,
+    q: 'Tell us about the low blood sugar.',
+    levels: [
+      { text: 'Shaky or sweaty, and it passed', subtext: 'It settled after I ate something',
+        tier: 'self', hold: 'none',
+        basis: 'You can handle this at home. Shakiness that eases after you eat is not a worry, unless you take insulin or a sulfonylurea.' },
+      { text: 'It keeps happening', subtext: 'More than once in the last few days',
+        tier: 'concern', hold: 'none',
+        basis: 'This has happened more than once. Your care team needs to look at your other medicines.' },
+      { text: 'Confused, or I passed out', subtext: 'Or a reading under 50',
+        tier: 'emergency', hold: 'dose',
+        basis: 'A reading under 50 is an emergency. So is passing out, or feeling mixed up. Call 911 now. Use your glucagon if you have it.' }
+    ],
+    care: {
+      reassure: 'Most people do not get low blood sugar on this medicine. It is more likely if you also take insulin or a sulfonylurea.',
+      tips: [
+        { topic: 'The Rule of 15', text: 'Take 15 grams of fast sugar — about 4 oz of juice. Wait 15 minutes. Check again.' },
+        { topic: 'Keep sugar close', text: 'Keep juice or glucose tablets where you can reach them, including by your bed.' }
+      ],
+      callback: ['It happens again in the next few days', 'A reading comes back under 70', 'You feel confused or shaky and it doesn’t settle after eating']
+    }
+  },
+
+  other: {
+    key: 'other', label: 'Something else', icon: 'ph ph-chat-circle-dots', gi: false, freeform: true,
+    tier: 'concern', hold: 'none',
+    basis: 'Anything that doesn’t fit our list still goes to your care team — you don’t have to know what it is to report it.',
+    care: {
+      reassure: 'Thanks for telling us. You don’t need to work out what it is or whether it counts — that’s our job.',
+      tips: [{ topic: 'What happens next', text: 'This goes to ' + PROVIDER + ' as a note with the rest of your check-in.' }],
+      callback: ['It gets worse', 'It’s still there in a few days', 'You feel dizzy, mixed up, or very weak']
+    }
+  }
+};
+
+/* Emergency red flags — Approach A's first gate. Behavioural and objective,
+   so stoicism can't downgrade them (a "mild" self-rating can't hide these). */
+var REDFLAGS_EMERGENCY = [
+  { v: 'rf-back',     text: 'Severe stomach pain that spreads through to my back', maps: 'pain' },
+  { v: 'rf-blood',    text: 'Vomiting blood, or very dark stools',                 maps: 'vomiting' },
+  { v: 'rf-constant', text: 'Being sick over and over and I can’t stop',       maps: 'vomiting' },
+  { v: 'rf-faint',    text: 'I passed out, or I feel confused and muddled',        maps: 'vomiting' },
+  { v: 'rf-gas',      text: 'My belly is swollen and hard and I can’t pass gas', maps: 'constipation' }
+];
+
+/* Urgent red flags — Approach A's second gate. */
+var REDFLAGS_URGENT = [
+  { v: 'ru-liquids', text: 'I haven’t kept liquids down since yesterday',        maps: 'vomiting' },
+  { v: 'ru-urine',   text: 'I haven’t passed urine today',                       maps: 'vomiting' },
+  { v: 'ru-ribs',    text: 'Pain under my right ribs, worse after eating',           maps: 'gallbladder' },
+  { v: 'ru-bm',      text: 'No bowel movement for 3 days or more, with belly pain',  maps: 'constipation' },
+  { v: 'ru-sugar',   text: 'Shaky and sweaty from low blood sugar',                  maps: 'hypoglycemia', suOnly: true }
+];
+
+/* Companion symptoms. The GLP-1 expert consensus escalation trigger is
+   literally "persistent vomiting WITH dizziness, confusion, or fatigue" —
+   so any GI symptom plus any of these upgrades to urgent. Asked at EVERY
+   severity, not only after something already escalated: that's the hole in
+   the current Figma, where a stoic "mild nausea" is never asked about urine. */
+var COMPANION = [
+  { v: 'c-dizzy',    text: 'Dizzy or lightheaded' },
+  { v: 'c-confused', text: 'Confused or foggy — or someone told me I seem it' },
+  { v: 'c-weak',     text: 'Unusually weak or tired' },
+  { v: 'c-urine',    text: 'I haven’t passed urine today' }
+];
+
+var DURATIONS = [
+  { v: 'today', text: 'It started today' },
+  { v: 'few',   text: 'A day or two' },
+  { v: '3plus', text: 'Three days or more' }
+];
+
+/* ==========================================================================
+   2. STATE
+   ========================================================================== */
+var APP = { onSuInsulin: false, lastResult: null };
+var draft = null;
+
+function newDraft() {
+  return {
+    stepIndex: 0, steps: [],
+    picks: [], sev: {}, sevOrder: [], companion: [], duration: null,
+    redflags: [], branch: null, result: null
+  };
+}
+
+/* ==========================================================================
+   3. TRIAGE ENGINE  (shared by all three approaches)
+   ========================================================================== */
+
+/** Build the finding list from whatever the current approach collected. */
+function gatherFindings() {
+  var out = [];
+
+  // Approach A's gates produce findings directly.
+  draft.redflags.forEach(function (rf) {
+    var sym = SYMPTOMS[rf.maps];
+    // Take the medication instruction from the symptom's most severe level, so a
+    // red flag can never produce a weaker instruction than the symptom itself.
+    // This is what makes severe-pain-to-back come back as "stop the medicine"
+    // (hold: 'med') rather than "pause your next dose", per the PDF.
+    var hold = (sym && sym.levels) ? sym.levels[sym.levels.length - 1].hold : 'dose';
+    out.push({
+      key: rf.maps, label: sym ? sym.label : rf.text,
+      tier: rf.tier, hold: hold,
+      basis: rf.basis || (sym && sym.levels ? sym.levels[sym.levels.length - 1].basis : ''),
+      via: 'redflag', flagText: rf.text
+    });
+  });
+
+  // Symptom + severity findings.
+  draft.picks.forEach(function (key) {
+    var sym = SYMPTOMS[key];
+    if (!sym) return;
+    if (sym.freeform) {
+      out.push({ key: key, label: sym.label, tier: sym.tier, hold: sym.hold, basis: sym.basis, via: 'freeform' });
+      return;
+    }
+    var idx = draft.sev[key];
+    if (idx === undefined || idx === null) return;
+    var lv = sym.levels[idx];
+    out.push({ key: key, label: sym.label, tier: lv.tier, hold: lv.hold, basis: lv.basis, via: 'severity', levelIndex: idx, levelText: lv.text });
+  });
+
+  return out;
+}
+
+/**
+ * Consolidate to ONE disposition.
+ * STCC: "When using two unrelated protocols… Give the caller the higher
+ * acuity disposition of the two." Never two competing cards.
+ */
+function consolidate(findings) {
+  var trace = [];
+  if (!findings.length) return null;
+
+  // A red flag and a symptom pick can describe the same thing (e.g. the
+  // "severe pain spreading to my back" flag and the "Severe stomach pain"
+  // symptom). Collapse them to one finding per symptom, keeping the most
+  // severe tier and the strongest medication instruction, so the member is
+  // never told "you reported X and X".
+  var byKey = {};
+  findings.forEach(function (f) {
+    var prev = byKey[f.key];
+    if (!prev) { byKey[f.key] = f; return; }
+    trace.push('DEDUPE ' + f.key + ': kept ' +
+      (TIER[f.tier].rank > TIER[prev.tier].rank ? f.tier : prev.tier));
+    var keep = TIER[f.tier].rank > TIER[prev.tier].rank ? f : prev;
+    var other = keep === f ? prev : f;
+    if (HOLD_RANK[other.hold] > HOLD_RANK[keep.hold]) keep.hold = other.hold;
+    byKey[f.key] = keep;
+  });
+  findings = Object.keys(byKey).map(function (k) { return byKey[k]; });
+
+  // --- upgrade rules (STCC permits upgrading; downgrading is discouraged) ---
+
+  // (a) companion symptoms + any GI symptom -> urgent
+  var hasGI = findings.some(function (f) { return SYMPTOMS[f.key] && SYMPTOMS[f.key].gi; });
+  if (hasGI && draft.companion.length) {
+    findings.forEach(function (f) {
+      if (SYMPTOMS[f.key] && SYMPTOMS[f.key].gi && TIER[f.tier].rank < TIER.urgent.rank) {
+        trace.push('UPGRADE ' + f.key + ': ' + f.tier + ' -> urgent (companion: ' + draft.companion.map(function (c) { return c.v; }).join(', ') + ')');
+        f.tier = 'urgent';
+        f.hold = f.hold === 'med' ? 'med' : 'dose';
+        f.basis = 'On its own this would be manageable at home. Together with feeling ' +
+          companionWords() + ', your care team wants you looked at today — that combination is how dehydration shows itself.';
+      }
+    });
+  }
+
+  // (b) three or more concurrent moderate GI symptoms -> urgent
+  var moderateGI = findings.filter(function (f) {
+    return SYMPTOMS[f.key] && SYMPTOMS[f.key].gi && f.tier === 'concern';
+  });
+  if (moderateGI.length >= 3) {
+    moderateGI.forEach(function (f) {
+      trace.push('UPGRADE ' + f.key + ': concern -> urgent (3+ concurrent moderate GI)');
+      f.tier = 'urgent';
+      f.hold = f.hold === 'med' ? 'med' : 'dose';
+    });
+    moderateGI[0].basis = 'Any one of these alone would be manageable. Three at once, at 68, is enough fluid loss that your care team wants you seen today.';
+  }
+
+  // (c) low blood sugar while on insulin or a sulfonylurea -> up one tier
+  if (APP.onSuInsulin) {
+    findings.forEach(function (f) {
+      if (f.key === 'hypoglycemia' && TIER[f.tier].rank < TIER.urgent.rank) {
+        trace.push('UPGRADE hypoglycemia: ' + f.tier + ' -> urgent (on insulin/sulfonylurea)');
+        f.tier = 'urgent';
+        f.basis = 'Because you also take insulin or a sulfonylurea, low blood sugar is treated as urgent — your care team needs to review those medicines and get you a rescue prescription.';
+      }
+    });
+  }
+
+  // --- highest acuity wins ---
+  var sorted = findings.slice().sort(function (a, b) {
+    var d = TIER[b.tier].rank - TIER[a.tier].rank;
+    if (d !== 0) return d;
+    return PRIORITY.indexOf(a.key) - PRIORITY.indexOf(b.key);
+  });
+
+  var primary = sorted[0];
+  var maxHold = 'none';
+  findings.forEach(function (f) {
+    if (HOLD_RANK[f.hold] > HOLD_RANK[maxHold]) maxHold = f.hold;
+  });
+
+  trace.unshift('findings: ' + findings.map(function (f) { return f.key + '=' + f.tier; }).join(', '));
+  trace.push('DISPOSITION: ' + primary.tier + '  (primary: ' + primary.key + ')');
+  trace.push('hold: ' + maxHold);
+
+  return {
+    tier: primary.tier, primary: primary, all: sorted,
+    others: sorted.slice(1), hold: maxHold, trace: trace
+  };
+}
+
+function companionWords() {
+  var words = draft.companion.map(function (c) {
+    if (c.v === 'c-dizzy') return 'dizzy';
+    if (c.v === 'c-confused') return 'muddled';
+    if (c.v === 'c-weak') return 'weak';
+    if (c.v === 'c-urine') return 'unable to pass urine';
+    return '';
+  }).filter(Boolean);
+  return listify(words);
+}
+
+function listify(arr) {
+  if (!arr.length) return '';
+  if (arr.length === 1) return arr[0];
+  if (arr.length === 2) return arr[0] + ' and ' + arr[1];
+  return arr.slice(0, -1).join(', ') + ', and ' + arr[arr.length - 1];
+}
+
+/* ==========================================================================
+   4. FLOW CONTROL
+   ========================================================================== */
+
+function stepsFor(variant) {
+  if (variant === 'A') return ['gateEmergency', 'gateUrgent', 'pick', 'severity', 'companion', 'duration', 'result'];
+  if (variant === 'C') return ['where', 'branchFlag', 'branchKey', 'companion', 'duration', 'more', 'result'];
+  // D runs its own conversational turn loop (section 9) rather than the screen
+  // machine, but still fills the same `draft` and calls the same engine.
+  if (variant === 'D') return ['result'];
+  return ['pick', 'severity', 'companion', 'duration', 'result']; // B
+}
+
+function variant() { return document.body.getAttribute('data-variant'); }
+
+function startFlow() {
+  draft = newDraft();
+  draft.steps = stepsFor(variant());
+  draft.stepIndex = 0;
+  if (variant() === 'D') return startConversation();
+  showScreen('flow');
+  renderStep();
+}
+
+function renderStep() {
+  var step = draft.steps[draft.stepIndex];
+
+  // steps that don't apply to the current data are skipped in both directions
+  if (!stepApplies(step)) return advance();
+
+  var body = document.getElementById('flow-body');
+  body.innerHTML = '';
+  ({
+    gateEmergency: stepGateEmergency,
+    gateUrgent: stepGateUrgent,
+    pick: stepPick,
+    severity: stepSeverity,
+    companion: stepCompanion,
+    duration: stepDuration,
+    where: stepWhere,
+    branchFlag: stepBranchFlag,
+    branchKey: stepBranchKey,
+    more: stepMore,
+    result: stepResult
+  })[step](body);
+
+  var sc = document.querySelector('.screen.active .app-scroll');
+  if (sc) sc.scrollTop = 0;
+}
+
+function stepApplies(step) {
+  if (step === 'severity') return draft.picks.some(function (k) { return !SYMPTOMS[k].freeform; });
+  if (step === 'companion') {
+    // only worth asking when a GI symptom is on the table and we haven't
+    // already hit an emergency (where the only message is "go now")
+    if (currentMaxTier() === 'emergency') return false;
+    return draft.picks.some(function (k) { return SYMPTOMS[k] && SYMPTOMS[k].gi; }) ||
+           draft.redflags.some(function (r) { return SYMPTOMS[r.maps] && SYMPTOMS[r.maps].gi; });
+  }
+  if (step === 'duration') return currentMaxTier() !== 'emergency';
+  if (step === 'branchFlag' || step === 'branchKey') return !!draft.branch && draft.branch !== 'other';
+  // These two stop only for an emergency raised by the GATES (STCC: stop asking
+  // at the first positive). They must NOT look at the overall tier — otherwise a
+  // member who picked an emergency-level severity could never navigate back to
+  // change which symptom they chose.
+  if (step === 'gateUrgent' || step === 'pick') return redflagMaxTier() !== 'emergency';
+  return true;
+}
+
+/** Highest tier raised by the red-flag gates alone. */
+function redflagMaxTier() {
+  var t = null;
+  draft.redflags.forEach(function (r) {
+    if (t === null || TIER[r.tier].rank > TIER[t].rank) t = r.tier;
+  });
+  return t;
+}
+
+function currentMaxTier() {
+  var t = 'self', found = false;
+  draft.redflags.forEach(function (r) {
+    found = true;
+    if (TIER[r.tier].rank > TIER[t].rank) t = r.tier;
+  });
+  draft.picks.forEach(function (k) {
+    var sym = SYMPTOMS[k];
+    if (!sym) return;
+    if (sym.freeform) { found = true; if (TIER[sym.tier].rank > TIER[t].rank) t = sym.tier; return; }
+    var idx = draft.sev[k];
+    if (idx === undefined || idx === null) return;
+    found = true;
+    var lv = sym.levels[idx];
+    if (TIER[lv.tier].rank > TIER[t].rank) t = lv.tier;
+  });
+  return found ? t : null;
+}
+
+function advance() {
+  if (draft.stepIndex >= draft.steps.length - 1) return;
+  draft.stepIndex++;
+  renderStep();
+}
+
+function flowBack() {
+  if (!draft || draft.stepIndex === 0) { showScreen('home'); return; }
+  draft.stepIndex--;
+  // walk back past any step that doesn't apply
+  while (draft.stepIndex > 0 && !stepApplies(draft.steps[draft.stepIndex])) draft.stepIndex--;
+  draft.result = null;
+
+  var step = draft.steps[draft.stepIndex];
+  // Severity and branch steps render "the next unanswered thing", so stepping
+  // back onto one with everything already answered would bounce straight
+  // forward again. Un-answer the most recent one so it actually re-asks.
+  if (step === 'severity' && draft.sevOrder.length) {
+    var last = draft.sevOrder.pop();
+    delete draft.sev[last];
+  }
+  if (step === 'branchKey') draft._cStage = null;
+
+  renderStep();
+}
+
+/* ---------- shared render helpers ---------- */
+
+function h(html) {
+  var t = document.createElement('template');
+  t.innerHTML = html.trim();
+  return t.content.firstElementChild;
+}
+
+function headerBlock(opts) {
+  var wrap = document.createElement('div');
+  if (opts.eyebrow) wrap.appendChild(h('<p class="step-count">' + opts.eyebrow + '</p>'));
+  wrap.appendChild(h('<h1 class="Heading Heading---1" style="margin-top:6px">' + opts.title + '</h1>'));
+  if (opts.help) wrap.appendChild(h('<p class="Text Text---copy" style="margin-top:8px">' + opts.help + '</p>'));
+  return wrap;
+}
+
+/**
+ * FieldCheckboxButtons — hand-implemented from @bold/web.
+ * Reuses the package's built-in exclusive-option behaviour: values named
+ * 'none' / 'none_of_the_above' clear every other selection and vice versa.
+ */
+function FieldCheckboxButtons(opts) {
+  var group = h('<div class="Buttons" role="group" aria-labelledby="' + opts.labelId + '"></div>');
+  opts.options.forEach(function (o) {
+    var id = opts.name + '-' + o.value;
+    var label = h(
+      '<label class="FieldOption" for="' + id + '">' +
+        '<input type="checkbox" id="' + id + '" name="' + opts.name + '" value="' + o.value + '"' +
+          (o.checked ? ' checked' : '') + ' />' +
+        '<span class="fo-body">' +
+          '<span class="fo-text">' + o.text + '</span>' +
+          (o.labelNote ? '<span class="fo-subtext">' + o.labelNote + '</span>' : '') +
+        '</span>' +
+      '</label>'
+    );
+    var input = label.querySelector('input');
+    if (o.checked) label.classList.add('is-checked');
+    input.addEventListener('change', function () {
+      var exclusiveOptions = ['none', 'none_of_the_above'];
+      var isExclusive = exclusiveOptions.indexOf(o.value) !== -1;
+      var all = group.querySelectorAll('input');
+      if (input.checked && isExclusive) {
+        all.forEach(function (i) { if (i !== input) i.checked = false; });
+      } else if (input.checked) {
+        all.forEach(function (i) {
+          if (exclusiveOptions.indexOf(i.value) !== -1) i.checked = false;
+        });
+      }
+      syncChecked(group);
+      opts.onChange(selectedValues(group));
+    });
+    group.appendChild(label);
+  });
+  return group;
+}
+
+/* Mirrors :checked onto a class. :has() covers current browsers; this keeps the
+   selected state visible if the prototype is opened in an older one. */
+function syncChecked(group) {
+  group.querySelectorAll('input').forEach(function (i) {
+    var l = i.closest('.FieldOption');
+    if (l) l.classList.toggle('is-checked', i.checked);
+  });
+}
+
+function selectedValues(group) {
+  return Array.prototype.slice.call(group.querySelectorAll('input:checked')).map(function (i) { return i.value; });
+}
+
+/**
+ * FieldRadioButtons — hand-implemented from @bold/web.
+ * `subtext` carries the behavioural anchor; `showIndicator` shows the pips.
+ */
+function FieldRadioButtons(opts) {
+  var group = h('<div class="Buttons" role="radiogroup" aria-labelledby="' + opts.labelId + '"></div>');
+  opts.options.forEach(function (o, i) {
+    var id = opts.name + '-' + o.value;
+    var pips = '';
+    if (opts.showIndicator && o.severity) {
+      pips = '<span class="sev-pips sev-pips---' + o.severity + '" aria-hidden="true">' +
+        '<span class="sev-pip"></span><span class="sev-pip"></span><span class="sev-pip"></span></span>';
+    }
+    var label = h(
+      '<label class="FieldOption" for="' + id + '">' +
+        '<input type="radio" id="' + id + '" name="' + opts.name + '" value="' + o.value + '" />' +
+        '<span class="fo-body">' +
+          '<span class="fo-text">' + o.text + '</span>' +
+          (o.subtext ? '<span class="fo-subtext">' + o.subtext + '</span>' : '') +
+        '</span>' + pips +
+      '</label>'
+    );
+    label.querySelector('input').addEventListener('change', function () {
+      syncChecked(group);
+      opts.onChange(o.value, i);
+    });
+    group.appendChild(label);
+  });
+  return group;
+}
+
+function ctaButton(text, onClick, opts) {
+  opts = opts || {};
+  var b = h('<div class="sticky-cta"><button class="Button Button---primary Button---full" type="button"' +
+    (opts.disabled ? ' disabled' : '') + '>' + text + '</button></div>');
+  b.querySelector('button').addEventListener('click', onClick);
+  return b;
+}
+
+/* ==========================================================================
+   5. STEPS
+   ========================================================================== */
+
+/* ---------- Approach A: gates ---------- */
+/* STCC sequences the highest-acuity questions FIRST — "This prevents a
+   potential delay of care to a patient who needs to be seen immediately."
+   Deliberately NOT styled red: STCC also warns that covering every
+   worst-case "will unduly alarm the caller". Red appears only in a result. */
+
+function gateStep(body, cfg) {
+  body.appendChild(headerBlock({
+    eyebrow: cfg.eyebrow, title: cfg.title, help: cfg.help
+  }));
+
+  var labelId = cfg.name + '-label';
+  body.appendChild(h('<p class="visually-hidden" id="' + labelId + '">' + cfg.title + '</p>'));
+
+  var opts = cfg.items
+    .filter(function (it) { return !it.suOnly || APP.onSuInsulin; })
+    .map(function (it) { return { value: it.v, text: it.text }; });
+  opts.push({ value: 'none', text: cfg.noneText, labelNote: cfg.noneNote });
+
+  var chosen = [];
+  var cta;
+  var group = FieldCheckboxButtons({
+    name: cfg.name, labelId: labelId, options: opts,
+    onChange: function (vals) {
+      chosen = vals;
+      cta.querySelector('button').disabled = vals.length === 0;
+    }
+  });
+  body.appendChild(group);
+
+  cta = ctaButton('Continue', function () {
+    var hits = chosen.filter(function (v) { return v !== 'none'; });
+    // remove any prior answers from this gate before re-recording (back nav)
+    draft.redflags = draft.redflags.filter(function (r) { return r.gate !== cfg.name; });
+    hits.forEach(function (v) {
+      var item = cfg.items.filter(function (it) { return it.v === v; })[0];
+      draft.redflags.push({
+        maps: item.maps, tier: cfg.tier, gate: cfg.name,
+        text: item.text, basis: cfg.basisFor(item)
+      });
+    });
+    advance();
+  }, { disabled: true });
+  body.appendChild(cta);
+
+  return body;
+}
+
+function stepGateEmergency(body) {
+  gateStep(body, {
+    name: 'gate-emergency', tier: 'emergency',
+    eyebrow: 'Step 1 of 3',
+    title: 'First, a quick safety check.',
+    help: 'Most people answer no to all of these. We ask first so that if something serious is happening, we don’t keep you answering questions.',
+    items: REDFLAGS_EMERGENCY,
+    noneText: 'None of these',
+    noneNote: 'This is the usual answer',
+    basisFor: function (item) {
+      return 'You told us: “' + item.text + '.” Your care team treats that as an emergency, whatever else is going on.';
+    }
+  });
+}
+
+function stepGateUrgent(body) {
+  gateStep(body, {
+    name: 'gate-urgent', tier: 'urgent',
+    eyebrow: 'Step 2 of 3',
+    title: 'A few more, then we’re past the serious ones.',
+    help: 'These are the things your care team wants to know about the same day.',
+    items: REDFLAGS_URGENT,
+    noneText: 'None of these',
+    noneNote: 'This is the usual answer',
+    basisFor: function (item) {
+      return 'You told us: “' + item.text + '.” Your care team asks anyone with that to be seen today.';
+    }
+  });
+}
+
+/* ---------- pick (A step 3, B step 1) ---------- */
+function stepPick(body) {
+  var isA = variant() === 'A';
+  body.appendChild(headerBlock({
+    eyebrow: isA ? 'Step 3 of 3' : null,
+    title: isA ? 'Now the everyday things.' : 'What’s bothering you?',
+    help: isA
+      ? 'Pick anything you’ve been feeling. We’ll tell you what helps.'
+      : 'Pick everything you’re feeling &mdash; even the mild things. Your care team would rather hear about them early. There’s no wrong answer.'
+  }));
+
+  var labelId = 'pick-label';
+  body.appendChild(h('<p class="visually-hidden" id="' + labelId + '">Which side effects are you having?</p>'));
+
+  var keys = ['nausea', 'vomiting', 'diarrhea', 'constipation', 'gallbladder', 'pain', 'hypoglycemia', 'other'];
+  // In A, the red-flag gates have already covered the dangerous presentations.
+  if (isA) keys = ['nausea', 'vomiting', 'diarrhea', 'constipation', 'hypoglycemia', 'other'];
+
+  var opts = keys.map(function (k) { return { value: k, text: SYMPTOMS[k].label }; });
+  opts.push({ value: 'none', text: 'Nothing else — I’m doing alright', labelNote: 'Nothing to report today' });
+
+  var chosen = [];
+  var cta;
+  body.appendChild(FieldCheckboxButtons({
+    name: 'pick', labelId: labelId, options: opts,
+    onChange: function (vals) {
+      chosen = vals;
+      var btn = cta.querySelector('button');
+      btn.disabled = vals.length === 0;
+      var real = vals.filter(function (v) { return v !== 'none'; });
+      btn.textContent = real.length > 1 ? 'Continue with ' + real.length : 'Continue';
+    }
+  }));
+
+  cta = ctaButton('Continue', function () {
+    var real = chosen.filter(function (v) { return v !== 'none'; });
+    if (!real.length) {
+      if (draft.redflags.length) { draft.picks = []; jumpToResult(); return; }
+      feelWell();
+      return;
+    }
+    draft.picks = real;
+    // drop severities for anything deselected
+    Object.keys(draft.sev).forEach(function (k) {
+      if (real.indexOf(k) === -1) delete draft.sev[k];
+    });
+    advance();
+  }, { disabled: true });
+  body.appendChild(cta);
+}
+
+/* ---------- severity (one screen per symptom) ---------- */
+function stepSeverity(body) {
+  var queue = draft.picks.filter(function (k) { return !SYMPTOMS[k].freeform; });
+  var pending = queue.filter(function (k) { return draft.sev[k] === undefined; });
+
+  if (!pending.length) return advance();
+
+  var key = pending[0];
+  var sym = SYMPTOMS[key];
+  var pos = queue.indexOf(key) + 1;
+
+  body.appendChild(headerBlock({
+    eyebrow: queue.length > 1 ? sym.label + ' · ' + pos + ' of ' + queue.length : null,
+    title: sym.q,
+    help: 'Choose the one that sounds most like today.'
+  }));
+
+  var labelId = 'sev-label-' + key;
+  body.appendChild(h('<p class="visually-hidden" id="' + labelId + '">' + sym.q + '</p>'));
+
+  // no-benign symptoms never offer a reassuring-looking first option
+  var sevScale = sym.noBenign ? [2, 3] : [1, 2, 3];
+
+  body.appendChild(FieldRadioButtons({
+    name: 'sev-' + key, labelId: labelId, showIndicator: true,
+    options: sym.levels.map(function (lv, i) {
+      return { value: String(i), text: lv.text, subtext: lv.subtext, severity: sevScale[i] };
+    }),
+    onChange: function (v, i) {
+      draft.sev[key] = i;
+      if (draft.sevOrder.indexOf(key) === -1) draft.sevOrder.push(key);
+      // straight on to the next screen — no extra Continue tap
+      setTimeout(renderStep, 160);
+    }
+  }));
+
+  if (sym.noBenign) {
+    body.appendChild(h('<p class="Text" style="margin-top:4px">' +
+      'We always look at this one properly rather than wait it out.</p>'));
+  }
+}
+
+/* ---------- companion gate ---------- */
+function stepCompanion(body) {
+  body.appendChild(headerBlock({
+    title: 'Along with that, any of these?',
+    help: 'These are easy to put down to a bad week or to getting older. They’re usually the medicine, and they change what we advise — so we always ask.'
+  }));
+
+  var labelId = 'companion-label';
+  body.appendChild(h('<p class="visually-hidden" id="' + labelId + '">Any of these alongside your other symptoms?</p>'));
+
+  // Approach C can already have captured some of these from a branch answer
+  // ("No, and I haven't passed urine today") — show them ticked rather than
+  // silently dropping or double-asking. The member can still correct us.
+  var already = draft.companion.map(function (c) { return c.v; });
+  var opts = COMPANION.map(function (c) {
+    return { value: c.v, text: c.text, checked: already.indexOf(c.v) !== -1 };
+  });
+  opts.push({ value: 'none', text: 'None of these', labelNote: 'This is the usual answer' });
+
+  var chosen = already.slice();
+  var cta;
+  body.appendChild(FieldCheckboxButtons({
+    name: 'companion', labelId: labelId, options: opts,
+    onChange: function (vals) {
+      chosen = vals;
+      cta.querySelector('button').disabled = vals.length === 0;
+    }
+  }));
+
+  cta = ctaButton('Continue', function () {
+    draft.companion = chosen
+      .filter(function (v) { return v !== 'none'; })
+      .map(function (v) { return COMPANION.filter(function (c) { return c.v === v; })[0]; });
+    advance();
+  }, { disabled: true });
+  body.appendChild(cta);
+}
+
+/* ---------- duration ---------- */
+function stepDuration(body) {
+  body.appendChild(headerBlock({
+    title: 'How long has this been going on?',
+    help: 'One last question, so your care team has what they need.'
+  }));
+  var labelId = 'duration-label';
+  body.appendChild(h('<p class="visually-hidden" id="' + labelId + '">How long has this been going on?</p>'));
+  body.appendChild(FieldRadioButtons({
+    name: 'duration', labelId: labelId,
+    options: DURATIONS.map(function (d) { return { value: d.v, text: d.text }; }),
+    onChange: function (v) {
+      draft.duration = v;
+      setTimeout(advance, 160);
+    }
+  }));
+}
+
+/* ---------- Approach C: guided interview ---------- */
+
+var BRANCHES = {
+  gut: {
+    label: 'My stomach or gut',
+    note: 'Feeling sick, being sick, diarrhea, constipation, belly pain',
+    flag: {
+      q: 'Is the pain severe, and does it spread through to your back?',
+      yesText: 'Yes — severe, and it goes through to my back',
+      noText: 'No, it’s not like that',
+      maps: 'pain', tier: 'urgent',
+      basis: 'Severe stomach pain going through to your back is the pattern your care team treats as pancreatitis until proven otherwise. Stop the medicine and get seen.'
+    },
+    key: {
+      q: 'Can you keep liquids down?',
+      help: 'This is the question that tells us the most — more than how bad it feels.',
+      options: [
+        { text: 'Yes, I’m drinking normally', picks: [], next: 'narrow' },
+        { text: 'I can manage small sips', picks: ['vomiting'], sev: { vomiting: 1 } },
+        { text: 'No — nothing stays down', picks: ['vomiting'], sev: { vomiting: 2 } }
+      ]
+    },
+    narrow: {
+      q: 'Which of these fits best?',
+      options: [
+        { text: 'Feeling sick', picks: ['nausea'], sev: { nausea: 0 } },
+        { text: 'Loose stools', picks: ['diarrhea'], sev: { diarrhea: 0 } },
+        { text: 'Constipated', picks: ['constipation'], sev: { constipation: 0 } },
+        { text: 'Pain under my right ribs after eating', picks: ['gallbladder'], sev: { gallbladder: 0 } }
+      ]
+    }
+  },
+  sugar: {
+    label: 'My blood sugar',
+    note: 'Shaky, sweaty, or a low reading',
+    flag: {
+      q: 'Did you pass out, or feel confused with it?',
+      yesText: 'Yes — or my reading was under 50',
+      noText: 'No, nothing like that',
+      maps: 'hypoglycemia', tier: 'emergency',
+      basis: 'A reading under 50 is an emergency. So is passing out, or feeling mixed up. Call 911 now. Use your glucagon if you have it.'
+    },
+    key: {
+      q: 'How often has it happened?',
+      help: 'Choose the one that fits this week.',
+      options: [
+        { text: 'Once, and it settled after I ate', picks: ['hypoglycemia'], sev: { hypoglycemia: 0 } },
+        { text: 'More than once in the last few days', picks: ['hypoglycemia'], sev: { hypoglycemia: 1 } }
+      ]
+    }
+  },
+  off: {
+    label: 'I just feel off',
+    note: 'Dizzy, weak, mixed up, or not myself',
+    flag: {
+      q: 'Have you passed out, or is someone worried you seem confused?',
+      yesText: 'Yes',
+      noText: 'No',
+      maps: 'vomiting', tier: 'emergency',
+      basis: 'Passing out needs help right now. So does feeling mixed up, even if someone else noticed it first. These are the signs that get missed most.'
+    },
+    key: {
+      q: 'Have you been able to eat and drink normally?',
+      help: 'Feeling off plus not drinking is the combination we watch for.',
+      options: [
+        { text: 'Yes, eating and drinking fine', picks: ['other'] },
+        { text: 'Not really — much less than usual', picks: ['nausea'], sev: { nausea: 1 },
+          companion: ['c-weak'] },
+        { text: 'No, and I haven’t passed urine today', picks: ['nausea'], sev: { nausea: 1 },
+          companion: ['c-urine', 'c-weak'] }
+      ]
+    }
+  },
+  other: {
+    label: 'Something else, or a few things at once',
+    note: 'We’ll show you the full list',
+    passthrough: true
+  }
+};
+
+function stepWhere(body) {
+  body.appendChild(headerBlock({
+    title: 'Where’s the trouble?',
+    help: 'We’ll ask a few short questions — only the ones that matter for what you pick.'
+  }));
+  var labelId = 'where-label';
+  body.appendChild(h('<p class="visually-hidden" id="' + labelId + '">Where is the trouble?</p>'));
+  body.appendChild(FieldRadioButtons({
+    name: 'where', labelId: labelId,
+    options: Object.keys(BRANCHES).map(function (k) {
+      return { value: k, text: BRANCHES[k].label, subtext: BRANCHES[k].note };
+    }),
+    onChange: function (v) {
+      draft.branch = v;
+      draft.picks = []; draft.sev = {}; draft.redflags = [];
+      if (BRANCHES[v].passthrough) {
+        // fall back to the full recognition list
+        draft.steps = ['where', 'pick', 'severity', 'companion', 'duration', 'result'];
+        draft.stepIndex = 0;
+      }
+      setTimeout(advance, 160);
+    }
+  }));
+}
+
+function stepBranchFlag(body) {
+  var br = BRANCHES[draft.branch];
+  body.appendChild(headerBlock({ title: br.flag.q, help: 'We ask this first, before anything else.' }));
+  var labelId = 'bflag-label';
+  body.appendChild(h('<p class="visually-hidden" id="' + labelId + '">' + br.flag.q + '</p>'));
+  body.appendChild(FieldRadioButtons({
+    name: 'bflag', labelId: labelId,
+    options: [
+      { value: 'yes', text: br.flag.yesText },
+      { value: 'no', text: br.flag.noText }
+    ],
+    onChange: function (v) {
+      draft.redflags = draft.redflags.filter(function (r) { return r.gate !== 'branch'; });
+      if (v === 'yes') {
+        draft.redflags.push({
+          maps: br.flag.maps, tier: br.flag.tier, gate: 'branch',
+          text: br.flag.q, basis: br.flag.basis
+        });
+        if (br.flag.tier === 'emergency') return setTimeout(jumpToResult, 160);
+      }
+      setTimeout(advance, 160);
+    }
+  }));
+}
+
+function stepBranchKey(body) {
+  var br = BRANCHES[draft.branch];
+  var stage = draft._cStage === 'narrow' && br.narrow ? br.narrow : br.key;
+
+  body.appendChild(headerBlock({ title: stage.q, help: stage.help || 'Choose the one that fits best.' }));
+  var labelId = 'bkey-label';
+  body.appendChild(h('<p class="visually-hidden" id="' + labelId + '">' + stage.q + '</p>'));
+
+  body.appendChild(FieldRadioButtons({
+    name: 'bkey-' + (draft._cStage || 'key'), labelId: labelId,
+    options: stage.options.map(function (o, i) { return { value: String(i), text: o.text, subtext: o.subtext }; }),
+    onChange: function (v, i) {
+      var o = stage.options[i];
+      if (o.next === 'narrow' && br.narrow && draft._cStage !== 'narrow') {
+        draft._cStage = 'narrow';
+        return setTimeout(renderStep, 160);
+      }
+      draft._cStage = null;
+      (o.picks || []).forEach(function (k) { if (draft.picks.indexOf(k) === -1) draft.picks.push(k); });
+      if (o.sev) Object.keys(o.sev).forEach(function (k) { draft.sev[k] = o.sev[k]; });
+      if (o.companion) {
+        o.companion.forEach(function (cv) {
+          var c = COMPANION.filter(function (x) { return x.v === cv; })[0];
+          if (c && draft.companion.indexOf(c) === -1) draft.companion.push(c);
+        });
+      }
+      setTimeout(advance, 160);
+    }
+  }));
+}
+
+function stepMore(body) {
+  body.appendChild(headerBlock({
+    title: 'Anything else bothering you?',
+    help: 'We’ll add it to the same note.'
+  }));
+  var labelId = 'more-label';
+  body.appendChild(h('<p class="visually-hidden" id="' + labelId + '">Anything else bothering you?</p>'));
+  body.appendChild(FieldRadioButtons({
+    name: 'more', labelId: labelId,
+    options: [
+      { value: 'no', text: 'No, that’s everything' },
+      { value: 'yes', text: 'Yes, there’s something else', subtext: 'We’ll show you the full list' }
+    ],
+    onChange: function (v) {
+      if (v === 'yes') {
+        draft.steps = ['where', 'branchFlag', 'branchKey', 'pick', 'severity', 'companion', 'duration', 'result'];
+        draft.stepIndex = draft.steps.indexOf('pick') - 1;
+      }
+      setTimeout(advance, 160);
+    }
+  }));
+}
+
+function jumpToResult() {
+  draft.stepIndex = draft.steps.indexOf('result');
+  renderStep();
+}
+
+/* ==========================================================================
+   6. RESULT
+   ========================================================================== */
+
+function stepResult(body) {
+  var findings = gatherFindings();
+  var res = consolidate(findings);
+  draft.result = res;
+
+  if (!res) { feelWell(); return; }
+
+  APP.lastResult = res;
+  writeTrace(res);
+
+  document.getElementById('flow-title').textContent = 'What to do';
+
+  var tier = res.tier;
+  var t = TIER[tier];
+  var p = res.primary;
+
+  /* --- summary line --- */
+  var reported = res.all.map(function (f) { return f.label.toLowerCase(); });
+  if (res.all.length > 1) {
+    body.appendChild(h('<p class="Text">You told us about ' + listify(reported) +
+      '. Here’s what matters most — the rest is below.</p>'));
+  }
+
+  /* --- the one disposition --- */
+  var card = h('<div class="Triage Triage---' + tier + '"></div>');
+  card.appendChild(h('<p class="tr-tier"><i class="' + t.icon + '" aria-hidden="true"></i>' + t.label + '</p>'));
+  card.appendChild(h('<div class="tr-head"><h2 class="tr-title">' + titleFor(tier, p) + '</h2></div>'));
+
+  // the reviewable basis — FDA posture + it is simply more trustworthy
+  card.appendChild(h('<p class="basis"><i class="ph ph-info" aria-hidden="true"></i><span>' +
+    p.basis + '</span></p>'));
+
+  card.appendChild(h('<p>' + leadFor(tier, p) + '</p>'));
+
+  /* STCC "When LESS is Better": the sooner someone is referred in, the less
+     advice they get — it must not delay them getting seen. */
+  if (tier === 'self' || tier === 'concern') {
+    var care = SYMPTOMS[p.key] && SYMPTOMS[p.key].care;
+    if (care && care.tips && care.tips.length) {
+      var list = h('<ul class="ListCheckmarks"></ul>');
+      care.tips.slice(0, 3).forEach(function (tip) {
+        list.appendChild(h('<li><i class="ph-fill ph-check-circle" aria-hidden="true"></i>' +
+          '<span><span class="lc-topic">' + tip.topic + '.</span> ' + tip.text + '</span></li>'));
+      });
+      card.appendChild(list);
+    }
+  }
+  body.appendChild(card);
+
+  /* --- medication instruction, de-duplicated to one --- */
+  if (res.hold !== 'none') {
+    var med = res.hold === 'med';
+    body.appendChild(h('<div class="DoseBanner DoseBanner---' + (med ? 'med' : 'dose') + '">' +
+      '<i class="' + (med ? 'ph-fill ph-prohibit' : 'ph-fill ph-pause-circle') + '" aria-hidden="true"></i>' +
+      '<span><span class="db-label">Your medication</span>' +
+      (med
+        ? 'Stop taking it now, and don’t restart until a clinician tells you it’s safe.'
+        : 'Hold your next dose until your care team weighs in. This is a safe pause, not a setback.') +
+      '</span></div>'));
+  }
+
+  /* --- actions --- */
+  body.appendChild(actionsFor(tier));
+
+  /* --- teach-back on the two tiers where getting it wrong matters most.
+         Never "do you understand?" — that reliably elicits a false yes. --- */
+  if (tier === 'urgent' || tier === 'emergency') {
+    body.appendChild(teachBack(tier));
+  }
+
+  /* --- what we did with it (closing the loop) --- */
+  if (tier !== 'emergency') {
+    body.appendChild(h('<div class="Tags"><span class="Tag Tag---purple">' +
+      '<i class="ph-fill ph-paper-plane-tilt" aria-hidden="true"></i>Sent to ' + PROVIDER + ' as a note</span>' +
+      '<span class="Tag Tag---green"><i class="ph-fill ph-clock" aria-hidden="true"></i>' +
+      followupShort(tier) + '</span></div>'));
+    body.appendChild(h('<p class="note-preview"><i class="ph ph-note" aria-hidden="true"></i><span>' +
+      'Note to ' + PROVIDER + ': ' + notePreview(res) + '</span></p>'));
+  }
+
+  /* --- safety netting. STCC: don't cover every worst case, just teach
+         "worse" plus a time limit, and give one unconditional route out. --- */
+  body.appendChild(safetyNet(res));
+
+  /* --- everything else they reported --- */
+  if (res.others.length) {
+    var det = h('<div class="Details"><p class="Details__label">' +
+      '<i class="ph ph-list" aria-hidden="true"></i>Also noted — tap any to see what helps</p></div>');
+    res.others.forEach(function (f) {
+      var sym = SYMPTOMS[f.key];
+      var care = sym && sym.care;
+      var item = h('<details class="Details__item"><summary>' +
+        '<span class="di-head"><i class="' + (sym ? sym.icon : 'ph ph-dot') + '" aria-hidden="true"></i>' +
+        '<span class="di-label">' + f.label + '</span></span>' +
+        '<i class="ph ph-caret-right di-chev" aria-hidden="true"></i></summary>' +
+        '<div class="di-body"></div></details>');
+      var b = item.querySelector('.di-body');
+      if (care && care.reassure) b.appendChild(h('<p>' + care.reassure + '</p>'));
+      if (care && care.tips) {
+        var ul = h('<ul></ul>');
+        care.tips.slice(0, 3).forEach(function (tip) {
+          ul.appendChild(h('<li><strong>' + tip.topic + '.</strong> ' + tip.text + '</li>'));
+        });
+        b.appendChild(ul);
+      }
+      det.appendChild(item);
+    });
+    body.appendChild(det);
+  }
+
+  body.appendChild(h('<button class="Button Button---secondary Button---full" type="button" ' +
+    'onclick="finishFlow()">Back to Today</button>'));
+}
+
+function titleFor(tier, p) {
+  if (tier === 'emergency') return 'This needs help right now.';
+  if (tier === 'urgent') return 'This needs to be seen today.';
+  if (tier === 'concern') return 'Let’s get your care team’s eyes on this.';
+  var care = SYMPTOMS[p.key] && SYMPTOMS[p.key].care;
+  return care && care.reassure ? 'This is common — and it usually eases.' : 'Thanks for telling us.';
+}
+
+function leadFor(tier, p) {
+  if (tier === 'emergency') {
+    return 'Call 911 or go to the nearest emergency room now. Don’t drive yourself. ' +
+      'Bold isn’t an emergency service and can’t watch over you in real time — 911 is the fastest help there is.';
+  }
+  if (tier === 'urgent') {
+    return 'Go to an urgent care or an emergency room today. Please don’t wait for us to call — ' +
+      'our team is only here Monday to Friday, and this shouldn’t wait that long. ' +
+      'We’re sending this to ' + PROVIDER + ' at the same time, and ' + COORDINATOR +
+      ' will follow up within 24 to 48 hours.';
+  }
+  if (tier === 'concern') {
+    var care = SYMPTOMS[p.key] && SYMPTOMS[p.key].care;
+    return (care && care.reassure ? care.reassure + ' ' : '') +
+      'We’ve sent this to ' + PROVIDER + ', and ' + COORDINATOR +
+      ' will reach out within 2 business days. There’s nothing else you need to do right now.';
+  }
+  var c = SYMPTOMS[p.key] && SYMPTOMS[p.key].care;
+  return c && c.reassure ? c.reassure : 'We’ve made a note of it for ' + PROVIDER + '.';
+}
+
+function actionsFor(tier) {
+  var wrap = h('<div style="display:flex; flex-direction:column; gap:10px"></div>');
+  if (tier === 'emergency') {
+    wrap.appendChild(h('<a class="Button Button---danger Button---full" href="tel:911">' +
+      '<i class="ph-fill ph-phone-call" aria-hidden="true"></i>Call 911</a>'));
+    wrap.appendChild(h('<a class="Button Button---secondary Button---full" ' +
+      'href="https://www.google.com/maps/search/emergency+room+near+me" target="_blank" rel="noopener">' +
+      '<i class="ph ph-map-pin" aria-hidden="true"></i>Find the nearest emergency room</a>'));
+  } else if (tier === 'urgent') {
+    wrap.appendChild(h('<a class="Button Button---primary Button---full" ' +
+      'href="https://www.google.com/maps/search/urgent+care+near+me" target="_blank" rel="noopener">' +
+      '<i class="ph ph-map-pin" aria-hidden="true"></i>Find urgent care near me</a>'));
+    wrap.appendChild(h('<a class="Button Button---secondary Button---full" href="tel:911">' +
+      '<i class="ph ph-phone" aria-hidden="true"></i>Call 911 instead</a>'));
+    wrap.appendChild(h('<a class="Button Button---secondary Button---full" href="tel:' + CARE_PHONE + '">' +
+      '<i class="ph ph-headset" aria-hidden="true"></i>Call Bold · ' + CARE_PHONE_DISPLAY + '</a>'));
+  } else if (tier === 'concern') {
+    wrap.appendChild(h('<a class="Button Button---secondary Button---full" href="tel:' + CARE_PHONE + '">' +
+      '<i class="ph ph-headset" aria-hidden="true"></i>Call my care team</a>'));
+  }
+  return wrap;
+}
+
+function teachBack(tier) {
+  var box = h('<div class="TeachBack"></div>');
+  box.appendChild(h('<h3>Before you go — what will you do next?</h3>'));
+  box.appendChild(h('<p class="tb-help">Picking one helps us know the message landed.</p>'));
+  var labelId = 'tb-label';
+  box.appendChild(h('<p class="visually-hidden" id="' + labelId + '">What will you do next?</p>'));
+  var opts = tier === 'emergency'
+    ? [
+        { value: 'call', text: 'Call 911 now' },
+        { value: 'er', text: 'Get someone to take me to the emergency room' },
+        { value: 'unsure', text: 'I’m not sure' }
+      ]
+    : [
+        { value: 'uc', text: 'Go to urgent care today' },
+        { value: 'er', text: 'Go to the emergency room today' },
+        { value: 'hold', text: 'Hold my next dose' },
+        { value: 'unsure', text: 'I’m not sure' }
+      ];
+  var ackHost = h('<div></div>');
+  box.appendChild(FieldRadioButtons({
+    name: 'teachback', labelId: labelId, options: opts,
+    onChange: function (v) {
+      ackHost.innerHTML = '';
+      if (v === 'unsure') {
+        ackHost.appendChild(h('<p class="tb-ack" style="color:var(--purple-500)">' +
+          '<i class="ph-fill ph-headset" aria-hidden="true"></i>' +
+          '<span>That’s alright — call us on ' + CARE_PHONE_DISPLAY +
+          ' and we’ll walk through it with you. If it feels like an emergency, call 911.</span></p>'));
+      } else {
+        ackHost.appendChild(h('<p class="tb-ack">' +
+          '<i class="ph-fill ph-check-circle" aria-hidden="true"></i>' +
+          '<span>Good — that’s the right next step.</span></p>'));
+      }
+    }
+  }));
+  box.appendChild(ackHost);
+  return box;
+}
+
+function safetyNet(res) {
+  var sym = SYMPTOMS[res.primary.key];
+  var care = sym && sym.care;
+  var box = h('<div class="SafetyNet"></div>');
+  box.appendChild(h('<h3><i class="ph-fill ph-lifebuoy" aria-hidden="true"></i>Come back to us if</h3>'));
+  var ul = h('<ul></ul>');
+
+  var items = [];
+  if (res.tier === 'emergency' || res.tier === 'urgent') {
+    items.push('You feel worse while you’re waiting to be seen — don’t wait it out');
+    items.push('You start feeling dizzy, mixed up, or very weak');
+  } else {
+    (care && care.callback ? care.callback : ['It gets worse', 'It’s still there in a few days'])
+      .slice(0, 3).forEach(function (c) { items.push(c); });
+  }
+  items.forEach(function (i) { ul.appendChild(h('<li>' + i + '</li>')); });
+  box.appendChild(ul);
+  box.appendChild(h('<p class="sn-911">And whatever else is happening — if it feels like an emergency, ' +
+    '<a href="tel:911">call 911</a>. You don’t need our permission.</p>'));
+  return box;
+}
+
+function followupShort(tier) {
+  if (tier === 'urgent') return 'Care team follows up in 24–48 hrs';
+  if (tier === 'concern') return COORDINATOR + ' calls within 2 business days';
+  return PROVIDER + ' will see this';
+}
+
+function notePreview(res) {
+  // Lower-case only the leading character, so drug names inside the member's
+  // own words survive — and leave a leading pronoun "I" alone entirely.
+  function decap(s) {
+    if (/^I\b/.test(s)) return s;
+    return s.charAt(0).toLowerCase() + s.slice(1);
+  }
+  var parts = res.all.map(function (f) {
+    var sym = SYMPTOMS[f.key];
+    if (f.via === 'redflag') return decap(f.label) + ' · ' + decap(f.flagText);
+    // Approach D captures the member's own words for "Something else"; A/B/C
+    // never set otherText, so they keep the previous behaviour.
+    if (f.via === 'freeform') {
+      return (convo && convo.otherText) ? 'in their words: “' + escapeHtml(convo.otherText) + '”' : 'something else';
+    }
+    var lv = sym.levels[f.levelIndex];
+    return decap(f.label) + ' · ' + decap(lv.text);
+  });
+  if (draft.companion.length) parts.push('also ' + companionWords());
+  var dur = DURATIONS.filter(function (d) { return d.v === draft.duration; })[0];
+  if (dur) parts.push(dur.text.toLowerCase());
+  return parts.join('; ');
+}
+
+/* ==========================================================================
+   7. OTHER OUTCOMES
+   ========================================================================== */
+
+function feelWell() {
+  var body = document.getElementById('flow-body');
+  body.innerHTML = '';
+  document.getElementById('flow-title').textContent = 'Thanks';
+  body.appendChild(h('<div class="Triage Triage---self">' +
+    '<p class="tr-tier"><i class="ph-fill ph-house-line" aria-hidden="true"></i>Nothing to do</p>' +
+    '<div class="tr-head"><h2 class="tr-title">Good to hear, Carol.</h2></div>' +
+    '<p>Steady days like this are exactly what the plan is built for. ' + PROVIDER +
+    ' will see this in your check-ins.</p></div>'));
+  body.appendChild(h('<div class="Tags"><span class="Tag Tag---green">' +
+    '<i class="ph-fill ph-check-circle" aria-hidden="true"></i>' + PROVIDER +
+    ' can see you’re doing well</span></div>'));
+  body.appendChild(safetyNetWell());
+  body.appendChild(h('<button class="Button Button---secondary Button---full" type="button" ' +
+    'onclick="finishFlow(\'well\')">Back to Today</button>'));
+  writeTrace(null);
+}
+
+function safetyNetWell() {
+  var box = h('<div class="SafetyNet"></div>');
+  box.appendChild(h('<h3><i class="ph-fill ph-lifebuoy" aria-hidden="true"></i>Come back to us if</h3>'));
+  box.appendChild(h('<ul><li>Something new starts up, even if it seems small</li>' +
+    '<li>You can’t keep food or drinks down</li>' +
+    '<li>You get bad stomach pain, especially if it spreads to your back</li></ul>'));
+  box.appendChild(h('<p class="sn-911">If it feels like an emergency, <a href="tel:911">call 911</a>.</p>'));
+  return box;
+}
+
+/** The ungated escape hatch. Deliberately NOT behind the triage logic. */
+function panicButton() {
+  if (!draft) draft = newDraft();
+  var body = document.getElementById('flow-body');
+  showScreen('flow');
+  body.innerHTML = '';
+  document.getElementById('flow-title').textContent = 'Get help now';
+  body.appendChild(h('<div class="Triage Triage---emergency">' +
+    '<p class="tr-tier"><i class="ph-fill ph-warning-circle" aria-hidden="true"></i>' +
+    'Emergency — get help now</p>' +
+    '<div class="tr-head"><h2 class="tr-title">Trust that feeling.</h2></div>' +
+    '<p class="basis"><i class="ph ph-info" aria-hidden="true"></i><span>You don’t have to finish ' +
+    'the questions, and you don’t have to be able to name what’s wrong. ' +
+    'If it feels serious, treat it as serious.</span></p>' +
+    '<p>Call 911 or go to the nearest emergency room now. Don’t drive yourself. ' +
+    'Bold isn’t an emergency service and can’t watch over you in real time.</p></div>'));
+  body.appendChild(actionsFor('emergency'));
+  body.appendChild(h('<div class="DoseBanner DoseBanner---med">' +
+    '<i class="ph-fill ph-prohibit" aria-hidden="true"></i><span>' +
+    '<span class="db-label">Your medication</span>' +
+    'Don’t take another dose until a clinician tells you it’s safe.</span></div>'));
+  body.appendChild(h('<button class="Button Button---secondary Button---full" type="button" ' +
+    'onclick="startFlow()">Go back to my check-in</button>'));
+  writeTrace({ tier: 'emergency', trace: ['ESCAPE HATCH pressed — ungated, no triage logic ran'] });
+}
+
+function doingWell() {
+  draft = newDraft();
+  APP.lastResult = null;
+  var card = document.getElementById('ack-card');
+  document.getElementById('ack-title').textContent = 'Good to hear';
+  document.getElementById('ack-body').textContent =
+    'You told us you’re doing well today. ' + PROVIDER + ' will see that in your check-ins.';
+  document.getElementById('ack-foot').innerHTML =
+    'If something changes, come straight back. If it feels like an emergency, <a href="tel:911">call 911</a>.';
+  card.hidden = false;
+  writeTrace(null);
+}
+
+function finishFlow(kind) {
+  var card = document.getElementById('ack-card');
+  if (kind === 'well') { doingWell(); showScreen('home'); return; }
+
+  var res = APP.lastResult;
+  if (res) {
+    var labels = res.all.map(function (f) { return f.label.toLowerCase(); });
+    document.getElementById('ack-title').textContent = 'We heard you';
+    document.getElementById('ack-body').textContent = res.all.length > 1
+      ? 'You told us about ' + res.all.length + ' things today — ' + listify(labels) + '.'
+      : 'You told us about ' + labels[0] + '.';
+    var foot = '';
+    if (res.tier === 'emergency') {
+      foot = 'The most important thing is getting seen now. <a href="tel:911">Call 911</a> if you haven’t.';
+    } else if (res.tier === 'urgent') {
+      foot = 'Please get seen today. ' + COORDINATOR + ' follows up within 24–48 hours. ' +
+        'If it gets worse first, <a href="tel:911">call 911</a>.';
+    } else if (res.tier === 'concern') {
+      foot = 'It’s with ' + PROVIDER + ' and ' + COORDINATOR + ' will call within 2 business days. ' +
+        'Nothing else for you to do. If it gets worse, <a href="tel:911">call 911</a>.';
+    } else {
+      foot = 'Take it easy today — this was shared with ' + PROVIDER +
+        '. If it gets worse, <a href="tel:911">call 911</a>.';
+    }
+    document.getElementById('ack-foot').innerHTML = foot;
+    card.hidden = false;
+  }
+  showScreen('home');
+}
+
+/* ==========================================================================
+   8. APPROACH D — agent conversation
+
+   Architecture: DETERMINISTIC CORE, LLM VENEER.
+   Every question, reflection and disposition below ships as a pre-authored
+   string. When the phrasing layer is on, an LLM may REWORD questions and
+   reflections only — it never sees a tier, never decides anything, and its
+   output is validated before it renders. If it is off, slow, or its output
+   fails validation, the pre-authored string renders and the disposition is
+   byte-identical. That is what makes this demoable offline and reviewable.
+
+   The clinical spine (SYMPTOMS / TIER / consolidate() / safetyNet() / …) is
+   reused unchanged — D only changes how the questions are asked.
+   ========================================================================== */
+
+/* ---------- 9a. the phrasing layer ---------- */
+
+var PHRASE = {
+  enabled: false,
+  endpoint: 'http://localhost:8787/phrase',
+  timeoutMs: 1200,
+  cache: {},
+  stats: { calls: 0, used: 0, fellBack: 0 }
+};
+
+/* Patterns the agent must never utter. This is the no-diagnosis guardrail as
+   code rather than as copy discipline: anything matching here is discarded in
+   favour of the pre-authored string. */
+var BANNED_PHRASING = [
+  /\byou have\b/i, /\bthis is\b/i, /\bsounds like\b/i, /\blooks like\b/i,
+  /\bprobabl/i, /\blikely\b/i, /\bI think\b/i, /\byou['’]re having\b/i,
+  /diagnos/i, /pancreatit/i, /gallstone/i, /obstruction/i, /blockage/i,
+  /\binfection\b/i, /dehydrat/i, /\bserious\b/i, /\bemergency\b/i
+];
+
+/**
+ * Validate a reworded string before it is allowed on screen.
+ * Returns false for anything that could change clinical meaning.
+ */
+function assertSafePhrasing(out, base, maxLen) {
+  if (!out || typeof out !== 'string') return false;
+  if (out.length > (maxLen || 180)) return false;
+  if (/[<>]/.test(out)) return false;                    // no tags, no markup
+  for (var i = 0; i < BANNED_PHRASING.length; i++) {
+    if (BANNED_PHRASING[i].test(out)) return false;
+  }
+  // No digit that wasn't already in the base — blocks invented counts,
+  // thresholds and timeframes ("more than 8 times", "within 3 days").
+  var baseDigits = (base.match(/\d/g) || []).join('');
+  var outDigits = (out.match(/\d/g) || []).join('');
+  for (var j = 0; j < outDigits.length; j++) {
+    if (baseDigits.indexOf(outDigits[j]) === -1) return false;
+  }
+  // A question must stay exactly one question; a statement must stay a statement.
+  var qOut = (out.match(/\?/g) || []).length;
+  if (base.indexOf('?') !== -1) { if (qOut !== 1) return false; }
+  else if (qOut > 0) return false;
+  return true;
+}
+
+/** Reword `base` if the phrasing layer is available; otherwise return `base`. */
+function phrase(base, context, maxLen) {
+  if (!PHRASE.enabled) return Promise.resolve(base);
+  if (PHRASE.cache[base]) return Promise.resolve(PHRASE.cache[base]);
+  PHRASE.stats.calls++;
+
+  var ctl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+  var timer = setTimeout(function () { if (ctl) ctl.abort(); }, PHRASE.timeoutMs);
+
+  return fetch(PHRASE.endpoint, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ base: base, context: context || '' }),
+    signal: ctl ? ctl.signal : undefined
+  })
+    .then(function (r) { return r.ok ? r.json() : Promise.reject(new Error('http ' + r.status)); })
+    .then(function (d) {
+      var out = (d && typeof d.text === 'string') ? d.text.trim() : '';
+      if (!assertSafePhrasing(out, base, maxLen)) { PHRASE.stats.fellBack++; return base; }
+      PHRASE.cache[base] = out;
+      PHRASE.stats.used++;
+      return out;
+    })
+    .catch(function () { PHRASE.stats.fellBack++; return base; })
+    .then(function (v) { clearTimeout(timer); updateLlmNote(); return v; });
+}
+
+function toggleLlm() {
+  PHRASE.enabled = document.getElementById('llm-on').checked;
+  updateLlmNote();
+}
+
+function updateLlmNote() {
+  var el = document.getElementById('llm-note');
+  if (!el) return;
+  if (!PHRASE.enabled) {
+    el.innerHTML = '<strong>Off.</strong> The agent uses its pre-authored wording. ' +
+      'Every question and every disposition is identical either way — only the ' +
+      'phrasing can change.';
+    return;
+  }
+  var s = PHRASE.stats;
+  el.innerHTML = '<strong>On.</strong> Rewording <em>questions and reflections only</em> via ' +
+    '<code>claude-opus-5</code> through <code>' + PHRASE.endpoint + '</code>.<br>' +
+    'calls ' + s.calls + ' · used ' + s.used + ' · fell back ' + s.fellBack +
+    (s.calls && !s.used ? '<br>Proxy unreachable — running on pre-authored wording.' : '');
+}
+
+/* ---------- 9b. D's presentation of the spine ----------
+   Short, behavioural, one-question-per-turn wordings and short chip labels.
+   The chip at index i maps to SYMPTOMS[key].levels[i] — so the tier still
+   comes from the spine, not from anything here. The most severe option is
+   always present in the same turn, which is how D honours STCC's
+   "highest-acuity first" without spending an extra turn on it. */
+
+var D_ASK = {
+  nausea:       'Can you still eat and drink?',
+  vomiting:     'Are you keeping any liquids down?',
+  diarrhea:     'How many times a day is it happening?',
+  constipation: 'When did you last go?',
+  gallbladder:  'When does that pain come on?',
+  pain:         'Where does the pain go?',
+  hypoglycemia: 'How often has that happened?'
+};
+
+var D_CHIPS = {
+  nausea:       ['Yes, I can', 'Not much — I’m eating far less', 'No, nothing stays down'],
+  vomiting:     ['Yes, mostly', 'Only small sips', 'No, nothing stays down'],
+  diarrhea:     ['A few times', 'Several, with cramps', 'Eight or more, or there’s blood'],
+  constipation: ['Yesterday or today', 'Three days ago or more', 'My belly is hard and swollen'],
+  gallbladder:  ['After I eat', 'It came on suddenly and it’s severe'],
+  pain:         ['Through to my back', 'Everywhere — and I feel very weak'],
+  hypoglycemia: ['Once, and it passed', 'More than once lately', 'I passed out, or felt mixed up']
+};
+
+/* Short chip labels for the companion gate. Values match COMPANION. */
+var D_COMPANION = [
+  { v: 'c-dizzy',    text: 'Dizzy' },
+  { v: 'c-confused', text: 'Mixed up' },
+  { v: 'c-weak',     text: 'Very weak' },
+  { v: 'c-urine',    text: 'No urine today' }
+];
+
+var D_DURATION = { today: 'Since today', few: 'A day or two', '3plus': 'Three days or more' };
+
+/* Second-person descriptors for the agent's recap, one per level. The chip
+   labels are the member's voice ("I can't keep food down"); the recap is the
+   agent's, so it needs its own wording rather than quoting the chip back with
+   the pronouns inverted. Index i matches SYMPTOMS[key].levels[i]. */
+var D_RECAP = {
+  nausea: ['nausea, though you can still eat and drink',
+           'nausea that’s costing you meals',
+           'nausea, and nothing is staying down'],
+  vomiting: ['being sick once or twice',
+             'being sick several times',
+             'being sick, with nothing staying down'],
+  diarrhea: ['a few loose stools',
+             'loose stools with cramps',
+             'diarrhea many times a day'],
+  constipation: ['things running a little slow',
+                 'no bowel movement for three days or more',
+                 'a hard, swollen belly'],
+  gallbladder: ['pain under your right ribs after eating',
+                'sudden severe pain under your right ribs'],
+  pain: ['bad stomach pain that goes through to your back',
+         'unbearable stomach pain, with weakness'],
+  hypoglycemia: ['one low blood sugar that passed',
+                 'low blood sugar more than once',
+                 'low blood sugar with passing out']
+};
+
+/* ---------- 9c. sheet plumbing ---------- */
+
+var sheetPrevFocus = null;
+
+function openSheet(name) {
+  var host = document.getElementById('sheet-' + name);
+  if (!host) return;
+  sheetPrevFocus = document.activeElement;
+  host.classList.add('open');
+  host.setAttribute('aria-hidden', 'false');
+  var f = host.querySelector('.ButtonClose');
+  if (f) f.focus();
+  document.addEventListener('keydown', sheetTrap, true);
+}
+
+function closeSheet() {
+  var host = document.querySelector('.sheet-host.open');
+  if (!host) return;
+  host.classList.remove('open', 'locked');
+  host.setAttribute('aria-hidden', 'true');
+  document.removeEventListener('keydown', sheetTrap, true);
+  if (sheetPrevFocus && sheetPrevFocus.focus) sheetPrevFocus.focus();
+  sheetPrevFocus = null;
+}
+
+/** Keep Tab inside the open sheet. Escape still closes it — never trap anyone. */
+function sheetTrap(e) {
+  if (e.key !== 'Tab') return;
+  var host = document.querySelector('.sheet-host.open');
+  if (!host) return;
+  var all = host.querySelectorAll(
+    'button:not([tabindex="-1"]):not(:disabled), a[href], textarea, input, [tabindex]:not([tabindex="-1"])');
+  var list = Array.prototype.filter.call(all, function (el) { return el.offsetParent !== null; });
+  if (!list.length) return;
+  var first = list[0], last = list[list.length - 1];
+  if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+  else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+}
+
+/* ---------- 9d. transcript rendering ---------- */
+
+var convo = null;
+
+function dScroll() {
+  var b = document.getElementById('convo-body');
+  if (b) b.scrollTop = b.scrollHeight;
+}
+
+/**
+ * Park a specific element at the top of the sheet's scroll area.
+ * Measured against the scroll container rather than offsetTop — the sheet is
+ * positioned, so offsetTop is relative to the sheet and lands short by the
+ * height of the header.
+ */
+function dScrollTo(el) {
+  var b = document.getElementById('convo-body');
+  if (!b || !el || !el.getBoundingClientRect) return;
+  var top = el.getBoundingClientRect().top - b.getBoundingClientRect().top + b.scrollTop;
+  b.scrollTop = Math.max(0, top - 8);
+}
+
+function reducedMotion() {
+  return typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+/** Append an agent bubble, after a short typing beat. */
+function dReveal(text, opts) {
+  opts = opts || {};
+  var host = document.getElementById('convo');
+  var cls = 'bubble' + (opts.plain ? ' plain' : '');
+  var marked = (PHRASE.enabled && PHRASE.cache[opts.base] === text && text !== opts.base);
+  var el = h('<p class="' + cls + '">' + (marked ? '<span class="phrased">' + text + '</span>' : text) + '</p>');
+
+  if (reducedMotion() || opts.instant) {
+    host.appendChild(el); dScroll();
+    return Promise.resolve();
+  }
+  var typing = h('<div class="typing" aria-hidden="true"><span></span><span></span><span></span></div>');
+  host.appendChild(typing); dScroll();
+  return new Promise(function (res) {
+    setTimeout(function () {
+      if (typing.parentNode) typing.parentNode.removeChild(typing);
+      host.appendChild(el); dScroll(); res();
+    }, 420);
+  });
+}
+
+/** Say something, rewording it first if the phrasing layer is on. */
+function dSay(base, context, opts) {
+  opts = opts || {};
+  return phrase(base, context, opts.maxLen).then(function (text) {
+    opts.base = base;
+    return dReveal(text, opts);
+  });
+}
+
+/** Echo the member's own answer back into the transcript. */
+function dSaid(label) {
+  document.getElementById('convo').appendChild(h('<p class="said">' + label + '</p>'));
+  dScroll();
+}
+
+/**
+ * Render the answer chips into the sheet footer, so they never scroll away.
+ * `opts.multi` toggles instead of advancing, with a confirm CTA.
+ */
+function dAsk(opts) {
+  var foot = document.getElementById('convo-foot');
+  foot.innerHTML = '';
+  var group = h('<div class="chips" role="group" aria-label="Your answer"></div>');
+  var picked = [];
+
+  opts.options.forEach(function (o) {
+    var b = h('<button class="chip' + (o.wide ? ' chip---wide' : '') + '" type="button">' + o.text + '</button>');
+    b.addEventListener('click', function () {
+      if (!opts.multi || o.exclusive) {
+        foot.innerHTML = '';
+        opts.onPick(o, [o]);
+        return;
+      }
+      var at = picked.indexOf(o);
+      if (at === -1) { picked.push(o); b.setAttribute('aria-pressed', 'true'); b.classList.add('is-on'); }
+      else { picked.splice(at, 1); b.setAttribute('aria-pressed', 'false'); b.classList.remove('is-on'); }
+      cta.querySelector('button').disabled = picked.length === 0;
+    });
+    if (opts.multi && !o.exclusive) b.setAttribute('aria-pressed', 'false');
+    group.appendChild(b);
+  });
+  foot.appendChild(group);
+
+  var cta = null;
+  if (opts.multi) {
+    cta = h('<div class="gap-sm"><button class="Button Button---primary Button---full" type="button" disabled>' +
+      (opts.confirm || 'That’s all') + '</button></div>');
+    cta.querySelector('button').addEventListener('click', function () {
+      foot.innerHTML = '';
+      opts.onPick(null, picked);
+    });
+    foot.appendChild(cta);
+  }
+
+  if (opts.allowText) {
+    var t = h('<button class="typeit" type="button">Type it instead</button>');
+    t.addEventListener('click', function () { dTypeBox(opts); });
+    foot.appendChild(t);
+  }
+
+  // the ungated escape hatch, on every single turn
+  var sos = h('<div class="chips gap-sm">' +
+    '<button class="chip chip---sos chip---wide" type="button">' +
+    'Something feels really wrong right now</button></div>');
+  sos.querySelector('button').addEventListener('click', function () {
+    closeSheet();
+    panicButton();
+  });
+  foot.appendChild(sos);
+  dScroll();
+}
+
+/** The "Type it instead" affordance — also how "Something else" is captured. */
+function dTypeBox(opts) {
+  var foot = document.getElementById('convo-foot');
+  foot.innerHTML = '';
+  var box = h('<div class="typebox">' +
+    '<label for="d-free">In your own words</label>' +
+    '<textarea id="d-free" rows="3" placeholder="However you’d say it is fine."></textarea>' +
+    '</div>');
+  foot.appendChild(box);
+  var send = h('<div class="gap-sm"><button class="Button Button---primary Button---full" type="button">Send</button></div>');
+  send.querySelector('button').addEventListener('click', function () {
+    var txt = box.querySelector('textarea').value.trim();
+    if (!txt) return;
+    foot.innerHTML = '';
+    dSaid(escapeHtml(txt));
+    convo.otherText = txt;
+    if (draft.picks.indexOf('other') === -1) draft.picks.push('other');
+    dAfterAnswer();
+  });
+  foot.appendChild(send);
+  var back = h('<button class="typeit" type="button">Back to the buttons</button>');
+  back.addEventListener('click', function () { dAsk(opts); });
+  foot.appendChild(back);
+  box.querySelector('textarea').focus();
+  dScroll();
+}
+
+function escapeHtml(s) {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function decapFirst(s) {
+  if (/^I\b/.test(s)) return s;                     // never lower-case the pronoun "I"
+  return s.charAt(0).toLowerCase() + s.slice(1);
+}
+
+/* ---------- 9e. the conversation ---------- */
+
+function startConversation() {
+  convo = { active: null, otherText: '', askedCompanion: false, finished: false };
+  document.getElementById('convo').innerHTML = '';
+  document.getElementById('convo-foot').innerHTML = '';
+  document.getElementById('convo-title').textContent = 'Report a side effect';
+  document.getElementById('convo-sub').textContent = 'Tap to answer — no typing needed';
+  openSheet('convo');
+  writeTrace(null);
+  dSay('Hi Carol. What’s bothering you today?', 'opening greeting')
+    .then(dAskSymptom);
+}
+
+function dAskSymptom() {
+  var keys = ['nausea', 'vomiting', 'diarrhea', 'constipation', 'gallbladder', 'pain'];
+  // D-only, per mvp3-side-effect-messages.md flag #3: only offer low blood
+  // sugar to members actually on insulin or a sulfonylurea. Anyone else who
+  // needs to raise it still can, through "Something else".
+  if (APP.onSuInsulin) keys.push('hypoglycemia');
+  keys = keys.filter(function (k) { return draft.picks.indexOf(k) === -1; });
+
+  var opts = keys.map(function (k) { return { value: k, text: SYMPTOMS[k].label }; });
+  opts.push({ value: 'other', text: 'Something else', wide: true });
+
+  var ask = {
+    options: opts,
+    onPick: function (o) {
+      if (o.value === 'other') {
+        dSaid('Something else');
+        return dTypeBox(ask);
+      }
+      dSaid(SYMPTOMS[o.value].label);
+      convo.active = o.value;
+      if (draft.picks.indexOf(o.value) === -1) draft.picks.push(o.value);
+      dAskSeverity(o.value);
+    }
+  };
+  dAsk(ask);
+}
+
+function dAskSeverity(key) {
+  var sym = SYMPTOMS[key];
+  var labels = D_CHIPS[key];
+  dSay(D_ASK[key], 'asking about ' + sym.label.toLowerCase()).then(function () {
+    dAsk({
+      options: labels.map(function (t, i) { return { value: String(i), text: t, wide: t.length > 22 }; }),
+      onPick: function (o) {
+        var i = parseInt(o.value, 10);
+        dSaid(labels[i]);
+        draft.sev[key] = i;
+        if (draft.sevOrder.indexOf(key) === -1) draft.sevOrder.push(key);
+        dAfterAnswer();
+      }
+    });
+  });
+}
+
+/** After any answer: stop at the first positive, else ask the next thing that matters. */
+function dAfterAnswer() {
+  convo.active = null;
+  if (currentMaxTier() === 'emergency') {
+    return dSay('Let’s stop there — I have what I need.', 'stopping early')
+      .then(dFinish);
+  }
+  dNextGate();
+}
+
+function dNextGate() {
+  var gi = draft.picks.some(function (k) { return SYMPTOMS[k] && SYMPTOMS[k].gi; });
+
+  // Companion gate — the GLP-1 consensus trigger. Asked whenever a GI symptom
+  // is on the table at ANY severity, which is the hole in the current Figma.
+  if (gi && !convo.askedCompanion) {
+    convo.askedCompanion = true;
+    return dSay('Along with that, are you feeling any of these?',
+      'checking for dizziness, confusion, weakness or no urine').then(function () {
+      var opts = D_COMPANION.map(function (c) { return { value: c.v, text: c.text }; });
+      opts.push({ value: 'none', text: 'None of these', wide: true, exclusive: true });
+      dAsk({
+        multi: true, confirm: 'That’s all',
+        options: opts,
+        onPick: function (single, picked) {
+          var vals = (picked || []).map(function (p) { return p.value; })
+            .filter(function (v) { return v !== 'none'; });
+          draft.companion = vals.map(function (v) {
+            return COMPANION.filter(function (c) { return c.v === v; })[0];
+          }).filter(Boolean);
+          dSaid(vals.length
+            ? D_COMPANION.filter(function (c) { return vals.indexOf(c.v) !== -1; })
+                .map(function (c) { return c.text; }).join(', ')
+            : 'None of these');
+          dAfterAnswer();
+        }
+      });
+    });
+  }
+
+  // Duration — only when something has actually escalated. Asking a member with
+  // mild nausea how many days it's been changes nothing, so D doesn't.
+  var t = currentMaxTier();
+  if (!draft.duration && (t === 'concern' || t === 'urgent')) {
+    return dSay('How long has this been going on?', 'asking duration').then(function () {
+      dAsk({
+        options: Object.keys(D_DURATION).map(function (v) { return { value: v, text: D_DURATION[v] }; }),
+        onPick: function (o) {
+          draft.duration = o.value;
+          dSaid(D_DURATION[o.value]);
+          dNextGate();
+        }
+      });
+    });
+  }
+
+  dAskMore();
+}
+
+function dAskMore() {
+  dSay('Anything else bothering you?', 'asking whether to loop').then(function () {
+    dAsk({
+      options: [
+        { value: 'no', text: 'No, that’s everything', wide: true },
+        { value: 'yes', text: 'Yes, one more thing', wide: true }
+      ],
+      onPick: function (o) {
+        dSaid(o.text);
+        if (o.value === 'yes') return dAskSymptom();
+        dFinish();
+      }
+    });
+  });
+}
+
+/* ---------- 9f. the agent-written summary ---------- */
+
+/** Deterministic recap of what the member reported. The LLM may reword this. */
+function recapBase(res) {
+  var parts = res.all.map(function (f) {
+    var sym = SYMPTOMS[f.key];
+    if (f.via === 'freeform') return convo && convo.otherText ? 'what you described' : 'something else';
+    if (f.via === 'severity' && D_RECAP[f.key] && D_RECAP[f.key][f.levelIndex]) {
+      return D_RECAP[f.key][f.levelIndex];
+    }
+    return sym.label.toLowerCase();
+  });
+  var s = 'Here’s what I heard: ' + listify(parts) + '.';
+  if (draft.companion.length) s += ' You’re also feeling ' + companionWords() + '.';
+  var dur = { today: 'today', few: 'a day or two ago', '3plus': 'three or more days ago' }[draft.duration];
+  if (dur) s += ' It started ' + dur + '.';
+  return s;
+}
+
+function dFinish() {
+  if (convo.finished) return;
+  convo.finished = true;
+
+  var res = consolidate(gatherFindings());
+  draft.result = res;
+
+  if (!res) return dWell();
+
+  APP.lastResult = res;
+  writeTrace(res);
+
+  var tier = res.tier;
+  var t = TIER[tier];
+  var p = res.primary;
+  var body = document.getElementById('convo');
+  var foot = document.getElementById('convo-foot');
+  foot.innerHTML = '';
+
+  document.getElementById('convo-title').textContent = 'What to do';
+  document.getElementById('convo-sub').textContent = t.label;
+
+  // an emergency locks the scrim; the Close button stays, so nobody is trapped
+  if (tier === 'emergency' || tier === 'urgent') {
+    document.getElementById('sheet-convo').classList.add('locked');
+  }
+
+  dSay(recapBase(res), 'recapping what the member reported', { maxLen: 340 }).then(function () {
+    var recapEl = document.getElementById('convo').lastElementChild;
+    var card = h('<div class="gap-xs"></div>');
+
+    /* ---- "what you told me" is agent-narrated (above). Everything below is
+            "what you need", rendered verbatim from the spine — the LLM never
+            authors a disposition, a basis, a dose instruction or a safety net. ---- */
+    card.appendChild(h('<p class="sum-label"><i class="ph ph-first-aid" aria-hidden="true"></i>What you need</p>'));
+
+    var tri = h('<div class="Triage Triage---' + tier + '"></div>');
+    tri.appendChild(h('<p class="tr-tier"><i class="' + t.icon + '" aria-hidden="true"></i>' + t.label + '</p>'));
+    tri.appendChild(h('<div class="tr-head"><h2 class="tr-title">' + titleFor(tier, p) + '</h2></div>'));
+    tri.appendChild(h('<p class="basis"><i class="ph ph-info" aria-hidden="true"></i><span>' + p.basis + '</span></p>'));
+    tri.appendChild(h('<p>' + leadFor(tier, p) + '</p>'));
+
+    if (tier === 'self' || tier === 'concern') {
+      var care = SYMPTOMS[p.key] && SYMPTOMS[p.key].care;
+      if (care && care.tips && care.tips.length) {
+        var ul = h('<ul class="ListCheckmarks"></ul>');
+        care.tips.slice(0, 3).forEach(function (tip) {
+          ul.appendChild(h('<li><i class="ph-fill ph-check-circle" aria-hidden="true"></i>' +
+            '<span><span class="lc-topic">' + tip.topic + '.</span> ' + tip.text + '</span></li>'));
+        });
+        tri.appendChild(ul);
+      }
+    }
+    card.appendChild(tri);
+
+    if (res.hold !== 'none') {
+      var med = res.hold === 'med';
+      card.appendChild(h('<div class="DoseBanner DoseBanner---' + (med ? 'med' : 'dose') + '">' +
+        '<i class="' + (med ? 'ph-fill ph-prohibit' : 'ph-fill ph-pause-circle') + '" aria-hidden="true"></i>' +
+        '<span><span class="db-label">Your medication</span>' +
+        (med ? 'Stop taking it now, and don’t restart until a clinician tells you it’s safe.'
+             : 'Hold your next dose until your care team weighs in. This is a safe pause, not a setback.') +
+        '</span></div>'));
+    }
+
+    // D-only, from mvp3-side-effect-messages.md §6 L3 — absent from A/B/C.
+    if (draft.sev.hypoglycemia === 2) {
+      card.appendChild(h('<div class="DoseBanner DoseBanner---med">' +
+        '<i class="ph-fill ph-first-aid-kit" aria-hidden="true"></i>' +
+        '<span><span class="db-label">If someone is with you</span>' +
+        'Don’t give food or drink to someone who isn’t fully awake. If they have a ' +
+        'glucagon kit and you know how to use it, use it now.</span></div>'));
+    }
+
+    if (tier !== 'emergency') {
+      card.appendChild(h('<div class="Tags gap-md"><span class="Tag Tag---purple">' +
+        '<i class="ph-fill ph-paper-plane-tilt" aria-hidden="true"></i>Sent to ' + PROVIDER + ' as a note</span>' +
+        '<span class="Tag Tag---green"><i class="ph-fill ph-clock" aria-hidden="true"></i>' +
+        followupShort(tier) + '</span></div>'));
+      card.appendChild(h('<p class="note-preview"><i class="ph ph-note" aria-hidden="true"></i><span>' +
+        'Note to ' + PROVIDER + ': ' + notePreview(res) + '</span></p>'));
+    }
+
+    /* Actions: the single most important one is PINNED in the footer so it can
+       never scroll out of reach; the rest scroll with the summary. Otherwise a
+       tall footer (actions + teach-back + done) squeezes the transcript into a
+       sliver on an 852px screen. */
+    var acts = actionsFor(tier);
+    var primary = acts.firstElementChild;
+    if (primary) foot.appendChild(primary);          // moves it out of `acts`
+
+    card.appendChild(h('<div class="gap-lg"></div>'));
+    card.appendChild(safetyNet(res));
+
+    if (acts.children.length) {
+      card.appendChild(h('<div class="gap-lg"></div>'));
+      card.appendChild(acts);
+    }
+
+    /* The member picks their own next step — the decision stays theirs.
+       In D this teach-back is the close of the conversation, not an add-on. */
+    if (tier === 'urgent' || tier === 'emergency') {
+      card.appendChild(h('<div class="gap-lg"></div>'));
+      card.appendChild(teachBack(tier));
+    }
+
+    var done = h('<div class="gap-lg"><button class="Button Button---secondary Button---full" type="button">' +
+      'Back to Today</button></div>');
+    done.querySelector('button').addEventListener('click', function () { closeSheet(); finishFlow(); });
+    card.appendChild(done);
+
+    body.appendChild(card);
+    // Land on the recap bubble, so the summary reads in order: what you told
+    // me, then what you need. Both fit above the fold.
+    dScrollTo(recapEl || card);
+  });
+}
+
+function dWell() {
+  var foot = document.getElementById('convo-foot');
+  foot.innerHTML = '';
+  document.getElementById('convo-sub').textContent = 'Nothing to do';
+  dSay('Good to hear, Carol. Nothing for you to do — ' + PROVIDER +
+    ' will see this in your check-ins.', 'acknowledging a well day').then(function () {
+    document.getElementById('convo').appendChild(safetyNetWell());
+    var done = h('<div><button class="Button Button---secondary Button---full" type="button">Back to Today</button></div>');
+    done.querySelector('button').addEventListener('click', function () { closeSheet(); finishFlow('well'); });
+    foot.appendChild(done);
+    dScroll();
+  });
+}
+
+/* ==========================================================================
+   9. CHROME
+   ========================================================================== */
+
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(function (s) {
+    s.classList.toggle('active', s.dataset.screen === name);
+  });
+  document.querySelectorAll('.app-tabbar button').forEach(function (b, i) {
+    b.setAttribute('aria-pressed', name === 'home' && i === 0 ? 'true' : 'false');
+  });
+  if (name === 'flow') document.getElementById('flow-title').textContent = 'How are you feeling?';
+  var sc = document.querySelector('.screen.active .app-scroll');
+  if (sc) sc.scrollTop = 0;
+  toggleNav(false);
+}
+
+var CAPTIONS = {
+  A: '<strong>A · Safety first.</strong> Red flags are ruled out before anything else, ' +
+     'the way a triage nurse sequences questions. Safest, but it opens with the scariest content.',
+  B: '<strong>B · Report first (recommended to ship).</strong> Matches the Figma. Names every ' +
+     'symptom up front, then sorts them. The companion-symptom question is what closes the safety hole.',
+  C: '<strong>C · One at a time.</strong> A guided interview. Fewest questions, calmest ' +
+     'pace, and the red flag sits inside the branch rather than up front.',
+  D: '<strong>D · Talk it through.</strong> An agent conversation in a modal. Tap to answer, ' +
+     'follow-ups only when they change the outcome, and an agent-written summary at the end. ' +
+     'The rules decide; the agent only does the talking.'
+};
+
+function setVariant(v) {
+  document.body.setAttribute('data-variant', v);
+  ['A', 'B', 'C', 'D'].forEach(function (k) {
+    document.getElementById('vp-' + k).setAttribute('aria-pressed', k === v ? 'true' : 'false');
+  });
+  closeSheet();
+  document.getElementById('vp-caption').innerHTML = CAPTIONS[v];
+  draft = null;
+  convo = null;
+  APP.lastResult = null;
+  document.getElementById('ack-card').hidden = true;
+  updateLlmNote();
+  writeTrace(null);
+  showScreen('home');
+}
+
+function toggleSuInsulin() {
+  APP.onSuInsulin = document.getElementById('su-insulin').checked;
+  if (draft) { draft = null; convo = null; closeSheet(); showScreen('home'); }
+}
+
+function toggleNav(force) {
+  var open = force === undefined ? !document.body.classList.contains('nav-open') : force;
+  document.body.classList.toggle('nav-open', open);
+  document.getElementById('nav-scrim').hidden = !open;
+}
+
+function writeTrace(res) {
+  var el = document.getElementById('trace');
+  if (!res) { el.textContent = ''; return; }
+  el.textContent = 'approach ' + variant() +
+    (APP.onSuInsulin ? '  [on insulin/SU]' : '') + '\n' + res.trace.join('\n');
+}
+
+/* demo shortcuts — drive the engine, never fake the output */
+function demoScenario(kind) {
+  draft = newDraft();
+  draft.steps = stepsFor(variant());
+  if (kind === 'mild')      { draft.picks = ['nausea'];       draft.sev = { nausea: 0 }; draft.duration = 'today'; }
+  if (kind === 'concern')   { draft.picks = ['nausea'];       draft.sev = { nausea: 1 }; draft.duration = 'few'; }
+  if (kind === 'urgent')    { draft.picks = ['vomiting'];     draft.sev = { vomiting: 2 }; draft.duration = 'few'; }
+  if (kind === 'emergency') { draft.picks = ['pain'];         draft.sev = { pain: 0 };
+                              draft.redflags = [{ maps: 'pain', tier: 'emergency', gate: 'demo',
+                                text: REDFLAGS_EMERGENCY[0].text,
+                                basis: 'You told us: “' + REDFLAGS_EMERGENCY[0].text +
+                                  '.” Your care team treats that as an emergency, whatever else is going on.' }]; }
+  if (kind === 'multi')     { draft.picks = ['nausea', 'vomiting', 'diarrhea'];
+                              draft.sev = { nausea: 1, vomiting: 1, diarrhea: 1 }; draft.duration = 'few'; }
+  // D renders its result inside the sheet, from the same draft and the same engine
+  if (variant() === 'D') {
+    convo = { active: null, otherText: '', askedCompanion: true, finished: false };
+    document.getElementById('convo').innerHTML = '';
+    document.getElementById('convo-foot').innerHTML = '';
+    openSheet('convo');
+    return dFinish();
+  }
+  showScreen('flow');
+  jumpToResult();
+}
+
+/* Esc closes the drawer and any open sheet — an emergency locks the scrim but
+   never the keyboard, so nobody can be trapped in the modal. */
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape') { closeSheet(); toggleNav(false); }
+});
+
+/* boot — deep-links, matching 11-result-variants.html
+   ?v=A|B|C                      choose the approach
+   &su=1                         member is on insulin / a sulfonylurea
+   &start=1                      open straight into the check-in
+   &demo=mild|concern|urgent|emergency|multi|panic   jump straight to an outcome
+   (so a specific screen or disposition can be shared with clinical reviewers) */
+(function () {
+  var params = new URLSearchParams(location.search);
+  var v = (params.get('v') || 'B').toUpperCase();
+  setVariant(['A', 'B', 'C', 'D'].indexOf(v) !== -1 ? v : 'B');
+
+  // ?llm=1 opts the phrasing layer in. Without it, D runs entirely on the
+  // pre-authored strings — same questions, same dispositions, no network.
+  if (params.get('llm') === '1') {
+    PHRASE.enabled = true;
+    var host = params.get('proxy');
+    if (host) PHRASE.endpoint = host;
+    var box = document.getElementById('llm-on');
+    if (box) box.checked = true;
+    updateLlmNote();
+  }
+
+  if (params.get('su') === '1') {
+    document.getElementById('su-insulin').checked = true;
+    toggleSuInsulin();
+  }
+  var d = params.get('demo');
+  if (d === 'panic') panicButton();
+  else if (['mild', 'concern', 'urgent', 'emergency', 'multi'].indexOf(d) !== -1) demoScenario(d);
+  else if (params.get('start') === '1') startFlow();
+})();
+</script>
+</body>
+</html>

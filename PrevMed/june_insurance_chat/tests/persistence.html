@@ -1,0 +1,206 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>persistence</title></head><body>
+<div id="out">running</div>
+<img src="/__delay=26" alt="" width="1" height="1" style="position:absolute;opacity:0">
+<iframe id="f" src="../index.html" style="width:1400px;height:900px;border:0"></iframe>
+<script>
+var R=[],pass=0,fail=0;
+function ok(n,c,d){ if(c){pass++;}else{fail++;R.push('FAIL '+n+(d!==undefined?' :: '+JSON.stringify(d):''));} }
+function sleep(ms){return new Promise(function(r){setTimeout(r,ms);});}
+function fin(x){ document.getElementById('out').textContent=(x?x+'\n':'')+'RESULT '+pass+' passed, '+fail+' failed\n'+R.join('\n'); }
+
+var f=document.getElementById('f');
+async function boot(){
+  var W,D;
+  for(var i=0;i<60;i++){ await sleep(200); W=f.contentWindow; D=W.document; if(W.__june) break; }
+  return W && W.__june ? {W:W,D:D,P:W.__june.panel} : null;
+}
+function reload(){
+  return new Promise(function(res){
+    f.addEventListener('load', function h(){ f.removeEventListener('load',h); res(); });
+    f.contentWindow.location.reload();
+  });
+}
+
+(async function(){
+  var c = await boot();
+  ok('booted', !!c); if(!c) return fin();
+
+  // start from a known state so the run is repeatable
+  c.W.localStorage.removeItem('june-insurance-chat.v1');
+  await reload(); c = await boot();
+  ok('rebooted clean', !!c); if(!c) return fin();
+
+  var MARK = 'EDIT-' + Math.floor(Math.random()*1e6);
+
+  /* ---- 1. typing WITHOUT blurring must still persist ----------------
+     `change` only fires on blur, so a keystroke-only edit used to be lost. */
+  c.P.select('prompt'); await sleep(500);
+  var ta = c.D.querySelector('#pane_prompt textarea:not([readonly])');
+  ok('found the system-prompt textarea', !!ta);
+  ta.value = 'SYSTEM ' + MARK;
+  ta.dispatchEvent(new c.W.Event('input', {bubbles:true}));   // no blur, no change
+  await sleep(900);                                          // let the debounce fire
+  var rawAfterTyping = c.W.localStorage.getItem('june-insurance-chat.v1');
+  ok('typed prompt persisted without blurring', (rawAfterTyping||'').indexOf(MARK) > -1);
+
+  /* ---- 2. edits across every persisted surface ---- */
+  // a flow step's copy and its Notes for June
+  var step = c.P.cfg.steps.filter(function(s){return s.id==='member_id';})[0];
+  step.say = 'MEMBER ID COPY ' + MARK;
+  step.notes = 'NOTES ' + MARK;
+  // outcome copy
+  c.P.cfg.outcomes.confirmed_zero.head = 'HEAD ' + MARK;
+  // scenario + member fixture + toggles
+  c.P.cfg.scenario = 'hmo_referral';
+  c.P.cfg.member.firstName = 'Margaret';
+  c.P.cfg.member.coordinatorName = 'Dana R.';
+  c.P.cfg.silentRetryFails = false;
+  c.P.cfg.fastMode = true;
+  c.P.cfg.inlineBudget = 4321;
+  c.P.cfg.latencyMs = 250;
+  // connection
+  c.P.cfg.transport = 'proxy';
+  c.P.cfg.proxyUrl = 'https://june-test.workers.dev';
+  c.P.cfg.proxySecret = 'SECRET ' + MARK;
+  c.P.cfg.model = 'claude-opus-5';
+  // the debug checklist
+  c.P.cfg.checklist.c3 = true;
+  c.P.save();
+
+  // a knowledge document (IndexedDB, a separate store from the config)
+  await c.W.JuneRAG.addDoc('persist-me.md', '# Persisted\nA doc that must survive a reload.', 'paste');
+  var beforeDocs = (await c.W.JuneRAG.listDocs()).length;
+
+  // things that must NOT persist: they describe one run, not configuration
+  c.P.log('info', 'a log line that should not survive');
+  c.P.measure({ memberIdSubmitted: 1 });
+  ok('metrics recorded in-session', c.P.metrics.memberIdSubmitted === 1);
+
+  /* ---- 3. reload and check ---- */
+  await reload();
+  c = await boot();
+  ok('rebooted after edits', !!c); if(!c) return fin();
+  var P = c.P;
+
+  ok('system prompt persisted', P.cfg.systemPrompt === 'SYSTEM ' + MARK, P.cfg.systemPrompt);
+  var step2 = P.cfg.steps.filter(function(s){return s.id==='member_id';})[0];
+  ok('step copy persisted', step2 && step2.say === 'MEMBER ID COPY ' + MARK, step2 && step2.say);
+  ok('Notes for June persisted', step2 && step2.notes === 'NOTES ' + MARK, step2 && step2.notes);
+  ok('outcome copy persisted', P.cfg.outcomes.confirmed_zero.head === 'HEAD ' + MARK);
+  ok('scenario persisted', P.cfg.scenario === 'hmo_referral');
+  ok('member fixture persisted', P.cfg.member.firstName === 'Margaret' && P.cfg.member.coordinatorName === 'Dana R.');
+  ok('silent-retry lever persisted', P.cfg.silentRetryFails === false);
+  ok('fast mode persisted', P.cfg.fastMode === true);
+  ok('inline budget persisted', P.cfg.inlineBudget === 4321);
+  ok('latency persisted', P.cfg.latencyMs === 250);
+  ok('proxy URL persisted', P.cfg.proxyUrl === 'https://june-test.workers.dev');
+  ok('shared secret persisted', P.cfg.proxySecret === 'SECRET ' + MARK);
+  ok('checklist persisted', P.cfg.checklist.c3 === true);
+
+  var docs = await c.W.JuneRAG.listDocs();
+  ok('knowledge documents persisted', docs.length === beforeDocs
+     && docs.some(function(d){return d.name==='persist-me.md';}), docs.map(function(d){return d.name;}));
+  ok('seeding did not duplicate on reload', docs.filter(function(d){return d.name==='bold-pricing-coverage.md';}).length === 1,
+     docs.map(function(d){return d.name;}));
+
+  // session-only observations must be clear
+  ok('logs do not persist', !P.logs.some(function(l){return /should not survive/.test(l.msg);}), P.logs.map(function(l){return l.msg;}).slice(0,3));
+  ok('metrics do not persist', P.metrics.memberIdSubmitted === 0, P.metrics.memberIdSubmitted);
+  ok('transient notices are not saved', (c.W.localStorage.getItem('june-insurance-chat.v1')||'').indexOf('pendingNotices') === -1);
+
+  // the persisted edits are actually USED, not merely stored
+  ok('panel UI shows the persisted prompt',
+     (function(){ P.select('prompt'); var t=c.D.querySelector('#pane_prompt textarea:not([readonly])'); return t && t.value.indexOf(MARK)>-1; })());
+  // the first screen surfaces the member through the To-do module's June line
+  ok('to-do module uses the persisted member', /Margaret/.test(c.D.querySelector('#todoJuneLine').textContent),
+     c.D.querySelector('#todoJuneLine').textContent);
+  ok('appointment card uses the persisted coordinator', /Dana R\./.test(c.D.querySelector('#apptTitle').textContent),
+     c.D.querySelector('#apptTitle').textContent);
+  ok('appointment card uses the persisted time', /Nov 3/.test(c.D.querySelector('#apptWhen').textContent),
+     c.D.querySelector('#apptWhen').textContent);
+  ok('avatar alt names the persisted coordinator',
+     /Dana R\./.test(c.D.querySelector('#screen-dash .Avatar img').alt),
+     c.D.querySelector('#screen-dash .Avatar img').alt);
+
+  /* ---- 4. newly shipped outcomes get merged into an old saved config ---- */
+  var saved = JSON.parse(c.W.localStorage.getItem('june-insurance-chat.v1'));
+  delete saved.outcomes.hmo_referral;              // pretend this build added it
+  saved.steps = saved.steps.filter(function(s){return s.id!=='save_resume';});
+  c.W.localStorage.setItem('june-insurance-chat.v1', JSON.stringify(saved));
+  await reload(); c = await boot();
+  ok('missing outcome is restored', !!c.P.cfg.outcomes.hmo_referral);
+  ok('user edits still win after the merge', c.P.cfg.outcomes.confirmed_zero.head === 'HEAD ' + MARK);
+  ok('a missing step is reported, not silently reordered',
+     c.P.logs.some(function(l){return /missing step/.test(l.msg);}), c.P.logs.map(function(l){return l.msg;}));
+  ok('the missing step is NOT force-added back', !c.P.cfg.steps.some(function(s){return s.id==='save_resume';}),
+     'user-ordered array must be left alone');
+
+  /* ---- 4b. a saved config from an earlier build must be SURFACED ----
+     Saved settings are merged over the shipped defaults, so an older saved copy
+     silently disabled shipped fixes. That was invisible; now it is a banner. */
+  var shipped = JSON.parse(JSON.stringify(c.W.JuneFlowDefault.steps));
+  var stale = JSON.parse(JSON.stringify(shipped)).filter(function(s){ return s.id!=='save_resume'; });
+  stale.forEach(function(s){ if(s.id==='member_id') delete s.skipIf; });
+  c.W.localStorage.setItem('june-insurance-chat.v1', JSON.stringify({
+    steps: stale, systemPrompt: 'KEEP ME ' + MARK, apiKey: 'KEEPKEY',
+    specFingerprint: 'obviously-stale'
+  }));
+  await reload(); c = await boot();
+  ok('drift is detected', !!c.D.querySelector('.Panel-stale'));
+  ok('banner explains the consequence',
+     /fixes in this build are not active/i.test(c.D.querySelector('.Panel-stale').textContent),
+     c.D.querySelector('.Panel-stale').textContent.slice(0,80));
+  ok('banner is in the panel, not the Debug log',
+     !!c.D.querySelector('.Panel-stale') && c.D.querySelector('.Panel-stale').offsetParent !== null);
+  var adopt = Array.prototype.filter.call(
+    c.D.querySelectorAll('.Panel-stale button'),
+    function(b){ return /Use this build/.test(b.textContent); })[0];
+  ok('offers to adopt this build', !!adopt);
+  ok('offers to keep yours', Array.prototype.some.call(
+     c.D.querySelectorAll('.Panel-stale button'), function(b){ return /Keep mine/.test(b.textContent); }));
+  adopt.click(); await sleep(700);
+  var fixed = c.P.cfg.steps.filter(function(s){return s.id==='member_id';})[0];
+  ok('adopting restores the shipped skipIf', fixed.skipIf === 'memberIdPath', fixed.skipIf);
+  ok('adopting restores the missing step', c.P.cfg.steps.some(function(s){return s.id==='save_resume';}));
+  ok('adopting keeps your system prompt', c.P.cfg.systemPrompt === 'KEEP ME ' + MARK, c.P.cfg.systemPrompt);
+  ok('adopting keeps your key', c.P.cfg.apiKey === 'KEEPKEY', c.P.cfg.apiKey);
+  ok('banner clears once resolved', !c.D.querySelector('.Panel-stale'));
+  await reload(); c = await boot();
+  ok('and stays cleared after a reload', !c.D.querySelector('.Panel-stale'));
+  c.W.localStorage.removeItem('june-insurance-chat.v1');
+  await reload(); c = await boot();
+
+  /* ---- 5. a reviewer link can carry the Worker, https only ---- */
+  function loadWith(qs){
+    return new Promise(function(res){
+      f.addEventListener('load', function h(){ f.removeEventListener('load',h); res(); });
+      f.src = '../index.html' + qs;
+    });
+  }
+  c.W.localStorage.removeItem('june-insurance-chat.v1');
+  await loadWith('?proxy=https%3A%2F%2Fjune-x.workers.dev&key=linksecret');
+  c = await boot();
+  ok('https ?proxy= is accepted', c.P.cfg.proxyUrl === 'https://june-x.workers.dev', c.P.cfg.proxyUrl);
+  ok('?key= is accepted alongside it', c.P.cfg.proxySecret === 'linksecret', c.P.cfg.proxySecret);
+  ok('link switches transport to proxy', c.P.cfg.transport === 'proxy');
+  ok('link choice is logged', c.P.logs.some(function(l){return /proxy from the link/.test(l.msg);}));
+
+  c.W.localStorage.removeItem('june-insurance-chat.v1');
+  await loadWith('?proxy=http%3A%2F%2Fevil.example&key=linksecret');
+  c = await boot();
+  ok('plain-http ?proxy= is refused', c.P.cfg.proxyUrl !== 'http://evil.example', c.P.cfg.proxyUrl);
+  ok('refusal is surfaced, not silent',
+     c.P.logs.some(function(l){return /Ignored \?proxy=/.test(l.msg);}), c.P.logs.map(function(l){return l.msg;}));
+  ok('secret is not stored for a refused target', c.P.cfg.proxySecret !== 'linksecret', c.P.cfg.proxySecret);
+
+  await loadWith('');
+  c = await boot();
+
+  /* ---- 6. Reset everything really does reset ---- */
+  c.W.localStorage.removeItem('june-insurance-chat.v1');
+  await reload(); c = await boot();
+  ok('reset restores the default prompt', c.P.cfg.systemPrompt.indexOf(MARK) === -1);
+  ok('reset restores the default member', c.P.cfg.member.firstName === 'Kathleen', c.P.cfg.member.firstName);
+  fin();
+})().catch(function(e){ fin('DRIVER ERROR: ' + (e && e.stack || e)); });
+</script></body></html>

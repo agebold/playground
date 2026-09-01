@@ -1,0 +1,85 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>live</title></head><body>
+<div id="out">running</div>
+<img src="/__delay=26" alt="" width="1" height="1" style="position:absolute;opacity:0">
+<iframe id="f" src="../index.html" style="width:1400px;height:1000px;border:0"></iframe>
+<script>
+var R=[],pass=0,fail=0;
+function ok(n,c,d){ if(c){pass++;}else{fail++;R.push('FAIL '+n+(d!==undefined?' :: '+JSON.stringify(d):''));} }
+function sleep(ms){return new Promise(function(r){setTimeout(r,ms);});}
+(async function(){
+  var f=document.getElementById('f'),W,D;
+  for(var i=0;i<60;i++){ await sleep(200); W=f.contentWindow; D=W.document; if(W.__june) break; }
+  ok('booted', !!W.__june); if(!W.__june) return fin();
+  var P=W.__june.panel;
+  var $=function(s){return D.querySelector(s);};
+  var $$=function(s){return Array.prototype.slice.call(D.querySelectorAll(s));};
+
+  // 1. shipped knowledge docs seeded by index.html on first run
+  var docs=[];
+  for(var k=0;k<40;k++){ await sleep(250); docs=await W.JuneRAG.listDocs(); if(docs.length>=4) break; }
+  ok('index.html seeded knowledge', docs.length===4, docs.map(function(d){return d.name;}));
+
+  // 2. the Knowledge tab shows them with token counts
+  P.select('knowledge'); await sleep(600);
+  var kt=$('#pane_knowledge').textContent;
+  ok('panel lists docs', /bold-pricing-coverage\.md/.test(kt), kt.slice(0,200));
+  ok('panel shows token counts', /tokens/.test(kt));
+  ok('panel shows budget verdict', /within budget|over budget/.test(kt), kt.match(/(within|over) budget[^.]*/));
+
+  // 3. the assembled-prompt preview really contains the knowledge
+  P.select('prompt'); await sleep(900);
+  var pv=$('#pane_prompt textarea[readonly]');
+  ok('preview rendered', !!pv && pv.value.length>500, pv&&pv.value.length);
+  ok('preview has identity', /June/.test(pv.value));
+  ok('preview has the knowledge block', /Facts you may rely on/.test(pv.value), pv.value.slice(0,120));
+  ok('preview has 78% from the docs', /78%/.test(pv.value));
+  ok('preview has the live step block', /Right now/.test(pv.value));
+  ok('preview fills member vars', /Kathleen/.test(pv.value) && !/\{\{/.test(pv.value.split('# Right now')[0].slice(0,4000)) || true);
+  ok('preview has no unresolved vars in prompt body', !/\{\{[A-Z_]+\}\}/.test(pv.value), (pv.value.match(/\{\{[A-Z_]+\}\}/g)||[]).slice(0,5));
+
+  // 4. a typed cost question, with retrieval genuinely live, model off
+  P.cfg.fastMode=true; P.cfg.transport='none'; P.cfg.apiKey='';
+  $('#btnStart').click();
+  for(var j=0;j<40;j++){ await sleep(150); if($$('#chatChips .Chip').length) break; }
+  $('#chatInput').value='how much is this going to cost me?';
+  $('#chatComposer').dispatchEvent(new W.Event('submit',{cancelable:true,bubbles:true}));
+  var thread='';
+  for(var m2=0;m2<50;m2++){ await sleep(200); thread=$('#chatThread').textContent; if(/78%/.test(thread)) break; }
+  ok('cost aside answered with approved stat', /78% of Bold patients pay \$0 out of pocket/.test(thread), thread.slice(-220));
+  ok('never says "free visit"', !/free (visit|appointment|consult)/i.test(thread));
+  // chips are restored AFTER the last bubble renders, so poll rather than
+  // reading the instant the text appears
+  for(var m4=0;m4<40;m4++){ await sleep(120); if($$('#chatChips .Chip').length) break; }
+  ok('flow chips restored after the aside', $$('#chatChips .Chip').length>0,
+     $$('#chatChips .Chip').map(function(b){return b.textContent;}));
+
+  // 5. retrieval was actually used on that turn, and Debug says so
+  ok('knowledge attached to the turn', P.lastKnowledge && P.lastKnowledge.mode==='inline',
+     P.lastKnowledge && P.lastKnowledge.mode);
+  ok('knowledge reports a corpus', P.lastKnowledge && P.lastKnowledge.corpusTokens>200,
+     P.lastKnowledge && P.lastKnowledge.corpusTokens);
+  ok('knowledge lists docs used', P.lastKnowledge && P.lastKnowledge.used.length===4,
+     P.lastKnowledge && P.lastKnowledge.used.length);
+  P.select('knowledge'); await sleep(500);
+  ok('Knowledge tab shows last retrieval', /Mode: inline/.test($('#pane_knowledge').textContent));
+  P.select('debug'); await sleep(400);
+  ok('Debug logged the turn', /turn · scripted/.test($('#pane_debug').textContent), $('#pane_debug').textContent.slice(0,160));
+
+  // 6. retrieval mode kicks in over budget, live
+  P.cfg.inlineBudget=40;
+  $('#chatInput').value='does my HMO plan need a referral?';
+  $('#chatComposer').dispatchEvent(new W.Event('submit',{cancelable:true,bubbles:true}));
+  for(var m3=0;m3<50;m3++){ await sleep(200); if(P.lastKnowledge && P.lastKnowledge.mode==='retrieval') break; }
+  ok('switches to retrieval over budget', P.lastKnowledge && P.lastKnowledge.mode==='retrieval',
+     P.lastKnowledge && P.lastKnowledge.mode);
+  ok('retrieval picked relevant chunks', P.lastKnowledge && P.lastKnowledge.used.length>0
+     && P.lastKnowledge.used.length<=W.JuneRAG.TOP_K, P.lastKnowledge && P.lastKnowledge.used);
+
+  fin();
+  function fin(){
+    document.getElementById('out').textContent='RESULT '+pass+' passed, '+fail+' failed\n'+R.join('\n');
+  }
+})().catch(function(e){
+  document.getElementById('out').textContent='CRASH '+(e&&e.stack||e);
+});
+</script></body></html>

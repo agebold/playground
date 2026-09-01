@@ -1,0 +1,14 @@
+<svg overflow="visible" style="display: block;" width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id=".stepper">
+<circle id="Bullet" cx="20" cy="20" r="20" fill="#3366FF"/>
+<g id="IdentificationCard">
+<g id="Vector">
+</g>
+<path id="Vector_2" d="M22.3438 18.4375H26.25" stroke="#FAFAFA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector_3" d="M22.3438 21.5625H26.25" stroke="#FAFAFA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector_4" d="M28.5938 12.1875H11.4062C10.9748 12.1875 10.625 12.5373 10.625 12.9688V27.0312C10.625 27.4627 10.9748 27.8125 11.4062 27.8125H28.5938C29.0252 27.8125 29.375 27.4627 29.375 27.0312V12.9688C29.375 12.5373 29.0252 12.1875 28.5938 12.1875Z" stroke="#FAFAFA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector_5" d="M16.875 21.5625C18.1694 21.5625 19.2188 20.5132 19.2188 19.2188C19.2188 17.9243 18.1694 16.875 16.875 16.875C15.5806 16.875 14.5312 17.9243 14.5312 19.2188C14.5312 20.5132 15.5806 21.5625 16.875 21.5625Z" stroke="#FAFAFA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector_6" d="M13.75 23.9062C14.0967 22.5586 15.4189 21.5625 16.875 21.5625C18.3311 21.5625 19.6543 22.5576 20 23.9062" stroke="#FAFAFA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
+</svg>

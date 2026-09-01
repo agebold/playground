@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verdict — Part D cost clarity (3 directions) — Bold Weight Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="funnel.css" />
+  <link rel="stylesheet" href="steps.css" />
+
+  <!--
+    ────────────────────────────────────────────────────────────────
+    Verdict page (step 11) — Medicare Part D cost-clarity prototype.
+
+    Problem: the landing page advertises a $50/mo GLP-1 Bridge copay.
+    Part D members are NOT eligible for that; their GLP-1 runs through
+    Part D and the cost varies. Today that fact is buried in FAQ #1.
+
+    This file toggles between 3 directions (demo bar at top):
+      1 · Clearer copy      — a purple Banner note under "What you'll pay"
+      2 · Confirmation step — a positive interstitial after "Schedule call"
+      3 · Best practice     — coverage explained up front, care-coordinator
+                              escape hatch, no gate (recommended)
+
+    Design system: hand-implements @bold/web via funnel.css tokens.
+      Banner       https://staging-ui.agebold.com/?path=/docs/banner--docs
+      ModalConfirm https://staging-ui.agebold.com/?path=/docs/modalconfirm--docs
+      Button       existing .Button---primary/.Button---secondary
+    Note: body copy is 16px to match the live verdict page; senior-
+    onboarding research prefers 18px. 14px hard floor respected.
+    Not touched: the appointment-cost line ($0 copay) — governed by the
+    bold-pricing-messaging skill; this file only edits GLP-1 medication copy.
+    ────────────────────────────────────────────────────────────────
+  -->
+
+  <style>
+    /* Desktop backdrop so the 393px phone mock reads as a device */
+    html { background: var(--color-gray-200); }
+
+    /* ── Demo control bar (prototype chrome, not part of the screen) ── */
+    .vp-demobar {
+      position: fixed; top: 0; left: 50%; transform: translateX(-50%);
+      width: 100%; max-width: 393px; z-index: 40;
+      background: #fff; border-bottom: 1px solid var(--color-gray-200);
+      box-shadow: var(--shadow-sm);
+      padding: 12px 16px; display: flex; flex-direction: column; gap: 8px;
+    }
+    .vp-eyebrow { font-size: 14px; font-weight: 600; letter-spacing: 0.2px; color: var(--color-gray-475); }
+    .vp-seg {
+      display: flex; width: 100%; gap: 4px;
+      background: var(--color-gray-100); border: 1px solid var(--color-gray-200);
+      border-radius: 999px; padding: 4px;
+    }
+    .vp-seg button {
+      flex: 1; min-height: 44px; padding: 8px 6px;
+      border: none; background: transparent; border-radius: 999px;
+      font-family: var(--font-family); font-size: 14px; font-weight: 600;
+      color: var(--color-gray-900); cursor: pointer; white-space: nowrap;
+      transition: background-color 150ms ease-in-out, color 150ms ease-in-out;
+    }
+    .vp-seg button[aria-pressed="true"] { background: var(--color-purple-600); color: #fff; box-shadow: var(--shadow-xs); }
+    .vp-seg button:focus-visible { outline: 2px solid var(--color-purple-600); outline-offset: 2px; }
+    .vp-caption { font-size: 14px; line-height: 20px; color: var(--color-gray-900); }
+    .vp-caption strong { font-weight: 700; }
+    @media (prefers-reduced-motion: reduce) { .vp-seg button { transition: none; } }
+
+    /* Offset the phone below the fixed demo bar (JS keeps --vp-top in sync) */
+    .cf-page { padding-top: var(--vp-top, 96px); }
+    .cf-nav  { top: var(--vp-top, 96px); }
+
+    /* ── Program card (from 11-result.html) ── */
+    .rs-card { background: #fff; border: 1px solid var(--color-gray-200); border-radius: var(--radius-xl); padding: 16px 12px; display: flex; flex-direction: column; gap: 12px; }
+    .rs-card-head { display: flex; gap: 12px; align-items: center; }
+    .rs-card-thumb { width: 60px; height: 60px; border-radius: var(--radius-sm); object-fit: cover; flex-shrink: 0; }
+    .rs-card-title { font-size: 20px; font-weight: 600; line-height: 24px; color: var(--color-gray-950); }
+
+    /* ── "What you'll pay" card ── */
+    .rs-pay { background: var(--color-mint-100); border-radius: var(--radius-xl); overflow: hidden; box-shadow: var(--shadow-sm); }
+    .rs-pay-badge { padding: 6px 16px; font-size: 14px; font-weight: 600; line-height: 22px; color: #005b52; }
+    .rs-pay-body { background: #fff; border-radius: var(--radius-xl); padding: 12px; display: flex; gap: 16px; }
+    .rs-pay-col { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: space-between; min-height: 100px; }
+    .rs-pay-col--divided { border-right: 1px solid var(--color-gray-200); padding-right: 16px; }
+    .rs-pay-label { font-size: 16px; font-weight: 600; line-height: 24px; color: var(--color-gray-900); }
+    .rs-pay-note { font-size: 14px; font-style: italic; font-weight: 400; }
+    .rs-pay-amt { font-size: 24px; font-weight: 600; line-height: 32px; letter-spacing: -0.5px; color: var(--color-gray-900); }
+    .rs-pay-amt--sm { font-size: 20px; line-height: 24px; letter-spacing: 0; }
+    .rs-pay-sub { font-size: 16px; font-weight: 400; line-height: 24px; color: var(--color-gray-900); }
+
+    /* GLP-1 "Cost varies" value row + info popover */
+    .rs-pay-wrap { position: relative; }
+    .rs-pay-value { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .rs-info-btn {
+      flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center;
+      width: 44px; height: 44px; margin: -10px -10px -10px 0; padding: 10px;
+      border: 0; background: none; color: var(--color-purple-600);
+      border-radius: 999px; cursor: pointer;
+    }
+    .rs-info-btn:focus-visible { outline: 2px solid var(--color-purple-600); outline-offset: 2px; }
+    .rs-info-ic { width: 24px; height: 24px; display: block; }
+    .rs-tip {
+      position: absolute; z-index: 30; right: 12px; bottom: 64px;
+      width: min(280px, calc(100% - 24px));
+      background: var(--color-yellow-100); color: var(--color-gray-900);
+      font-size: 16px; line-height: 24px; padding: 12px;
+      border-radius: var(--radius-sm);
+      box-shadow: 0 4px 8px rgba(16,24,40,0.1), 0 2px 4px rgba(16,24,40,0.06);
+    }
+    .rs-tip::after {
+      content: ""; position: absolute; right: 24px; bottom: -7px;
+      width: 0; height: 0; border-left: 8px solid transparent; border-right: 8px solid transparent;
+      border-top: 8px solid var(--color-yellow-100);
+    }
+    .rs-tip[hidden] { display: none; }
+
+    /* ── Quote card ── */
+    .rs-quote { background: var(--color-blue-100); border-radius: var(--radius-xl); padding: 12px; box-shadow: var(--shadow-xs); display: flex; gap: 12px; align-items: flex-start; }
+    .rs-quote-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+    .rs-quote-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+    .rs-quote-text { font-size: 16px; line-height: 24px; color: #1a3380; }
+    .rs-quote-name { font-size: 14px; font-weight: 600; line-height: 22px; color: #1a3380; }
+    .rs-quote-name span { display: block; }
+
+    .rs-faq-label { font-size: 18px; font-weight: 600; line-height: 24px; color: #000; }
+    .cf-faq-answer ol { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; }
+    .cf-faq-answer strong { color: var(--color-gray-900); font-weight: 700; }
+
+    /* ══ Direction 1 — Banner note (hand-impl of @bold/web Banner, color purple) ══ */
+    .vp-notice {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 12px 16px;
+      background: var(--color-purple-ede);
+      border: 1px solid rgba(82, 0, 212, 0.22);
+      border-radius: var(--radius-sm);
+    }
+    .vp-notice-ic { flex-shrink: 0; width: 24px; height: 24px; color: var(--color-purple-600); margin-top: 1px; }
+    .vp-notice p { font-size: 16px; line-height: 24px; color: var(--color-gray-950); }
+    .vp-notice strong { font-weight: 700; }
+
+    /* ══ Direction 3 — "How your GLP-1 coverage works" ══ */
+    .vp-coverage-title { font-size: 18px; font-weight: 600; line-height: 24px; color: var(--color-gray-950); }
+    .vp-icon-info { color: var(--color-purple-600); }
+    .cf-result-summary-item strong { font-weight: 700; }
+    .vp-cc-link {
+      display: inline-flex; align-items: center; gap: 8px;
+      min-height: 44px; padding: 8px 0; align-self: flex-start;
+      background: none; border: none; cursor: pointer;
+      font-family: var(--font-family); font-size: 16px; font-weight: 600;
+      color: var(--color-purple-600); text-decoration: underline; text-align: left;
+    }
+    .vp-cc-link:focus-visible { outline: 2px solid var(--color-purple-600); outline-offset: 2px; border-radius: 4px; }
+    .vp-cc-ic { flex-shrink: 0; width: 20px; height: 20px; }
+
+    /* ══ Direction 2 — Confirmation interstitial (ModalConfirm anatomy) ══ */
+    .vp-inter { align-items: stretch; }
+    .vp-inter-hero { display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; padding-top: 16px; }
+    .vp-greeting-icon {
+      width: 76px; height: 76px; border-radius: 50%; flex-shrink: 0;
+      background: rgba(191, 237, 232, 0.5);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--color-purple-600);
+    }
+    .vp-inter-title { text-align: center; }
+    /* Focus moves here only to announce the new screen to screen readers — no visible ring */
+    .vp-inter-title:focus, .vp-inter-title:focus-visible { outline: none; }
+    .vp-inter-card {
+      background: #fff; border: 1px solid var(--color-gray-200);
+      border-radius: var(--radius-xl); box-shadow: var(--shadow-xs);
+      padding: 16px; display: flex; flex-direction: column; gap: 12px;
+    }
+    .vp-body { font-size: 16px; line-height: 24px; color: var(--color-gray-900); }
+    .vp-body strong { font-weight: 700; }
+    .vp-inter-reassure { font-size: 16px; line-height: 24px; color: var(--color-gray-475); }
+
+    /* Stacked actions for the interstitial footer */
+    .vp-actions-stack {
+      padding: 16px; display: flex; flex-direction: column; gap: 8px;
+      background: linear-gradient(to bottom, rgba(245,245,245,0) 0%, var(--color-gray-100) 60%);
+    }
+    .vp-btn-outline { border: 1.5px solid var(--color-gray-300); }
+
+    /* Fixed CTA at the bottom of the phone (mirrors 11-result.html) */
+    .st-footer {
+      position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 100%; max-width: 393px; z-index: 20;
+    }
+    .st-content { padding-bottom: 104px; }
+    [hidden] { display: none !important; }
+  </style>
+</head>
+<body>
+
+  <!-- ── Prototype controls ── -->
+  <div class="vp-demobar" id="vp-demobar">
+    <p class="vp-eyebrow" id="vp-eyebrow">Prototype · choose a direction</p>
+    <div class="vp-seg" role="group" aria-labelledby="vp-eyebrow">
+      <button type="button" id="vp-seg-1" aria-pressed="true"  onclick="setVariant(1)">Clearer copy</button>
+      <button type="button" id="vp-seg-2" aria-pressed="false" onclick="setVariant(2)">Confirmation</button>
+      <button type="button" id="vp-seg-3" aria-pressed="false" onclick="setVariant(3)">Best practice</button>
+    </div>
+    <p class="vp-caption" id="vp-caption" aria-live="polite"></p>
+  </div>
+
+  <div class="cf-page">
+
+    <nav class="cf-nav" aria-label="Your result">
+      <button class="cf-nav-btn" type="button" id="nav-back" aria-label="Go back" onclick="goBack()">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <span class="cf-logo" role="img" aria-label="Bold">
+        <span class="logo-lines"><img src="assets/lp/logo-lines.svg" alt="" /></span>
+        <span class="logo-text"><img src="assets/lp/logo-text.svg" alt="" /></span>
+      </span>
+      <span class="cf-nav-btn is-hidden" aria-hidden="true"></span>
+    </nav>
+
+    <!-- ══════════ SCREEN: VERDICT ══════════ -->
+    <main class="st-content" id="screen-verdict">
+      <h1 class="cf-heading">Good news. You're a strong candidate!</h1>
+
+      <!-- Program card -->
+      <div class="rs-card">
+        <div class="rs-card-head">
+          <img class="rs-card-thumb" src="assets/lp/figma-pill.png" alt="" />
+          <p class="rs-card-title">Bold doctor-supervised GLP-1 weight loss program</p>
+        </div>
+        <div class="st-check-list">
+          <div class="st-check">
+            <svg class="st-check-ic" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#3366ff"/><path d="M7 12.5l3.2 3.2L17 9" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="st-check-text--sm">Access FDA-approved GLP-1s like Wegovy and Zepbound if prescribed</span>
+          </div>
+          <div class="st-check">
+            <svg class="st-check-ic" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#3366ff"/><path d="M7 12.5l3.2 3.2L17 9" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="st-check-text--sm">Designed for older adults, <span class="reg">helping you lose fat and protect your strength</span></span>
+          </div>
+          <div class="st-check">
+            <svg class="st-check-ic" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#3366ff"/><path d="M7 12.5l3.2 3.2L17 9" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="st-check-text--sm">Your provider stays in the loop <span class="reg">to keep you safe and adjusts the plan as you go.</span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- What you'll pay -->
+      <div class="rs-pay-wrap">
+        <div class="rs-pay">
+          <div class="rs-pay-badge">What you'll pay</div>
+          <div class="rs-pay-body">
+            <div class="rs-pay-col rs-pay-col--divided">
+              <p class="rs-pay-label">Initial visit</p>
+              <div>
+                <p class="rs-pay-amt">$0</p>
+                <p class="rs-pay-sub">copay</p>
+              </div>
+            </div>
+            <div class="rs-pay-col">
+              <p class="rs-pay-label">GLP-1s <span class="rs-pay-note">(if eligible)</span></p>
+              <div class="rs-pay-value">
+                <p class="rs-pay-amt rs-pay-amt--sm">Cost varies</p>
+                <button class="rs-info-btn" type="button" aria-expanded="false"
+                        aria-controls="glp1-cost-tip" aria-label="How GLP-1 cost is determined">
+                  <svg class="rs-info-ic" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/>
+                    <circle cx="12" cy="8" r="1.1" fill="currentColor"/>
+                    <path d="M12 11v6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="rs-tip" id="glp1-cost-tip" role="tooltip" hidden>
+          Your GLP-1 is covered under your Medicare Part D plan — not the $50 Bridge copay. Your exact cost depends on your plan, and you'll always know it before you pay.
+        </div>
+      </div>
+
+      <!-- DIRECTION 1: Banner note under the pay card -->
+      <div class="vp-notice" data-variant-block="1">
+        <svg class="vp-notice-ic" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/>
+          <circle cx="12" cy="8" r="1.1" fill="currentColor"/>
+          <path d="M12 11v6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <p><strong>Good to know:</strong> the $50/month Bridge copay isn't part of Medicare Part D. Your Part D plan covers your GLP-1 instead. Your cost depends on your plan — and you'll always know it before you pay anything.</p>
+      </div>
+
+      <!-- DIRECTION 3: coverage explained up front -->
+      <section class="rs-card" data-variant-block="3" aria-labelledby="vp-cov-title">
+        <h2 class="vp-coverage-title" id="vp-cov-title">How your GLP-1 coverage works</h2>
+        <div class="cf-result-summary">
+          <div class="cf-result-summary-item">
+            <svg class="cf-result-summary-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M6 10.5l2.6 2.6L14 7.3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Your GLP-1 is covered through your <strong>standard Medicare Part D plan</strong>.</span>
+          </div>
+          <div class="cf-result-summary-item">
+            <svg class="cf-result-summary-icon vp-icon-info" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="9" stroke="currentColor" stroke-width="1.6"/><circle cx="10" cy="6.5" r="1" fill="currentColor"/><path d="M10 9v5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+            <span>The <strong>$50/month Bridge copay is a separate program</strong> that Part D plans don't use — so it won't apply here.</span>
+          </div>
+          <div class="cf-result-summary-item">
+            <svg class="cf-result-summary-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M6 10.5l2.6 2.6L14 7.3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Your cost depends on your plan and isn't final until your insurance processes it — <strong>you'll always know your cost before you pay</strong>.</span>
+          </div>
+        </div>
+        <button type="button" class="vp-cc-link" onclick="ccNote()">
+          <svg class="vp-cc-ic" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 4h12a1 1 0 011 1v8a1 1 0 01-1 1H8l-3 3v-3H4a1 1 0 01-1-1V5a1 1 0 011-1z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+          Questions about cost? Talk to a care coordinator
+        </button>
+      </section>
+
+      <!-- Quote -->
+      <div class="rs-quote">
+        <img class="rs-quote-avatar" src="assets/lp/prov-sandeep.jpg" alt="" />
+        <div class="rs-quote-body">
+          <p class="rs-quote-text">"Bold weight-management program is designed for adults 65+ to lose weight safely. With personalized lifestyle support with FDA-approved medications when it's appropriate, it not only works but lasts."</p>
+          <p class="rs-quote-name"><span>Dr. Sandeep Palakodeti, M.D., M.P.H.</span><span>Chief Medical Officer at Bold</span></p>
+        </div>
+      </div>
+
+      <!-- FAQs -->
+      <p class="rs-faq-label">*FAQs</p>
+      <div class="cf-faq-list">
+        <div class="cf-faq-item" data-variant-block="1 2">
+          <button class="cf-faq-btn" type="button" aria-expanded="false">
+            <span class="cf-faq-question">How medication coverage works.</span>
+            <svg class="cf-faq-caret" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M7.5 5l5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="cf-faq-answer">
+            <ol>
+              <li><strong>Meet with your Bold provider.</strong> Together, you'll determine whether a GLP-1 is suitable for you.</li>
+              <li><strong>Your provider will work with Medicare</strong> to get your prescription covered. You're not eligible for the $50/month copay through Medicare Bridge, but your GLP-1 is still covered through your standard Medicare Part D benefits. Your cost isn't final until your insurance processes it — and you'll always know it before you pay.</li>
+              <li><strong>If you aren't covered,</strong> your provider will focus on lifestyle support to help you lose weight without medication.</li>
+            </ol>
+          </div>
+        </div>
+        <div class="cf-faq-item">
+          <button class="cf-faq-btn" type="button" aria-expanded="false">
+            <span class="cf-faq-question">Are GLP-1s required?</span>
+            <svg class="cf-faq-caret" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M7.5 5l5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="cf-faq-answer">No! If a GLP-1 isn't the right fit for you, your provider will still support you with a personalized lifestyle plan to reach your weight management goals.</div>
+        </div>
+      </div>
+    </main>
+
+    <!-- ══════════ SCREEN: DIRECTION 2 INTERSTITIAL ══════════ -->
+    <main class="st-content vp-inter" id="screen-interstitial" aria-labelledby="inter-title" hidden>
+      <div class="vp-inter-hero">
+        <div class="vp-greeting-icon">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/>
+            <circle cx="12" cy="8" r="1.1" fill="currentColor"/>
+            <path d="M12 11v6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h1 class="cf-heading vp-inter-title" id="inter-title" tabindex="-1">One quick note before we schedule</h1>
+      </div>
+      <div class="vp-inter-card">
+        <p class="vp-body">Your GLP-1 is covered through your <strong>Medicare Part D plan</strong> — not the $50/month Bridge copay. Your exact cost depends on your plan and isn't final until your insurance processes it. <strong>You'll always know your cost before you pay anything.</strong></p>
+        <p class="vp-inter-reassure">A care coordinator can walk you through this anytime.</p>
+      </div>
+    </main>
+
+    <!-- ── Footer: verdict ── -->
+    <footer class="st-footer" id="footer-verdict">
+      <div class="st-actions">
+        <button class="Button Button---primary Button---purple Button---full" type="button" id="btn-schedule" onclick="onSchedule()">Schedule call</button>
+      </div>
+    </footer>
+
+    <!-- ── Footer: interstitial ── -->
+    <footer class="st-footer" id="footer-interstitial" hidden>
+      <div class="vp-actions-stack">
+        <a class="Button Button---primary Button---purple Button---full" href="12-schedule.html">Continue to scheduling</a>
+        <button class="Button Button---secondary Button---full vp-btn-outline" type="button" onclick="closeInterstitial()">Go back</button>
+      </div>
+    </footer>
+
+  </div>
+
+  <script src="steps.js"></script>
+  <script>
+    /* ── Keep the phone offset in sync with the fixed demo bar height ── */
+    function syncTop() {
+      var bar = document.getElementById('vp-demobar');
+      if (bar) document.documentElement.style.setProperty('--vp-top', bar.offsetHeight + 'px');
+    }
+    window.addEventListener('resize', syncTop);
+
+    /* ── Screen switching (verdict <-> interstitial) ── */
+    function showScreen(name) {
+      var isInter = name === 'interstitial';
+      document.getElementById('screen-verdict').hidden = isInter;
+      document.getElementById('screen-interstitial').hidden = !isInter;
+      document.getElementById('footer-verdict').hidden = isInter;
+      document.getElementById('footer-interstitial').hidden = !isInter;
+      window.scrollTo(0, 0);
+      if (isInter) {
+        var t = document.getElementById('inter-title');
+        if (t) t.focus();
+      }
+    }
+    function closeInterstitial() {
+      showScreen('verdict');
+      var b = document.getElementById('btn-schedule');
+      if (b) b.focus();
+    }
+
+    /* ── Primary CTA: variant 2 confirms first; others go straight to scheduling ── */
+    function onSchedule() {
+      if (document.body.getAttribute('data-variant') === '2') showScreen('interstitial');
+      else location.href = '12-schedule.html';
+    }
+
+    /* ── Nav back: leaves the interstitial first, otherwise the prior step ── */
+    function goBack() {
+      if (!document.getElementById('screen-interstitial').hidden) closeInterstitial();
+      else location.href = '10-discuss.html';
+    }
+
+    /* ── Care-coordinator affordance (prototype stub) ── */
+    function ccNote() {
+      alert("In the live product this connects you with a care coordinator who answers cost questions — by phone or message.");
+    }
+
+    /* ── Direction toggle ── */
+    var CAPTIONS = {
+      1: "<strong>Direction 1 &middot; Clearer copy.</strong> A short note on the page corrects the $50 expectation and explains Part D coverage.",
+      2: "<strong>Direction 2 &middot; Confirmation step.</strong> Tapping “Schedule call” shows a positive confirmation before booking.",
+      3: "<strong>Direction 3 &middot; Best practice (recommended).</strong> Coverage is explained up front, with a care coordinator for cost questions."
+    };
+    function setVariant(n) {
+      n = String(n);
+      document.body.setAttribute('data-variant', n);
+      [1, 2, 3].forEach(function (i) {
+        document.getElementById('vp-seg-' + i).setAttribute('aria-pressed', String(i) === n ? 'true' : 'false');
+      });
+      document.getElementById('vp-caption').innerHTML = CAPTIONS[n];
+      document.querySelectorAll('[data-variant-block]').forEach(function (el) {
+        var list = el.getAttribute('data-variant-block').split(' ');
+        el.hidden = list.indexOf(n) === -1;
+      });
+      showScreen('verdict');
+    }
+
+    /* ── Escape closes the interstitial ── */
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !document.getElementById('screen-interstitial').hidden) closeInterstitial();
+    });
+
+    /* ── Info popover on the GLP-1 cost row ── */
+    (function () {
+      var btn = document.querySelector('.rs-info-btn');
+      var tip = document.getElementById('glp1-cost-tip');
+      if (!btn || !tip) return;
+      function open()  { tip.hidden = false; btn.setAttribute('aria-expanded', 'true'); }
+      function close() { tip.hidden = true;  btn.setAttribute('aria-expanded', 'false'); }
+      btn.addEventListener('click', function (e) { e.stopPropagation(); if (tip.hidden) open(); else close(); });
+      tip.addEventListener('click', function (e) { e.stopPropagation(); });
+      document.addEventListener('click', function () { if (!tip.hidden) close(); });
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !tip.hidden) { close(); btn.focus(); } });
+    })();
+
+    /* ── Init (supports ?v=1|2|3 and ?screen=interstitial for deep links) ── */
+    syncTop();
+    var params = new URLSearchParams(location.search);
+    var initV = params.get('v');
+    setVariant(initV === '2' || initV === '3' ? initV : 1);
+    if (params.get('screen') === 'interstitial') { setVariant(2); showScreen('interstitial'); }
+  </script>
+</body>
+</html>

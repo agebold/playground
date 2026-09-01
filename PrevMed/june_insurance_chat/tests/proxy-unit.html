@@ -1,0 +1,131 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"></head><body><div id="out">running</div>
+<script>
+var R=[],pass=0,fail=0;
+function ok(n,c,d){ if(c){pass++;}else{fail++;R.push('FAIL '+n+(d!==undefined?' :: '+JSON.stringify(d):''));} }
+function fin(extra){ document.getElementById('out').textContent =
+  (extra?extra+'\n':'') + 'RESULT '+pass+' passed, '+fail+' failed\n'+R.join('\n'); }
+
+// No node on this machine. Load the proxy's source, strip the single node:
+// import, and run it with stubbed createServer/process/fetch so its actual
+// request handling is exercised rather than merely parsed.
+fetch('../tools/june-proxy.mjs').then(function(r){return r.text();}).then(function(src){
+  var importLine = /^\s*import\s*\{\s*createServer\s*\}\s*from\s*'node:http';\s*$/m;
+  ok('has exactly one node import', (src.match(/^\s*import\s/gm)||[]).length===1);
+  ok('import line matches expectation', importLine.test(src));
+  ok('has no export statements', !/^\s*export\s/m.test(src));
+  // Node strips a shebang before parsing; new Function does not.
+  ok('has a node shebang', /^#!\/usr\/bin\/env node/.test(src));
+  var body = src.replace(/^#![^\n]*\n/, '').replace(importLine, '');
+
+  var handler=null, listening=null;
+  var stub = {
+    createServer: function(h){ handler=h; return { listen: function(p, cb){ listening=p; if(cb) cb(); } }; },
+    process: { env: {
+      ANTHROPIC_API_KEY: 'sk-ant-TEST',
+      PVERIFY_CLIENT_ID: '', PVERIFY_CLIENT_SECRET: '',
+      PORT: '8788'
+    } },
+    console: { log: function(){} },
+  };
+
+  var calls=[];
+  function fakeFetch(url, opts){
+    calls.push({url:String(url), opts:opts});
+    if (/api\.anthropic\.com/.test(url)) {
+      return Promise.resolve({ ok:true, status:200,
+        text: function(){ return Promise.resolve(JSON.stringify({content:[{type:'text',text:'hi'}]})); } });
+    }
+    if (/\/Token$/.test(url)) {
+      return Promise.resolve({ ok:true, status:200,
+        json: function(){ return Promise.resolve({access_token:'TOK', expires_in:3600}); } });
+    }
+    return Promise.resolve({ ok:true, status:200,
+      text: function(){ return Promise.resolve(JSON.stringify({APIResponseCode:'0'})); } });
+  }
+
+  var fn;
+  try {
+    fn = new Function('createServer','process','console','fetch','URL','URLSearchParams','Boolean','Number','JSON', body);
+  } catch (e) {
+    return fin('SYNTAX ERROR in june-proxy.mjs: ' + e.message);
+  }
+  ok('proxy source parses', true);
+
+  try {
+    fn(stub.createServer, stub.process, stub.console, fakeFetch, URL, URLSearchParams, Boolean, Number, JSON);
+  } catch (e) {
+    return fin('RUNTIME ERROR while starting proxy: ' + (e && e.stack || e));
+  }
+  ok('createServer was called', typeof handler === 'function');
+  ok('listens on PORT from env', listening===8788, listening);
+
+  // ---- fake req/res ----
+  function mkReq(method, path, bodyText){
+    var handlers={};
+    return {
+      method:method, url:path,
+      on:function(ev,cb){ handlers[ev]=cb; if(ev==='end'){ if(handlers.data && bodyText) handlers.data(bodyText); cb(); } return this; },
+      destroy:function(){ this.destroyed=true; }
+    };
+  }
+  function mkRes(){
+    return { headers:{}, code:null, body:'',
+      setHeader:function(k,v){ this.headers[k]=v; },
+      writeHead:function(c,h){ this.code=c; if(h) Object.assign(this.headers,h); },
+      end:function(b){ this.body=b||''; this.done=true; } };
+  }
+  function call(method, path, bodyText){
+    var res=mkRes();
+    return Promise.resolve(handler(mkReq(method,path,bodyText), res)).then(function(){
+      // give the async internals a tick to settle
+      return new Promise(function(r){ setTimeout(function(){ r(res); },30); });
+    });
+  }
+
+  Promise.resolve()
+  .then(function(){ return call('OPTIONS','/chat'); })
+  .then(function(res){
+    ok('OPTIONS returns 204', res.code===204, res.code);
+    ok('CORS header set on preflight', res.headers['Access-Control-Allow-Origin']==='*', res.headers);
+    // REGRESSION: X-June-Key makes the request non-simple. If the preflight
+    // does not allow it, the browser blocks every call once a secret is set.
+    ok('preflight allows X-June-Key', /X-June-Key/i.test(res.headers['Access-Control-Allow-Headers']||''),
+       res.headers['Access-Control-Allow-Headers']);
+    return call('GET','/health');
+  })
+  .then(function(res){
+    ok('/health returns 200', res.code===200, res.code);
+    var j=JSON.parse(res.body);
+    ok('/health reports the anthropic key', j.anthropic===true, j);
+    ok('/health reports no pverify creds', j.pverify===false, j);
+    ok('/health reports a model', typeof j.model==='string' && j.model.length>0, j.model);
+    return call('POST','/verify','{}');
+  })
+  .then(function(res){
+    // Without credentials this must be a clean 501 so the client stays simulated
+    ok('/verify without creds returns 501', res.code===501, res.code);
+    ok('/verify 501 explains why', /credential/i.test(res.body), res.body);
+    return call('POST','/chat','{"messages":[{"role":"user","content":"hi"}]}');
+  })
+  .then(function(res){
+    ok('/chat proxies successfully', res.code===200, {code:res.code, body:res.body});
+    ok('/chat forwarded to Anthropic', calls.some(function(c){return /api\.anthropic\.com/.test(c.url);}), calls.map(function(c){return c.url;}));
+    var sent = calls.filter(function(c){return /anthropic/.test(c.url);})[0];
+    ok('/chat sends the API key server-side', sent.opts.headers['x-api-key']==='sk-ant-TEST');
+    ok('/chat sends the anthropic-version header', !!sent.opts.headers['anthropic-version']);
+    var fwd = JSON.parse(sent.opts.body);
+    ok('/chat caps max_tokens', fwd.max_tokens<=2000, fwd.max_tokens);
+    ok('/chat defaults the model', typeof fwd.model==='string' && /claude/.test(fwd.model), fwd.model);
+    return call('POST','/chat','{not json');
+  })
+  .then(function(res){
+    ok('/chat rejects bad JSON with 400', res.code===400, res.code);
+    return call('GET','/nope');
+  })
+  .then(function(res){
+    ok('unknown route returns 404', res.code===404, res.code);
+    fin();
+  })
+  .catch(function(e){ fin('DRIVER ERROR: ' + (e && e.stack || e)); });
+});
+</script></body></html>

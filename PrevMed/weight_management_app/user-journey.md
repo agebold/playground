@@ -30,7 +30,7 @@ The journey is linear, left-to-right. Stage 5 (Care Plan) fans out into three pa
 | **Action** | Land on hero, see what's *different*, click "See if Bold is right for me." | Land on hero, see FDA + Medicare + pill scaffolding, click "See if Bold is right for me." |
 
 **Feature — Trust-scaffolded hero.**
-Hero headline: *"Lose fat. Stay strong. Covered by Medicare."* ([positioning.md → Hero copy bank](data/synthesis/positioning.md)). Pill is the default visual frame. Three trust signals visible above the fold: FDA-approved name brands · 86% of Bold patients pay $0 out of pocket · clinician in the loop. Acknowledgment line below the hero — *"If a GLP-1 didn't work for you before, here's what we do differently"* — directly addresses Persona 1.
+Hero headline: *"Lose fat. Stay strong. Covered by Medicare."* ([positioning.md → Hero copy bank](data/synthesis/positioning.md)). Pill is the default visual frame. Three trust signals visible above the fold: FDA-approved name brands · 78% of Bold patients pay $0 out of pocket · clinician in the loop. Acknowledgment line below the hero — *"If a GLP-1 didn't work for you before, here's what we do differently"* — directly addresses Persona 1.
 
 - Embodies: VP #1 (FDA + Medicare + pill), VP #2 ("Lose fat, not strength"). [principles.md #4, #5, #11](data/synthesis/principles.md).
 
@@ -46,7 +46,7 @@ Hero headline: *"Lose fat. Stay strong. Covered by Medicare."* ([positioning.md 
 | **Action** | Enter Medicare info, see pill option pre-selected as default. | Enter Medicare info, see pill option pre-selected as default with pen as a clearly-labeled secondary. |
 
 **Feature — Coverage + form-factor preview.**
-Eligibility check returns a real-dollar number (*"$50/month with Medicare · 86% of Bold patients pay $0 out of pocket"*) paired with a pill-first form-factor preview. Pen offered as secondary; needle/vial deliberately absent. Cost and form-factor surfaced together, never separately.
+Eligibility check returns a real-dollar number (*"$50/month with Medicare · 78% of Bold patients pay $0 out of pocket"*) paired with a pill-first form-factor preview. Pen offered as secondary; needle/vial deliberately absent. Cost and form-factor surfaced together, never separately.
 
 - Embodies: VP #1 (full). [principles.md #4, #5, #11](data/synthesis/principles.md).
 
@@ -94,7 +94,7 @@ Intake surface explicitly captures (a) prior GLP-1 experience and side-effect hi
 | **Action** | Confirm prescription; receive welcome kit and delivery date. | Confirm prescription; receive welcome kit and delivery date. |
 
 **Feature — Pill-first prescription with no-surprise cost.**
-Prescription confirmation states the FDA-approved brand name, the pill form factor, the monthly cost ($50/mo with Medicare · 86% of Bold patients pay $0), and the side-effect playbook the clinician has already shared. Welcome kit is on its way — no needle imagery anywhere in the confirmation or kit.
+Prescription confirmation states the FDA-approved brand name, the pill form factor, the monthly cost ($50/mo with Medicare · 78% of Bold patients pay $0), and the side-effect playbook the clinician has already shared. Welcome kit is on its way — no needle imagery anywhere in the confirmation or kit.
 
 - Embodies: VP #1 (full). [principles.md #4, #5, #11](data/synthesis/principles.md), [findings.md #2, #19–20](data/synthesis/findings.md).
 

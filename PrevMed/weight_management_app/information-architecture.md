@@ -16,7 +16,7 @@ Four flat tabs in the bottom nav. Profile lives in the top-nav (avatar). Every s
 | 3 | 🧭 **Explore** | Personalized feed of workouts, recipes, restaurant guidance, and short articles. Filters: seated · balance-safe · joint-friendly. |
 | 4 | 👩‍⚕️ **My Care** | Appointments (upcoming, past, schedule, reschedule), About my clinician, contact / 911 callout. |
 
-**Top-nav 👤 Profile** — Personal info · Medicare & coverage · Billing ($50/mo · 86% pay $0) · GLP-1 prescription (admin) · Notification settings · Share with my PCP · Trusted contacts · What Bold knows about me · Linked external devices.
+**Top-nav 👤 Profile** — Personal info · Medicare & coverage · Billing ($50/mo · 78% pay $0) · GLP-1 prescription (admin) · Notification settings · Share with my PCP · Trusted contacts · What Bold knows about me · Linked external devices.
 
 ---
 

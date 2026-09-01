@@ -66,7 +66,7 @@ The Clinic Weight Management Program leads with these. They sit **alongside** �
 | Clinic program prop | Maps to app value prop |
 |---|---|
 | Lose weight. Stay strong. | #2 Lose fat, not strength |
-| Covered by Medicare (86% pay $0) | #1 GLP-1 (cost/coverage half) + [[principles]] #11 |
+| Covered by Medicare (78% pay $0) | #1 GLP-1 (cost/coverage half) + [[principles]] #11 |
 | Personalized, practical, doable care plan — held accountable for real change[^accountability] | #6 Provider in the loop — for safety |
 | Go beyond the scale | #3 Body composition tracking made easy |
 | Exercise at the level that works for you | #4 Older-adult-specific strength and balance plan |
@@ -77,7 +77,7 @@ The Clinic Weight Management Program leads with these. They sit **alongside** �
 [^accountability]: Per the 2026-05-21 LP review, "follow-up appointments + care plan" reads as descriptive table stakes; "held accountable for real change" is the load-bearing benefit. "Provider-created" was rejected as table stakes — use "personalized + practical + doable" instead. See [[findings]] #34–35.
 
 ### Standout proof point
-> **86% of Bold patients pay $0 out of pocket.** Use early and clearly — pair with any "Covered by Medicare" line. Reinforces [[principles]] #11 (cost is a feature, not a footnote).
+> **78% of Bold patients pay $0 out of pocket.** Use early and clearly — pair with any "Covered by Medicare" line. Reinforces [[principles]] #11 (cost is a feature, not a footnote). *(Corrected from 86% → 78% on 2026-06-26 per user; the 2026-05-20 source doc said 86%. Authoritative figure now lives in `.claude/skills/bold-pricing-messaging`.)*
 
 ### "Focus on lifestyle" — phasing caveat
 

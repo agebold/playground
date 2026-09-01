@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bold Weight Management — Enrollment Flow Preview</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Harness chrome only. The flow itself is flow.html, which is iframed
+         so that position:fixed / 100dvh / safe-area insets resolve against a
+         real viewport rather than this desktop page. ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; scrollbar-width: none; -ms-overflow-style: none; }
+    *::-webkit-scrollbar { display: none; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: #f0f0f5;
+      color: #1d1d1f;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Top bar ── */
+    .demo-topbar {
+      height: 52px; background: #fff; border-bottom: 1px solid rgba(0,0,0,0.08);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 24px; flex-shrink: 0;
+    }
+    .demo-topbar-left { display: flex; align-items: center; gap: 12px; }
+    .demo-topbar-brand { display: flex; align-items: center; gap: 10px; }
+    .demo-topbar-dot { width: 8px; height: 8px; border-radius: 50%; background: #5200d4; }
+    .demo-topbar-title { font-size: 16px; font-weight: 600; letter-spacing: -0.2px; }
+    .demo-topbar-right { display: flex; align-items: center; gap: 12px; }
+    .demo-topbar-tag {
+      font-size: 14px; font-weight: 500;
+      background: rgba(82,0,212,0.08); color: #5200d4;
+      border: 1px solid rgba(82,0,212,0.2); border-radius: 100px;
+      padding: 3px 10px; letter-spacing: 0.2px;
+    }
+    .demo-restart {
+      font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600;
+      min-height: 34px; padding: 6px 14px; cursor: pointer;
+      background: #fff; color: #1d1d1f;
+      border: 1px solid rgba(0,0,0,0.14); border-radius: 100px;
+      transition: background 0.15s;
+    }
+    .demo-restart:hover { background: rgba(0,0,0,0.05); }
+    .sidebar-toggle-btn {
+      width: 36px; height: 36px; border-radius: 50%;
+      border: 1px solid rgba(0,0,0,0.1); background: #fff; color: rgba(0,0,0,0.6);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; flex-shrink: 0; transition: background 0.15s, transform 0.1s;
+    }
+    .sidebar-toggle-btn:hover  { background: rgba(0,0,0,0.05); color: rgba(0,0,0,0.85); }
+    .sidebar-toggle-btn:active { transform: scale(0.93); }
+
+    /* ── Layout ── */
+    .demo-layout { display: flex; flex: 1; overflow: hidden; }
+
+    /* ── Sidebar ── */
+    .demo-sidebar {
+      width: 288px; flex-shrink: 0; background: #fff;
+      border-right: 1px solid rgba(0,0,0,0.07);
+      display: flex; flex-direction: column;
+      padding: 20px 16px; gap: 6px;
+      transition: width 0.28s cubic-bezier(0.4,0,0.2,1),
+                  padding 0.28s cubic-bezier(0.4,0,0.2,1), opacity 0.2s ease;
+      overflow: hidden; will-change: width;
+    }
+    .demo-sidebar:not(.sidebar-collapsed) { overflow-y: auto; }
+    .demo-sidebar.sidebar-collapsed {
+      width: 0; padding-left: 0; padding-right: 0;
+      opacity: 0; pointer-events: none; border-right-width: 0;
+    }
+    .demo-sidebar-header { display: flex; justify-content: flex-end; flex-shrink: 0; }
+    .sidebar-close-btn {
+      width: 28px; height: 28px; border-radius: 50%; border: none;
+      background: rgba(0,0,0,0.06); color: rgba(0,0,0,0.45);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: background 0.15s, color 0.15s;
+    }
+    .sidebar-close-btn:hover { background: rgba(0,0,0,0.1); color: rgba(0,0,0,0.75); }
+    .demo-sidebar-label {
+      font-size: 14px; font-weight: 600; color: rgba(0,0,0,0.38);
+      padding: 0 8px; margin: 12px 0 4px;
+    }
+    .demo-sidebar-divider { height: 1px; background: rgba(0,0,0,0.07); margin: 10px 0; }
+    .demo-sidebar-hint { padding: 0 8px; font-size: 14px; color: rgba(0,0,0,0.4); line-height: 1.5; }
+    .demo-sidebar-hint code {
+      font-family: ui-monospace, SFMono-Regular, monospace; font-size: 13px;
+      background: rgba(0,0,0,0.05); border-radius: 4px; padding: 1px 4px;
+    }
+
+    /* Step button */
+    .demo-step {
+      display: flex; align-items: center; gap: 8px; width: 100%;
+      padding: 7px 8px; border: 1px solid transparent; border-radius: 8px;
+      background: transparent; cursor: pointer; text-align: left;
+      font-family: 'Inter', sans-serif; color: rgba(0,0,0,0.55);
+      transition: all 0.15s; position: relative;
+    }
+    .demo-step:hover { background: rgba(0,0,0,0.04); color: rgba(0,0,0,0.8); }
+    .demo-step.is-active { background: rgba(82,0,212,0.07); border-color: rgba(82,0,212,0.25); color: #1d1d1f; }
+    .demo-step:focus-visible { outline: 2px solid #5200d4; outline-offset: 1px; }
+    .demo-step.is-active::before {
+      content: ''; position: absolute; left: -16px; top: 50%; transform: translateY(-50%);
+      width: 3px; height: 24px; background: #5200d4; border-radius: 0 3px 3px 0;
+    }
+    .demo-step-num {
+      width: 24px; height: 24px; border-radius: 6px; background: rgba(0,0,0,0.06);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700; color: rgba(0,0,0,0.4);
+      flex-shrink: 0; transition: all 0.15s;
+    }
+    .demo-step.is-active .demo-step-num { background: #5200d4; color: #fff; }
+    .demo-step-info { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+    .demo-step-title { font-size: 14px; line-height: 1.3; }
+    .demo-step-desc { font-size: 13px; color: rgba(0,0,0,0.38); line-height: 1.35; }
+
+    /* ── Phone area ── */
+    .demo-main {
+      flex: 1; display: flex; align-items: center; justify-content: center; overflow: hidden;
+      background:
+        radial-gradient(ellipse at 30% 20%, rgba(82,0,212,0.06) 0%, transparent 60%),
+        radial-gradient(ellipse at 70% 80%, rgba(0,181,163,0.05) 0%, transparent 50%),
+        #f0f0f5;
+    }
+    .phone-wrapper { zoom: 0.78; -moz-transform: scale(0.78); -moz-transform-origin: center center; }
+    @supports not (zoom: 1) { .phone-wrapper { transform: scale(0.78); transform-origin: center center; } }
+
+    .iphone {
+      position: relative; width: 421px;
+      background: linear-gradient(160deg, #2c2c2e 0%, #1c1c1e 50%, #2c2c2e 100%);
+      border-radius: 56px; padding: 16px;
+      box-shadow:
+        0 0 0 1.5px rgba(255,255,255,0.14), 0 0 0 3px #1a1a1c,
+        0 0 0 4.5px rgba(255,255,255,0.12), 0 40px 100px rgba(0,0,0,0.28),
+        0 10px 30px rgba(0,0,0,0.16), inset 0 1px 0 rgba(255,255,255,0.12),
+        inset 0 -1px 0 rgba(0,0,0,0.4);
+    }
+    .iphone::before {
+      content: ''; position: absolute; left: -5px; top: 148px; width: 5px; height: 36px;
+      background: linear-gradient(to right, #1a1a1c, #2c2c2e); border-radius: 3px 0 0 3px;
+      box-shadow: 0 46px 0 #2c2c2e, 0 -54px 0 #2c2c2e;
+    }
+    .iphone::after {
+      content: ''; position: absolute; right: -5px; top: 162px; width: 5px; height: 72px;
+      background: linear-gradient(to left, #1a1a1c, #2c2c2e); border-radius: 0 3px 3px 0;
+      box-shadow: inset 1px 0 0 rgba(255,255,255,0.05);
+    }
+    .iphone-screen {
+      background: #fff; border-radius: 44px; overflow: hidden;
+      position: relative; width: 389px; height: 852px;
+    }
+    .iphone-screen iframe {
+      width: 393px; height: 852px; border: none; display: block; margin-left: -2px;
+    }
+    .iphone-reflection {
+      position: absolute; top: 20px; left: 28px; right: 28px; height: 50%;
+      background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, transparent 100%);
+      border-radius: 44px 44px 0 0; pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="demo-topbar">
+    <div class="demo-topbar-left">
+      <button class="sidebar-toggle-btn" id="sidebar-toggle" type="button"
+              aria-label="Toggle navigation" aria-expanded="true" aria-controls="demo-sidebar">
+        <svg width="16" height="14" viewBox="0 0 16 14" fill="none" aria-hidden="true">
+          <rect y="0"  width="16" height="2" rx="1" fill="currentColor"/>
+          <rect y="6"  width="16" height="2" rx="1" fill="currentColor"/>
+          <rect y="12" width="16" height="2" rx="1" fill="currentColor"/>
+        </svg>
+      </button>
+      <div class="demo-topbar-brand">
+        <div class="demo-topbar-dot"></div>
+        <span class="demo-topbar-title">Bold Weight Management · Enrollment (Figma replica)</span>
+      </div>
+    </div>
+    <div class="demo-topbar-right">
+      <button class="demo-restart" id="demo-restart" type="button">Restart flow</button>
+      <span class="demo-topbar-tag">Prototype Preview</span>
+    </div>
+  </header>
+
+  <div class="demo-layout">
+
+    <aside class="demo-sidebar" id="demo-sidebar" role="navigation" aria-label="Enrollment steps">
+      <div class="demo-sidebar-header">
+        <button class="sidebar-close-btn" id="sidebar-close" type="button" aria-label="Close navigation">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+            <path d="M1 1L11 11M11 1L1 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="demo-sidebar-divider"></div>
+      <p class="demo-sidebar-label">All screens</p>
+      <div id="demo-steps"></div>
+
+      <div class="demo-sidebar-divider"></div>
+      <p class="demo-sidebar-hint">
+        Browser Back works inside the phone. Every screen is deep-linkable —
+        <code>flow.html#landing</code>. The sidebar label shows each screen's
+        Figma node id and frame height.
+      </p>
+    </aside>
+
+    <main class="demo-main" aria-label="Phone preview">
+      <div class="phone-wrapper">
+        <div class="iphone" role="presentation">
+          <div class="iphone-screen" id="phone-screen">
+            <!-- No harness status bar: flow.html now renders the Figma
+                 "Status Bar - iPhone" (2393:11582) inside every screen. -->
+            <iframe id="wm-frame" src="flow.html" title="Bold weight-management enrollment flow"></iframe>
+          </div>
+          <div class="iphone-reflection" aria-hidden="true"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+  (function () {
+    var frame = document.getElementById('wm-frame');
+    var stepsWrap = document.getElementById('demo-steps');
+    var current = null;
+
+    /* Fallback for when postMessage is blocked (file:// opaque origins).
+       Serve over http to get the live manifest from the flow instead.
+       `phase` is the Figma node id and the frame's own height. */
+    var FALLBACK = [
+      { id: 'ad', title: 'Bold ad', phase: '2393:12937 · 886' },
+      { id: 'landing', title: 'Landing · all 3 questions', phase: '2393:14545 · 2947' },
+      { id: 'result', title: 'How much you could lose', phase: '2393:15035 · 915' },
+      { id: 'ec-name', title: 'Name & email', phase: '2393:11684 · 852' },
+      { id: 'ec-state', title: 'State & date of birth', phase: '2393:11628 · 852' },
+      { id: 'loader', title: 'Checking coverage', phase: '2393:11581 · 852' },
+      { id: 'covered', title: 'Coverage confirmed', phase: '2393:11601 · 852' },
+      { id: 'q-situations', title: 'Question 1 · Situations', phase: '2393:11744 · 852' },
+      { id: 'q-diagnosed', title: 'Question 2 · Diagnoses', phase: '2393:11793 · 852' },
+      { id: 'q-comorbid', title: 'Question 3 · Comorbidities', phase: '2393:11769 · 852' },
+      { id: 'q-discuss', title: 'Question 4 · What to discuss', phase: '2393:11723 · 852' },
+      { id: 'bridge', title: 'Bridge program', phase: '2393:11822 · 1886' },
+      { id: 'schedule', title: 'Schedule intake call', phase: '2393:11871 · 1083' },
+      { id: 'consent-hipaa', title: 'HIPAA notice', phase: '2393:11974 · 852' },
+      { id: 'consent-care', title: 'Telehealth consent', phase: '2393:12015 · 852' },
+      { id: 'phone', title: 'Mobile phone number', phase: '2393:11949 · 852' },
+      { id: 'portal-home', title: 'Portal · You are all set', phase: '2393:12054 · 3150' }
+    ];
+
+    function renderSteps(list) {
+      stepsWrap.innerHTML = '';
+      var n = 0;
+      list.forEach(function (s) {
+        n += 1;
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'demo-step' + (s.id === current ? ' is-active' : '');
+        btn.setAttribute('data-id', s.id);
+        btn.innerHTML =
+          '<span class="demo-step-num">' + String(n).padStart(2, '0') + '</span>' +
+          '<span class="demo-step-info"><span class="demo-step-title">' + s.title + '</span>' +
+          (s.phase ? '<span class="demo-step-desc">' + s.phase + '</span>' : '') + '</span>';
+        btn.addEventListener('click', function () { goTo(s.id); });
+        stepsWrap.appendChild(btn);
+      });
+    }
+
+    /* Navigate the iframe by fragment: always permitted, and a fragment-only
+       change navigates without reloading the document, so the SPA's own
+       hashchange handler picks it up. postMessage is used only as a bonus. */
+    function goTo(id) {
+      current = id;
+      highlight();
+      try {
+        frame.contentWindow.postMessage({ wmGoTo: id }, '*');
+      } catch (e) { /* ignore */ }
+      var base = frame.src.split('#')[0];
+      frame.src = base + '#' + id;
+    }
+
+    function highlight() {
+      stepsWrap.querySelectorAll('.demo-step').forEach(function (b) {
+        b.classList.toggle('is-active', b.getAttribute('data-id') === current);
+      });
+    }
+
+    var manifest = FALLBACK;
+
+    window.addEventListener('message', function (e) {
+      var d = e.data;
+      if (!d || typeof d !== 'object') return;
+      if (d.wmManifest) { manifest = d.wmManifest; renderSteps(manifest); }
+      if (d.wmScreen)   { current = d.wmScreen; highlight(); }
+    });
+
+
+    document.getElementById('demo-restart').addEventListener('click', function () {
+      try { frame.contentWindow.postMessage({ wmReset: true }, '*'); } catch (e) {}
+      frame.src = 'flow.html#ad';
+      current = 'ad';
+      highlight();
+    });
+
+    /* Sidebar collapse */
+    var sidebar = document.getElementById('demo-sidebar');
+    var toggleBtn = document.getElementById('sidebar-toggle');
+    var closeBtn = document.getElementById('sidebar-close');
+    function setOpen(open) {
+      sidebar.classList.toggle('sidebar-collapsed', !open);
+      toggleBtn.setAttribute('aria-expanded', String(open));
+    }
+    toggleBtn.addEventListener('click', function () {
+      setOpen(sidebar.classList.contains('sidebar-collapsed'));
+    });
+    closeBtn.addEventListener('click', function () { setOpen(false); });
+
+    renderSteps(manifest);
+  })();
+  </script>
+</body>
+</html>

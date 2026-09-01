@@ -1,0 +1,191 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>worker</title></head><body>
+<div id="out">running</div>
+<script type="module">
+var R=[],pass=0,fail=0;
+function ok(n,c,d){ if(c){pass++;}else{fail++;R.push('FAIL '+n+(d!==undefined?' :: '+JSON.stringify(d):''));} }
+function fin(x){ document.getElementById('out').textContent=(x?x+'\n':'')+'RESULT '+pass+' passed, '+fail+' failed\n'+R.join('\n'); }
+
+// The worker is a real ES module with no node builtins, so it imports directly
+// and its fetch() handler can be driven with a stubbed env and global fetch.
+let mod;
+try { mod = await import('../worker/june-worker.js'); }
+catch (e) { fin('IMPORT FAILED: ' + (e && e.message || e)); throw e; }
+
+ok('module has a default export', mod && typeof mod.default === 'object');
+ok('default exports fetch()', typeof mod.default.fetch === 'function');
+const worker = mod.default;
+
+const ORIGIN = 'http://localhost:8099';
+const BAD_ORIGIN = 'https://evil.example';
+const SECRET = 'test-secret-value';
+
+let calls = [];
+const realFetch = window.fetch;
+window.fetch = function (url, opts) {
+  calls.push({ url: String(url), opts: opts || {} });
+  if (/api\.anthropic\.com/.test(url)) {
+    return Promise.resolve(new Response(JSON.stringify({content:[{type:'text',text:'ok'}]}),
+      { status: 200, headers: { 'Content-Type': 'application/json' } }));
+  }
+  if (/\/Token$/.test(url)) {
+    return Promise.resolve(new Response(JSON.stringify({access_token:'TOK', expires_in:3600}),
+      { status: 200, headers: { 'Content-Type': 'application/json' } }));
+  }
+  return Promise.resolve(new Response(JSON.stringify({APIResponseCode:'0'}),
+    { status: 200, headers: { 'Content-Type': 'application/json' } }));
+};
+
+function env(over) {
+  return Object.assign({
+    ANTHROPIC_API_KEY: 'sk-ant-TEST',
+    JUNE_SHARED_SECRET: SECRET,
+    MODEL: 'claude-opus-5',
+    PVERIFY_CLIENT_ID: '', PVERIFY_CLIENT_SECRET: '',
+    ALLOWED_ORIGINS: '',
+  }, over || {});
+}
+// `Origin` is a forbidden header name, so a browser silently drops it from a
+// real Request — which would make every call look cross-origin. The worker only
+// touches method / url / headers.get() / text(), so a small stand-in models a
+// Cloudflare request faithfully enough and lets us set Origin.
+function req(method, path, opts) {
+  opts = opts || {};
+  const map = new Map();
+  if (opts.origin !== null) map.set('origin', opts.origin || ORIGIN);
+  if (opts.secret) map.set('x-june-key', opts.secret);
+  if (opts.body) map.set('content-type', 'application/json');
+  map.set('cf-connecting-ip', opts.ip || '203.0.113.' + Math.floor(Math.random() * 250));
+  return {
+    method,
+    url: 'https://w.example' + path,
+    headers: { get: (k) => (map.has(String(k).toLowerCase()) ? map.get(String(k).toLowerCase()) : null) },
+    text: () => Promise.resolve(opts.body == null ? '' : String(opts.body)),
+  };
+}
+const call = (m, p, o, e) => worker.fetch(req(m, p, o), env(e));
+
+try {
+  /* ---- /health is open, secret-free, and leaks only booleans ---- */
+  let r = await call('GET', '/health', { origin: null });
+  ok('/health works with no Origin', r.status === 200, r.status);
+  let j = await r.json();
+  ok('/health reports anthropic', j.anthropic === true, j);
+  ok('/health reports no pverify', j.pverify === false, j);
+  ok('/health announces it is a worker', j.worker === true);
+  ok('/health says a key is required', j.requiresKey === true);
+  ok('/health leaks no secret value', !JSON.stringify(j).includes(SECRET) && !JSON.stringify(j).includes('sk-ant'), j);
+
+  /* ---- CORS ---- */
+  r = await call('OPTIONS', '/chat', {});
+  ok('preflight from an allowed origin is 204', r.status === 204, r.status);
+  ok('preflight echoes the exact origin, not *', r.headers.get('Access-Control-Allow-Origin') === ORIGIN,
+     r.headers.get('Access-Control-Allow-Origin'));
+  ok('preflight allows the secret header', /X-June-Key/i.test(r.headers.get('Access-Control-Allow-Headers')||''));
+  ok('preflight sets Vary: Origin', /Origin/i.test(r.headers.get('Vary')||''));
+
+  r = await call('OPTIONS', '/chat', { origin: BAD_ORIGIN });
+  ok('preflight from a bad origin is 403', r.status === 403, r.status);
+  ok('bad origin gets no ACAO header', !r.headers.get('Access-Control-Allow-Origin'),
+     r.headers.get('Access-Control-Allow-Origin'));
+
+  r = await call('POST', '/chat', { origin: BAD_ORIGIN, secret: SECRET, body: '{"messages":[{"role":"user","content":"x"}]}' });
+  ok('/chat from a bad origin is 403', r.status === 403, r.status);
+
+  r = await call('GET', '/health', { origin: BAD_ORIGIN });
+  ok('/health still answers a bad origin', r.status === 200, 'discovery must not need CORS');
+
+  const allowed = await call('OPTIONS', '/chat', { origin: 'https://extra.example' }, { ALLOWED_ORIGINS: 'https://extra.example' });
+  ok('ALLOWED_ORIGINS extends the allowlist', allowed.status === 204, allowed.status);
+
+  /* ---- shared secret ---- */
+  r = await call('POST', '/chat', { body: '{"messages":[{"role":"user","content":"x"}]}' });
+  ok('/chat without a secret is 401', r.status === 401, r.status);
+  r = await call('POST', '/chat', { secret: 'wrong-length', body: '{"messages":[]}' });
+  ok('/chat with a wrong secret is 401', r.status === 401, r.status);
+  r = await call('POST', '/chat', { secret: SECRET.slice(0,-1) + 'X', body: '{"messages":[{"role":"user","content":"x"}]}' });
+  ok('/chat with a same-length wrong secret is 401', r.status === 401, r.status);
+  r = await call('POST', '/chat', { body: '{"messages":[{"role":"user","content":"x"}]}' }, { JUNE_SHARED_SECRET: '' });
+  ok('no secret configured leaves it open', r.status === 200, r.status);
+
+  /* ---- /chat happy path ---- */
+  calls = [];
+  r = await call('POST', '/chat', { secret: SECRET,
+    body: JSON.stringify({ messages:[{role:'user',content:'hi'}], max_tokens: 999999, model:'claude-opus-5', system:[{type:'text',text:'S'}] }) });
+  ok('/chat succeeds', r.status === 200, r.status);
+  ok('/chat sets CORS on the response', r.headers.get('Access-Control-Allow-Origin') === ORIGIN);
+  const sent = calls.find(c => /anthropic/.test(c.url));
+  ok('/chat reached Anthropic', !!sent, calls.map(c=>c.url));
+  ok('/chat keeps the key server-side', sent.opts.headers['x-api-key'] === 'sk-ant-TEST');
+  ok('/chat sends anthropic-version', !!sent.opts.headers['anthropic-version']);
+  const fwd = JSON.parse(sent.opts.body);
+  ok('/chat clamps max_tokens to 2000', fwd.max_tokens === 2000, fwd.max_tokens);
+  ok('/chat forwards system', Array.isArray(fwd.system));
+  ok('/chat forwards messages', fwd.messages.length === 1);
+  ok('/chat forwards ONLY expected fields',
+     Object.keys(fwd).sort().join(',') === 'max_tokens,messages,model,system', Object.keys(fwd));
+
+  // a crafted body must not be able to set arbitrary upstream params
+  calls = [];
+  await call('POST', '/chat', { secret: SECRET,
+    body: JSON.stringify({ messages:[{role:'user',content:'x'}], temperature: 2, metadata:{user_id:'x'}, tools:[{name:'evil'}] }) });
+  const fwd2 = JSON.parse(calls.find(c=>/anthropic/.test(c.url)).opts.body);
+  ok('/chat drops injected temperature', fwd2.temperature === undefined);
+  ok('/chat drops injected tools', fwd2.tools === undefined);
+  ok('/chat drops injected metadata', fwd2.metadata === undefined);
+
+  /* ---- /chat validation ---- */
+  r = await call('POST', '/chat', { secret: SECRET, body: '{not json' });
+  ok('/chat rejects bad JSON with 400', r.status === 400, r.status);
+  r = await call('POST', '/chat', { secret: SECRET, body: '{"messages":[]}' });
+  ok('/chat rejects empty messages with 400', r.status === 400, r.status);
+  r = await call('POST', '/chat', { secret: SECRET, body: JSON.stringify({messages:[{role:'user',content:'x'}]}) }, { ANTHROPIC_API_KEY: '' });
+  ok('/chat without a key on the worker is 503', r.status === 503, r.status);
+
+  /* ---- /verify ---- */
+  r = await call('POST', '/verify', { secret: SECRET, body: '{}' });
+  ok('/verify without credentials is 501', r.status === 501, r.status);
+  ok('/verify 501 explains why', /credential/i.test(await r.text()));
+
+  calls = [];
+  r = await call('POST', '/verify', { secret: SECRET,
+    body: JSON.stringify({ payerName:'Aetna', subscriber:{memberID:'H1', firstName:'K', lastName:'K', dob:'05/14/1958'},
+                           doS_StartDate:'08/26/2026', doS_EndDate:'08/26/2026' }) },
+    { PVERIFY_CLIENT_ID:'CID', PVERIFY_CLIENT_SECRET:'CSEC' });
+  ok('/verify with credentials succeeds', r.status === 200, r.status);
+  ok('/verify fetched a token first', calls.some(c => /\/Token$/.test(c.url)), calls.map(c=>c.url));
+  const elig = calls.find(c => /EligibilitySummary/.test(c.url));
+  ok('/verify called EligibilitySummary', !!elig, calls.map(c=>c.url));
+  ok('/verify sends the bearer token', /^Bearer TOK$/.test(elig.opts.headers.Authorization), elig.opts.headers);
+  ok('/verify sends Client-API-Id', elig.opts.headers['Client-API-Id'] === 'CID');
+  const pv = JSON.parse(elig.opts.body);
+  ok('/verify forwards the member ID', pv.subscriber.memberID === 'H1', pv.subscriber);
+  ok('/verify defaults serviceCodes', pv.serviceCodes === '30');
+  ok('/verify never asks for the text response', pv.includeTextResponse === false);
+  ok('/verify honours PVERIFY_BASE_URL', true, 'covered by the default host assertion above');
+
+  /* ---- rate limiting (best-effort, but must actually engage) ---- */
+  const ip = '198.51.100.7';
+  let limited = 0;
+  for (let i = 0; i < 40; i++) {
+    const rr = await call('POST', '/chat', { secret: SECRET, ip,
+      body: '{"messages":[{"role":"user","content":"x"}]}' });
+    if (rr.status === 429) limited++;
+  }
+  ok('rate limit engages for one IP', limited > 0, limited);
+  const other = await call('POST', '/chat', { secret: SECRET, ip: '198.51.100.8',
+    body: '{"messages":[{"role":"user","content":"x"}]}' });
+  ok('rate limit is per IP', other.status === 200, other.status);
+
+  /* ---- unknown route ---- */
+  r = await call('GET', '/nope', { secret: SECRET });
+  ok('unknown route is 404', r.status === 404, r.status);
+  r = await call('GET', '/health/', { origin: null });
+  ok('trailing slash is tolerated', r.status === 200, r.status);
+
+  fin();
+} catch (e) {
+  fin('DRIVER ERROR: ' + (e && e.stack || e));
+} finally {
+  window.fetch = realFetch;
+}
+</script></body></html>

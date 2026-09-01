@@ -1,0 +1,81 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>rag</title></head><body><div id="out">running</div>
+<img src="/__delay=4" alt="" width="1" height="1" style="position:absolute;opacity:0">
+<script src="../assets/june-rag.js"></script>
+<script src="../assets/june-brain.js"></script>
+<script>
+var R=[],pass=0,fail=0;
+function ok(n,c,d){ if(c){pass++;}else{fail++;R.push('FAIL '+n+(d!==undefined?' :: '+JSON.stringify(d):''));} }
+(async function(){
+  // real IndexedDB round-trip
+  try {
+    await JuneRAG.clearDocs();
+    ok('clearDocs works', true);
+  } catch(e){ ok('clearDocs works', false, String(e)); }
+
+  var seeded = await JuneRAG.seed([
+    '../knowledge/bold-pricing-coverage.md',
+    '../knowledge/medicare-telehealth-2026.md',
+    '../knowledge/glp1-bridge.md',
+    '../knowledge/insurance-card-help.md'
+  ]);
+  ok('seeded 4 shipped docs', seeded.length===4, seeded.length);
+
+  var docs = await JuneRAG.listDocs();
+  ok('docs persisted to IndexedDB', docs.length===4, docs.map(function(d){return d.name;}));
+  ok('doc text non-empty', docs.every(function(d){return d.text.length>200;}), docs.map(function(d){return d.text.length;}));
+
+  // seed is idempotent
+  var again = await JuneRAG.seed(['../knowledge/glp1-bridge.md']);
+  ok('seed is idempotent', again.length===0, again.length);
+
+  // INLINE mode (corpus is small)
+  var k = await JuneRAG.build('what does a visit cost');
+  ok('inline mode for small corpus', k.mode==='inline', k.mode);
+  ok('inline sends whole corpus', k.text.length>1500, k.text.length);
+  ok('inline reports corpus tokens', k.corpusTokens>200, k.corpusTokens);
+  ok('inline contains the 78% stat', /78%/.test(k.text));
+
+  // RETRIEVAL mode (force it with a tiny budget)
+  var r = await JuneRAG.build('does my HMO plan need a referral', {inlineBudget: 50});
+  ok('retrieval mode over budget', r.mode==='retrieval', r.mode);
+  ok('retrieval returns chunks', r.used.length>0 && r.used.length<=JuneRAG.TOP_K, r.used.length);
+  ok('retrieval is smaller than inline', r.tokens < k.tokens, {retrieval:r.tokens, inline:k.tokens});
+  ok('retrieval found the referral content', /referral/i.test(r.text), r.used);
+  ok('retrieval reports scores', r.used.every(function(u){return typeof u.score==='number';}));
+
+  var r2 = await JuneRAG.build('what is the GLP-1 Bridge copay', {inlineBudget: 50});
+  ok('retrieval finds bridge doc', r2.used.some(function(u){return /glp1/i.test(u.docName);}), r2.used);
+  ok('retrieval text has $50', /\$50/.test(r2.text));
+
+  // disabling a doc removes it from retrieval
+  var bridge = (await JuneRAG.listDocs()).filter(function(d){return /glp1/.test(d.name);})[0];
+  bridge.enabled=false; await JuneRAG.putDoc(bridge);
+  var r3 = await JuneRAG.build('what is the GLP-1 Bridge copay', {inlineBudget: 50});
+  ok('disabled doc excluded', !r3.used.some(function(u){return /glp1/i.test(u.docName);}), r3.used);
+  bridge.enabled=true; await JuneRAG.putDoc(bridge);
+
+  // empty store
+  await JuneRAG.clearDocs();
+  var e = await JuneRAG.build('anything');
+  ok('empty store -> empty mode', e.mode==='empty', e.mode);
+
+  // brain integrates retrieval and never hangs
+  await JuneRAG.seed(['../knowledge/bold-pricing-coverage.md']);
+  var resp = await JuneBrain.respond({
+    userText:'how much will this cost me', transport:'none',
+    systemPrompt:'test', vars:{}, step:{label:'x', say:'y'}, known:{}, history:[]
+  });
+  ok('brain returns without a model', resp.source==='scripted', resp.source);
+  ok('brain attached retrieval', resp.knowledge && resp.knowledge.mode==='inline', resp.knowledge && resp.knowledge.mode);
+  ok('brain answered the cost intent', resp.intent==='cost_question', resp.intent);
+  ok('brain reply carries 78%', /78%/.test(resp.text));
+
+  // safety short-circuits BEFORE retrieval
+  var s = await JuneBrain.respond({userText:'chest pain', transport:'none', systemPrompt:'t', vars:{}, step:{}, known:{}, history:[]});
+  ok('safety skips retrieval', s.knowledge.mode==='skipped', s.knowledge.mode);
+  ok('safety returns 911', /911/.test(s.text));
+
+  document.getElementById('out').textContent='RESULT '+pass+' passed, '+fail+' failed\n'+R.join('\n');
+  document.title='done';
+})().catch(function(e){ document.getElementById('out').textContent='CRASH '+(e&&e.stack||e); });
+</script></body></html>

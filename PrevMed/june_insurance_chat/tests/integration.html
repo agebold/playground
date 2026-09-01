@@ -1,0 +1,536 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>itest</title></head><body>
+<div id="out">running</div>
+<iframe id="f" src="../index.html?present=0" style="width:1400px;height:1000px;border:0"></iframe>
+<script>
+var R=[],pass=0,fail=0;
+function ok(n,c,d){ if(c){pass++;R.push('PASS '+n);}else{fail++;R.push('FAIL '+n+(d!==undefined?' :: '+JSON.stringify(d):''));} }
+function sleep(ms){ return new Promise(function(r){setTimeout(r,ms);}); }
+function done(){
+  document.getElementById('out').textContent='RESULT '+pass+' passed, '+fail+' failed\n'
+    + R.filter(function(x){return /^FAIL/.test(x);}).join('\n');
+  document.title='done';
+}
+(async function(){
+  var f=document.getElementById('f'), W, D;
+  // wait for boot
+  for (var i=0;i<80;i++){ await sleep(150); W=f.contentWindow; D=W.document; if(W.__june) break; }
+  if(!W.__june){ ok('page booted',false,'window.__june never appeared'); return done(); }
+  ok('page booted', true);
+  var errs=[];
+  W.onerror=function(m,s,l){errs.push(m+' @'+l);};
+
+  var P=W.__june.panel, E=W.__june.engine;
+  function shown(sel){ var n=D.querySelector(sel); if(!n) return false;
+    var cs=W.getComputedStyle(n); return cs.display!=='none' && cs.visibility!=='hidden' && n.offsetParent!==null; }
+  P.cfg.fastMode=true; P.cfg.latencyMs=0; P.cfg.transport='none'; P.cfg.apiKey='';
+  var $=function(s){return D.querySelector(s);};
+  var $$=function(s){return Array.prototype.slice.call(D.querySelectorAll(s));};
+  function chips(){ return $$('#chatChips .Chip, #chatChips .Button'); }
+  function chipByText(t){ return chips().filter(function(b){return b.textContent.trim().toLowerCase().indexOf(t.toLowerCase())>-1;})[0]; }
+  function bubbles(){ return $$('#chatThread .Jc-bubble').map(function(b){return b.textContent;}); }
+  function lastBot(){ var r=$$('#chatThread .Jc-row---bot .Jc-bubble'); return r.length?r[r.length-1].textContent:''; }
+  async function waitChip(t, tries){ for(var i=0;i<(tries||60);i++){ await sleep(80); if(chipByText(t)) return chipByText(t);} return null; }
+  async function waitSel(s, tries){ for(var i=0;i<(tries||60);i++){ await sleep(80); if($(s)) return $(s);} return null; }
+
+  /* ---- 1. the new first screen — Figma node 94:20374 ---- */
+  ok('dash active', $('#screen-dash').classList.contains('is-active'));
+  var dash = $('#screen-dash').textContent;
+
+  // Module 1 · To do
+  ok('to-do heading with progress', /To do\s*\(1\/2 done\)/.test(dash), dash.slice(0,90));
+  ok('to-do subheading', /Pro tips to start losing weight more easily/.test(dash));
+  ok('verify-insurance card', /Verify insurance/.test(dash));
+  ok('time tag on the ask', /1 min/.test(dash));
+  ok('ask description', /Share your insurance details to confirm the coverage/.test(dash));
+  ok('Start button present', !!$('#btnStart') && /Start/.test($('#btnStart').textContent));
+  ok('no-card alternative present', !!$('#btnNoCard') && /don.t have my card/i.test($('#btnNoCard').textContent));
+  ok('June line uses the member name', /Kathleen, I will help you with this/.test(dash), dash.slice(0,400));
+  ok('completed to-do row', /Schedule appointment/.test(dash));
+  ok('stepper icons rendered', $$('#screen-dash .Todo-step img, #screen-dash .Todo-done-icon img').length===2);
+
+  // Module 2 · Appointment booked
+  ok('booked headline', /Appointment booked!/.test(dash));
+  ok('booked sub', /Your Care Coordinator will reach out to you/.test(dash));
+  ok('call-scheduled tab', /Call scheduled/.test(dash));
+  ok('coordinator name', /Ali N\. \(Care Coordinator\)/.test($('#apptTitle').textContent), $('#apptTitle').textContent);
+  ok('appointment window is the designed range', /Mon, Nov 3, 9:00am-9:15am/.test($('#apptWhen').textContent),
+     $('#apptWhen').textContent);
+  ok('no-cost row', /No cost/.test(dash));
+  ok('goal row with info', /Lose belly fat/.test(dash) && !!$('#btnGoalInfo'));
+  ok('add-to-calendar button', !!$('#btnAddCalendar'));
+  ok('more button', !!$('#btnApptMore'));
+  ok('what-to-expect line', /What to expect:\s*Confirm your coverage and cost/.test(dash));
+  ok('avatar image rendered', !!$('#screen-dash .Avatar img'));
+  ok('card has the designed overhang', $('#apptCard').classList.contains('Box2---overhang'));
+
+  // Modules 3-7 · rendered, not wired
+  ok('about-your-program section', /About your program/.test(dash));
+  ok('program badge', /Your weight loss program/.test(dash));
+  ok('covered-by line', /Covered by \[UnitedHealthcare\]/.test(dash));
+  ok('approved United copy', /\$0 copay visits/.test(dash));
+  ok('GLP-1 no-surprises line', /before anything is prescribed so there are no surprises/.test(dash));
+  ok('video title', /What to expect in your first visit/.test(dash));
+  ok('video attribution', /Dr\. Sandeep Palakodeti, M\.D\., M\.P\.H\./.test(dash));
+  ok('video role', /Chief Medical Officer at Bold Care/.test(dash));
+  ok('video poster committed locally', /assets\/img\/video-poster\.png/.test($('#screen-dash').innerHTML));
+  ok('learn-more section', /Learn more/.test(dash));
+  ok('three learn-more cards', $$('#screen-dash .LearnCard').length===3, $$('#screen-dash .LearnCard').length);
+  ok('learn-more cards labelled Resources', ($('#screen-dash').textContent.match(/Resources/g)||[]).length===3);
+  ok('FAQ section', /FAQ/.test(dash));
+  ok('seven FAQ rows', $$('#screen-dash .Details').length===7, $$('#screen-dash .Details').length);
+  ok('patient-portal row', /Access your secure patient portal/.test(dash));
+
+  // Modules 3-7 are rendered but deliberately not wired, so they must not put
+  // dead controls in the tab order — a focusable element that does nothing is
+  // announced as actionable and is worse than plainly inert markup.
+  var deadFocusable = $$('#screen-dash button, #screen-dash a[href], #screen-dash [tabindex]')
+    .filter(function (n) {
+      return !n.closest('.Todo, .Booked, .Appbar') && n.getAttribute('tabindex') !== '0';
+    })
+    .map(function (n) { return n.tagName + ':' + (n.textContent.trim().slice(0, 24) || n.getAttribute('aria-label')); });
+  ok('modules 3-7 add no dead controls', deadFocusable.length === 0, deadFocusable);
+  ok('no placeholder href="#" anywhere', $('#screen-dash').innerHTML.indexOf('href="#"') === -1);
+
+  // every interactive target on this screen clears 44px
+  var smallTargets = $$('#screen-dash button, #screen-dash a[href]').filter(function (n) {
+    var r = n.getBoundingClientRect();
+    return r.width > 0 && (r.height < 44 || r.width < 44);
+  }).map(function (n) {
+    var r = n.getBoundingClientRect();
+    return (n.textContent.trim() || n.getAttribute('aria-label')) + ' ' + Math.round(r.width) + 'x' + Math.round(r.height);
+  });
+  ok('every target on the screen is >=44px', smallTargets.length === 0, smallTargets);
+
+  // nothing hot-links an expiring Figma asset
+  ok('no expiring Figma asset URLs', $('#screen-dash').innerHTML.indexOf('figma.com/api/mcp/asset')===-1);
+
+  // REGRESSION: the Learn-more rail's max-content width used to propagate up
+  // through .Stage-inner and stretch the whole phone past 393px.
+  var scroll = $('.Screen-scroll');
+  ok('screen does not scroll sideways', scroll.scrollWidth <= scroll.clientWidth + 1,
+     {client: scroll.clientWidth, scroll: scroll.scrollWidth});
+  var rail = $('#screen-dash .Carousel2');
+  ok('the rail scrolls internally instead', rail.scrollWidth > rail.clientWidth + 1,
+     {client: rail.clientWidth, scroll: rail.scrollWidth});
+  ok('phone is still 393px wide', Math.round($('.Phone-screen').getBoundingClientRect().width) <= 393,
+     Math.round($('.Phone-screen').getBoundingClientRect().width));
+
+  // the removals asked for
+  ok('no invite card', !$('#inviteCard'));
+  ok('no Not-now button', !$('#btnNotNow'));
+  ok('no help-phone row', !$('#helpPhoneDash'));
+  ok('no HIPAA box on this screen', !/never sold/.test(dash));
+
+  /* ---- 1b. the reported bugs: real orb artwork + design-exact spacing ---- */
+  // A broken orb path must FAIL, not silently fall back to a gradient. That
+  // fallback is exactly how a plain purple circle shipped.
+  var orbs = $$('#screen-dash img.Orb, #screen-chat img.Orb');
+  ok('orb images are present', orbs.length >= 2, orbs.length);
+  ok('every orb actually loaded', orbs.every(function (i) { return i.naturalWidth > 0; }),
+     orbs.map(function (i) { return i.getAttribute('src') + '=' + i.naturalWidth; }));
+  ok('no gradient fallback remains', !$('#screen-dash .Orb-fallback') && !$('#screen-chat .Orb-fallback'));
+  ok('orbs are committed locally', orbs.every(function (i) { return /^assets\/img\//.test(i.getAttribute('src')); }),
+     orbs.map(function (i) { return i.getAttribute('src'); }));
+  // REGRESSION: Figma exports these with preserveAspectRatio="none", which
+  // stretched the sphere into an egg once the box aspect differed from the
+  // viewBox. The rendered orb must stay round.
+  var squashed = orbs.filter(function (i) {
+    var r = i.getBoundingClientRect();
+    return r.width > 0 && Math.abs(r.width / r.height - i.naturalWidth / i.naturalHeight) > 0.02;
+  }).map(function (i) {
+    var r = i.getBoundingClientRect();
+    return i.getAttribute('src') + ' rendered ' + Math.round(r.width) + 'x' + Math.round(r.height)
+      + ' natural ' + i.naturalWidth + 'x' + i.naturalHeight;
+  });
+  ok('orbs are not distorted', squashed.length === 0, squashed);
+  ok('no asset keeps preserveAspectRatio="none"',
+     orbs.every(function (i) { return i.naturalWidth > 0; }));
+
+  function pad(sel) {
+    var c = W.getComputedStyle($(sel));
+    return [c.paddingTop, c.paddingRight, c.paddingBottom, c.paddingLeft]
+      .map(function (v) { return Math.round(parseFloat(v)); }).join(' ');
+  }
+  function box(sel) {
+    var r = $(sel).getBoundingClientRect();
+    return Math.round(r.width) + 'x' + Math.round(r.height);
+  }
+
+  // app header — Figma 94:20376
+  ok('app header padding is 16', pad('#screen-dash .Appbar') === '16 16 16 16', pad('#screen-dash .Appbar'));
+  ok('app header shows the Bold logo', !!$('#screen-dash .Appbar-logo img'));
+  ok('Bold logo loaded', $('#screen-dash .Appbar-logo img').naturalWidth > 0);
+  ok('app header has a menu button', box('#screen-dash .Appbar-btn') === '44x44', box('#screen-dash .Appbar-btn'));
+  ok('centring spacer is inert', !!$('#screen-dash .Appbar-ghost')
+     && $('#screen-dash .Appbar-ghost').getAttribute('aria-hidden') === 'true');
+  ok('no invented B avatar', !/^B$/.test(($('#screen-dash .Appbar').textContent || '').trim()));
+
+  // eyebrows — two different heights in the design, previously one padding
+  ok('appointment eyebrow padding 10/16/8', pad('#apptCard .Box2-title') === '10 16 8 16',
+     pad('#apptCard .Box2-title'));
+  ok('program eyebrow padding 4/16', pad('.Box2---green100 .Box2-title') === '4 16 4 16',
+     pad('.Box2---green100 .Box2-title'));
+  ok('appointment eyebrow is ~40px tall',
+     Math.abs($('#apptCard .Box2-title').getBoundingClientRect().height - 40) <= 1,
+     box('#apptCard .Box2-title'));
+  ok('program eyebrow is ~30px tall',
+     Math.abs($('.Box2---green100 .Box2-title').getBoundingClientRect().height - 30) <= 1,
+     box('.Box2---green100 .Box2-title'));
+
+  // card body/footer — the footer width is what fixes the button wrap
+  ok('appointment body has no top padding', pad('#apptCard .Box2-body') === '0 16 16 16',
+     pad('#apptCard .Box2-body'));
+  ok('footer uses px 8', pad('#apptCard .Box2-footer') === '8 8 16 8', pad('#apptCard .Box2-footer'));
+
+  // buttons — the reported "too much space"
+  var addBtn = $('#btnAddCalendar');
+  var addPad = W.getComputedStyle(addBtn);
+  // height is set explicitly (Figma counts its 44px box differently than CSS
+  // does once a border is involved), so assert the box and the inline padding.
+  ok('primary action is inset 16px horizontally',
+     Math.round(parseFloat(addPad.paddingLeft)) === 16, addPad.paddingLeft);
+  ok('primary action label is vertically centred', addPad.alignItems === 'center', addPad.alignItems);
+  ok('button icon gap is 4', Math.round(parseFloat(addPad.gap)) === 4, addPad.gap);
+  ok('"Add to calendar" is 44px, one line',
+     Math.abs(addBtn.getBoundingClientRect().height - 44) <= 1, box('#btnAddCalendar'));
+  ok('"More" is fixed at 150px', Math.round($('#btnApptMore').getBoundingClientRect().width) === 150,
+     box('#btnApptMore'));
+  ok('To-do actions are the 48px variant',
+     Math.abs($('#btnStart').getBoundingClientRect().height - 48) <= 1, box('#btnStart'));
+
+  // the teal really is the token, not a washed-out approximation
+  ok('appointment tab is #00b5a3',
+     W.getComputedStyle($('#apptCard')).backgroundColor === 'rgb(0, 181, 163)',
+     W.getComputedStyle($('#apptCard')).backgroundColor);
+
+  // the mis-read "presence dot" is gone
+  ok('no presence dot on the avatar', !$('#screen-dash .Avatar-presence'));
+
+  /* ---- 1c. "no model connected" must be impossible to miss ---- */
+  // A fully scripted conversation was being evaluated as if it were Claude,
+  // because the only signal was one grey line at the foot of the panel.
+  ok('resolved transport is none in this run', P.get().transport === 'none', P.get().transport);
+  var strip = $('#devstrip');
+  ok('dev strip exists', !!strip);
+  ok('dev strip says replies are canned', /canned, not Claude/i.test(strip.textContent), strip.textContent.trim().slice(0,80));
+  ok('dev strip gives the command to fix it', /june-proxy\.mjs/.test(strip.textContent));
+  ok('dev strip is inside the phone', !!strip.closest('.Phone-screen'));
+  ok('dev strip is flagged as dev chrome, not product', /DEV/.test(strip.textContent));
+  // this suite sets cfg.transport directly, which bypasses the panel's own
+  // refresh path (a real transport change goes through refreshStatus)
+  W.__june.paintDevstrip();
+  ok('dev strip is not hidden while no model is connected', strip.hidden === false, strip.hidden);
+  // it must disappear once a transport actually resolves, and come back if not
+  P.cfg.apiKey = 'sk-ant-FAKE-FOR-TEST'; P.cfg.transport = 'key';
+  W.__june.paintDevstrip();
+  ok('dev strip hides when a key is set', strip.hidden === true, P.get().transport);
+  // restore what the rest of this suite assumes: no model at all
+  P.cfg.apiKey = ''; P.cfg.transport = 'none';
+  W.__june.paintDevstrip();
+  ok('dev strip returns when the key is removed', strip.hidden === false);
+  ok('transport restored to none for the rest of the run', P.get().transport === 'none', P.get().transport);
+
+  /* ---- 1d. editing the flow must never fabricate a coverage result ----
+     Found while validating docs/adding-a-step.md: deleting the reminder step
+     broke the finish chain, the run fell through to the eligibility check with
+     no member ID, and it reported "you're covered". */
+  (function () {
+    var saved = P.cfg.steps;
+    P.cfg.steps = saved.filter(function (st) { return st.id !== 'reminder_time'; });
+    var checking = P.cfg.steps.filter(function (st) { return st.id === 'checking'; })[0];
+    ok('checking step refuses to run with nothing to check',
+       checking && checking.skipIf === '!memberId && !cardPhotos', checking && checking.skipIf);
+    P.cfg.steps = saved;
+  })();
+
+  /* ---- 2. module 2's three sheets ---- */
+  $('#btnAddCalendar').click(); await sleep(200);
+  ok('calendar sheet opens', shown('#sheetOverlay'));
+  ok('calendar sheet title', /Add to your calendar/.test($('#sheetTitle').textContent), $('#sheetTitle').textContent);
+  ok('calendar sheet body copy', /Choose where to save your appointment/.test($('#sheetBody').textContent));
+  var calRows = $$('#sheetBody .OptionRow').map(function(b){return b.textContent.trim();});
+  ok('three calendar options', calRows.length===3, calRows);
+  ok('google option', /Google Calendar/.test(calRows.join('|')), calRows);
+  ok('outlook option', /Microsoft Outlook Calendar/.test(calRows.join('|')), calRows);
+  ok('apple option', /Apple Calendar/.test(calRows.join('|')), calRows);
+  ok('calendar options are buttons', $$('#sheetBody .OptionRow').every(function(b){return b.tagName==='BUTTON';}));
+  $$('#sheetBody .OptionRow')[0].click(); await sleep(200);
+  ok('choosing an option closes the sheet', !shown('#sheetOverlay'));
+  ok('the choice is recorded', P.metrics.sheetAction==='Google Calendar', P.metrics.sheetAction);
+
+  $('#btnApptMore').click(); await sleep(200);
+  ok('more sheet opens', shown('#sheetOverlay'));
+  var moreRows = $$('#sheetBody .OptionRow').map(function(b){return b.textContent.trim();});
+  ok('more sheet has three actions', moreRows.length===3, moreRows);
+  ok('add-to-contact action', /Add to contact/.test(moreRows.join('|')), moreRows);
+  ok('reschedule action', /Reschedule/.test(moreRows.join('|')), moreRows);
+  ok('cancel action', /Cancel/.test(moreRows.join('|')), moreRows);
+  // Esc must dismiss
+  D.dispatchEvent(new W.KeyboardEvent('keydown', {key:'Escape', bubbles:true}));
+  await sleep(200);
+  ok('Esc closes the sheet', !shown('#sheetOverlay'));
+
+  $('#btnGoalInfo').click(); await sleep(200);
+  ok('goal-info sheet opens', shown('#sheetOverlay'));
+  ok('goal-info explains the goal', /what you told us you wanted to work on/i.test($('#sheetBody').textContent),
+     $('#sheetBody').textContent.slice(0,120));
+  $('#sheetClose').click(); await sleep(200);
+  ok('goal sheet closes', !shown('#sheetOverlay'));
+
+  /* ---- 3. "I don't have my card" enters the flow at save-and-resume ---- */
+  P.metrics = P.blankMetrics();
+  $('#btnNoCard').click();
+  var smsChip = await waitChip('text me a link');
+  ok('no-card entry lands on save-and-resume', !!smsChip, chips().map(function(b){return b.textContent;}));
+  ok('member-ID step was never asked', !$('#chatThread .Input'));
+  ok('entry point is logged', P.logs.some(function(l){return /started at "Save and resume"/.test(l.msg);}),
+     P.logs.map(function(l){return l.msg;}).slice(-6));
+  ok('insurance questions were not re-asked', !/What kind of Medicare coverage/.test($('#chatThread').textContent),
+     $('#chatThread').textContent.slice(0,140));
+  ok('does not claim we asked for the ID', P.metrics.ladderRung!=='asked_member_id', P.metrics.ladderRung);
+  ok('coordinator option offered too', !!chipByText('handle it on my call'));
+  smsChip.click();
+  var whenChip = await waitChip('Tomorrow morning');
+  ok('channel choice leads to the reminder-time step', !!whenChip, chips().map(function(b){return b.textContent;}));
+  ok('reminder time offers a no-preference answer', !!chipByText("whenever's easiest"));
+  whenChip.click();
+  var savedRes = await waitSel('#chatThread .Result', 120);
+  ok('no-card entry reaches a warm terminal', !!savedRes);
+  ok('rung recorded as saved', P.metrics.ladderRung==='saved_for_later', P.metrics.ladderRung);
+  ok('reminder time captured', E.state.reminderTime==='morning', E.state.reminderTime);
+  ok('outcome names the channel and time', /text you a link tomorrow morning/i.test($('#chatThread').textContent),
+     $('#chatThread .Result').textContent.slice(0,160));
+  $('#btnChatBack').click(); await sleep(150);
+  ok('back returns to the first screen', $('#screen-dash').classList.contains('is-active'));
+  ok('appointment survives the no-card path', /Ali N\. \(Care Coordinator\)/.test($('#apptTitle').textContent));
+
+  /* ---- 4. happy path: Advantage -> Aetna -> member id -> confirm -> $0 ---- */
+  P.metrics = P.blankMetrics();   // metrics accumulate across runs in this driver
+  P.cfg.scenario='confirmed_zero';
+  $('#btnStart').click();
+  ok('chat active', await waitSel('#screen-chat.is-active') !== null);
+  var c1 = await waitChip("let's do it");
+  ok('intro chips rendered', !!c1, chips().map(function(b){return b.textContent;}));
+  ok('dev strip is actually visible inside the open chat', shown('#devstrip'));
+  ok('June greets by name', /Kathleen/.test(bubbles().join(' ')), bubbles());
+  ok('appointment reassurance in intro', /booked|all set/i.test(bubbles().join(' ')));
+  c1.click();
+
+  var cAdv = await waitChip('Medicare Advantage');
+  ok('insurance-type step', !!cAdv);
+  ok('exit chip present at type step', !!chipByText('later'), chips().map(function(b){return b.textContent;}));
+  cAdv.click();
+
+  var cAet = await waitChip('Aetna');
+  ok('carrier step shown for Advantage', !!cAet);
+  cAet.click();
+
+  var input = await waitSel('#chatThread .Input');
+  ok('member ID field rendered', !!input);
+  ok('photo alternative offered', !!chipByText('photo'), chips().map(function(b){return b.textContent;}));
+  ok('no-card alternative offered', !!chipByText("isn't with me"));
+  ok('help link offered', !!$$('#chatThread .Button---text').filter(function(b){return /find this/i.test(b.textContent);})[0]);
+
+  // invalid then valid, checking error UX
+  input.value='ab'; input.dispatchEvent(new W.Event('blur'));
+  await sleep(120);
+  var err=$('#chatThread .Field-error');
+  ok('inline error at field exit', err && err.hidden===false);
+  ok('error has text not just colour', err && err.textContent.trim().length>10, err&&err.textContent);
+  ok('error does not blame the user', err && !/you (typed|entered|made)/i.test(err.textContent), err&&err.textContent);
+  ok('aria-invalid set', input.getAttribute('aria-invalid')==='true');
+
+  input.value='H12345678';
+  input.dispatchEvent(new W.Event('input'));
+  $$('#chatThread .Button---primary').filter(function(b){return /coverage/i.test(b.textContent);})[0].click();
+
+  var conf = await waitSel('#chatThread .Review');
+  ok('confirm card shown', !!conf);
+  ok('confirm reads name back', /Kathleen Kwan/.test(conf.textContent), conf.textContent);
+  ok('confirm reads DOB back', /05\/14\/1958/.test(conf.textContent));
+  ok('member ID masked', /•+5678|5678/.test(conf.textContent) && conf.textContent.indexOf('H12345678')===-1, conf.textContent);
+  $$('#chatThread .Review .Button---primary')[0].click();
+
+  var res = await waitSel('#chatThread .Result', 120);
+  ok('result card rendered', !!res);
+  ok('confirmed $0 headline', /covered/i.test(res.textContent), res.textContent.slice(0,120));
+  ok('shows $0 row', /\$0/.test(res.textContent));
+  ok('names what happens on the call', /call/i.test(res.textContent));
+  ok('back-to-dashboard offered', !!chipByText('dashboard'), chips().map(function(b){return b.textContent;}));
+  ok('measures: memberId + confirmed', P.metrics.memberIdSubmitted===1 && P.metrics.coverageConfirmed===1, P.metrics);
+  ok('measures: outcome recorded', P.metrics.outcome==='confirmed_zero', P.metrics.outcome);
+  ok('measures: lookup key was memberId', P.metrics.lookupKey==='memberId', P.metrics.lookupKey);
+  ok('progress at 100', $('#chatProgress').getAttribute('aria-valuenow')==='100');
+
+  chipByText('dashboard').click(); await sleep(150);
+  ok('returns to dashboard', $('#screen-dash').classList.contains('is-active'));
+  ok('appointment intact after full run', /Ali N\. \(Care Coordinator\)/.test($('#apptTitle').textContent));
+
+  /* ---- 5. Original Medicare skips the carrier step ---- */
+  P.cfg.scenario='confirmed_cost';
+  $('#btnStart').click();
+  (await waitChip("let's do it")).click();
+  (await waitChip('Original Medicare')).click();
+  var inp2 = await waitSel('#chatThread .Input');
+  ok('carrier step skipped for Original Medicare', !!inp2 && !chipByText('Aetna'));
+  inp2.value='1EG4TE5MK73';
+  inp2.dispatchEvent(new W.Event('input'));
+  $$('#chatThread .Button---primary').filter(function(b){return /coverage/i.test(b.textContent);})[0].click();
+  (await waitSel('#chatThread .Review .Button---primary'));
+  $$('#chatThread .Review .Button---primary')[0].click();
+  var res2 = await waitSel('#chatThread .Result',120);
+  ok('cost outcome renders', !!res2);
+  ok('cost outcome pairs $0 with 78%', /78%/.test($('#chatThread').textContent), 'missing 78% pairing');
+
+  /* ---- 6. each remaining scenario reaches a terminal card with a way home ---- */
+  var scens=['not_found','hmo_referral','not_covered','pending_back_office','no_part_d'];
+  for (var si=0; si<scens.length; si++){
+    P.cfg.scenario=scens[si];
+    $('#btnStart').click();
+    (await waitChip("let's do it")).click();
+    (await waitChip('Medicare Advantage')).click();
+    (await waitChip('Aetna')).click();
+    var ip = await waitSel('#chatThread .Input');
+    ip.value='H99887766'; ip.dispatchEvent(new W.Event('input'));
+    $$('#chatThread .Button---primary').filter(function(b){return /coverage/i.test(b.textContent);})[0].click();
+    await waitSel('#chatThread .Review .Button---primary');
+    $$('#chatThread .Review .Button---primary')[0].click();
+    var rr = await waitSel('#chatThread .Result',150);
+    ok('scenario '+scens[si]+' renders a result', !!rr);
+    ok('scenario '+scens[si]+' outcome id', P.metrics.outcome===scens[si], {want:scens[si],got:P.metrics.outcome});
+    var acts = (P.cfg.outcomes[scens[si]].actions||[]).map(function(a){return a.value;});
+    ok('scenario '+scens[si]+' offers a way home',
+       acts.indexOf('dashboard')>-1 || acts.indexOf('appointment')>-1, acts);
+    ok('scenario '+scens[si]+' chips are rendered', chips().length>0);
+    var txt=$('#chatThread').textContent;
+    ok('scenario '+scens[si]+' no blame language', !/your (mistake|fault)|you (typed|entered) (it )?(wrong|incorrectly)/i.test(txt));
+  }
+
+  /* ---- 7. card-photo path ---- */
+  P.cfg.scenario='confirmed_zero';
+  $('#btnStart').click();
+  (await waitChip("let's do it")).click();
+  (await waitChip('Medicare Advantage')).click();
+  (await waitChip('Aetna')).click();
+  await waitSel('#chatThread .Input');
+  chipByText('photo').click();
+  var shots = await waitSel('#chatThread .Shots');
+  ok('photo capture shown', !!shots);
+  ok('front and back inputs', $$('#chatThread .Shot').length===2);
+  ok('photo path offers an out', !!$$('#chatThread .Button---text').filter(function(b){return /handle it on my call/i.test(b.textContent);})[0]);
+  // simulate both files
+  E.set('cardPhotos',{front:{name:'f.jpg'},back:{name:'b.jpg'}});
+  ok('cardPhotos written', !!E.state.cardPhotos);
+
+  /* ---- 8. no-card / save-and-resume path ---- */
+  $('#btnStart').click();
+  (await waitChip("let's do it")).click();
+  (await waitChip('Original Medicare')).click();
+  await waitSel('#chatThread .Input');
+  chipByText("isn't with me").click();
+  var cSms = await waitChip('Text me a link');
+  ok('save-and-resume offered', !!cSms, chips().map(function(b){return b.textContent;}));
+  ok('coordinator option offered', !!chipByText('handle it on my call'));
+  cSms.click();
+  (await waitChip("Whenever's easiest")).click();
+  var saved = await waitSel('#chatThread .Result',120);
+  ok('saved outcome renders', !!saved);
+  ok('saved measures rung', P.metrics.ladderRung==='saved_for_later', P.metrics.ladderRung);
+  ok('no time given still reads naturally', /I'll text you a link so you can/i.test($('#chatThread').textContent),
+     $('#chatThread .Result').textContent.slice(0,160));
+
+  /* ---- 8b. the coordinator answer skips the reminder-time step ---- */
+  P.metrics = P.blankMetrics();
+  $('#btnNoCard').click();
+  (await waitChip('handle it on my call')).click();
+  var coordRes = await waitSel('#chatThread .Result',120);
+  ok('coordinator answer ends the run', !!coordRes);
+  ok('reminder time never asked', !chipByText('Tomorrow morning'), chips().map(function(b){return b.textContent;}));
+  ok('coordinator rung recorded', P.metrics.ladderRung==='coordinator_will_handle', P.metrics.ladderRung);
+
+  /* ---- 9. exit mid-flow ---- */
+  $('#btnStart').click();
+  (await waitChip("let's do it")).click();
+  var exitChip = await waitChip('later');
+  ok('exit available mid-flow', !!exitChip, chips().map(function(b){return b.textContent;}));
+  if (exitChip) exitChip.click();
+  var defRes = await waitSel('#chatThread .Result',120);
+  ok('mid-flow exit reaches a warm terminal', !!defRes);
+  ok('deferred copy is not a failure', /no problem|all good|confirmed/i.test($('#chatThread').textContent));
+  ok('deferred measures', P.metrics.outcome==='deferred', P.metrics.outcome);
+
+  /* ---- 10. safety net on typed input, with the model OFF ---- */
+  $('#btnStart').click();
+  await waitChip("let's do it");
+  $('#chatInput').value='I have chest pain and I feel dizzy';
+  $('#chatComposer').dispatchEvent(new W.Event('submit',{cancelable:true,bubbles:true}));
+  for(var k=0;k<60;k++){ await sleep(100); if(/911/.test($('#chatThread').textContent)) break; }
+  ok('911 tier fires on typed distress', /911/.test($('#chatThread').textContent), lastBot());
+  ok('safety recorded in measures', P.metrics.safetyTier==='emergency', P.metrics.safetyTier);
+
+  /* ---- 11. typed asides answer then re-anchor (model OFF => scripted) ---- */
+  $('#btnStart').click();
+  await waitChip("let's do it");
+  $('#chatInput').value='how much will this cost me?';
+  $('#chatComposer').dispatchEvent(new W.Event('submit',{cancelable:true,bubbles:true}));
+  for(var k2=0;k2<60;k2++){ await sleep(100); if(/78%/.test($('#chatThread').textContent)) break; }
+  ok('cost aside answered with the approved stat', /78% of Bold patients pay \$0 out of pocket/.test($('#chatThread').textContent), lastBot());
+  ok('cost aside keeps chips (flow not lost)', chips().length>0, chips().length);
+
+  $('#chatInput').value='I want to talk to a real person';
+  $('#chatComposer').dispatchEvent(new W.Event('submit',{cancelable:true,bubbles:true}));
+  for(var k3=0;k3<60;k3++){ await sleep(100); if(/coordinator/i.test(lastBot())) break; }
+  ok('handoff honoured immediately', /coordinator|424/i.test($('#chatThread').textContent), lastBot());
+
+  /* ---- 12. help sheet opens and is dismissible ---- */
+  $('#btnStart').click();
+  (await waitChip("let's do it")).click();
+  (await waitChip('Original Medicare')).click();
+  await waitSel('#chatThread .Input');
+  $$('#chatThread .Button---text').filter(function(b){return /find this/i.test(b.textContent);})[0].click();
+  await sleep(150);
+  ok('sheet opens', shown('#sheetOverlay'));
+  ok('sheet has a real title', $('#sheetTitle').textContent.length>5, $('#sheetTitle').textContent);
+  ok('sheet is a dialog', $('#sheetOverlay [role=dialog]')!==null);
+  $('#sheetClose').click(); await sleep(120);
+  ok('sheet closes', !shown('#sheetOverlay'));
+
+  /* ---- 13. accessibility spot checks on the live DOM ---- */
+  ok('one h1', $$('h1').length===1, $$('h1').length);
+  ok('thread is a live log', $('#chatThread').getAttribute('role')==='log' && $('#chatThread').getAttribute('aria-live')==='polite');
+  ok('composer input has a label', !!D.querySelector('label[for=chatInput]'));
+  ok('progressbar labelled', !!$('#chatProgress').getAttribute('aria-label'));
+  var unlabelled = $$('button').filter(function(b){
+    return !b.textContent.trim() && !b.getAttribute('aria-label');
+  });
+  ok('no unlabelled buttons', unlabelled.length===0, unlabelled.length);
+  var smallTargets = $$('#screen-chat button, #screen-dash button').filter(function(b){
+    var r=b.getBoundingClientRect();
+    return r.width>0 && r.height>0 && (r.height<44 || r.width<44);
+  }).map(function(b){ var r=b.getBoundingClientRect(); return (b.textContent.trim()||b.getAttribute('aria-label'))+' '+Math.round(r.width)+'x'+Math.round(r.height); });
+  ok('all visible targets >=44px', smallTargets.length===0, smallTargets);
+  // REGRESSION: skipping every element with children meant a pill containing an
+  // <svg> was never checked — which is how a 12px "1 min" tag shipped. Treat an
+  // element whose only element children are <svg> as a text node.
+  function ownsText(n){
+    if(!n.textContent || !n.textContent.trim()) return false;
+    return Array.prototype.every.call(n.children, function(c){
+      return c.tagName.toLowerCase()==='svg';
+    });
+  }
+  var tiny = $$('#screen-chat *, #screen-dash *').filter(function(n){
+    if(!ownsText(n)) return false;
+    var fs=parseFloat(W.getComputedStyle(n).fontSize);
+    return fs>0 && fs<14;
+  }).map(function(n){ return W.getComputedStyle(n).fontSize+' '+n.textContent.trim().slice(0,26); });
+  ok('no text below 14px', tiny.length===0, tiny);
+  // prove the widened sweep really does inspect svg-containing elements
+  ok('sweep now covers svg-containing pills',
+     $$('#screen-dash .Tag---time').filter(ownsText).length===1,
+     $$('#screen-dash .Tag---time').length);
+
+  ok('no runtime errors during run', errs.length===0, errs);
+  done();
+})().catch(function(e){ ok('driver crashed', false, String(e && e.stack || e)); done(); });
+</script>
+</body></html>

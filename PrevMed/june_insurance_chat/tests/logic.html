@@ -1,0 +1,253 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>june tests</title></head><body>
+<div id="out">running</div>
+<script>
+window.__errors = [];
+window.onerror = function(m,s,l,c){ window.__errors.push(m+' @'+s+':'+l); };
+</script>
+<script src="../assets/pverify.js"></script>
+<script src="../assets/june-rag.js"></script>
+<script src="../assets/june-brain.js"></script>
+<script src="../assets/flow-default.js"></script>
+<script src="../assets/june-flow.js"></script>
+<script src="../assets/panel.js"></script>
+<script>
+(async function(){
+  var R=[]; var pass=0, fail=0;
+  function ok(name, cond, detail){ if(cond){pass++; R.push('PASS '+name);} else {fail++; R.push('FAIL '+name+(detail!==undefined?' :: '+JSON.stringify(detail):''));} }
+
+  // 0. modules loaded, no syntax errors
+  ok('no script errors', window.__errors.length===0, window.__errors);
+  ['PVerify','JuneRAG','JuneBrain','JuneFlowDefault','JuneFlow','JunePanel'].forEach(function(g){
+    ok('global '+g, typeof window[g]!=='undefined');
+  });
+
+  // 1. SETTERS validation
+  var S = JuneFlow.SETTERS;
+  ok('memberId strips dashes',  S.memberId('abc-123 456')==='ABC123456');
+  ok('memberId rejects short',  S.memberId('ab1')===null);
+  ok('memberId rejects symbols',S.memberId('abc$$123')===null);
+  ok('dob normalises',          S.dob('1/1/1958')==='01/01/1958');
+  ok('dob rejects bad month',   S.dob('13/01/1958')===null);
+  ok('dob rejects future',      S.dob('01/01/2999')===null);
+  ok('dob rejects text',        S.dob('jan 1 1958')===null);
+  ok('firstName accepts accent',S.firstName('Zoë')==='Zoë');
+  ok('firstName rejects digits',S.firstName('Bob3')===null);
+  ok('insuranceType enum',      S.insuranceType('advantage')==='advantage' && S.insuranceType('nope')===null);
+  ok('cardPhotos needs both',   S.cardPhotos({front:1})===null && S.cardPhotos({front:1,back:2})!==null);
+
+  // 2. guardrails
+  var cr = JuneBrain.checkReply;
+  ok('rejects empty',       cr('', 'x').ok===false);
+  ok('rejects angle bracket',cr('hi <b>', 'x').ok===false);
+  // The first version rejected ANY digit not in context, which blocked correct
+  // output ("call 988", "about 2 minutes", "your 2026 plan") and made June look
+  // incoherent. Only money, percentages and identifiers are policed now.
+  ok('rejects invented dollar', cr('It costs $47.', 'no numbers here').ok===false);
+  ok('rejects invented percent', cr('About 93% pay nothing.', '').ok===false);
+  ok('rejects invented member id', cr('Your ID is 987654321.', '').ok===false);
+  ok('rejects invented phone', cr('Call (555) 123-9876.', '').ok===false);
+  ok('allows echoed dollar',  cr('It is $50/month.', 'flat $50/month').ok===true, cr('It is $50/month.','flat $50/month'));
+  ok('allows echoed percent', cr('78% pay $0.', '78% of Bold patients pay $0').ok===true, cr('78% pay $0.','78% of Bold patients pay $0'));
+  ok('allows crisis line 988', cr('Please call 988 now.', '').ok===true, cr('Please call 988 now.',''));
+  ok('allows 911',            cr('Call 911 right away.', '').ok===true);
+  ok('allows a duration',     cr('About 2 minutes.', '').ok===true, cr('About 2 minutes.',''));
+  ok('allows a plan year',    cr('Your 2026 plan covers this.', '').ok===true, cr('Your 2026 plan covers this.',''));
+  ok('allows an age',         cr('Built for adults 65 and over.', '').ok===true);
+  ok('allows echoed phone',   cr('Reach us on (424) 577-5266.', 'coordinator (424) 577-5266').ok===true,
+     cr('Reach us on (424) 577-5266.','coordinator (424) 577-5266'));
+  // "free" must be caught in either word order
+  ok('blocks "free visit"',      cr('Your free visit awaits.', '').ok===false);
+  ok('blocks "visit is free"',   cr('Your first visit is free.', '').ok===false, cr('Your first visit is free.',''));
+  ok('blocks "free consult"',    cr('Book your free 15-minute consult.', '').ok===false);
+  ok('allows "feel free"',       cr('Feel free to ask about your appointment.', '').ok===true,
+     cr('Feel free to ask about your appointment.',''));
+  ok('allows "no cost"',         cr('Your intake call is at no cost.', '').ok===true);
+  ok('rejects diagnosis',    cr('You have diabetes.', 'you have diabetes').ok===false);
+  ok('rejects guarantee',    cr('This is guaranteed.', 'guaranteed').ok===false);
+  ok('rejects free visit',   cr('A free visit awaits.', '').ok===false);
+  ok('rejects coverage call',cr("You are covered.", 'you are covered').ok===false);
+  ok('rejects partD claim',  cr('Part D covers it.', 'part d covers it').ok===false);
+  ok('rejects overlong',     cr('x'.repeat(1500), '').ok===false);
+  ok('accepts clean',        cr('Happy to help with that.', '').ok===true);
+  // REGRESSION: a blunt /you have/ rule blocked the flow's own core question
+  ok('allows "do you have" question',  cr('Which card do you have?', '').ok===true, cr('Which card do you have?',''));
+  ok('allows "do you have your card"', cr('Do you have your card handy?', '').ok===true);
+  ok('allows "you have a choice"',     cr('You have a choice here.', '').ok===true);
+  // ...while still catching an actual asserted diagnosis
+  ok('blocks asserted condition',   cr('You have diabetes.', 'diabetes').ok===false);
+  ok('blocks "you have sleep apnea"',cr('You have sleep apnea.', 'sleep apnea').ok===false);
+  ok('blocks "you are obese"',      cr('You are obese.', 'obese').ok===false);
+  ok('blocks "you have been diagnosed"', cr('You have been diagnosed with it.', '').ok===false);
+  // REGRESSION: "not guaranteed" is the phrasing the pricing rules REQUIRE
+  ok('allows "never guaranteed"',   cr('Coverage is estimated and never guaranteed.', '').ok===true, cr('Coverage is estimated and never guaranteed.',''));
+  ok('allows "cannot promise"',     cr("I cannot promise a specific amount.", '').ok===true);
+  ok('allows "no guarantee"',       cr('There is no guarantee of a set price.', '').ok===true);
+  // ...while still catching an affirmative promise
+  ok('blocks "I guarantee"',        cr('I guarantee it will be covered.', '').ok===false);
+  ok('blocks "I promise"',          cr('I promise this will work out.', '').ok===false);
+  ok('blocks "will definitely"',    cr('This will definitely be covered.', '').ok===false);
+
+  // 3. safety net — must fire before anything else
+  ok('safety chest pain', (JuneBrain.safetyCheck('I have chest pain')||{}).tier==='emergency');
+  ok('safety breathing',  (JuneBrain.safetyCheck("i can't breathe")||{}).tier==='emergency');
+  ok('safety stroke',     (JuneBrain.safetyCheck('my face is drooping')||{}).tier==='emergency');
+  ok('safety self harm',  (JuneBrain.safetyCheck('i want to kill myself')||{}).tier==='self_harm');
+  ok('safety glp1',       (JuneBrain.safetyCheck("i can't keep water down")||{}).tier==='glp1_urgent');
+  ok('safety ignores normal', JuneBrain.safetyCheck('what will this cost me')===null);
+
+  // 4. intent routing
+  var c = JuneBrain.classify;
+  ok('intent human',   c('can I talk to a person')==='request_human');
+  ok('intent no card', c("my card isn't with me")==='no_card');
+  ok('intent cost',    c('how much will this cost')==='cost_question');
+  ok('intent why',     c('why do you need this')==='why_ask');
+  ok('intent defer',   c('not now, later please')==='defer');
+  ok('intent correct', c('my name is spelled wrong')==='correction');
+  ok('intent unknown', c('the weather is nice in October')==='unknown');
+
+  // 5. directive parsing
+  var pd = JuneBrain.parseDirectives('Hello there.\n\n[[chips: A | B | C]]');
+  ok('chips parsed', pd.chips && pd.chips.length===3 && pd.chips[0]==='A', pd.chips);
+  ok('chips stripped from text', pd.text.indexOf('[[')===-1, pd.text);
+  var pm = JuneBrain.parseDirectives('Pick some.[[chips multi: X | Y]]');
+  ok('multi flag', pm.multi===true);
+  var pa = JuneBrain.parseDirectives('Sure.[[action: set_field: carrier = Aetna, handoff]]');
+  ok('action set_field', pa.actions.length===2 && pa.actions[0].field==='carrier' && pa.actions[0].value==='Aetna', pa.actions);
+  ok('action handoff', pa.actions[1].type==='handoff');
+
+  // 6. mdBold escapes before bolding
+  var mb = JuneFlow.mdBold('<img src=x> **bold** & more');
+  ok('mdBold escapes', mb.indexOf('&lt;img')===0, mb);
+  ok('mdBold bolds', mb.indexOf('<strong>bold</strong>')>-1, mb);
+  ok('splitParas', JuneFlow.splitParas('a\n\nb\n\n\nc').length===3);
+
+  // 7. pVerify normalize -> outcome, for every fixture
+  var expect = {
+    confirmed_zero:'confirmed_zero', confirmed_cost:'confirmed_cost', not_found:'not_found',
+    hmo_referral:'hmo_referral', not_covered:'not_covered',
+    pending_back_office:'pending_back_office', no_part_d:'no_part_d'
+  };
+  Object.keys(expect).forEach(function(k){
+    var ctx = {carrier:'Aetna', wantsGlp1: k==='no_part_d'};
+    var n = PVerify.normalize(PVerify.FIXTURES[k](ctx), ctx);
+    ok('normalize '+k, n.outcome===expect[k], {got:n.outcome, want:expect[k]});
+  });
+  // REGRESSION: a GLP-1 member on a normally-covered plan must still be
+  // 'confirmed', not hijacked by the no_part_d branch.
+  ['confirmed_zero','confirmed_cost'].forEach(function(k){
+    var n2 = PVerify.normalize(PVerify.FIXTURES[k]({carrier:'Aetna'}), {carrier:'Aetna', wantsGlp1:true});
+    ok('glp1 member still '+k, n2.outcome===k, {got:n2.outcome});
+    ok(k+' reports a Part D route', n2.hasPartDRoute===true);
+  });
+  ['hmo_referral','not_covered','pending_back_office','not_found'].forEach(function(k){
+    var n3 = PVerify.normalize(PVerify.FIXTURES[k]({carrier:'Aetna'}), {carrier:'Aetna', wantsGlp1:true});
+    ok('glp1 member does not mask '+k, n3.outcome===k, {got:n3.outcome});
+  });
+
+  // no_part_d must NOT fire for a non-GLP1 member
+  var npd = PVerify.normalize(PVerify.FIXTURES.no_part_d({carrier:'UHC'}), {wantsGlp1:false});
+  ok('no_part_d gated on program', npd.outcome==='confirmed_zero', npd.outcome);
+  // HMO wins over cost
+  var hm = PVerify.normalize(PVerify.FIXTURES.hmo_referral({}), {});
+  ok('hmo flag surfaces', hm.isHmo===true);
+  ok('no Medigap claim', hm.secondaryPayerHint==='');
+
+  // 8. request builder lookup keys
+  ok('lookup memberId', PVerify.buildEligibilityRequest({memberId:'ABC123'})._lookupKey==='memberId');
+  ok('lookup ssn',      PVerify.buildEligibilityRequest({ssn:'XXXXX4821'})._lookupKey==='ssn');
+  ok('lookup nameDob',  PVerify.buildEligibilityRequest({firstName:'A'})._lookupKey==='nameDob');
+  ok('todayUS shape', /^\d{2}\/\d{2}\/\d{4}$/.test(PVerify.todayUS()));
+
+  // 9. verify() end to end (mock)
+  var v = await PVerify.verify({scenario:'hmo_referral', payerName:'Aetna', latencyMs:0});
+  ok('verify mock source', v.source==='mock');
+  ok('verify mock outcome', v.result.outcome==='hmo_referral');
+
+  // 10. RAG chunking + scoring
+  var doc = {id:'d1', name:'test.md', text:'# Cost\n78% pay $0.\n\n# Referral\nHMO plans need a referral from your doctor.'};
+  var ch = JuneRAG.chunk(doc);
+  ok('chunk on headings', ch.length===2, ch.map(function(x){return x.heading;}));
+  var sc = JuneRAG.score(ch, 'do HMO plans need a referral');
+  ok('score ranks referral first', sc.length>0 && sc[0].chunk.heading==='Referral', sc.map(function(s){return s.chunk.heading;}));
+  ok('estimateTokens', JuneRAG.estimateTokens('abcd')===1);
+
+  // 11. flow defaults integrity
+  var D = JuneFlowDefault;
+  ok('has steps', D.steps.length>=8);
+  var ids = D.steps.map(function(s){return s.id;});
+  ok('unique step ids', new Set(ids).size===ids.length, ids);
+  ok('every step has label+kind', D.steps.every(function(s){return s.label && s.kind;}));
+  ok('every step has notes', D.steps.every(function(s){return typeof s.notes==='string';}));
+  // every field a step writes must have a validated setter
+  var badFields = D.steps.filter(function(s){return s.field && !S[s.field];}).map(function(s){return s.id+':'+s.field;});
+  ok('all step fields have setters', badFields.length===0, badFields);
+  // A step that runs an eligibility check must be guarded, or a broken finish
+  // chain reports coverage the member never supplied details for.
+  var checkSteps = D.steps.filter(function(s){ return s.kind==='checking'; });
+  ok('there is a checking step', checkSteps.length===1);
+  ok('the checking step is guarded', /memberId/.test(checkSteps[0].skipIf||''), checkSteps[0].skipIf);
+
+  // every branch that can end must name an outcome that exists
+  var badFinish = [];
+  D.steps.forEach(function(s){
+    Object.keys(s.finish||{}).forEach(function(k){
+      var f=s.finish[k];
+      if(!f.outcome || !D.outcomes[f.outcome]) badFinish.push(s.id+':'+k+'->'+(f&&f.outcome));
+    });
+  });
+  ok('every finish target is a real outcome', badFinish.length===0, badFinish);
+
+  // reachability: the save-and-resume branch must terminate somewhere
+  var resume = D.steps.filter(function(s){return s.id==='save_resume';})[0];
+  var reminder = D.steps.filter(function(s){return s.id==='reminder_time';})[0];
+  ok('save_resume ends only on the coordinator answer',
+     resume.finish && resume.finish.coordinator && !resume.finish['*'], Object.keys(resume.finish||{}));
+  ok('reminder_time terminates every other answer',
+     reminder && reminder.finish && reminder.finish['*'], reminder && Object.keys(reminder.finish||{}));
+  ok('reminder_time only runs when a channel was chosen',
+     reminder.skipIf === '!resumeChannel', reminder.skipIf);
+  ok('reminder_time writes a field with a real setter', !!S[reminder.field], reminder.field);
+
+  // every pVerify outcome id must have an outcome block
+  var missing = PVerify.SCENARIOS.map(function(s){return s.id;}).filter(function(id){return !D.outcomes[id];});
+  ok('every scenario has outcome copy', missing.length===0, missing);
+  // every outcome must offer a route back to the dashboard
+  var noExit = Object.keys(D.outcomes).filter(function(k){
+    return !(D.outcomes[k].actions||[]).some(function(a){return a.value==='dashboard'||a.value==='appointment';});
+  });
+  ok('every outcome routes home', noExit.length===0, noExit);
+  // sheets referenced must exist
+  ok('sheets exist', D.sheets.member_id_help && D.sheets.why_we_ask && D.sheets.referral_help && D.sheets.card_types);
+  // exit option present on the asking steps
+  var asking = D.steps.filter(function(s){return ['chips','text'].indexOf(s.kind)>-1;});
+  var noWayOut = asking.filter(function(s){ return !(s.options||[]).some(function(o){return o.exit;}); }).map(function(s){return s.id;});
+  ok('asking steps all have an exit', noWayOut.length===0, noWayOut);
+
+  // 12. copy compliance sweep over ALL shipped strings
+  var blob = JSON.stringify(D) ;
+  ok('no "free visit/appointment"', !/free (visit|appointment|consult)/i.test(blob));
+  ok('no 86% stat', !/\b86\s*%/.test(blob));
+  ok('no "Bold is covered"', !/bold is covered/i.test(blob));
+  ok('no auto Part D claim', !/part d (automatically )?covers/i.test(blob));
+  // if $0 appears in outcome copy, 78% must appear somewhere in the corpus
+  ok('78% present where cost is discussed', /78%/.test(blob), '78% missing');
+
+  // 13. skipIf evaluator is sandboxed
+  var E = Object.create(JuneFlow.Engine.prototype);
+  E.state = {insuranceType:'original', memberId:null};
+  E.on = {}; E.log=function(){};
+  ok('skipIf true',  E.shouldSkip("insuranceType !== 'advantage'")===true);
+  ok('skipIf false', E.shouldSkip("insuranceType !== 'original'")===false);
+  ok('skipIf negation', E.shouldSkip("!memberId")===true);
+  ok('skipIf compound', E.shouldSkip("!memberId && insuranceType === 'original'")===true);
+  window.__sideEffect = 0;
+  E.shouldSkip("(window.__sideEffect = 99)");
+  ok('skipIf cannot run code', window.__sideEffect===0, window.__sideEffect);
+  ok('skipIf empty is false', E.shouldSkip('')===false);
+
+  document.getElementById('out').textContent =
+    'RESULT ' + pass + ' passed, ' + fail + ' failed\n' + R.filter(function(r){return /^FAIL/.test(r);}).join('\n');
+  document.title = 'done';
+})();
+</script>
+</body></html>

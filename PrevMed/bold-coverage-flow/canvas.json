@@ -1,0 +1,11 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 390, "h": 680, "title": "1 · Report ready" },
+    { "file": "Checking.dc.html", "x": 490, "y": 0, "w": 390, "h": 680, "title": "2 · Confirming coverage" },
+    { "file": "Results.dc.html", "x": 980, "y": 0, "w": 390, "h": 1350, "title": "3 · Coverage results" }
+  ],
+  "annotations": [
+    { "id": "flow-note", "x": 0, "y": -90, "w": 700, "text": "Bold Care coverage flow — reframed around the weight management program (GLP-1 shown as one option, not the headline), with Bold's logo and brand tokens throughout." }
+  ],
+  "launch": { "view": "canvas" }
+}

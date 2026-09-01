@@ -1,0 +1,25 @@
+# Cloudflare Worker proxy for the June insurance-verification chat.
+#
+#   npx wrangler deploy                 # from this directory
+#
+# Secrets are NOT set here — never put a key in a committed file.
+#   npx wrangler secret put ANTHROPIC_API_KEY
+#   npx wrangler secret put JUNE_SHARED_SECRET
+#   npx wrangler secret put PVERIFY_CLIENT_ID       # optional
+#   npx wrangler secret put PVERIFY_CLIENT_SECRET   # optional
+
+name = "june-chat-proxy"
+main = "june-worker.js"
+compatibility_date = "2026-01-01"
+
+[vars]
+MODEL = "claude-opus-5"
+PVERIFY_ENV = "sandbox"
+
+# Comma-separated extras on top of the built-in allowlist (which already covers
+# *.github.io for Pages and localhost:8099 for local work). Add your Pages
+# origin here if it differs.
+ALLOWED_ORIGINS = ""
+
+# Uncomment only if pVerify tells you a different host applies to your account.
+# PVERIFY_BASE_URL = "https://api.pverify.com"
