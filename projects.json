@@ -206,6 +206,15 @@
       "icon": "🗂️",
       "author": "Tzu-Yi",
       "category": "Prototypes"
+    },
+    {
+      "path": "PrevMed/two-way chat",
+      "href": "PrevMed/two-way%20chat/index.html",
+      "name": "Two-way Care Team Chat",
+      "desc": "Patient and care-team phones side by side: Dr. Desai's post-visit message and care plan, June answering and screening, Care Advocate and provider replies within 48 hours (weekends don't count), tasks, recap, and in-chat signing.",
+      "icon": "📨",
+      "author": "Tzu-Yi",
+      "category": "Prototypes"
     }
   ]
 }

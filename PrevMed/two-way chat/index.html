@@ -1,0 +1,105 @@
+<!doctype html>
+<!--
+  Two-way care team chat — Bold weight-management clinic prototype.
+
+  What it is: two iPhone 16 screens side by side — Carol (patient, Bold app) and her care team
+  (Ali, Care Advocate, then Dr. Desai) — playing one scripted story in 6 chapters. Each chapter is
+  tagged with the PRD / design-brief goal it demonstrates. Taps on either phone update the other.
+
+  Run: `python3 -m http.server 8899` from the repo root, then open
+       http://localhost:8899/PrevMed/two-way%20chat/   (or open this file directly).
+  Keys: → / Space next · ← back · R restart.
+
+  Sources: Figma Member Dashboard (jvPrZfMCn9Xwi9Fol4SWEm · 2045:43268) for look + page structure;
+  Weight management MVP FigJam (Mc7PfQwn4QNIXM6HKOTT2v) for the user flow (2147:777), brief (2062:107)
+  and market best practice (2130:980); @bold/web (Storybook) where Figma has no matching piece.
+  Components: see components.html + COMPONENTS.md. Plan + rulings: PLAN.md.
+
+  Deviations from Figma / @bold/web:
+  D1  No text below 14px.
+  D2  Bottom nav has a 5th tab, "Messages" (DS chat icon), and the avatar menu gains "Messages".
+  D3  The Figma June chat's "Topics" pill is dropped — the user flow says "no category to pick".
+  D4  iPhone 16 Dynamic Island (126×37) instead of the older side-effect prototype's notch.
+  D5  New chat, care-team and signing components have no Storybook equivalent (listed as NEW in COMPONENTS.md).
+  D6  Caveat is used only to render an adopted signature.
+  D7  Typing and presence signals are on (user decision), overriding brief principle 5.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Two-way care team chat — Bold prototype</title>
+  <link rel="icon" href="images/figma/logo-lines.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="chat.css" />
+  <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+</head>
+<body class="demo">
+  <header class="demo-top">
+    <div class="demo-title">
+      <img class="demo-title__mark" src="images/figma/logo-lines.svg" alt="" width="36" height="36" />
+      <div>
+        <h1 class="type-serif-headline demo-title__h">Two-way care team chat</h1>
+        <p class="type-caption-1 demo-title__sub">From a post-visit message to answers, with the right person replying.</p>
+      </div>
+    </div>
+    <nav class="chapter-stepper" aria-label="Chapters"></nav>
+  </header>
+
+  <main class="stage">
+    <div class="device-switch" role="group" aria-label="Show phone">
+      <button type="button" data-show="patient" aria-pressed="true">Carol's phone</button>
+      <button type="button" data-show="care" aria-pressed="false">Care team's phone</button>
+    </div>
+
+    <section class="device-col is-shown" id="col-patient" aria-label="Carol's phone">
+      <p class="device-label">Carol's phone <span class="device-label__who">Patient</span></p>
+      <div class="device-box">
+        <div class="iphone" id="device-patient">
+          <div class="iphone__island" aria-hidden="true"></div>
+          <div class="screen" data-figma="Demo/PhoneFrame"></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="transit" aria-hidden="true"><span class="transit__dot"></span></div>
+
+    <section class="device-col" id="col-care" aria-label="Care team's phone">
+      <p class="device-label">Care team's phone <span class="device-label__who" data-care-who>Dr. Desai</span></p>
+      <div class="device-box">
+        <div class="iphone" id="device-care">
+          <div class="iphone__island" aria-hidden="true"></div>
+          <div class="screen" data-figma="Demo/PhoneFrame"></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="interstitial" role="status" hidden></div>
+  </main>
+
+  <footer class="demo-bar">
+    <div class="bar-text">
+      <div class="bar-head">
+        <span class="bar-chapter">Two-way care team chat</span>
+        <span class="bar-goal"></span>
+      </div>
+      <p class="bar-caption" aria-live="polite">Press Next or Autoplay to start the story.</p>
+      <p class="bar-next"></p>
+    </div>
+    <div class="bar-controls">
+      <button type="button" class="demo-btn demo-btn--quiet" data-demo="back"><i class="ph ph-arrow-left" aria-hidden="true"></i>Back</button>
+      <button type="button" class="demo-btn demo-btn--primary" data-demo="next">Next</button>
+      <button type="button" class="demo-btn" data-demo="play">Autoplay</button>
+      <button type="button" class="demo-btn demo-btn--quiet" data-demo="restart">Restart</button>
+    </div>
+  </footer>
+
+  <script src="store.js"></script>
+  <script src="story.js"></script>
+  <script src="components.js"></script>
+  <script src="june.js"></script>
+  <script src="patient.js"></script>
+  <script src="care.js"></script>
+  <script src="demo.js"></script>
+</body>
+</html>
