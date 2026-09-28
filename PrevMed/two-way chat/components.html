@@ -1,0 +1,255 @@
+<!doctype html>
+<!--
+  Component sheet — every component × variant of the two-way care team chat, named exactly as in Figma
+  (data-figma / data-variant on each root). Source for rebuilding the library in Figma
+  (figma:figma-generate-library) and for design QA. Rendered by the same components.js the demo uses.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Component sheet — Two-way care team chat</title>
+  <link rel="icon" href="images/figma/logo-lines.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="chat.css" />
+  <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+  <style>
+    body.sheet-page { background: var(--shell-page); color: var(--primary-ink-300); padding: 32px 40px 80px; }
+    .sheet-page__head { max-width: 1200px; margin: 0 auto 32px; display: flex; flex-direction: column; gap: 4px; }
+    .sheet-page__group { max-width: 1400px; margin: 0 auto 40px; }
+    .sheet-page__group > h2 { margin-bottom: 16px; }
+    .sheet-grid { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; }
+    .spec { display: flex; flex-direction: column; gap: 8px; }
+    .spec__label { display: flex; flex-direction: column; }
+    .spec__name { font: 600 14px/22px var(--font-sans); color: var(--primary-ink-300); }
+    .spec__variant { font: 400 14px/22px var(--font-sans); color: var(--shell-ink-soft); }
+    .spec__canvas { position: relative; width: 393px; padding: 16px; background: var(--white); border: 1px solid var(--shell-line); border-radius: 16px; }
+    .spec__canvas--flush { padding: 0; overflow: hidden; }
+    .spec__canvas--auto { width: auto; min-width: 200px; }
+    .spec__canvas--tall { height: 520px; overflow: hidden; }
+    .spec__canvas--dark { background: var(--primary-ink-300); }
+    .spec__canvas .chat-log { overflow: visible; padding: 0; }
+    .spec__canvas .layer { position: relative; height: 480px; }
+    .spec-fab .june-fab { position: relative; right: auto; bottom: auto; }
+    .spec-menu { height: 480px; }
+    .swatches { display: flex; flex-wrap: wrap; gap: 12px; }
+    .swatch { width: 160px; display: flex; flex-direction: column; gap: 4px; }
+    .swatch__chip { height: 56px; border-radius: 12px; border: 1px solid var(--shell-line); }
+    .swatch__name { font: 600 14px/22px var(--font-sans); }
+    .swatch__value { font: 400 14px/22px var(--font-sans); color: var(--shell-ink-soft); }
+  </style>
+</head>
+<body class="sheet-page">
+  <header class="sheet-page__head">
+    <h1 class="type-greeting">Component sheet</h1>
+    <p class="type-body">Every component and variant in the two-way care team chat, named as in Figma. Use it to rebuild the library in Figma.</p>
+    <p class="type-caption-1"><a href="index.html">Back to the demo</a> · Inventory and tokens: COMPONENTS.md</p>
+  </header>
+  <div id="sheet"></div>
+
+  <script src="store.js"></script>
+  <script src="story.js"></script>
+  <script src="components.js"></script>
+  <script>
+  (function () {
+    'use strict';
+    var S = window.TWC_STORY, T = window.TWC, now = T.at(2026, 8, 22, 19, 52);
+    var md = S.cast.md, cc = S.cast.cc;
+
+    function spec(html, canvasClass) {
+      var tmp = document.createElement('div'); tmp.innerHTML = html;
+      var rootEl = tmp.querySelector('[data-figma]');
+      var name = rootEl ? rootEl.getAttribute('data-figma') : '';
+      var variant = rootEl ? (rootEl.getAttribute('data-variant') || '—') : '';
+      return '<div class="spec"><div class="spec__label"><span class="spec__name">' + T.esc(name) + '</span>' +
+        '<span class="spec__variant">' + T.esc(variant) + '</span></div>' +
+        '<div class="spec__canvas ' + (canvasClass || '') + '">' + html + '</div></div>';
+    }
+    function group(title, items) {
+      return '<section class="sheet-page__group"><h2 class="type-title">' + T.esc(title) + '</h2><div class="sheet-grid">' + items.join('') + '</div></section>';
+    }
+    function swatches() {
+      var names = ['--primary-purple-300', '--primary-ink-300', '--secondary-blue-300', '--secondary-cyan-300', '--text-default-primary',
+        '--text-default-secondary', '--surface-default-primary', '--surface-default-tertiary', '--surface-brand-secondary', '--border-default-primary',
+        '--page-gradient-from', '--dash-card-border', '--dash-track', '--dash-progress', '--dash-muted', '--dash-done-check', '--june-card-border',
+        '--june-chip-border', '--june-title', '--june-body', '--emergency-text', '--purple-100', '--yellow-300', '--mint-100', '--mint-700', '--red-100', '--red-500'];
+      var cs = getComputedStyle(document.documentElement);
+      return '<div class="swatches">' + names.map(function (n) {
+        var v = cs.getPropertyValue(n).trim();
+        return '<div class="swatch"><span class="swatch__chip" data-swatch="' + n + '"></span><span class="swatch__name">' + n + '</span><span class="swatch__value">' + v + '</span></div>';
+      }).join('') + '</div>';
+    }
+    function textStyles() {
+      return ['type-greeting', 'type-title', 'type-serif-headline', 'type-june-title', 'type-body-bold', 'type-body', 'type-caption-1-bold', 'type-caption-1', 'type-sign']
+        .map(function (c) { return '<p class="' + c + '">' + c + ' — Good evening, Carol</p>'; }).join('');
+    }
+
+    var steps = S.home.steps;
+    var bubbleText = T.esc('Hi Carol, it was good to meet you today.');
+    var html = '';
+
+    html += group('Foundations', [
+      '<div class="spec"><div class="spec__label"><span class="spec__name">Color tokens</span><span class="spec__variant">tokens.css</span></div><div class="spec__canvas spec__canvas--auto">' + swatches() + '</div></div>',
+      '<div class="spec"><div class="spec__label"><span class="spec__name">Text styles</span><span class="spec__variant">Figma text styles</span></div><div class="spec__canvas">' + textStyles() + '</div></div>',
+      spec(C.StatusBar({ time: '7:52', tone: 'default' }), 'spec__canvas--flush'),
+      spec(C.StatusBar({ time: '7:40', tone: 'light' }), 'spec__canvas--flush spec__canvas--dark')
+    ]);
+
+    html += group('Member Dashboard (MD)', [
+      spec(C.NavHeader({ initials: 'CS', menuOpen: false, badge: 1, menuItems: S.accountMenu }), 'spec__canvas--flush'),
+      spec('<div class="spec-menu">' + C.NavHeader({ initials: 'CS', menuOpen: true, badge: 1, menuItems: S.accountMenu }) + '</div>', 'spec__canvas--flush spec__canvas--tall'),
+      spec(C.TabBar({ tabs: S.tabs, active: 'home', badges: { messages: 1 } }), 'spec__canvas--flush'),
+      spec(C.TabBar({ tabs: S.tabs, active: 'messages', badges: {} }), 'spec__canvas--flush'),
+      spec(C.Greeting({ title: S.home.greeting.evening, sub: S.home.subMessage, link: S.home.subMessageLink }), 'spec__canvas--flush'),
+      spec(C.SectionTitle({ text: S.home.classTitle })),
+      spec(C.ChecklistModule({ title: S.home.checklistTitle, done: 2, total: 5, help: 'Two done, three to go. Dr. Desai sees your progress before your next visit.',
+        steps: [
+          { state: 'todo', key: 'plan', iconName: 'ph-clipboard-text', title: steps[1].title, meta: steps[1].meta },
+          { state: 'callout', key: 'consent', stepper: steps[2].stepper, title: steps[2].title, meta: steps[2].meta },
+          { state: 'todo', key: 'class', iconName: 'tai-chi', title: steps[3].title, meta: steps[3].meta },
+          { state: 'done', title: steps[0].title }, { state: 'done', title: steps[4].title }] }), 'spec__canvas--flush'),
+      spec(C.ChecklistStep({ state: 'todo', key: 'x', iconName: 'chat', title: steps[0].title, meta: 'New' })),
+      spec(C.ChecklistStep({ state: 'callout', key: 'y', stepper: steps[2].stepper, title: steps[2].title, meta: '5 min' })),
+      spec(C.ChecklistStep({ state: 'done', title: steps[4].title })),
+      spec(C.ClassCard({ title: S.carePlan.firstStep.title, trainer: S.carePlan.firstStep.trainer, img: S.carePlan.firstStep.img, tags: S.carePlan.firstStep.tags })),
+      spec(C.ClassCard({ title: S.carePlan.firstStep.title, trainer: S.carePlan.firstStep.trainer, img: S.carePlan.firstStep.img, tags: S.carePlan.firstStep.tags,
+        cta: 'Start class', change: S.home.classChange })),
+      spec(C.PositionTag({ label: 'Seated OK' }), 'spec__canvas--auto'),
+      spec(C.JuneEntryCard({ title: S.home.juneCard.title, body: S.home.juneCard.body, chips: S.juneChips })),
+      spec('<div class="spec-fab">' + C.JuneFab({ label: S.home.fab, state: 'expanded' }) + '</div>', 'spec__canvas--auto'),
+      spec('<div class="spec-fab">' + C.JuneFab({ label: S.home.fab, state: 'collapsed' }) + '</div>', 'spec__canvas--auto'),
+      spec(C.JuneOrb({ size: 46 }), 'spec__canvas--auto'),
+      spec(C.JuneOrb({ size: 24 }), 'spec__canvas--auto')
+    ]);
+
+    html += group('@bold/web (DS)', [
+      spec(C.Button({ variant: 'primary', label: 'Start class' }), 'spec__canvas--auto'),
+      spec(C.Button({ variant: 'secondary', label: 'See full care plan' }), 'spec__canvas--auto'),
+      spec(C.Button({ variant: 'primary', size: 'small', label: 'Start class' }), 'spec__canvas--auto'),
+      spec(C.Button({ variant: 'text', label: 'Read message' }), 'spec__canvas--auto'),
+      spec(C.Tag({ color: 'purple100', label: '1 new' }), 'spec__canvas--auto'),
+      spec(C.Tag({ color: 'grey', label: 'Can wait' }), 'spec__canvas--auto'),
+      spec(C.Tag({ color: 'yellow', label: 'Signature needed' }), 'spec__canvas--auto'),
+      spec(C.Tag({ color: 'mint', label: 'Signed', icon: 'ph-check' }), 'spec__canvas--auto'),
+      spec(C.Tag({ color: 'red', label: 'Urgent', icon: 'ph-warning' }), 'spec__canvas--auto'),
+      spec(C.AiChip(), 'spec__canvas--auto'),
+      spec(C.Avatar({ image: md.photo, size: 48 }), 'spec__canvas--auto'),
+      spec(C.Avatar({ initials: 'CS', size: 44 }), 'spec__canvas--auto'),
+      spec(C.Avatar({ initials: 'RK', size: 44, color: 'grey' }), 'spec__canvas--auto'),
+      spec(C.AvatarStack({ people: [{ image: md.photo }, { image: cc.photo }, { orb: true }], size: 32 }), 'spec__canvas--auto'),
+      spec(C.TextWithShield({ text: S.intro.privacy })),
+      spec(C.Checkbox({ name: 'a', label: S.sign.esign, checked: false })),
+      spec(C.Checkbox({ name: 'b', label: S.sign.esign, checked: true })),
+      spec(C.Checkbox({ name: 'c', label: S.consentDoc.agreements[3], checked: false, required: true })),
+      spec(C.Radio({ name: 'r', value: 'md', label: 'Dr. Desai', checked: true }))
+    ]);
+
+    var labelJune = C.MessageLabel({ sender: 'june', name: 'June', time: '7:52 PM' });
+    html += group('Chat', [
+      spec(C.ChatHeader({ side: 'patient', title: 'Your care team', sub: 'Dr. Desai, Ali, and June', people: [{ image: md.photo }, { image: cc.photo }, { orb: true }],
+        actions: '<button type="button" class="icon-btn icon-btn--round" aria-label="About this chat"><i class="ph ph-info" aria-hidden="true"></i></button>' }), 'spec__canvas--flush'),
+      spec(C.StatusStrip({ state: 'idle', title: S.status.idle.title, sub: S.status.idle.sub, weekends: S.status.weekends }), 'spec__canvas--flush'),
+      spec(C.StatusStrip({ state: 'with-team', avatar: C.Avatar({ image: cc.photo, size: 32 }), title: S.status.withTeam.title, sub: 'Reply by Thu, Sep 24 at 8 PM', weekends: S.status.weekends }), 'spec__canvas--flush'),
+      spec(C.StatusStrip({ state: 'reading', avatar: C.Avatar({ image: cc.photo, size: 32 }), title: 'Ali is reading your message', sub: 'Reply by 8 PM tomorrow', weekends: S.status.weekends }), 'spec__canvas--flush'),
+      spec(C.StatusStrip({ state: 'typing', avatar: C.Avatar({ image: cc.photo, size: 32 }), title: 'Ali is typing…' }), 'spec__canvas--flush'),
+      spec(C.StatusStrip({ state: 'with-provider', avatar: C.Avatar({ image: md.photo, size: 32 }), title: S.status.withProvider.title, sub: 'Reply by 8 PM tomorrow · Ali asked her', weekends: S.status.weekends }), 'spec__canvas--flush'),
+      spec(C.StatusStrip({ state: 'resolved', title: S.status.resolved.title, sub: S.status.resolved.sub, weekends: S.status.weekends }), 'spec__canvas--flush'),
+      spec(labelJune),
+      spec(C.MessageLabel({ sender: 'cc', name: 'Ali', role: 'Care Advocate', image: cc.photo, time: '8:07 AM' })),
+      spec(C.MessageLabel({ sender: 'md', name: 'Dr. Desai', role: 'Your provider', image: md.photo, time: '3:08 PM' })),
+      spec(C.MessageLabel({ sender: 'patient', name: 'Carol', initials: 'CS', time: '7:52 PM', align: 'right' })),
+      spec(C.ChatBubble({ sender: 'june', side: 'left', html: T.esc(S.june.hello) })),
+      spec(C.ChatBubble({ sender: 'staff', side: 'left', html: bubbleText })),
+      spec(C.ChatBubble({ sender: 'patient', side: 'right', html: T.esc('Is it okay to skip a day if I feel sick?'), status: 'Sent · 7:52 PM' })),
+      spec(C.ChatBubble({ sender: 'patient', side: 'right', content: 'choice', html: T.esc('I feel fine') })),
+      spec(C.ChatBubble({ sender: 'patient', side: 'right', content: 'photo', photo: S.cameraRoll[0], html: T.esc('The pharmacy gave me this.') })),
+      spec(C.ChatBubble({ sender: 'patient', side: 'right', state: 'failed', id: 'x', html: T.esc('When is my next visit?') })),
+      spec(C.ChatBubble({ sender: 'patient', side: 'left', html: T.esc('Is it okay to skip a day if I feel sick?'), more: true, id: 'y' })),
+      spec(C.ChatBubble({ sender: 'staff', side: 'right', me: true, html: T.esc('Yes, that is the right medicine.') })),
+      spec(C.TypingIndicator({ sender: 'june', name: 'June' })),
+      spec(C.TypingIndicator({ sender: 'cc', name: 'Ali' })),
+      spec(C.SystemEvent({ type: 'date', text: 'Tue, Sep 22' })),
+      spec(C.SystemEvent({ type: 'handoff', text: 'Ali asked Dr. Desai to answer · Wed 8:05 AM' })),
+      spec(C.SystemEvent({ type: 'signed', text: 'Signed GLP-1 treatment consent · 6:14 PM' })),
+      spec('<div class="chip-row">' + S.screening.q1.map(function (o, i) { return C.SuggestionChip({ label: o.label, state: i === 0 ? 'selected' : 'default' }); }).join('') + '</div>'),
+      spec(C.CarePlanCard({ plan: S.carePlan })),
+      spec(C.DocumentCard({ doc: S.consentDoc, status: 'needs', side: 'patient' })),
+      spec(C.DocumentCard({ doc: S.consentDoc, status: 'signed', side: 'patient', signedText: 'Signed Wed, Sep 23 at 6:14 PM' })),
+      spec(C.ResourceCard({ article: S.articles[0], index: 0 })),
+      spec(C.RoutingCard({ rows: S.routing.map(function (r) { return { q: r.q, label: r.label, image: S.cast[r.who].photo }; }),
+        footHtml: T.esc('Replies within 48 hours, by Thu, Sep 24 at 8 PM.') + ' <span class="weekends">' + T.esc(S.status.weekends) + '</span>' })),
+      spec(C.IntroCard({ intro: S.intro, cast: S.cast })),
+      spec(C.Composer({ side: 'patient', id: 'c1', placeholder: 'Message your care team', emergency: S.emergencyNote, canSend: false }), 'spec__canvas--flush'),
+      spec(C.Composer({ side: 'patient', id: 'c2', placeholder: 'Message your care team', emergency: S.emergencyNote, photo: S.cameraRoll[0], text: 'The pharmacy gave me this.', canSend: true }), 'spec__canvas--flush'),
+      spec(C.EmergencyNote({ text: S.emergencyNote })),
+      spec(C.Toast({ text: S.carePlan.toastClass }), 'spec__canvas--tall'),
+      spec(C.LockNotification({ app: 'messages', appName: 'Messages', time: 'now', title: 'Bold', text: S.lock.sms.body }), 'spec__canvas--dark'),
+      spec(C.LockNotification({ app: 'bold', appName: 'BOLD', time: 'now', title: S.lock.push.title, text: S.lock.push.body }), 'spec__canvas--dark'),
+      spec(C.SheetBottom({ title: 'About this chat', body: C.IntroCard({ intro: S.intro, cast: S.cast }) }), 'spec__canvas--flush spec__canvas--tall'),
+      spec(C.PhotoGrid({ photos: S.cameraRoll }), 'spec__canvas--flush'),
+      spec(C.ArticleBody({ article: S.articles[1] }), 'spec__canvas--flush')
+    ]);
+
+    var carolRow = { id: 'carol', name: 'Carol Simmons', initials: 'CS', program: 'GLP-1 program · Visit Sep 22', preview: 'Carol: ' + S.carolQuestion,
+      time: '7:52 PM', tags: ['june', 'needs-provider', 'photo'], unread: true };
+    function fill(t, map) { return String(t).replace(/\{(\w+)\}/g, function (m, k) { return map[k] != null ? map[k] : m; }); }
+    var ci = S.care.intake, sm = S.care.summary, fp = S.care.summaryForProvider;
+    var intakeRows = ci.rows.map(function (r) { return [r[0], fill(r[1], { questions: ci.scriptedQuestions, attached: fill(ci.photo, { label: S.cameraRoll[0].label }),
+      answered: ci.answeredVisit, feel: ci.feel.fine, started: ci.started['not-yet'], flags: ci.flagsNone, by: 'Thu, Sep 24 at 8 PM' })]; });
+    var sampleSummary = { title: sm.title, needsTitle: sm.needsTitle, footer: sm.footer,
+      lines: [fill(sm.facts.opened, { day: 'Tue', time: '7:40 PM' }), sm.facts.classStarted, sm.facts.rxConfirmed, sm.facts.skipAsked,
+        fill(sm.facts.intake, { feel: sm.feel.fine, started: sm.started['not-yet'] })],
+      needs: [fill(sm.needs.answer, { title: S.care.sheet.defaults.title }), sm.needs.consent] };
+    var sheetCopyAli = Object.assign({}, S.care.sheet, { assign: S.care.sheet.assign.map(function (o) { return { key: o.key, label: o.label + (o.key === 'cc' ? S.care.sheet.me : '') }; }) });
+    html += group('Care team', [
+      spec(C.CareHeader({ title: 'Messages', name: 'Ali', role: 'Care Advocate', image: cc.photo }), 'spec__canvas--flush'),
+      spec(C.TabBar({ label: 'Care team', tabs: S.care.tabs, active: 'inbox', badges: { inbox: 1, tasks: 0 }, actionPrefix: 'care-tab', hintPrefix: 'care.tab' }), 'spec__canvas--flush'),
+      spec(C.TabBar({ label: 'Care team', tabs: S.care.tabs, active: 'tasks', badges: { tasks: 3 }, actionPrefix: 'care-tab', hintPrefix: 'care.tab' }), 'spec__canvas--flush'),
+      spec(C.SearchField({ placeholder: S.care.search }), 'spec__canvas--flush'),
+      spec(C.FilterPills({ filters: S.care.filters.map(function (f) { return { key: f.key, label: f.label, count: f.key === 'unread' ? 1 : 0 }; }), active: 'all' }), 'spec__canvas--flush'),
+      spec(C.OffHoursBanner({ text: S.care.offHours, sub: S.care.offHoursSub }), 'spec__canvas--flush'),
+      spec(C.InboxRow({ row: carolRow }), 'spec__canvas--flush'),
+      spec(C.InboxRow({ row: { id: 'robert', name: 'Robert Kim', initials: 'RK', program: 'GLP-1 program', preview: S.inboxFiller[0].preview, time: 'Mon', tags: ['can-wait'], unread: false } }), 'spec__canvas--flush'),
+      spec(C.InboxRow({ row: { id: 'u', name: 'Carol Simmons', initials: 'CS', program: 'GLP-1 program', preview: 'Carol: bad pain in my belly…', time: '8:15 PM', tags: ['urgent'], unread: true } }), 'spec__canvas--flush'),
+      spec(C.ContextBar({ text: S.care.contextBar }), 'spec__canvas--flush'),
+      spec(C.InternalCard({ type: 'intake', careOnlyText: S.care.careOnly, title: fill(ci.title, { when: 'Tue 7:52 PM' }), lead: C.JuneOrb({ size: 24 }), rows: intakeRows })),
+      spec(C.InternalCard({ type: 'summary', careOnlyText: S.care.careOnly, title: fill(fp.title, { to: 'Dr. Desai', by: 'Ali' }),
+        lines: fp.scripted.concat([fill(fp.promise, { due: 'Thu, Sep 24 at 8 PM' })]) })),
+      spec(C.SummaryCard({ state: 'loading' })),
+      spec(C.SummaryCard({ state: 'ready', summary: sampleSummary, careOnlyText: S.care.careOnly,
+        actions: C.Button({ variant: 'secondary', size: 'small', label: S.care.copyToChart }) })),
+      spec(C.TaskRow({ task: { id: 't3', patient: 'Carol Simmons', title: S.care.sheet.defaults.title, status: 'open' }, meta: 'Due Thu 8 PM · From Ali' }), 'spec__canvas--flush'),
+      spec(C.TaskRow({ task: { id: 't4', patient: 'Carol Simmons', title: S.care.sheet.defaults.title, status: 'done' }, meta: 'Done Wed 12:48 PM' }), 'spec__canvas--flush'),
+      spec(C.SectionLabel({ text: S.care.openLabel })),
+      spec(C.EmptyState({ text: S.care.noTasks })),
+      spec(C.TaskDetail({ tags: C.Tag({ color: 'purple100', label: S.care.sheet.follow[0].label }) + C.Tag({ color: 'grey', label: fill(S.care.taskMeta, { due: '8 PM tomorrow', from: 'Ali' }) }),
+        title: S.care.sheet.defaults.title, quoteMeta: fill(S.care.wrote, { when: 'Tue 7:52 PM' }), quote: S.carolQuestion,
+        actions: C.Button({ variant: 'secondary', full: true, icon: 'ph-sparkle', label: S.care.summarize }) + C.Button({ variant: 'primary', full: true, label: S.care.replyToCarol }) +
+          C.Button({ variant: 'text', full: true, label: S.care.markDone }) })),
+      spec(C.TaskPrompt({ text: S.care.markDonePrompt, label: S.care.markDone }), 'spec__canvas--flush'),
+      spec(C.TaskSheetBody({ copy: sheetCopyAli, values: S.care.sheet.defaults, promiseLabel: 'Thu, Sep 24 by 8 PM', quote: S.carolQuestion,
+        preview: fill(S.care.sheet.preview, { sentence: fill(S.care.sheet.follow[0].carol, { name: 'Dr. Desai', due: '8 PM tomorrow' }) }) })),
+      spec(C.TemplatePicker({ templates: Object.keys(S.templates).map(function (k) { return { id: k, name: S.templates[k].name, preview: S.templates[k].body.replace('{due}', '8 PM tomorrow').replace('{first}', 'Carol').replace('{nextVisit}', 'Tue, Oct 20') }; }) })),
+      spec(C.ActionList({ actions: [{ icon: 'ph-check-square-offset', label: S.care.actions.task }, { icon: 'ph-copy', label: S.care.actions.copy }, { icon: 'ph-envelope-simple', label: S.care.actions.unread }] })),
+      spec(C.AccountSwitch({ accounts: [{ key: 'cc', name: 'Ali Neuwirth', role: 'Care Advocate', image: cc.photo, active: true }, { key: 'md', name: 'Dr. Mitul S. Desai, MD', role: 'Provider', image: md.photo }] }))
+    ]);
+
+    html += group('Signing', [
+      spec(C.SignDisclosure({ doc: S.consentDoc, copy: S.sign, checked: false })),
+      spec(C.SignDisclosure({ doc: S.consentDoc, copy: S.sign, checked: false, error: true })),
+      spec(C.SignTag({ type: 'start', label: S.sign.start }), 'spec__canvas--auto'),
+      spec(C.SignTag({ type: 'next', label: S.sign.next }), 'spec__canvas--auto'),
+      spec(C.SignatureField({ name: 'Carol Simmons', signLabel: S.sign.signTag })),
+      spec(C.SignatureField({ name: 'Carol Simmons', signLabel: S.sign.signTag, signature: { mode: 'type', name: 'Carol Simmons' } })),
+      spec(C.AdoptSignature({ mode: 'type', name: 'Carol Simmons', copy: S.sign })),
+      spec(C.AdoptSignature({ mode: 'draw', name: 'Carol Simmons', copy: S.sign })),
+      spec(C.SignDone({ copy: S.sign })),
+      spec(C.SignDocumentPage({ doc: S.consentDoc, checked: [true, false, false, false], signature: null, patientName: 'Carol Simmons', signLabel: S.sign.signTag }), 'spec__canvas--tall')
+    ]);
+
+    document.getElementById('sheet').innerHTML = html;
+    document.querySelectorAll('[data-swatch]').forEach(function (el) { el.style.background = 'var(' + el.getAttribute('data-swatch') + ')'; });
+  })();
+  </script>
+</body>
+</html>

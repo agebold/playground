@@ -1,0 +1,120 @@
+/* Two-way care team chat — design tokens.
+   Source of truth: Figma Member Dashboard (jvPrZfMCn9Xwi9Fol4SWEm, node 2045:43390) variables.
+   Names mirror the Figma variable names so the design can be rebuilt in Figma 1:1.
+   The only file with raw color values. Component styles (chat.css) use var() only. */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@500&family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600&display=swap');
+
+:root {
+  /* ── Figma variables ─────────────────────────────────────────────── */
+  --primary-purple-300: #5200D4;            /* Primary/Purple/300 (Base) */
+  --primary-ink-300: #140D26;               /* Primary/Ink/300 (Base) */
+  --secondary-blue-300: #3366FF;            /* Secondary/Blue/300 (Base) */
+  --secondary-cyan-300: #80E8FF;            /* Secondary/Cyan/300 (Base) */
+  --text-default-primary: #171717;          /* Text/text-default-primary */
+  --text-default-secondary: #525252;        /* Text/text-default-secondary */
+  --surface-default-primary: #FAFAFA;       /* Surface/surface-default-primary */
+  --surface-default-tertiary: #E5E5E5;      /* Surface/surface-default-tertiary */
+  --surface-inverted-primary: #262626;      /* Surface/surface-inverted-primary */
+  --surface-brand-primary: #5200D4;         /* Surface/surface-brand-primary */
+  --surface-brand-secondary: #EDE9FE;       /* Surface/surface-brand-secondary */
+  --surface-brand-accent-yellow-primary: #FBBF24;
+  --border-default-primary: #E5E5E5;        /* Border/border-default-primary */
+  --border-default-tertiary: #525252;       /* Border/border-default-tertiary */
+  --white: #FFFFFF;                         /* Colors/Basics/White */
+
+  /* ── Hard-coded in Figma (propose as variables — see COMPONENTS.md) ── */
+  --page-gradient-from: #F2F5FE;            /* Home frame background, top */
+  --dash-card-border: #E5E3EA;              /* Checklist card + step borders */
+  --dash-track: #E2E0E6;                    /* Progress track */
+  --dash-progress: #4A10BD;                 /* Progress fill, marker, FAB label */
+  --dash-muted: #6B6474;                    /* Checklist helper + done text */
+  --dash-done-bg: #FEFDFF;
+  --dash-done-icon-bg: #E9E7ED;
+  --dash-done-check: #216B42;
+  --june-card-border: #E7E0FB;
+  --june-card-from: #FAF8FF;
+  --june-chip-border: #D9D2F2;
+  --june-title: #16121F;
+  --june-body: #5A5566;
+  --june-gradient: linear-gradient(90deg, #4A10BD 0%, #3366FF 100%);
+  --june-fab-ring: conic-gradient(from 90deg, #7B3AF0 0%, #5562F7 12.5%, #2F8BFF 25%, #21A7E1 37.5%,
+    #12C2C2 50%, #30B6BE 53.125%, #4DA9BA 56.25%, #6B9DB6 59.375%, #8991B2 62.5%, #C478AA 68.75%,
+    #FF5FA2 75%, #BD4CC9 87.5%, #7B3AF0 100%);
+  --emergency-text: #8A8693;                /* @bold/web $ink---200 — the light grey note */
+
+  /* ── @bold/web tokens, used where Figma has no match ──────────────── */
+  --purple-100: #EEE6FB;                    /* $purple---100 — active tab (side-effect chat frame) */
+  --yellow-300: #FFCC1A;                    /* $yellow---300 — sign-here tags */
+  --yellow-150: #FEF3C7;                    /* $yellow---150 — required-field highlight */
+  --mint-100: #E6F8F6;                      /* $green---100 */
+  --mint-700: #005B52;                      /* $green---500 */
+  --red-100: #FEE2E2;                       /* $red---100 */
+  --red-500: #80282E;                       /* $red---500 */
+  --ink-200: #8A8693;                       /* $ink---200 */
+  --purple-50: #F6F4FC;                     /* $purple---50 — unread row wash */
+  --purple-200: #A980EA;                    /* $purple---200 — typing dots (JC) */
+  --overlay: rgba(0, 0, 0, 0.45);           /* sheet scrim */
+
+  /* ── Side-effect June chat (JC) values, same Figma board ──────────── */
+  --border-default-secondary: #D4D4D4;      /* composer shell, dashed care-only cards */
+  --surface-subtle: #F5F5F5;                /* patient bubble on the care side, disabled send */
+
+  /* ── iOS system UI (lock screen, notifications) ───────────────────── */
+  --ios-green: #34C759;
+  --lock-glass: rgba(255, 255, 255, 0.78);
+  --doc-bg: #F1F0F5;                        /* document viewer backdrop */
+
+  /* ── Device + demo page (not part of the product) ─────────────────── */
+  --device-bezel: #140D26;
+  --device-island: #000000;
+  --shell-page: #F2F5FE;
+  --shell-line: #DCDDF3;
+  --shell-ink-soft: #4B4560;
+
+  /* ── Spacing / radius / effects (Figma) ───────────────────────────── */
+  --space-2: 2px;
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-24: 24px;
+  --radius-4: 4px;
+  --radius-7: 7px;
+  --radius-8: 8px;
+  --radius-14: 14px;
+  --radius-16: 16px;
+  --radius-18: 18px;
+  --radius-20: 20px;
+  --radius-full: 360px;
+  --shadow-xs: 0 1px 2px rgba(16, 24, 40, 0.05);                                  /* Shadows/XS */
+  --shadow-200: 0 1px 2px rgba(16, 24, 40, 0.06), 0 1px 3px rgba(16, 24, 40, 0.10); /* Drop Shadow/200 */
+  --shadow-fab: 0 10px 13px rgba(28, 20, 54, 0.24);                              /* FAB — Chat with June */
+  --shadow-xlarge: 0 8px 8px -4px rgba(16, 24, 40, 0.04), 0 20px 24px -4px rgba(16, 24, 40, 0.10); /* $box-shadow---xlarge */
+  --shadow-device: 0 30px 60px -12px rgba(20, 13, 38, 0.28), 0 8px 16px rgba(20, 13, 38, 0.08);
+  --pulse-color: rgba(82, 0, 212, 0.35);
+
+  /* ── Motion ───────────────────────────────────────────────────────── */
+  --ease-out: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-pop: cubic-bezier(0.34, 1.56, 0.64, 1);                                 /* $ease-pop */
+  --dur-fast: 150ms;
+  --dur-base: 200ms;
+  --dur-sheet: 280ms;
+
+  /* ── Font stacks ──────────────────────────────────────────────────── */
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-serif: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+  --font-sign: 'Caveat', 'Bradley Hand', cursive;
+}
+
+/* ── Figma text styles ───────────────────────────────────────────────── */
+.type-body { font: 400 16px/24px var(--font-sans); }                 /* Body */
+.type-body-bold { font: 600 16px/24px var(--font-sans); }            /* Body Bold */
+.type-caption-1 { font: 400 14px/22px var(--font-sans); }            /* Caption 1 */
+.type-caption-1-bold { font: 600 14px/22px var(--font-sans); }       /* Caption 1 Bold */
+.type-serif-headline { font: 600 20px/24px var(--font-serif); }      /* Serif Headline */
+.type-greeting { font: 600 32px/40px var(--font-serif); }            /* Greeting (Home heading) */
+.type-title { font: 600 24px/32px var(--font-sans); letter-spacing: -0.5px; } /* Section title */
+.type-june-title { font: 600 18px/24px var(--font-serif); letter-spacing: -0.18px; } /* June card title */
+.type-status-time { font: 500 16px/20px var(--font-sans); }          /* Status bar time */
+.type-sign { font: 500 40px/48px var(--font-sign); }                 /* Adopted signature */

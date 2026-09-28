@@ -1,0 +1,7 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Appointment">
+<rect x="1" y="1" width="28" height="28" rx="14" fill="white"/>
+<rect x="1" y="1" width="28" height="28" rx="14" stroke="#4A10BD" stroke-width="2"/>
+<circle id="Ellipse" cx="15" cy="15" r="6" fill="#4A10BD"/>
+</g>
+</svg>
