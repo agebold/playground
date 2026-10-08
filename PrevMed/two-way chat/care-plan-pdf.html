@@ -1,0 +1,60 @@
+<!doctype html>
+<!--
+  Print template for Carol's care plan PDF (carol-care-plan.pdf). Layout follows the finalized Healthie plan
+  (STAGING_TEST_Bold_care_plan_DRAFT.pdf): provider + date, the provider's note, then one row per area with its
+  steps, article links and "Why?". Content comes from story-p1.js, so the PDF always matches the app.
+  Regenerate: open in Chrome → Print → Save as PDF (Letter, no headers/footers), or headless printToPDF.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Carol Simmons's Care Plan</title>
+  <link rel="stylesheet" href="tokens.css" />
+  <style>
+    @page { size: letter; margin: 0.6in 0.7in; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: var(--font-sans); color: var(--text-default-primary); font-size: 14px; line-height: 22px; }
+    .top { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 16px; border-bottom: 1px solid var(--border-default-secondary); }
+    .brand { display: flex; align-items: center; gap: 8px; }
+    .provider { text-align: right; color: var(--text-default-secondary); }
+    h1 { font: 600 28px/36px var(--font-serif); color: var(--primary-ink-300); margin: 24px 0 2px; }
+    .date { color: var(--text-default-secondary); margin: 0 0 16px; }
+    .note { font-weight: 600; margin: 0 0 8px; }
+    .area { display: grid; grid-template-columns: 150px 1fr; gap: 24px; padding: 20px 0; border-top: 1px solid var(--border-default-primary); break-inside: avoid; }
+    .area__name { font-weight: 600; font-size: 16px; color: var(--primary-ink-300); }
+    ul { margin: 0 0 10px; padding-left: 18px; }
+    li { margin-bottom: 10px; }
+    li strong { color: var(--primary-ink-300); }
+    .links { display: block; color: var(--primary-purple-300); }
+    .why { margin: 0; color: var(--text-default-secondary); }
+    .why b { color: var(--text-default-primary); }
+    .foot { margin-top: 8px; padding-top: 16px; border-top: 1px solid var(--border-default-primary); color: var(--text-default-secondary); }
+  </style>
+</head>
+<body>
+  <div id="doc"></div>
+  <script src="store.js"></script>
+  <script src="story.js"></script>
+  <script src="story-p1.js"></script>
+  <script>
+  (function () {
+    var P = window.TWC_STORIES.p1, cp = P.carePlan, md = P.cast.md, esc = window.TWC.esc;
+    document.getElementById('doc').innerHTML =
+      '<div class="top"><div class="brand"><img src="images/figma/logo-lines.svg" alt="" width="30" height="30"><img src="images/figma/logo-text.svg" alt="Bold" width="64" height="18"></div>' +
+        '<div class="provider">Provider: ' + esc(md.full) + '</div></div>' +
+      '<h1>' + esc(P.cast.patient.name) + "'s Care Plan</h1>" +
+      '<p class="date">' + esc(cp.fromLong) + '</p>' +
+      '<p class="note">' + esc(cp.note) + '</p>' +
+      cp.areas.map(function (a) {
+        return '<section class="area"><div class="area__name">' + esc(a.name) + '</div><div><ul>' +
+          a.actions.map(function (x) {
+            return '<li><strong>' + esc(x.text) + '</strong> ' + esc(x.detail || '') +
+              (x.links ? '<span class="links">' + x.links.map(esc).join(' · ') + '</span>' : '') + '</li>';
+          }).join('') + '</ul>' +
+          (a.why ? '<p class="why"><b>Why?</b> ' + esc(a.why) + '</p>' : '') + '</div></section>';
+      }).join('') +
+      '<p class="foot">' + esc(cp.questions) + ' ' + esc(P.emergencyNote) + '</p>';
+  })();
+  </script>
+</body>
+</html>
